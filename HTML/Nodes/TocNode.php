@@ -25,7 +25,9 @@ class TocNode extends Base
                 $target = $this->environment->relativeUrl($info['url']);
             }
 
-            $html .= '<li><a href="'.$target.'">'.$title.'</a></li>';
+            $id = str_replace(['#', '.'], '-', $target);
+
+            $html .= '<li id="'.$id.'" class="toc-item"><a href="'.$target.'">'.$title.'</a></li>';
 
             if ($childs) {
                 $html .= '<ul>';
@@ -49,7 +51,7 @@ class TocNode extends Base
         foreach ($this->files as $file) {
             $reference = $this->environment->resolve('doc', $file);
             $reference['url'] = $this->environment->relativeUrl($reference['url']);
-            $html .= $this->renderLevel($reference['url'], $reference['titles']);
+            $html .= $this->renderLevel($reference['url'], $reference['titles'] ?? []);
         }
         $html .= '</ul></div>';
 
