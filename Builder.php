@@ -179,6 +179,7 @@ class Builder
     /**
      * Parses all the document that need to be parsed
      */
+
     protected function parseAll()
     {
         $this->display('* Parsing files');
@@ -186,6 +187,11 @@ class Builder
             $this->display(' -> Parsing '.$file.'...');
             // Process the file
             $rst = $this->getRST($file);
+
+            if (!file_exists($rst)) {
+                continue;
+            }
+
             $parser = new Parser(null, $this->kernel);
 
             $environment = $parser->getEnvironment();
@@ -198,11 +204,6 @@ class Builder
 
             foreach ($this->beforeHooks as $hook) {
                 $hook($parser);
-            }
-
-            if (!file_exists($rst)) {
-                $this->errorManager->error('Can\'t parse the file '.$rst);
-                continue;
             }
 
             $document = $this->documents[$file] = $parser->parseFile($rst);
