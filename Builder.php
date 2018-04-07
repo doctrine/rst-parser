@@ -65,6 +65,16 @@ class Builder
         $this->kernel->initBuilder($this);
     }
 
+    public function recreate()
+    {
+        return new Builder($this->kernel);
+    }
+
+    public function getDocuments() : array
+    {
+        return $this->documents;
+    }
+
     public function getErrorManager()
     {
         return $this->errorManager;
