@@ -28,6 +28,16 @@ abstract class Reference
     abstract public function resolve(Environment $environment, $data);
 
     /**
+     * Resolve the reference by text and returns an array
+     *
+     * @param $environment the Environment in use
+     * @param $text the text label of the reference
+     *
+     * @return array an array with key title and url
+     */
+    abstract public function resolveByText(Environment $environment, $text);
+
+    /**
      * Called when a reference is just found
      *
      * @param $environment the Environment in use

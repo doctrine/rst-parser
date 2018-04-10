@@ -180,8 +180,21 @@ abstract class Span extends Node
                 $span = str_replace($id, $this->literal($value['text']), $span);
                 break;
             case 'reference':
+                // try to resolve by url first
                 $reference = $environment->resolve($value['section'], $value['url']);
-                $link = $this->reference($reference, $value);
+
+                if ($reference) {
+                    $link = $this->reference($reference, $value);
+
+                // try to resolve by text second
+                } else {
+                    $reference = $environment->resolveByText($value['section'], $value['text']);
+
+                    // if we resolved by text set the anchor to the url
+                    $value['anchor'] = $value['url'];
+
+                    $link = $this->reference($reference, $value);
+                }
 
                 $span = str_replace($id, $link, $span);
                 break;

@@ -165,6 +165,20 @@ class Environment
         $this->errorManager->error('Unknown reference section '.$section);
     }
 
+    /**
+     * Resolves a reference by text
+     */
+    public function resolveByText($section, $text)
+    {
+        if (isset($this->references[$section])) {
+            $reference = $this->references[$section];
+
+            return $reference->resolveByText($this, $text);
+        }
+
+        $this->errorManager->error('Unknown reference section '.$section);
+    }
+
     public function found($section, $data)
     {
         if (isset($this->references[$section])) {
