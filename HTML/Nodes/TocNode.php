@@ -2,6 +2,7 @@
 
 namespace Gregwar\RST\HTML\Nodes;
 
+use Gregwar\RST\Environment;
 use Gregwar\RST\Nodes\TocNode as Base;
 
 class TocNode extends Base
@@ -16,8 +17,9 @@ class TocNode extends Base
         foreach ($titles as $k => $entry) {
             $path[$level-1] = $k+1;
             list($title, $childs) = $entry;
-            $token = 'title.'.implode('.', $path);
-            $target = $url.'#'.$token;
+
+            $anchor = Environment::slugify($title);
+            $target = $url.'#'.$anchor;
 
             if (is_array($title)) {
                 list($title, $target) = $title;
