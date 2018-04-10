@@ -355,6 +355,13 @@ class Parser
                 'depth' => $depth,
                 'text' => array($match[4])
             );
+        } elseif (strlen($line) === 1 && $line[0] === '-') {
+            return array(
+                'prefix' => $line[$i],
+                'ordered' => ($line[$i] == '*' || $line[$i] == '-') ? false : true,
+                'depth' => $depth,
+                'text' => array('')
+            );
         }
 
         return false;
