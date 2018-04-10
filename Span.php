@@ -106,7 +106,8 @@ abstract class Span extends Node
                 $tokens[$id] = array(
                     'type' => 'link',
                     'link' => $link,
-                    'url' => '#'.$anchor,
+                    'anchor' => $anchor,
+                    'url' => '',
                 );
 
                 return $id.$next;
@@ -205,9 +206,16 @@ abstract class Span extends Node
                     } else {
                         $url = $value['url'];
                     }
+                } elseif ($value['anchor']) {
+                    if ($link = $environment->getLink($value['link'])) {
+                        $url = $link;
+                    } else {
+                        $url = '#'.$value['anchor'];
+                    }
                 } else {
                     $url = $environment->getLink($value['link']);
                 }
+
                 $link = $this->link($url, $this->process($value['link']));
                 $span = str_replace($id, $link, $span);
                 break;

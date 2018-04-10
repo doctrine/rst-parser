@@ -44,6 +44,8 @@ class Doc extends Reference
 
     public function resolveByText(Environment $environment, $text)
     {
+        $text = trim($text);
+
         $metas = $environment->getMetas();
 
         $entry = null;
@@ -51,8 +53,17 @@ class Doc extends Reference
         if ($metas) {
             // try to lookup the document reference by title
             foreach ($metas->getAll() as $e) {
-                if (trim($e['title']) === trim($text)) {
+                if (trim($e['title']) === $text) {
                     $entry = $e;
+                    break;
+                }
+
+                // recursively search all the children nodes for a match
+                foreach ($e['titles'] as $title) {
+                    if ($this->findEntryByText($title[1], $text)) {
+                        $entry = $e;
+                        break;
+                    }
                 }
             }
 
@@ -74,5 +85,18 @@ class Doc extends Reference
     public function found(Environment $environment, $data)
     {
         $environment->addDependency($data);
+    }
+
+    private function findEntryByText(array $titles, $text)
+    {
+        foreach ($titles as $title) {
+            if ($title[0] === $text) {
+                return true;
+            }
+
+            if ($this->findEntryByText($title[1], $text)) {
+                return true;
+            }
+        }
     }
 }
