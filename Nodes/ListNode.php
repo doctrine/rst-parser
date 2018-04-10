@@ -8,7 +8,7 @@ abstract class ListNode extends Node
 
     /**
      * Infos contains:
-     * 
+     *
      * - text: the line text
      * - depth: the depth in the list level
      * - prefix: the prefix char (*, - etc.)
@@ -54,7 +54,7 @@ abstract class ListNode extends Node
 
         while ($stack) {
             list($d, $closing) = array_pop($stack);
-            $value .= $closing; 
+            $value .= $closing;
         }
 
         return $value;

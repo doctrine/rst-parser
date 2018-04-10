@@ -5,7 +5,7 @@ namespace Gregwar\RST;
 use Gregwar\RST\Nodes\CodeNode;
 
 /**
- * A directive that parses the sub block and call the processSub that can 
+ * A directive that parses the sub block and call the processSub that can
  * be overloaded, like :
  *
  * .. sub-directive::

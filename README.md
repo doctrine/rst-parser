@@ -15,7 +15,7 @@ The parser can be used this way:
 $parser = new Gregwar\RST\Parser;
 
 // RST document
-$rst = ' 
+$rst = '
 Hello world
 ===========
 

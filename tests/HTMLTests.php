@@ -100,7 +100,7 @@ class HTMLTests extends \PHPUnit_Framework_TestCase
     public function testHeaderTable()
     {
         $document = $this->parseHTML('table2.rst');
- 
+
         $this->assertEquals(2, substr_count($document, '<th>'));
         $this->assertEquals(2, substr_count($document, '</th>'));
         $this->assertNotContains('==', $document);
@@ -194,7 +194,7 @@ class HTMLTests extends \PHPUnit_Framework_TestCase
         $this->assertNotContains('*', $document);
         $this->assertContains('This is', $document);
         $this->assertContains('Last line', $document);
-        
+
         $document = $this->parseHTML('indented-list.rst');
 
         $this->assertEquals(1, substr_count($document, '<ul>'));
@@ -233,7 +233,7 @@ class HTMLTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(5, substr_count($document, '<li>'));
         $this->assertEquals(5, substr_count($document, '</li>'));
         $this->assertContains('<p>This is not in the list</p>', $document);
-        
+
         $document = $this->parseHTML('list-dash.rst');
         $this->assertEquals(1, substr_count($document, '<ul>'));
         $this->assertEquals(1, substr_count($document, '</ul>'));
@@ -293,7 +293,7 @@ class HTMLTests extends \PHPUnit_Framework_TestCase
         $this->assertContains('<p>', $document);
         $this->assertContains('</p>', $document);
         $this->assertEquals(1, substr_count($document, '</blockquote>'));
-        
+
         $document = $this->parseHTML('quote2.rst');
 
         $this->assertEquals(1, substr_count($document, '<blockquote>'));
@@ -303,7 +303,7 @@ class HTMLTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(1, substr_count($document, '<strong>'));
         $this->assertEquals(1, substr_count($document, '</strong>'));
         $this->assertNotContains('*', $document);
-        
+
         $document = $this->parseHTML('quote3.rst');
 
         $this->assertEquals(1, substr_count($document, '<blockquote>'));
@@ -336,14 +336,14 @@ class HTMLTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(1, substr_count($document, '</code>'));
         $code = 'cout << "Hello world!" << endl;';
         $this->assertContains(htmlspecialchars($code), $document);
-        
+
         $document = $this->parseHTML('code-java.rst');
 
         $this->assertEquals(1, substr_count($document, '<pre>'));
         $this->assertEquals(1, substr_count($document, '</pre>'));
         $this->assertEquals(1, substr_count($document, '<code class="java"'));
         $this->assertEquals(1, substr_count($document, '</code>'));
-        
+
         $document = $this->parseHTML('code-list.rst');
 
         $this->assertEquals(1, substr_count($document, '<pre>'));
@@ -369,7 +369,7 @@ class HTMLTests extends \PHPUnit_Framework_TestCase
         $this->assertNotContains('--', $document);
         $this->assertNotContains('~~', $document);
     }
-    
+
     public function testTitlesAuto()
     {
         $document = $this->parseHTML('titles-auto.rst');

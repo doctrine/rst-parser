@@ -49,7 +49,7 @@ class Span extends Base
     {
         return $span;
     }
-    
+
     public function reference($reference, $value)
     {
         if ($reference) {

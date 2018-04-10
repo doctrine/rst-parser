@@ -30,7 +30,7 @@ class ParserTests extends \PHPUnit_Framework_TestCase
         $this->assertNotContains('Testing comment', $render);
         $this->assertContains('Text before', $render);
         $this->assertContains('Text after', $render);
-        
+
         $document = $this->parse('multi-comment.rst');
 
         $render = $document->render();
@@ -72,7 +72,7 @@ class ParserTests extends \PHPUnit_Framework_TestCase
     public function testParagraphNode()
     {
         $document = $this->parse('paragraph.rst');
-        
+
         $this->assertHasNode($document, function($node) {
             return $node instanceof ParagraphNode;
         }, 1);
@@ -85,7 +85,7 @@ class ParserTests extends \PHPUnit_Framework_TestCase
     public function testParagraphNodes()
     {
         $document = $this->parse('paragraphs.rst');
-        
+
         $this->assertHasNode($document, function($node) {
             return $node instanceof ParagraphNode;
         }, 3);
@@ -101,7 +101,7 @@ class ParserTests extends \PHPUnit_Framework_TestCase
         $this->assertHasNode($quote, function($node) {
             return $node instanceof QuoteNode;
         }, 1);
-        
+
         $code = $this->parse('code.rst');
 
         $this->assertHasNode($quote, function($node) {
@@ -117,14 +117,14 @@ class ParserTests extends \PHPUnit_Framework_TestCase
     public function testTitles()
     {
         $document = $this->parse('title.rst');
-        
+
         $this->assertHasNode($document, function($node) {
             return $node instanceof TitleNode
                 && $node->getLevel() == 1;
         }, 1);
 
         $document = $this->parse('title2.rst');
-        
+
         $this->assertHasNode($document, function($node) {
             return $node instanceof TitleNode
                 && $node->getLevel() == 2;
@@ -137,13 +137,13 @@ class ParserTests extends \PHPUnit_Framework_TestCase
     public function testList()
     {
         $document = $this->parse('list.rst');
-        
+
         $this->assertHasNode($document, function($node) {
             return $node instanceof ListNode;
         }, 1);
-        
+
         $document = $this->parse('indented-list.rst');
-        
+
         $this->assertHasNode($document, function($node) {
             return $node instanceof ListNode;
         }, 1);
@@ -194,7 +194,7 @@ class ParserTests extends \PHPUnit_Framework_TestCase
             $this->assertEquals(3, $table->getCols());
             $this->assertEquals(3, $table->getRows());
         }
-        
+
         $document = $this->parse('pretty-table.rst');
 
         $nodes = $document->getNodes(function($node) {

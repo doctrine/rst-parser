@@ -57,7 +57,7 @@ class Parser
             $kernel = new \Gregwar\RST\HTML\Kernel;
         }
         $this->kernel = $kernel;
-        
+
         $this->environment = $environment ?: $this->kernel->build('Environment');
 
         $this->initDirectives();
@@ -76,7 +76,7 @@ class Parser
 
     /**
      * Try to parse a link definition
-     * 
+     *
      * @param string $line
      * @return bool
      */
@@ -100,7 +100,7 @@ class Parser
             return true;
         }
 
-        // Anchor link 
+        // Anchor link
         if (preg_match('/^\.\. _(.+):$/mUsi', trim($line), $match)) {
             $anchor = $match[1];
             $this->document->addNode($this->kernel->build('Nodes\AnchorNode', $anchor));
@@ -200,7 +200,7 @@ class Parser
     /**
      * Tell if a line is a special separating line for title and separators,
      * returns the depth of the special line
-     * 
+     *
      * @param string $line
      * @return bool
      */
@@ -228,7 +228,7 @@ class Parser
 
     /**
      * Finding the table chars
-     * 
+     *
      * @param string $line
      * @return array|bool
      */
@@ -261,7 +261,7 @@ class Parser
      *
      * +---------------------+---------+-----------+
      *  1                     23        33
-     * 
+     *
      * @param string $line
      * @return mixed
      */
@@ -384,7 +384,7 @@ class Parser
 
     /**
      * Push a line to the current list node buffer
-     * 
+     *
      * @param string $line
      * @param bool $flush
      * @return bool
@@ -501,7 +501,7 @@ class Parser
     /**
      * Try to add an option line to the current directive, returns true if sucess
      * and false if failure
-     * 
+     *
      * @param string $line
      */
     protected function directiveAddOption($line)
@@ -520,7 +520,7 @@ class Parser
 
     /**
      * Gets the current directive
-     * 
+     *
      * @return Directive
      */
     protected function getCurrentDirective()
@@ -712,7 +712,7 @@ class Parser
                 $this->state = self::STATE_BEGIN;
             }
             break;
-        
+
         case self::STATE_COMMENT:
             $isComment = false;
 
@@ -810,7 +810,7 @@ class Parser
         $document = str_replace("\r\n", "\n", $document);
         $document = "\n$document\n";
         $document = $this->includeFiles($document);
-        
+
         // Removing UTF-8 BOM
         $bom = "\xef\xbb\xbf";
         $document = str_replace($bom, '', $document);
