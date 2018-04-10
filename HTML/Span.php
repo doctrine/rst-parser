@@ -43,15 +43,24 @@ class Span extends Base
 
     public function reference($reference, $value)
     {
-        if ($reference) {
-            $text = $value['text'] ?: (isset($reference['title']) ? $reference['title'] : '');
+        $text = $value['text'] ?: (isset($reference['title']) ? $reference['title'] : '');
+        $text = trim($text);
+
+        // reference to another document
+        if ($reference['url']) {
             $url = $reference['url'];
             if ($value['anchor']) {
                 $url .= '#' . $value['anchor'];
             }
-            $link = $this->link($url, trim($text));
+            $link = $this->link($url, $text);
+
+        // reference to anchor in existing document
+        } elseif ($value['url']) {
+            $url = $this->environment->getLink($value['url']);
+
+            $link = $this->link($url, $text);
         } else {
-            $link = $this->link('#', '(unresolved reference)');
+            $link = $this->link('#', $text.' (unresolved reference)');
         }
 
         return $link;

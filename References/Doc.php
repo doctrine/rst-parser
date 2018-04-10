@@ -26,7 +26,41 @@ class Doc extends Reference
 
         if ($metas) {
             $entry = $metas->get($file);
-            $entry['url'] = $environment->relativeUrl('/'.$entry['url']);
+
+            // only call relativeUrl() if a document was found
+            // so we can later try to link to an anchor in this document
+            if ($entry['url']) {
+                $entry['url'] = $environment->relativeUrl('/'.$entry['url']);
+            }
+        } else {
+            $entry = array(
+                'title' => '(unresolved)',
+                'url' => '#'
+            );
+        }
+
+        return $entry;
+    }
+
+    public function resolveByText(Environment $environment, $text)
+    {
+        $metas = $environment->getMetas();
+
+        $entry = null;
+
+        if ($metas) {
+            // try to lookup the document reference by title
+            foreach ($metas->getAll() as $e) {
+                if (trim($e['title']) === trim($text)) {
+                    $entry = $e;
+                }
+            }
+
+            // only call relativeUrl() if a document was found
+            // so we can later try to link to an anchor in this document
+            if ($entry['url']) {
+                $entry['url'] = $environment->relativeUrl('/'.$entry['url']);
+            }
         } else {
             $entry = array(
                 'title' => '(unresolved)',
