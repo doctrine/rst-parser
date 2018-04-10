@@ -93,10 +93,23 @@ abstract class Span extends Node
             $next = $match[5];
             $url = null;
 
-            if (preg_match('/^(.+) <(.+)>$/mUsi', $link, $match)) {
-                $link = $match[1];
-                $environment->setLink($link, $match[2]);
-                $url = $match[2];
+            if (preg_match('/^(.+) <(.+)>$/mUsi', $link, $m)) {
+                $link = $m[1];
+                $environment->setLink($link, $m[2]);
+                $url = $m[2];
+            }
+
+            // anchors to current document
+            if ($url === null) {
+                $anchor = $environment->slugify($link);
+
+                $tokens[$id] = array(
+                    'type' => 'link',
+                    'link' => $link,
+                    'url' => '#'.$anchor,
+                );
+
+                return $id.$next;
             }
 
             $tokens[$id] = array(
