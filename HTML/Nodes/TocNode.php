@@ -27,7 +27,8 @@ class TocNode extends Base
                 $target = $this->environment->relativeUrl($info['url']);
             }
 
-            $id = str_replace(['#', '.'], '-', $target);
+            $id = str_replace('../', '', $target);
+            $id = str_replace(['#', '.', '/'], '-', $id);
 
             $html .= '<li id="'.$id.'" class="toc-item"><a href="'.$target.'">'.$title.'</a></li>';
 
