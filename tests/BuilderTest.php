@@ -1,14 +1,14 @@
 <?php
 
-use Gregwar\RST\Parser;
-use Gregwar\RST\Document;
-
 use Gregwar\RST\Builder;
+use Gregwar\RST\Document;
+use Gregwar\RST\Parser;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Unit testing for RST
  */
-class BuilderTests extends \PHPUnit_Framework_TestCase
+class BuilderTest extends TestCase
 {
     /**
      * Tests that the build produced the excepted documents
@@ -60,6 +60,37 @@ class BuilderTests extends \PHPUnit_Framework_TestCase
 
         $this->assertContains('introduction.html', $contents);
         $this->assertContains('Introduction page', $contents);
+    }
+
+    public function testToctreeGlob()
+    {
+        $contents = file_get_contents($this->targetFile('toc-glob.html'));
+
+        $this->assertContains('magic-link.html#another-page', $contents);
+        $this->assertContains('introduction.html#introduction-page', $contents);
+        $this->assertContains('subdirective.html', $contents);
+        $this->assertContains('subdir/test.html#subdirectory', $contents);
+    }
+
+    public function testToctreeInSubdirectory()
+    {
+        $contents = file_get_contents($this->targetFile('subdir/toc.html'));
+
+        $this->assertContains('../introduction.html#introduction-page', $contents);
+        $this->assertContains('../subdirective.html#sub-directives', $contents);
+        $this->assertContains('../magic-link.html#another-page', $contents);
+        $this->assertContains('test.html#subdirectory', $contents);
+    }
+
+    public function testAnchors()
+    {
+        $contents = file_get_contents($this->targetFile('index.html'));
+
+        $this->assertContains('<a id="reference_anchor"></a>', $contents);
+
+        $contents = file_get_contents($this->targetFile('introduction.html'));
+
+        $this->assertContains('<p>Reference to the <a href="index.html#reference_anchor">Summary</a></p>', $contents);
     }
 
     /**

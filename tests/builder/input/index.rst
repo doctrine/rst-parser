@@ -12,3 +12,4 @@ This is the builder test summary
     another
     subdir/index
 
+.. _reference_anchor:

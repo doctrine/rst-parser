@@ -1,11 +1,12 @@
 <?php
 
 use Gregwar\RST\Environment;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Unit testing for RST
  */
-class EnvironmentTests extends \PHPUnit_Framework_TestCase
+class EnvironmentTest extends TestCase
 {
     public function testRelativeUrl()
     {

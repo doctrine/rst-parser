@@ -18,7 +18,13 @@ class TocNode extends Base
             $path[$level-1] = $k+1;
             list($title, $childs) = $entry;
 
-            $anchor = Environment::slugify($title);
+            $slug = $title;
+
+            if (is_array($title)) {
+                $slug = $title[1];
+            }
+
+            $anchor = Environment::slugify($slug);
             $target = $url.'#'.$anchor;
 
             if (is_array($title)) {

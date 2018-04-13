@@ -1,9 +1,7 @@
 <?php
 
-use Gregwar\RST\Nodes\Node;
-use Gregwar\RST\Parser;
 use Gregwar\RST\Document;
-
+use Gregwar\RST\Nodes\Node;
 use Gregwar\RST\Nodes\ParagraphNode;
 use Gregwar\RST\Nodes\RawNode;
 use Gregwar\RST\Nodes\CodeNode;
@@ -13,11 +11,13 @@ use Gregwar\RST\Nodes\ListNode;
 use Gregwar\RST\Nodes\TableNode;
 use Gregwar\RST\Nodes\SeparatorNode;
 use Gregwar\RST\Nodes\DummyNode;
+use Gregwar\RST\Parser;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Unit testing for RST
  */
-class ParserTests extends \PHPUnit_Framework_TestCase
+class ParserTests extends TestCase
 {
     /**
      * Tests that comments are not present in the rendered document

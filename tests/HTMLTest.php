@@ -1,12 +1,13 @@
 <?php
 
-use Gregwar\RST\Parser;
 use Gregwar\RST\Document;
+use Gregwar\RST\Parser;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Unit testing for RST
  */
-class HTMLTests extends \PHPUnit_Framework_TestCase
+class HTMLTest extends TestCase
 {
     /**
      * Test some links demo
@@ -69,7 +70,7 @@ class HTMLTests extends \PHPUnit_Framework_TestCase
     {
         $document = $this->parseHTML('table.rst');
 
-        $this->assertEquals(1, substr_count($document, '<table>'));
+        $this->assertEquals(1, substr_count($document, '<table class="table table-bordered">'));
         $this->assertEquals(1, substr_count($document, '</table>'));
         $this->assertEquals(2, substr_count($document, '<tr>'));
         $this->assertEquals(2, substr_count($document, '</tr>'));
@@ -81,7 +82,7 @@ class HTMLTests extends \PHPUnit_Framework_TestCase
 
         $document = $this->parseHTML('pretty-table.rst');
 
-        $this->assertEquals(1, substr_count($document, '<table>'));
+        $this->assertEquals(1, substr_count($document, '<table class="table table-bordered">'));
         $this->assertEquals(1, substr_count($document, '</table>'));
         $this->assertEquals(2, substr_count($document, '<tr>'));
         $this->assertEquals(2, substr_count($document, '</tr>'));
@@ -239,6 +240,12 @@ class HTMLTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(1, substr_count($document, '</ul>'));
         $this->assertEquals(2, substr_count($document, '<li class="dash">'));
         $this->assertEquals(2, substr_count($document, '</li>'));
+
+        $document = $this->parseHTML('list-alternate-syntax.rst');
+        $this->assertEquals(1, substr_count($document, '<ul>'));
+        $this->assertEquals(1, substr_count($document, '</ul>'));
+        $this->assertEquals(3, substr_count($document, '<li class="dash">'));
+        $this->assertEquals(3, substr_count($document, '</li>'));
     }
 
     public function testEmptyParagraph()
@@ -364,7 +371,12 @@ class HTMLTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(2, substr_count($document, '</h2>'));
         $this->assertEquals(4, substr_count($document, '<h3>'));
         $this->assertEquals(4, substr_count($document, '</h3>'));
-        $this->assertContains('<a id="title', $document);
+        $this->assertContains('<a id="main-title"></a><h1>Main title</h1>', $document);
+        $this->assertContains('<a id="first-subtitle"></a><h2>First subtitle</h2>', $document);
+        $this->assertContains('<a id="first-subsubtitle"></a><h3>First subsubtitle</h3>', $document);
+        $this->assertContains('<a id="second-subsubtitle"></a><h3>Second subsubtitle</h3>', $document);
+        $this->assertContains('<a id="third-subsubtitle"></a><h3>Third subsubtitle</h3>', $document);
+        $this->assertContains('<a id="fourth-subsubtitle"></a><h3>Fourth subsubtitle</h3>', $document);
         $this->assertNotContains('==', $document);
         $this->assertNotContains('--', $document);
         $this->assertNotContains('~~', $document);
@@ -380,7 +392,7 @@ class HTMLTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(2, substr_count($document, '</h2>'));
         $this->assertEquals(4, substr_count($document, '<h3>'));
         $this->assertEquals(4, substr_count($document, '</h3>'));
-        $this->assertContains('<a id="title', $document);
+        $this->assertContains('<a id="main-title"></a>', $document);
         $this->assertNotContains('==', $document);
         $this->assertNotContains('--', $document);
         $this->assertNotContains('~~', $document);
@@ -498,6 +510,18 @@ class HTMLTests extends \PHPUnit_Framework_TestCase
     {
         $document = $this->parseHTML('raw.rst');
         $this->assertContains('<u>Underlined!</u>', $document);
+    }
+
+    public function testAnchors()
+    {
+        $document = $this->parseHTML('anchor.rst');
+
+        $this->assertContains('<a id="anchors"></a><h1>Anchors</h1>', $document);
+        $this->assertContains('<p><a href="#anchor-section">@Anchor Section</a></p>', $document);
+        $this->assertContains('<a id="anchor-section"></a><h1>@Anchor Section</h1>', $document);
+        $this->assertContains('<a id="anchors"></a><h1>Anchors</h1>', $document);
+        $this->assertContains('<a id="lists"></a>', $document);
+        $this->assertContains('<p><a href="#lists">go to lists</a></p>', $document);
     }
 
     /**
