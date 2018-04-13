@@ -240,6 +240,12 @@ class HTMLTest extends TestCase
         $this->assertEquals(1, substr_count($document, '</ul>'));
         $this->assertEquals(2, substr_count($document, '<li class="dash">'));
         $this->assertEquals(2, substr_count($document, '</li>'));
+
+        $document = $this->parseHTML('list-alternate-syntax.rst');
+        $this->assertEquals(1, substr_count($document, '<ul>'));
+        $this->assertEquals(1, substr_count($document, '</ul>'));
+        $this->assertEquals(3, substr_count($document, '<li class="dash">'));
+        $this->assertEquals(3, substr_count($document, '</li>'));
     }
 
     public function testEmptyParagraph()
@@ -504,6 +510,18 @@ class HTMLTest extends TestCase
     {
         $document = $this->parseHTML('raw.rst');
         $this->assertContains('<u>Underlined!</u>', $document);
+    }
+
+    public function testAnchors()
+    {
+        $document = $this->parseHTML('anchor.rst');
+
+        $this->assertContains('<a id="anchors"></a><h1>Anchors</h1>', $document);
+        $this->assertContains('<p><a href="#anchor-section">@Anchor Section</a></p>', $document);
+        $this->assertContains('<a id="anchor-section"></a><h1>@Anchor Section</h1>', $document);
+        $this->assertContains('<a id="anchors"></a><h1>Anchors</h1>', $document);
+        $this->assertContains('<a id="lists"></a>', $document);
+        $this->assertContains('<p><a href="#lists">go to lists</a></p>', $document);
     }
 
     /**
