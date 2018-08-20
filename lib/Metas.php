@@ -1,17 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Gregwar\RST;
 
 class Metas
 {
-    protected $entries = array();
-    protected $parents = array();
+    protected $entries = [];
+    protected $parents = [];
 
     public function __construct($entries)
     {
-        if ($entries) {
-            $this->entries = $entries;
+        if (! $entries) {
+            return;
         }
+
+        $this->entries = $entries;
     }
 
     public function getAll()
@@ -23,30 +27,34 @@ class Metas
      * Sets the meta for url, giving the title, the modification time and
      * the dependencies list
      */
-    public function set($file, $url, $title, $titles, $tocs, $ctime, array $depends)
+    public function set($file, $url, $title, $titles, $tocs, $ctime, array $depends) : void
     {
         foreach ($tocs as $toc) {
             foreach ($toc as $child) {
                 $this->parents[$child] = $file;
-                if (isset($this->entries[$child])) {
-                    $this->entries[$child]['parent'] = $file;
+                if (! isset($this->entries[$child])) {
+                    continue;
                 }
+
+                $this->entries[$child]['parent'] = $file;
             }
         }
 
-        $this->entries[$file] = array(
+        $this->entries[$file] = [
             'file' => $file,
             'url' => $url,
             'title' => $title,
             'titles' => $titles,
             'tocs' => $tocs,
             'ctime' => $ctime,
-            'depends' => $depends
-        );
+            'depends' => $depends,
+        ];
 
-        if (isset($this->parents[$file])) {
-            $this->entries[$file]['parent'] = $this->parents[$file];
+        if (! isset($this->parents[$file])) {
+            return;
         }
+
+        $this->entries[$file]['parent'] = $this->parents[$file];
     }
 
     /**
@@ -56,8 +64,8 @@ class Metas
     {
         if (isset($this->entries[$url])) {
             return $this->entries[$url];
-        } else {
-            return null;
         }
+
+        return null;
     }
 }

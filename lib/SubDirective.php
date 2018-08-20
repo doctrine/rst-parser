@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Gregwar\RST;
 
 use Gregwar\RST\Nodes\CodeNode;
@@ -19,7 +21,7 @@ abstract class SubDirective extends Directive
     /**
      * Process a directive that should parces the next node as a "sub" document
      */
-    public final function process(Parser $parser, $node, $variable, $data, array $options)
+    final public function process(Parser $parser, $node, $variable, $data, array $options) : void
     {
         $subParser = $parser->getSubParser();
 
@@ -31,12 +33,14 @@ abstract class SubDirective extends Directive
 
         $newNode = $this->processSub($parser, $document, $variable, $data, $options);
 
-        if ($newNode) {
-            if ($variable) {
-                $parser->getEnvironment()->setVariable($variable, $newNode);
-            } else {
-                $parser->getDocument()->addNode($newNode);
-            }
+        if (! $newNode) {
+            return;
+        }
+
+        if ($variable) {
+            $parser->getEnvironment()->setVariable($variable, $newNode);
+        } else {
+            $parser->getDocument()->addNode($newNode);
         }
     }
 
@@ -48,7 +52,7 @@ abstract class SubDirective extends Directive
         return null;
     }
 
-    public function wantCode()
+    public function wantCode() : bool
     {
         return true;
     }

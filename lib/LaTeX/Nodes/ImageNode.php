@@ -1,18 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Gregwar\RST\LaTeX\Nodes;
 
 use Gregwar\RST\Nodes\ImageNode as Base;
 
 class ImageNode extends Base
 {
-    public function render()
+    public function render() : string
     {
-        $attributes = array();
+        $attributes = [];
         foreach ($this->options as $key => $value) {
-            $attributes[] = $key . '='.$value;
+            $attributes[] = $key . '=' . $value;
         }
 
-        return '\includegraphics{'.$this->url.'}';
+        return '\includegraphics{' . $this->url . '}';
     }
 }

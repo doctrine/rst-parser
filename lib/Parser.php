@@ -285,7 +285,7 @@ class Parser
         if ($chars[0] == Environment::$prettyTableJoint && $chars[1] == Environment::$prettyTableLetter) {
             $pretty = true;
             $chars = array(Environment::$prettyTableLetter, Environment::$prettyTableJoint);
-        } else if ($chars[0] == Environment::$prettyTableJoint && $chars[1] == Environment::$prettyTableHeader) {
+        } elseif ($chars[0] == Environment::$prettyTableJoint && $chars[1] == Environment::$prettyTableHeader) {
             $pretty = true;
             $header = true;
             $chars = array(Environment::$prettyTableHeader, Environment::$prettyTableJoint);
@@ -341,7 +341,7 @@ class Parser
 
             if ($char == ' ') {
                 $depth++;
-            } else if ($char == "\t") {
+            } elseif ($char == "\t") {
                 $depth += 2;
             } else {
                 break;
@@ -516,7 +516,7 @@ class Parser
         if (preg_match('/^(\s+):(.+): (.*)$/mUsi', $line, $match)) {
             $this->directive['options'][$match[2]] = trim($match[3]);
             return true;
-        } else if (preg_match('/^(\s+):(.+):(\s*)$/mUsi', $line, $match)) {
+        } elseif (preg_match('/^(\s+):(.+):(\s*)$/mUsi', $line, $match)) {
             $value = trim($match[3]);
             $this->directive['options'][$match[2]] = true;
             return true;
@@ -636,21 +636,21 @@ class Parser
                     $this->lineInfo = null;
                     $this->listFlow = true;
                     return false;
-                } else if ($this->isBlockLine($line)) {
+                } elseif ($this->isBlockLine($line)) {
                     if ($this->isCode) {
                         $this->state = self::STATE_CODE;
                     } else {
                         $this->state = self::STATE_BLOCK;
                     }
                     return false;
-                } else if ($this->isDirective($line)) {
+                } elseif ($this->isDirective($line)) {
                     $this->state = self::STATE_DIRECTIVE;
                     $this->buffer = array();
                     $this->flush();
                     $this->initDirective($line);
-                } else if ($this->parseLink($line)) {
+                } elseif ($this->parseLink($line)) {
                     return true;
-                } else if ($parts = $this->parseTableLine($line)) {
+                } elseif ($parts = $this->parseTableLine($line)) {
                     $this->state = self::STATE_TABLE;
                     $this->buffer = $this->kernel->build('Nodes\TableNode', $parts);
                 } else {

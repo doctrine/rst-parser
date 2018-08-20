@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Gregwar\RST\Nodes;
 
 abstract class MetaNode extends Node
@@ -9,7 +11,7 @@ abstract class MetaNode extends Node
 
     public function __construct($key, $value)
     {
-        $this->key = $key;
+        $this->key   = $key;
         $this->value = $value;
     }
 }

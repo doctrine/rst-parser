@@ -1,8 +1,10 @@
 <?php
 
-include('../../autoload.php');
+declare(strict_types=1);
 
-$parser = new Gregwar\RST\Parser;
+include '../../autoload.php';
+
+$parser = new Gregwar\RST\Parser();
 
 $rst = '
 Hello world

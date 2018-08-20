@@ -1,16 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 use Gregwar\RST\Document;
+use Gregwar\RST\Nodes\CodeNode;
+use Gregwar\RST\Nodes\DummyNode;
+use Gregwar\RST\Nodes\ListNode;
 use Gregwar\RST\Nodes\Node;
 use Gregwar\RST\Nodes\ParagraphNode;
-use Gregwar\RST\Nodes\RawNode;
-use Gregwar\RST\Nodes\CodeNode;
 use Gregwar\RST\Nodes\QuoteNode;
-use Gregwar\RST\Nodes\TitleNode;
-use Gregwar\RST\Nodes\ListNode;
 use Gregwar\RST\Nodes\TableNode;
-use Gregwar\RST\Nodes\SeparatorNode;
-use Gregwar\RST\Nodes\DummyNode;
+use Gregwar\RST\Nodes\TitleNode;
 use Gregwar\RST\Parser;
 use PHPUnit\Framework\TestCase;
 
@@ -22,7 +22,7 @@ class ParserTests extends TestCase
     /**
      * Tests that comments are not present in the rendered document
      */
-    public function testComments()
+    public function testComments() : void
     {
         $document = $this->parse('comment.rst');
 
@@ -43,7 +43,7 @@ class ParserTests extends TestCase
     /**
      * Testing raw node
      */
-    public function testRawNode()
+    public function testRawNode() : void
     {
         $document = $this->parse('empty.rst');
         $document->addNode('hello');
@@ -54,7 +54,7 @@ class ParserTests extends TestCase
     /**
      * Testing that code node value is good
      */
-    public function testCodeNode()
+    public function testCodeNode() : void
     {
         $document = $this->parse('code-block-lastline.rst');
 
@@ -69,11 +69,11 @@ class ParserTests extends TestCase
     /**
      * Testing paragraph nodes
      */
-    public function testParagraphNode()
+    public function testParagraphNode() : void
     {
         $document = $this->parse('paragraph.rst');
 
-        $this->assertHasNode($document, function($node) {
+        $this->assertHasNode($document, function ($node) {
             return $node instanceof ParagraphNode;
         }, 1);
         $this->assertContains('Hello world!', $document->render());
@@ -82,11 +82,11 @@ class ParserTests extends TestCase
     /**
      * Testing multi-paragraph nodes
      */
-    public function testParagraphNodes()
+    public function testParagraphNodes() : void
     {
         $document = $this->parse('paragraphs.rst');
 
-        $this->assertHasNode($document, function($node) {
+        $this->assertHasNode($document, function ($node) {
             return $node instanceof ParagraphNode;
         }, 3);
     }
@@ -94,17 +94,17 @@ class ParserTests extends TestCase
     /**
      * Testing quote and block code
      */
-    public function testBlockNode()
+    public function testBlockNode() : void
     {
         $quote = $this->parse('quote.rst');
 
-        $this->assertHasNode($quote, function($node) {
+        $this->assertHasNode($quote, function ($node) {
             return $node instanceof QuoteNode;
         }, 1);
 
         $code = $this->parse('code.rst');
 
-        $this->assertHasNode($quote, function($node) {
+        $this->assertHasNode($quote, function ($node) {
             return $node instanceof QuoteNode;
         }, 1);
 
@@ -114,42 +114,42 @@ class ParserTests extends TestCase
     /**
      * Testing the titling
      */
-    public function testTitles()
+    public function testTitles() : void
     {
         $document = $this->parse('title.rst');
 
-        $this->assertHasNode($document, function($node) {
+        $this->assertHasNode($document, function ($node) {
             return $node instanceof TitleNode
-                && $node->getLevel() == 1;
+                && $node->getLevel() === 1;
         }, 1);
 
         $document = $this->parse('title2.rst');
 
-        $this->assertHasNode($document, function($node) {
+        $this->assertHasNode($document, function ($node) {
             return $node instanceof TitleNode
-                && $node->getLevel() == 2;
+                && $node->getLevel() === 2;
         }, 1);
     }
 
     /**
      * Testing the titling
      */
-    public function testList()
+    public function testList() : void
     {
         $document = $this->parse('list.rst');
 
-        $this->assertHasNode($document, function($node) {
+        $this->assertHasNode($document, function ($node) {
             return $node instanceof ListNode;
         }, 1);
 
         $document = $this->parse('indented-list.rst');
 
-        $this->assertHasNode($document, function($node) {
+        $this->assertHasNode($document, function ($node) {
             return $node instanceof ListNode;
         }, 1);
 
         $document = $this->parse('list-empty.rst');
-        $this->assertHasNode($document, function($node) {
+        $this->assertHasNode($document, function ($node) {
             return $node instanceof ListNode;
         }, 1);
     }
@@ -157,33 +157,42 @@ class ParserTests extends TestCase
     /**
      * Testing the titles retrieving
      */
-    public function testGetTitles()
+    public function testGetTitles() : void
     {
         $document = $this->parse('titles.rst');
 
         $this->assertEquals($document->getTitle(), 'The main title');
-        $this->assertEquals($document->getTitles(), array(
-            array('The main title', array(
-                array('First level title', array(
-                    array('Second level title', array()),
-                    array('Other second level title', array())
-                )),
-                array('Other first level title', array(
-                    array('Next second level title', array()),
-                    array('Yet another second level title', array())
-                ))
-            )))
-        );
+        $this->assertEquals($document->getTitles(), [
+            [
+        'The main title',
+        [
+                [
+        'First level title',
+        [
+                    ['Second level title', []],
+                    ['Other second level title', []],
+                ],
+                ],
+                [
+                'Other first level title',
+                [
+                    ['Next second level title', []],
+                    ['Yet another second level title', []],
+                ],
+                ],
+            ],
+            ],
+        ]);
     }
 
     /**
      * Testing the table feature
      */
-    public function testTable()
+    public function testTable() : void
     {
         $document = $this->parse('table.rst');
 
-        $nodes = $document->getNodes(function($node) {
+        $nodes = $document->getNodes(function ($node) {
             return $node instanceof TableNode;
         });
 
@@ -197,23 +206,25 @@ class ParserTests extends TestCase
 
         $document = $this->parse('pretty-table.rst');
 
-        $nodes = $document->getNodes(function($node) {
+        $nodes = $document->getNodes(function ($node) {
             return $node instanceof TableNode;
         });
 
         $this->assertEquals(count($nodes), 1);
 
-        if ($nodes) {
-            $table = $nodes[0];
-            $this->assertEquals(3, $table->getCols(), 3);
-            $this->assertEquals(2, $table->getRows(), 2);
+        if (! $nodes) {
+            return;
         }
+
+        $table = $nodes[0];
+        $this->assertEquals(3, $table->getCols());
+        $this->assertEquals(2, $table->getRows());
     }
 
     /**
      * Tests that a simple replace works
      */
-    public function testReplace()
+    public function testReplace() : void
     {
         $document = $this->parse('replace.rst');
 
@@ -223,41 +234,43 @@ class ParserTests extends TestCase
     /**
      * Test the include:: pseudo-directive
      */
-    public function testInclusion()
+    public function testInclusion() : void
     {
         $document = $this->parse('inclusion.rst');
 
         $this->assertContains('I was actually included', $document->renderDocument());
     }
 
-    public function testDirective()
+    public function testDirective() : void
     {
         $document = $this->parse('directive.rst');
 
-        $nodes = $document->getNodes(function($node) {
+        $nodes = $document->getNodes(function ($node) {
             return $node instanceof DummyNode;
         });
 
         $this->assertEquals(1, count($nodes));
 
-        if ($nodes) {
-            $node = $nodes[0];
-            $data = $node->data;
-            $this->assertEquals('some data', $data['data']);
-            $options = $data['options'];
-            $this->assertTrue(isset($options['maxdepth']));
-            $this->assertTrue(isset($options['titlesonly']));
-            $this->assertTrue(isset($options['glob']));
-            $this->assertTrue($options['titlesonly']);
-            $this->assertEquals(123, $options['maxdepth']);
+        if (! $nodes) {
+            return;
         }
+
+        $node = $nodes[0];
+        $data = $node->data;
+        $this->assertEquals('some data', $data['data']);
+        $options = $data['options'];
+        $this->assertTrue(isset($options['maxdepth']));
+        $this->assertTrue(isset($options['titlesonly']));
+        $this->assertTrue(isset($options['glob']));
+        $this->assertTrue($options['titlesonly']);
+        $this->assertEquals(123, $options['maxdepth']);
     }
 
-    public function testSubsequentParsesDontHaveTheSameTitleLevelOrder()
+    public function testSubsequentParsesDontHaveTheSameTitleLevelOrder() : void
     {
         $directory = __DIR__ . '/files';
 
-        $parser = new Parser;
+        $parser = new Parser();
         $parser->getEnvironment()->setCurrentDirectory($directory);
 
         /** @var TitleNode[] $nodes1 */
@@ -271,7 +284,7 @@ class ParserTests extends TestCase
         $this->assertSame(2, $nodes2[1]->getLevel(), 'Title level in second parse is influenced by first parse');
     }
 
-    public function testNewlineBeforeAnIncludedIsntGobbled()
+    public function testNewlineBeforeAnIncludedIsntGobbled() : void
     {
         /** @var Node[] $nodes */
         $nodes = $this->parse('inclusion-newline.rst')->getNodes();
@@ -284,7 +297,7 @@ class ParserTests extends TestCase
         $this->assertContains('<p>And this one as well.</p>', $nodes[2]->render());
     }
 
-    public function testIncludesKeepScope()
+    public function testIncludesKeepScope() : void
     {
         // See http://docutils.sourceforge.net/docs/ref/rst/directives.html#including-an-external-document-fragment
 
@@ -299,10 +312,10 @@ class ParserTests extends TestCase
         $this->assertContains('This is included.', $nodes[3]->getValue()->render());
     }
 
-    public function testIncludesPolicy()
+    public function testIncludesPolicy() : void
     {
-        $directory = __DIR__.'/files/';
-        $parser = new Parser;
+        $directory   = __DIR__ . '/files/';
+        $parser      = new Parser();
         $environment = $parser->getEnvironment();
         $environment->setCurrentDirectory($directory);
 
@@ -311,23 +324,23 @@ class ParserTests extends TestCase
         $this->assertSame('', $parser->getIncludeRoot());
 
         // Default policy:
-        $document = (string) $parser->parseFile($directory.'inclusion-policy.rst');
+        $document = (string) $parser->parseFile($directory . 'inclusion-policy.rst');
         $this->assertContains('SUBDIRECTORY OK', $document);
         $this->assertContains('EXTERNAL FILE INCLUDED!', $document);
 
         // Disbaled policy:
         $parser->setIncludePolicy(false);
-        $nodes = $parser->parseFile($directory.'inclusion-policy.rst')->getNodes();
+        $nodes = $parser->parseFile($directory . 'inclusion-policy.rst')->getNodes();
         $this->assertCount(1, $nodes);
 
         // Enabled
         $parser->setIncludePolicy(true);
-        $nodes = $parser->parseFile($directory.'inclusion-policy.rst')->getNodes();
+        $nodes = $parser->parseFile($directory . 'inclusion-policy.rst')->getNodes();
         $this->assertCount(6, $nodes);
 
         // Jailed
         $parser->setIncludePolicy(true, $directory);
-        $nodes = $parser->parseFile($directory.'inclusion-policy.rst')->getNodes();
+        $nodes = $parser->parseFile($directory . 'inclusion-policy.rst')->getNodes();
         $this->assertCount(5, $nodes);
     }
 
@@ -337,32 +350,34 @@ class ParserTests extends TestCase
      */
     private function parse($file)
     {
-        $directory = __DIR__.'/files/';
-        $parser = new Parser;
+        $directory   = __DIR__ . '/files/';
+        $parser      = new Parser();
         $environment = $parser->getEnvironment();
         $environment->setCurrentDirectory($directory);
 
-        $data = file_get_contents($directory.$file);
+        $data = file_get_contents($directory . $file);
         return $parser->parse($data);
     }
 
     /**
      * Asserts that a document has nodes that satisfy the function
      */
-    private function assertHasNode(Document $document, $function, $count = null)
+    private function assertHasNode(Document $document, $function, $count = null) : void
     {
         $nodes = $document->getNodes($function);
         $this->assertNotEmpty($nodes);
 
-        if ($count !== null) {
-            $this->assertEquals($count, count($nodes));
+        if ($count === null) {
+            return;
         }
+
+        $this->assertEquals($count, count($nodes));
     }
 
     /**
      * Asserts that a document has nodes that satisfy the function
      */
-    private function assertNotHasNode(Document $document, $function)
+    private function assertNotHasNode(Document $document, $function) : void
     {
         $nodes = $document->getNodes($function);
         $this->assertEmpty($nodes);

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Gregwar\RST\Nodes;
 
 use Gregwar\RST\Environment;
@@ -12,9 +14,9 @@ abstract class TocNode extends Node
 
     public function __construct(array $files, Environment $environment, array $options)
     {
-        $this->files = $files;
+        $this->files       = $files;
         $this->environment = $environment;
-        $this->options = $options;
+        $this->options     = $options;
     }
 
     public function getFiles()

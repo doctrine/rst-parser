@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Gregwar\RST\Nodes;
 
 abstract class TitleNode extends Node
@@ -20,7 +22,7 @@ abstract class TitleNode extends Node
         return $this->level;
     }
 
-    public function setTarget($target)
+    public function setTarget($target) : void
     {
         $this->target = $target;
     }

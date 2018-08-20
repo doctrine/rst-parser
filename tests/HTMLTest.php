@@ -1,6 +1,7 @@
 <?php
 
-use Gregwar\RST\Document;
+declare(strict_types=1);
+
 use Gregwar\RST\Parser;
 use PHPUnit\Framework\TestCase;
 
@@ -12,7 +13,7 @@ class HTMLTest extends TestCase
     /**
      * Test some links demo
      */
-    public function testLinks()
+    public function testLinks() : void
     {
         $document = $this->parseHTML('links.rst');
 
@@ -30,7 +31,7 @@ class HTMLTest extends TestCase
     /**
      * Testing the non breakable spaces (~)
      */
-    public function testNbsp()
+    public function testNbsp() : void
     {
         $document = $this->parseHTML('nbsp.rst');
 
@@ -41,7 +42,7 @@ class HTMLTest extends TestCase
     /**
      * Testing that the text is ecaped
      */
-    public function testEscape()
+    public function testEscape() : void
     {
         $document = $this->parseHTML('escape.rst');
 
@@ -52,7 +53,7 @@ class HTMLTest extends TestCase
     /**
      * Testing the emphasis
      */
-    public function testEmphasis()
+    public function testEmphasis() : void
     {
         $document = $this->parseHTML('italic.rst');
 
@@ -66,7 +67,7 @@ class HTMLTest extends TestCase
     /**
      * Testing a table
      */
-    public function testTable()
+    public function testTable() : void
     {
         $document = $this->parseHTML('table.rst');
 
@@ -98,7 +99,7 @@ class HTMLTest extends TestCase
     /**
      * Testing HTML table with headers
      */
-    public function testHeaderTable()
+    public function testHeaderTable() : void
     {
         $document = $this->parseHTML('table2.rst');
 
@@ -110,7 +111,7 @@ class HTMLTest extends TestCase
     /**
      * Testing literals
      */
-    public function testLiteral()
+    public function testLiteral() : void
     {
         $document = $this->parseHTML('literal.rst');
 
@@ -123,7 +124,7 @@ class HTMLTest extends TestCase
     /**
      * Testing separators
      */
-    public function testSeparator()
+    public function testSeparator() : void
     {
         $document = $this->parseHTML('separator.rst');
 
@@ -133,7 +134,7 @@ class HTMLTest extends TestCase
     /**
      * Testing the images feature
      */
-    public function testImage()
+    public function testImage() : void
     {
         $document = $this->parseHTMl('image.rst');
 
@@ -156,7 +157,7 @@ class HTMLTest extends TestCase
     /**
      * Testing figure directive
      */
-    public function testFigure()
+    public function testFigure() : void
     {
         $document = $this->parseHTMl('figure.rst');
 
@@ -172,7 +173,7 @@ class HTMLTest extends TestCase
     /**
      * Testing that an image that just directly follows some text works
      */
-    public function testImageFollow()
+    public function testImageFollow() : void
     {
         $document = $this->parseHTML('image-follow.rst');
 
@@ -183,7 +184,7 @@ class HTMLTest extends TestCase
     /**
      * Testing a list
      */
-    public function testList()
+    public function testList() : void
     {
         $document = $this->parseHTML('list.rst');
 
@@ -248,7 +249,7 @@ class HTMLTest extends TestCase
         $this->assertEquals(3, substr_count($document, '</li>'));
     }
 
-    public function testEmptyParagraph()
+    public function testEmptyParagraph() : void
     {
         $document = $this->parseHTML('empty-p.rst');
 
@@ -258,7 +259,7 @@ class HTMLTest extends TestCase
     /**
      * Testing css stylesheet
      */
-    public function testStylesheet()
+    public function testStylesheet() : void
     {
         $document = $this->parseHTML('css.rst');
 
@@ -268,7 +269,7 @@ class HTMLTest extends TestCase
     /**
      * Testing a title that follows a wrapping directive
      */
-    public function testTitleFollowDirective()
+    public function testTitleFollowDirective() : void
     {
         $document = $this->parseHTML('directive-title.rst');
 
@@ -281,7 +282,7 @@ class HTMLTest extends TestCase
      * Block quotes run a parse and thus can mess with environment, a bug was fixed
      * and this test avoid it to be reproduced
      */
-    public function testQuoteResetTitles()
+    public function testQuoteResetTitles() : void
     {
         $document = $this->parseHTML('quote-title.rst');
 
@@ -292,7 +293,7 @@ class HTMLTest extends TestCase
     /**
      * Testing quote
      */
-    public function testQuote()
+    public function testQuote() : void
     {
         $document = $this->parseHTML('quote.rst');
 
@@ -323,7 +324,7 @@ class HTMLTest extends TestCase
     /**
      * Testing code blocks
      */
-    public function testCode()
+    public function testCode() : void
     {
         $document = $this->parseHTML('code.rst');
 
@@ -361,7 +362,7 @@ class HTMLTest extends TestCase
     /**
      * Testing titles
      */
-    public function testTitles()
+    public function testTitles() : void
     {
         $document = $this->parseHTML('titles.rst');
 
@@ -382,7 +383,7 @@ class HTMLTest extends TestCase
         $this->assertNotContains('~~', $document);
     }
 
-    public function testTitlesAuto()
+    public function testTitlesAuto() : void
     {
         $document = $this->parseHTML('titles-auto.rst');
 
@@ -401,7 +402,7 @@ class HTMLTest extends TestCase
     /**
      * Testing that a wrapper node can be at end of file
      */
-    public function testWrapperNodeEnd()
+    public function testWrapperNodeEnd() : void
     {
         $document = $this->parseHTML('wrap.rst');
 
@@ -411,7 +412,7 @@ class HTMLTest extends TestCase
     /**
      * Tests a variable used with a wrap sub directive
      */
-    public function testVariableWrap()
+    public function testVariableWrap() : void
     {
         $document = $this->parseHTML('variable-wrap.rst');
 
@@ -419,7 +420,7 @@ class HTMLTest extends TestCase
         $this->assertEquals(2, substr_count($document, 'important'));
     }
 
-    public function testReferenceUnderDirective()
+    public function testReferenceUnderDirective() : void
     {
         $document = $this->parseHTML('reference-directive.rst');
 
@@ -427,7 +428,7 @@ class HTMLTest extends TestCase
         $this->assertEquals(1, substr_count($document, 'unresolved'));
     }
 
-    public function testReferenceMatchingIsntTooEager()
+    public function testReferenceMatchingIsntTooEager() : void
     {
         // Before, it would render
         // <p><code>:doc:`lorem</code><a href="https://consectetur.org"> and 249a92befe90adcd3bb404a91d4e1520a17a8b56` sit `amet</a></p>
@@ -438,12 +439,12 @@ class HTMLTest extends TestCase
         );
     }
 
-    public function testUnknownDirective()
+    public function testUnknownDirective() : void
     {
         try {
             $document = $this->parseHTML('unknown-directive.rst');
             $this->assertTrue(false, 'Unknown directive should raise an exception');
-        } catch (\Exception $e) {
+        } catch (Throwable $e) {
             $message = $e->getMessage();
             $this->assertContains('unknown-directive.rst', $message);
             $this->assertContains('line 2', $message);
@@ -453,7 +454,7 @@ class HTMLTest extends TestCase
     /**
      * Testing div directive
      */
-    public function testDivDirective()
+    public function testDivDirective() : void
     {
         $document = $this->parseHTML('div.rst');
 
@@ -466,7 +467,7 @@ class HTMLTest extends TestCase
     /**
      * Testing that comments starting by ... are not handled as comments
      */
-    public function testCommentThree()
+    public function testCommentThree() : void
     {
         $document = $this->parseHTML('comment-3.rst');
 
@@ -477,7 +478,7 @@ class HTMLTest extends TestCase
     /**
      * Testing crlf
      */
-    public function testCRLF()
+    public function testCRLF() : void
     {
         $document = $this->parseHTML('crlf.rst');
 
@@ -487,7 +488,7 @@ class HTMLTest extends TestCase
     /**
      * Testing that emphasis and span elements are evaluated in links
      */
-    public function testLinkSpan()
+    public function testLinkSpan() : void
     {
         $document = $this->parseHTML('link-span.rst');
 
@@ -497,7 +498,7 @@ class HTMLTest extends TestCase
     /**
      * Testing removing BOM
      */
-    public function testBom()
+    public function testBom() : void
     {
         $document = $this->parseHTML('bom.rst');
         $this->assertNotContains('Should be a comment', $document);
@@ -506,13 +507,13 @@ class HTMLTest extends TestCase
     /**
      * Testing with a raw directive
      */
-    public function testRaw()
+    public function testRaw() : void
     {
         $document = $this->parseHTML('raw.rst');
         $this->assertContains('<u>Underlined!</u>', $document);
     }
 
-    public function testAnchors()
+    public function testAnchors() : void
     {
         $document = $this->parseHTML('anchor.rst');
 
@@ -530,12 +531,12 @@ class HTMLTest extends TestCase
      */
     private function parse($file)
     {
-        $directory = __DIR__.'/html/';
-        $parser = new Parser;
+        $directory   = __DIR__ . '/html/';
+        $parser      = new Parser();
         $environment = $parser->getEnvironment();
         $environment->setCurrentDirectory($directory);
 
-        return $parser->parseFile($directory.$file);
+        return $parser->parseFile($directory . $file);
     }
 
     private function parseHTML($file)

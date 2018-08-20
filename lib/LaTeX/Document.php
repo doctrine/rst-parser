@@ -1,15 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Gregwar\RST\LaTeX;
 
 use Gregwar\RST\Document as Base;
-
-use Gregwar\RST\Nodes\RawNode;
 use Gregwar\RST\LaTeX\Nodes\LaTeXMainNode;
+use function count;
 
 class Document extends Base
 {
-    public function render()
+    public function render() : string
     {
         $document = '';
         foreach ($this->nodes as $node) {
@@ -19,11 +20,11 @@ class Document extends Base
         return $document;
     }
 
-    public function renderDocument()
+    public function renderDocument() : string
     {
-        $isMain = count($this->getNodes(function($node) {
+        $isMain = count($this->getNodes(function ($node) {
             return $node instanceof LaTeXMainNode;
-        })) != 0;
+        })) !== 0;
 
         $document = '';
 
@@ -41,12 +42,12 @@ class Document extends Base
             $document .= "\\usepackage{listings}\n";
 
             foreach ($this->headerNodes as $node) {
-                $document .= $node->render()."\n";
+                $document .= $node->render() . "\n";
             }
             $document .= "\\begin{document}\n";
         }
 
-        $document .= "\label{".$this->environment->getUrl()."}\n";
+        $document .= '\label{' . $this->environment->getUrl() . "}\n";
         $document .= $this->render();
 
         if ($isMain) {

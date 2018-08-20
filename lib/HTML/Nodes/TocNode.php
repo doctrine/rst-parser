@@ -1,13 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Gregwar\RST\HTML\Nodes;
 
 use Gregwar\RST\Environment;
 use Gregwar\RST\Nodes\TocNode as Base;
+use function is_array;
+use function str_replace;
 
 class TocNode extends Base
 {
-    protected function renderLevel($url, $titles, $level = 1, $path = array())
+    protected function renderLevel($url, $titles, $level = 1, $path = [])
     {
         if ($level > $this->depth) {
             return false;
@@ -15,7 +19,7 @@ class TocNode extends Base
 
         $html = '';
         foreach ($titles as $k => $entry) {
-            $path[$level-1] = $k+1;
+            $path[$level-1]       = $k+1;
             list($title, $childs) = $entry;
 
             $slug = $title;
@@ -25,42 +29,44 @@ class TocNode extends Base
             }
 
             $anchor = Environment::slugify($slug);
-            $target = $url.'#'.$anchor;
+            $target = $url . '#' . $anchor;
 
             if (is_array($title)) {
                 list($title, $target) = $title;
-                $info = $this->environment->resolve('doc', $target);
-                $target = $this->environment->relativeUrl($info['url']);
+                $info                 = $this->environment->resolve('doc', $target);
+                $target               = $this->environment->relativeUrl($info['url']);
             }
 
             $id = str_replace('../', '', $target);
             $id = str_replace(['#', '.', '/'], '-', $id);
 
-            $html .= '<li id="'.$id.'" class="toc-item"><a href="'.$target.'">'.$title.'</a></li>';
+            $html .= '<li id="' . $id . '" class="toc-item"><a href="' . $target . '">' . $title . '</a></li>';
 
-            if ($childs) {
-                $html .= '<ul>';
-                $html .= $this->renderLevel($url, $childs, $level+1, $path);
-                $html .= '</ul>';
+            if (! $childs) {
+                continue;
             }
+
+            $html .= '<ul>';
+            $html .= $this->renderLevel($url, $childs, $level+1, $path);
+            $html .= '</ul>';
         }
 
         return $html;
     }
 
-    public function render()
+    public function render() : string
     {
         if (isset($this->options['hidden'])) {
             return '';
         }
 
-        $this->depth = isset($this->options['depth']) ? $this->options['depth'] : 2;
+        $this->depth = $this->options['depth'] ?? 2;
 
         $html = '<div class="toc"><ul>';
         foreach ($this->files as $file) {
-            $reference = $this->environment->resolve('doc', $file);
+            $reference        = $this->environment->resolve('doc', $file);
             $reference['url'] = $this->environment->relativeUrl($reference['url']);
-            $html .= $this->renderLevel($reference['url'], $reference['titles'] ?? []);
+            $html            .= $this->renderLevel($reference['url'], $reference['titles'] ?? []);
         }
         $html .= '</ul></div>';
 

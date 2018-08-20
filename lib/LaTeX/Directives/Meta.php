@@ -1,11 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Gregwar\RST\LaTeX\Directives;
 
-use Gregwar\RST\Parser;
 use Gregwar\RST\Directive;
-
 use Gregwar\RST\LaTeX\Nodes\MetaNode;
+use Gregwar\RST\Parser;
 
 /**
  * Add a meta information:
@@ -15,12 +16,12 @@ use Gregwar\RST\LaTeX\Nodes\MetaNode;
  */
 class Meta extends Directive
 {
-    public function getName()
+    public function getName() : string
     {
         return 'meta';
     }
 
-    public function process(Parser $parser, $node, $variable, $data, array $options)
+    public function process(Parser $parser, $node, $variable, $data, array $options) : void
     {
         $document = $parser->getDocument();
 
@@ -29,8 +30,10 @@ class Meta extends Directive
             $document->addHeaderNode($meta);
         }
 
-        if ($node) {
-            $document->addNode($node);
+        if (! $node) {
+            return;
         }
+
+        $document->addNode($node);
     }
 }

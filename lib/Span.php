@@ -1,8 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Gregwar\RST;
 
 use Gregwar\RST\Nodes\Node;
+use function htmlspecialchars;
+use function implode;
+use function is_array;
+use function mt_rand;
+use function preg_match;
+use function preg_match_all;
+use function preg_replace;
+use function preg_replace_callback;
+use function sha1;
+use function str_replace;
+use function time;
+use function trim;
 
 abstract class Span extends Node
 {
@@ -17,31 +31,31 @@ abstract class Span extends Node
             $span = implode("\n", $span);
         }
 
-        $tokenId = 0;
-        $prefix = mt_rand().'|'.time();
-        $generator = function() use ($prefix, &$tokenId) {
+        $tokenId   = 0;
+        $prefix    = mt_rand() . '|' . time();
+        $generator = function () use ($prefix, &$tokenId) {
             $tokenId++;
-            return sha1($prefix.'|'.$tokenId);
+            return sha1($prefix . '|' . $tokenId);
         };
 
         // Replacing literal with tokens
-        $tokens = array();
-        $span = preg_replace_callback('/``(.+)``(?!`)/mUsi', function($match) use (&$tokens, $generator) {
-            $id = $generator();
-            $tokens[$id] = array(
+        $tokens = [];
+        $span   = preg_replace_callback('/``(.+)``(?!`)/mUsi', function ($match) use (&$tokens, $generator) {
+            $id          = $generator();
+            $tokens[$id] = [
                 'type' => 'literal',
-                'text' => htmlspecialchars($match[1])
-            );
+                'text' => htmlspecialchars($match[1]),
+            ];
 
             return $id;
         }, $span);
 
-        $environment = $parser->getEnvironment();
+        $environment       = $parser->getEnvironment();
         $this->environment = $environment;
 
         // Replacing numbering
         foreach ($environment->getTitleLetters() as $level => $letter) {
-            $span = preg_replace_callback('/\#\\'.$letter.'/mUsi', function($match) use ($environment, $level) {
+            $span = preg_replace_callback('/\#\\' . $letter . '/mUsi', function ($match) use ($environment, $level) {
                 return $environment->getNumber($level);
             }, $span);
         }
@@ -56,30 +70,30 @@ abstract class Span extends Node
         }
 
         // Looking for references to other documents
-        $span = preg_replace_callback('/:([a-z0-9]+):`(.+)`/mUsi', function($match) use (&$environment, $generator, &$tokens) {
+        $span = preg_replace_callback('/:([a-z0-9]+):`(.+)`/mUsi', function ($match) use (&$environment, $generator, &$tokens) {
             $section = $match[1];
-            $url = $match[2];
-            $id = $generator();
-            $anchor = null;
+            $url     = $match[2];
+            $id      = $generator();
+            $anchor  = null;
 
             $text = null;
             if (preg_match('/^(.+)<(.+)>$/mUsi', $url, $match)) {
                 $text = $match[1];
-                $url = $match[2];
+                $url  = $match[2];
             }
 
             if (preg_match('/^(.+)#(.+)$/mUsi', $url, $match)) {
-                $url = $match[1];
+                $url    = $match[1];
                 $anchor = $match[2];
             }
 
-            $tokens[$id] = array(
+            $tokens[$id] = [
                 'type' => 'reference',
                 'section' => $section,
                 'url' => $url,
                 'text' => $text,
-                'anchor' => $anchor
-            );
+                'anchor' => $anchor,
+            ];
 
             $environment->found($section, $url);
 
@@ -87,11 +101,11 @@ abstract class Span extends Node
         }, $span);
 
         // Link callback
-        $linkCallback = function($match) use ($environment, $generator, &$tokens) {
+        $linkCallback = function ($match) use ($environment, $generator, &$tokens) {
             $link = $match[2] ?: $match[4];
-            $id = $generator();
+            $id   = $generator();
             $next = $match[5];
-            $url = null;
+            $url  = null;
 
             if (preg_match('/^(.+) <(.+)>$/mUsi', $link, $m)) {
                 $link = $m[1];
@@ -103,23 +117,23 @@ abstract class Span extends Node
             if ($url === null) {
                 $anchor = $environment->slugify($link);
 
-                $tokens[$id] = array(
+                $tokens[$id] = [
                     'type' => 'link',
                     'link' => $link,
                     'anchor' => $anchor,
                     'url' => '',
-                );
+                ];
 
-                return $id.$next;
+                return $id . $next;
             }
 
-            $tokens[$id] = array(
+            $tokens[$id] = [
                 'type' => 'link',
                 'link' => $link,
-                'url' => $url
-            );
+                'url' => $url,
+            ];
 
-            return $id.$next;
+            return $id . $next;
         };
 
         // Replacing anonymous links
@@ -130,7 +144,7 @@ abstract class Span extends Node
 
         $this->tokens = $tokens;
         $this->parser = $parser;
-        $this->span = $span;
+        $this->span   = $span;
     }
 
     /**
@@ -139,24 +153,24 @@ abstract class Span extends Node
      */
     public function process($data)
     {
-        $self = $this;
+        $self        = $this;
         $environment = $this->parser->getEnvironment();
 
         $span = $this->escape($data);
 
         // Emphasis
         $span = preg_replace_callback('/\*\*(.+)\*\*/mUsi', function ($matches) use ($self) {
-          return $self->strongEmphasis($matches[1]);
+            return $self->strongEmphasis($matches[1]);
         }, $span);
         $span = preg_replace_callback('/\*(.+)\*/mUsi', function ($matches) use ($self) {
-          return $self->emphasis($matches[1]);
+            return $self->emphasis($matches[1]);
         }, $span);
 
         // Nbsp
         $span = preg_replace('/~/', $this->nbsp(), $span);
 
         // Replacing variables
-        $span = preg_replace_callback('/\|(.+)\|/mUsi', function($match) use ($environment) {
+        $span = preg_replace_callback('/\|(.+)\|/mUsi', function ($match) use ($environment) {
             return $environment->getVariable($match[1]);
         }, $span);
 
@@ -169,101 +183,101 @@ abstract class Span extends Node
     /**
      * Renders the span
      */
-    public function render()
+    public function render() : string
     {
         $environment = $this->parser->getEnvironment();
-        $span = $this->process($this->span);
+        $span        = $this->process($this->span);
 
         // Replacing tokens
         foreach ($this->tokens as $id => $value) {
             switch ($value['type']) {
-            case 'literal':
-                $span = str_replace($id, $this->literal($value['text']), $span);
-                break;
-            case 'reference':
-                // try to resolve by url first
-                $reference = $environment->resolve($value['section'], $value['url']);
+                case 'literal':
+                    $span = str_replace($id, $this->literal($value['text']), $span);
+                    break;
+                case 'reference':
+                    // try to resolve by url first
+                    $reference = $environment->resolve($value['section'], $value['url']);
 
-                if ($reference) {
-                    $link = $this->reference($reference, $value);
+                    if ($reference) {
+                        $link = $this->reference($reference, $value);
 
-                // try to resolve by text second
-                } else {
-                    $reference = $environment->resolveByText($value['section'], $value['text']);
-
-                    // if we resolved by text set the anchor to the url
-                    $value['anchor'] = $value['url'];
-
-                    $link = $this->reference($reference, $value);
-                }
-
-                $span = str_replace($id, $link, $span);
-                break;
-            case 'link':
-                if ($value['url']) {
-                    if ($environment->useRelativeUrls()) {
-                        $url = $environment->relativeUrl($value['url']);
+                    // try to resolve by text second
                     } else {
-                        $url = $value['url'];
-                    }
-                } elseif ($value['anchor']) {
-                    if ($link = $environment->getLink($value['link'])) {
-                        $url = $link;
-                    } else {
-                        $url = '#'.$value['anchor'];
-                    }
-                } else {
-                    $url = $environment->getLink($value['link']);
-                }
+                        $reference = $environment->resolveByText($value['section'], $value['text']);
 
-                $link = $this->link($url, $this->process($value['link']));
-                $span = str_replace($id, $link, $span);
-                break;
+                        // if we resolved by text set the anchor to the url
+                        $value['anchor'] = $value['url'];
+
+                        $link = $this->reference($reference, $value);
+                    }
+
+                    $span = str_replace($id, $link, $span);
+                    break;
+                case 'link':
+                    if ($value['url']) {
+                        if ($environment->useRelativeUrls()) {
+                            $url = $environment->relativeUrl($value['url']);
+                        } else {
+                            $url = $value['url'];
+                        }
+                    } elseif ($value['anchor']) {
+                        if ($link = $environment->getLink($value['link'])) {
+                            $url = $link;
+                        } else {
+                            $url = '#' . $value['anchor'];
+                        }
+                    } else {
+                        $url = $environment->getLink($value['link']);
+                    }
+
+                    $link = $this->link($url, $this->process($value['link']));
+                    $span = str_replace($id, $link, $span);
+                    break;
             }
         }
 
         return $span;
     }
 
-    public function emphasis($text)
+    public function emphasis(string $text) : string
     {
         return $text;
     }
 
-    public function strongEmphasis($text)
+    public function strongEmphasis(string $text) : string
     {
         return $text;
     }
 
-    public function nbsp()
+    public function nbsp() : string
     {
         return ' ';
     }
 
-    public function br()
+    public function br() : string
     {
         return "\n";
     }
 
-    public function literal($text)
+    public function literal(string $text) : string
     {
         return $text;
     }
 
-    public function link($url, $title)
+    public function link(string $url, string $title) : string
     {
-        return $title.' ('.$url.')';
+        return $title . ' (' . $url . ')';
     }
 
-    public function escape($span)
+    public function escape(string $span) : string
     {
         return $span;
     }
 
-    public function reference($reference, $value)
+    public function reference(array $reference, array $value) : string
     {
         if ($reference) {
-            $text = $value['text'] ?: (isset($reference['title']) ? $reference['title'] : '');
+            $text = $value['text'] ?: ($reference['title'] ?? '');
             $link = $this->link($url, trim($text));
         } else {
             $link = $this->link('#', '(unresolved reference)');

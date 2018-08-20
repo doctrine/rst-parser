@@ -1,25 +1,28 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Gregwar\RST\HTML\Nodes;
 
 use Gregwar\RST\Nodes\ListNode as Base;
 
 class ListNode extends Base
 {
-    protected function createElement($text, $prefix)
+    protected function createElement(string $text, string $prefix) : string
     {
         $class = '';
-        if ($prefix == '-') {
+
+        if ($prefix === '-') {
             $class = ' class="dash"';
         }
 
         return '<li' . $class . '>' . $text . '</li>';
     }
 
-    protected function createList($ordered)
+    protected function createList(bool $ordered) : array
     {
         $keyword = $ordered ? 'ol' : 'ul';
 
-        return array('<'.$keyword.'>', '</'.$keyword.'>');
+        return ['<' . $keyword . '>', '</' . $keyword . '>'];
     }
 }

@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Gregwar\RST\Directives;
 
-use Gregwar\RST\Span;
-use Gregwar\RST\Parser;
 use Gregwar\RST\Directive;
+use Gregwar\RST\Parser;
 
 /**
  * The Replace directive will set the variables for the spans
@@ -13,7 +14,7 @@ use Gregwar\RST\Directive;
  */
 class Replace extends Directive
 {
-    public function getName()
+    public function getName() : string
     {
         return 'replace';
     }

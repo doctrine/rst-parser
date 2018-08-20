@@ -1,16 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Gregwar\RST\HTML\Nodes;
 
 use Gregwar\RST\Nodes\TableNode as Base;
 
 class TableNode extends Base
 {
-    public function render()
+    public function render() : string
     {
         $html = '<table class="table table-bordered">';
-        foreach ($this->data as $k=>&$row) {
-            if (!$row) {
+        foreach ($this->data as $k => &$row) {
+            if (! $row) {
                 continue;
             }
 

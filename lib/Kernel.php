@@ -1,23 +1,22 @@
 <?php
 
-namespace Gregwar\RST;
+declare(strict_types=1);
 
-use Gregwar\RST\Builder;
-use Gregwar\RST\Document;
+namespace Gregwar\RST;
 
 abstract class Kernel
 {
     /**
      * Get the name of the kernel
      */
-    abstract function getName();
+    abstract function getName() : string;
 
     /**
      * Gets the class for the given name
      */
     public function getClass($name)
     {
-        return 'Gregwar\RST\\'.$this->getName().'\\'.$name;
+        return 'Gregwar\RST\\' . $this->getName() . '\\' . $name;
     }
 
     /**
@@ -39,15 +38,15 @@ abstract class Kernel
      */
     public function getDirectives()
     {
-        return array(
-            new Directives\Dummy,
-            new Directives\CodeBlock,
-            new Directives\Raw,
-            new Directives\Replace,
-            new Directives\Toctree,
-            new Directives\Document,
-            new Directives\RedirectionTitle,
-        );
+        return [
+            new Directives\Dummy(),
+            new Directives\CodeBlock(),
+            new Directives\Raw(),
+            new Directives\Replace(),
+            new Directives\Toctree(),
+            new Directives\Document(),
+            new Directives\RedirectionTitle(),
+        ];
     }
 
     /**
@@ -55,23 +54,23 @@ abstract class Kernel
      */
     public function getReferences()
     {
-        return array(
-            new References\Doc,
+        return [
+            new References\Doc(),
             new References\Doc('ref'),
-        );
+        ];
     }
 
     /**
      * Allowing the kernel to tweak document after the build
      */
-    public function postParse(Document $document)
+    public function postParse(Document $document) : void
     {
     }
 
     /**
      * Allowing the kernel to tweak the builder
      */
-    public function initBuilder(Builder $builder)
+    public function initBuilder(Builder $builder) : void
     {
     }
 

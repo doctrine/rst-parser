@@ -1,11 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Gregwar\RST\LaTeX\Directives;
 
-use Gregwar\RST\Parser;
 use Gregwar\RST\Directive;
-
-use Gregwar\RST\Nodes\RawNode;
+use Gregwar\RST\Parser;
 
 /**
  * Adds a stylesheet to a document, example:
@@ -14,12 +14,12 @@ use Gregwar\RST\Nodes\RawNode;
  */
 class Stylesheet extends Directive
 {
-    public function getName()
+    public function getName() : string
     {
         return 'stylesheet';
     }
 
-    public function process(Parser $parser, $node, $variable, $data, array $options)
+    public function process(Parser $parser, $node, $variable, $data, array $options) : void
     {
     }
 }

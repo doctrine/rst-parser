@@ -1,23 +1,37 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Gregwar\RST\Directives;
 
 use Gregwar\RST\Directive;
 use Gregwar\RST\Environment;
 use Gregwar\RST\Parser;
+use function array_merge;
+use function count;
+use function explode;
+use function glob;
+use function implode;
+use function is_dir;
+use function realpath;
+use function rtrim;
+use function str_repeat;
+use function str_replace;
+use function strpos;
+use function trim;
 
 class Toctree extends Directive
 {
-    public function getName()
+    public function getName() : string
     {
         return 'toctree';
     }
 
-    public function process(Parser $parser, $node, $variable, $data, array $options)
+    public function process(Parser $parser, $node, $variable, $data, array $options) : void
     {
         $environment = $parser->getEnvironment();
-        $kernel = $parser->getKernel();
-        $files = array();
+        $kernel      = $parser->getKernel();
+        $files       = [];
 
         foreach (explode("\n", $node->getValue()) as $file) {
             $file = trim($file);
@@ -33,7 +47,6 @@ class Toctree extends Directive
                     $environment->addDependency($dependency);
                     $files[] = $dependency;
                 }
-
             } elseif ($file) {
                 $dependency = $this->getDependencyFromFile($environment, $file);
 
@@ -46,16 +59,16 @@ class Toctree extends Directive
         $document->addNode($kernel->build('Nodes\TocNode', $files, $environment, $options));
     }
 
-    public function wantCode()
+    public function wantCode() : bool
     {
         return true;
     }
 
-    private function globSearch(Environment $environment, string $globPattern)
+    private function globSearch(Environment $environment, string $globPattern) : array
     {
         $currentFilePath = realpath(rtrim($environment->absoluteRelativePath(''), '/'));
-        $rootDocPath = rtrim(str_replace($environment->getDirName(), '', $currentFilePath), '/');
-        $globPatternPath = $rootDocPath.'/'.$globPattern;
+        $rootDocPath     = rtrim(str_replace($environment->getDirName(), '', $currentFilePath), '/');
+        $globPatternPath = $rootDocPath . '/' . $globPattern;
 
         $allFiles = [];
 
@@ -64,16 +77,16 @@ class Toctree extends Directive
         foreach ($files as $file) {
             if (is_dir($file)) {
                 // remove the root directory so it is a relative path from the root
-                $relativePath = str_replace($rootDocPath.'/', '', $file);
+                $relativePath = str_replace($rootDocPath . '/', '', $file);
 
                 // recursively search in this directory
-                $dirFiles = $this->globSearch($environment, $relativePath.'/*');
+                $dirFiles = $this->globSearch($environment, $relativePath . '/*');
 
                 $allFiles = array_merge($allFiles, $dirFiles);
             } else {
                 // Trim the root path and the .rst extension. This is what the
                 // RST parser requires to add a dependency.
-                $file = str_replace([$rootDocPath.'/', '.rst'], '', $file);
+                $file = str_replace([$rootDocPath . '/', '.rst'], '', $file);
 
                 $allFiles[] = $file;
             }
@@ -82,7 +95,7 @@ class Toctree extends Directive
         return $allFiles;
     }
 
-    private function getDependencyFromFile(Environment $environment, string $file)
+    private function getDependencyFromFile(Environment $environment, string $file) : string
     {
         $url = $environment->getUrl();
 
@@ -90,12 +103,12 @@ class Toctree extends Directive
 
         if (count($e) > 1) {
             unset($e[count($e) - 1]);
-            $folderPath = implode('/', $e).'/';
+            $folderPath = implode('/', $e) . '/';
 
             if (strpos($file, $folderPath) !== false) {
                 $file = str_replace($folderPath, '', $file);
             } else {
-                $file = str_repeat('../', count($e)).$file;
+                $file = str_repeat('../', count($e)) . $file;
             }
         }
 

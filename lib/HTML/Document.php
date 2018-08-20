@@ -1,14 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Gregwar\RST\HTML;
 
 use Gregwar\RST\Document as Base;
 
 use Gregwar\RST\Nodes\RawNode;
+use function htmlspecialchars;
 
 class Document extends Base
 {
-    public function render()
+    public function render() : string
     {
         $document = '';
         foreach ($this->nodes as $node) {
@@ -18,15 +21,15 @@ class Document extends Base
         return $document;
     }
 
-    public function renderDocument()
+    public function renderDocument() : string
     {
-        $document = "<!DOCTYPE html>\n";
+        $document  = "<!DOCTYPE html>\n";
         $document .= "<html>\n";
 
         $document .= "<head>\n";
         $document .= "<meta charset=\"utf-8\" />\n";
         foreach ($this->headerNodes as $node) {
-            $document .= $node->render()."\n";
+            $document .= $node->render() . "\n";
         }
         $document .= "</head>\n";
 
@@ -38,27 +41,27 @@ class Document extends Base
         return $document;
     }
 
-    public function addCss($css)
+    public function addCss($css) : void
     {
         $environment = $this->getEnvironment();
-        $css = $environment->relativeUrl($css);
+        $css         = $environment->relativeUrl($css);
 
-        $this->addHeaderNode(new RawNode('<link rel="stylesheet" type="text/css" href="'.htmlspecialchars($css).'" />'));
+        $this->addHeaderNode(new RawNode('<link rel="stylesheet" type="text/css" href="' . htmlspecialchars($css) . '" />'));
     }
 
-    public function addJs($js)
+    public function addJs($js) : void
     {
         $environment = $this->getEnvironment();
-        $js = $environment->relativeUrl($js);
+        $js          = $environment->relativeUrl($js);
 
-        $this->addHeaderNode(new RawNode('<script type="text/javascript" src="'.htmlspecialchars($js).'"></script>'));
+        $this->addHeaderNode(new RawNode('<script type="text/javascript" src="' . htmlspecialchars($js) . '"></script>'));
     }
 
-    public function addFavicon($url = '/favicon.ico')
+    public function addFavicon($url = '/favicon.ico') : void
     {
         $environment = $this->getEnvironment();
-        $url = $environment->relativeUrl($url);
+        $url         = $environment->relativeUrl($url);
 
-        $this->addHeaderNode(new RawNode('<link rel="icon" type="image/x-icon" href="'.htmlspecialchars($url).'" />'));
+        $this->addHeaderNode(new RawNode('<link rel="icon" type="image/x-icon" href="' . htmlspecialchars($url) . '" />'));
     }
 }

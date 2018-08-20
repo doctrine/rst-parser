@@ -1,62 +1,67 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Gregwar\RST\LaTeX;
 
 use Gregwar\RST\Span as Base;
+use function strlen;
+use function substr;
+use function trim;
 
 class Span extends Base
 {
-    public function emphasis($text)
+    public function emphasis(string $text) : string
     {
-        return '\textit{'.$text.'}';
+        return '\textit{' . $text . '}';
     }
 
-    public function strongEmphasis($text)
+    public function strongEmphasis(string $text) : string
     {
-        return '\textbf{'.$text.'}';
+        return '\textbf{' . $text . '}';
     }
 
-    public function nbsp()
+    public function nbsp() : string
     {
         return '~';
     }
 
-    public function br()
+    public function br() : string
     {
         return "\\\\\\\\\n";
     }
 
-    public function literal($text)
+    public function literal(string $text) : string
     {
-        return '\verb|'.$text.'|';
+        return '\verb|' . $text . '|';
     }
 
-    public function link($url, $title, $refDoc = '')
+    public function link(string $url, string $title, string $refDoc = '') : string
     {
-        if (strlen($url) && $url[0] == '#') {
-            if (!$refDoc) {
+        if (strlen($url) && $url[0] === '#') {
+            if (! $refDoc) {
                 $refDoc = $this->environment->getUrl();
             }
             $url = substr($url, 1);
-            $url = $url ? '#'.$url : '';
-            return '\ref{'.$refDoc.$url.'}';
-        } else {
-            return '\href{'.$url.'}{'.$title.'}';
+            $url = $url ? '#' . $url : '';
+            return '\ref{' . $refDoc . $url . '}';
         }
+
+        return '\href{' . $url . '}{' . $title . '}';
     }
 
-    public function escape($span)
+    public function escape(string $span) : string
     {
         return $span;
     }
 
-    public function reference($reference, $value)
+    public function reference(array $reference, array $value) : string
     {
         if ($reference) {
-            $file = $reference['file'];
-            $text = $value['text'] ?: (isset($reference['title']) ? $reference['title'] : '');
+            $file   = $reference['file'];
+            $text   = $value['text'] ?: ($reference['title'] ?? '');
             $refDoc = $file;
-            $url = '#';
+            $url    = '#';
             if ($value['anchor']) {
                 $url .= $value['anchor'];
             }

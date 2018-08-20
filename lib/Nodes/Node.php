@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Gregwar\RST\Nodes;
 
 abstract class Node
@@ -16,12 +18,12 @@ abstract class Node
         return $this->value;
     }
 
-    public function setValue($value)
+    public function setValue($value) : void
     {
         $this->value = $value;
     }
 
-    abstract public function render();
+    abstract public function render() : string;
 
     public function __toString()
     {

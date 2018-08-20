@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Gregwar\RST;
 
 /**
@@ -20,7 +22,7 @@ abstract class Directive
     /**
      * Get the directive name
      */
-    abstract public function getName();
+    abstract public function getName() : string;
 
     /**
      * This is the function called by the parser to process the directive, it can be overloaded
@@ -34,7 +36,7 @@ abstract class Directive
      * @param $data the data of the directive (following ::)
      * @param $ptions the array of options for this directive
      */
-    public function process(Parser $parser, $node, $variable, $data, array $options)
+    public function process(Parser $parser, $node, $variable, $data, array $options) : void
     {
         $document = $parser->getDocument();
 
@@ -49,9 +51,11 @@ abstract class Directive
             }
         }
 
-        if ($node) {
-            $document->addNode($node);
+        if (! $node) {
+            return;
         }
+
+        $document->addNode($node);
     }
 
     /**
@@ -73,14 +77,14 @@ abstract class Directive
      *
      * The arguments are the same that process
      */
-    public function processAction(Parser $parser, $variabe, $data, array $options)
+    public function processAction(Parser $parser, $variabe, $data, array $options) : void
     {
     }
 
     /**
      * Called at the end of the parsing to finalize the document (add something or tweak nodes)
      */
-    public function finalize(Document &$document)
+    public function finalize(Document &$document) : void
     {
     }
 

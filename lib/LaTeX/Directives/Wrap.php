@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Gregwar\RST\LaTeX\Directives;
 
 use Gregwar\RST\Parser;
 use Gregwar\RST\SubDirective;
-use Gregwar\RST\Nodes\WrapperNode;
 
 /**
  * Wraps a sub document in a div with a given class
@@ -18,7 +19,7 @@ class Wrap extends SubDirective
         $this->class = $class;
     }
 
-    public function getName()
+    public function getName() : string
     {
         return $this->class;
     }

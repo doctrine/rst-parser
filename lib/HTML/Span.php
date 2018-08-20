@@ -1,49 +1,53 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Gregwar\RST\HTML;
 
 use Gregwar\RST\Span as Base;
+use function htmlspecialchars;
+use function trim;
 
 class Span extends Base
 {
-    public function emphasis($text)
+    public function emphasis(string $text) : string
     {
-        return '<em>'.$text.'</em>';
+        return '<em>' . $text . '</em>';
     }
 
-    public function strongEmphasis($text)
+    public function strongEmphasis(string $text) : string
     {
-        return '<strong>'.$text.'</strong>';
+        return '<strong>' . $text . '</strong>';
     }
 
-    public function nbsp()
+    public function nbsp() : string
     {
         return '&nbsp;';
     }
 
-    public function br()
+    public function br() : string
     {
         return '<br />';
     }
 
-    public function literal($text)
+    public function literal(string $text) : string
     {
-        return '<code>'.$text.'</code>';
+        return '<code>' . $text . '</code>';
     }
 
-    public function link($url, $title)
+    public function link(string $url, string $title) : string
     {
-        return '<a href="'.htmlspecialchars($url).'">'.$title.'</a>';
+        return '<a href="' . htmlspecialchars($url) . '">' . $title . '</a>';
     }
 
-    public function escape($span)
+    public function escape(string $span) : string
     {
         return htmlspecialchars($span);
     }
 
-    public function reference($reference, $value)
+    public function reference(array $reference, array $value) : string
     {
-        $text = $value['text'] ?: (isset($reference['title']) ? $reference['title'] : '');
+        $text = $value['text'] ?: ($reference['title'] ?? '');
         $text = trim($text);
 
         // reference to another document
@@ -60,7 +64,7 @@ class Span extends Base
 
             $link = $this->link($url, $text);
         } else {
-            $link = $this->link('#', $text.' (unresolved reference)');
+            $link = $this->link('#', $text . ' (unresolved reference)');
         }
 
         return $link;

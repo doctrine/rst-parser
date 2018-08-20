@@ -1,11 +1,13 @@
 <?php
 
-include('../../autoload.php');
+declare(strict_types=1);
 
-use Gregwar\RST\Parser;
+include '../../autoload.php';
+
 use Gregwar\RST\LaTeX\Kernel;
+use Gregwar\RST\Parser;
 
-$parser = new Parser(null, new Kernel);
+$parser   = new Parser(null, new Kernel());
 $document = $parser->parse(file_get_contents('document.rst'));
 
 echo $document->renderDocument();

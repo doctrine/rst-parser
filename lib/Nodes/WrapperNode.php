@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Gregwar\RST\Nodes;
 
 class WrapperNode extends Node
@@ -10,12 +12,12 @@ class WrapperNode extends Node
 
     public function __construct($node, $before = '', $after = '')
     {
-        $this->node = $node;
+        $this->node   = $node;
         $this->before = $before;
-        $this->after = $after;
+        $this->after  = $after;
     }
 
-    public function render()
+    public function render() : string
     {
         $contents = $this->node ? $this->node->render() : '';
 

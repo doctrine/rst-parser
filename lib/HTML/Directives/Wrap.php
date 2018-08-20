@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Gregwar\RST\HTML\Directives;
 
+use Gregwar\RST\Nodes\WrapperNode;
 use Gregwar\RST\Parser;
 use Gregwar\RST\SubDirective;
-use Gregwar\RST\Nodes\WrapperNode;
+use function uniqid;
 
 /**
  * Wraps a sub document in a div with a given class
@@ -14,13 +17,13 @@ class Wrap extends SubDirective
     protected $class;
     protected $uniqid;
 
-    public function __construct($class, $uniqid=false)
+    public function __construct($class, $uniqid = false)
     {
-        $this->class = $class;
+        $this->class  = $class;
         $this->uniqid = $uniqid;
     }
 
-    public function getName()
+    public function getName() : string
     {
         return $this->class;
     }
@@ -29,10 +32,10 @@ class Wrap extends SubDirective
     {
         $class = $this->class;
         if ($this->uniqid) {
-            $id = ' id="'.uniqid($this->class).'"';
+            $id = ' id="' . uniqid($this->class) . '"';
         } else {
             $id = '';
         }
-        return new WrapperNode($document, '<div class="'.$class.'"'.$id.'>', '</div>');
+        return new WrapperNode($document, '<div class="' . $class . '"' . $id . '>', '</div>');
     }
 }

@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Gregwar\RST\References;
 
-use Gregwar\RST\Reference;
 use Gregwar\RST\Environment;
+use Gregwar\RST\Reference;
+use function trim;
 
 class Doc extends Reference
 {
@@ -14,15 +17,15 @@ class Doc extends Reference
         $this->name = $name;
     }
 
-    public function getName()
+    public function getName() : string
     {
         return $this->name;
     }
 
-    public function resolve(Environment $environment, $data)
+    public function resolve(Environment $environment, $data) : ?array
     {
         $metas = $environment->getMetas();
-        $file = $environment->canonicalUrl($data);
+        $file  = $environment->canonicalUrl($data);
 
         if ($metas) {
             $entry = $metas->get($file);
@@ -30,19 +33,19 @@ class Doc extends Reference
             // only call relativeUrl() if a document was found
             // so we can later try to link to an anchor in this document
             if ($entry['url']) {
-                $entry['url'] = $environment->relativeUrl('/'.$entry['url']);
+                $entry['url'] = $environment->relativeUrl('/' . $entry['url']);
             }
         } else {
-            $entry = array(
+            $entry = [
                 'title' => '(unresolved)',
-                'url' => '#'
-            );
+                'url' => '#',
+            ];
         }
 
         return $entry;
     }
 
-    public function resolveByText(Environment $environment, $text)
+    public function resolveByText(Environment $environment, $text) : array
     {
         $text = trim($text);
 
@@ -70,24 +73,24 @@ class Doc extends Reference
             // only call relativeUrl() if a document was found
             // so we can later try to link to an anchor in this document
             if ($entry['url']) {
-                $entry['url'] = $environment->relativeUrl('/'.$entry['url']);
+                $entry['url'] = $environment->relativeUrl('/' . $entry['url']);
             }
         } else {
-            $entry = array(
+            $entry = [
                 'title' => '(unresolved)',
-                'url' => '#'
-            );
+                'url' => '#',
+            ];
         }
 
         return $entry;
     }
 
-    public function found(Environment $environment, $data)
+    public function found(Environment $environment, $data) : void
     {
         $environment->addDependency($data);
     }
 
-    private function findEntryByText(array $titles, $text)
+    private function findEntryByText(array $titles, string $text) : bool
     {
         foreach ($titles as $title) {
             if ($title[0] === $text) {

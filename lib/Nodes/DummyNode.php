@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Gregwar\RST\Nodes;
 
 class DummyNode extends Node
@@ -11,7 +13,7 @@ class DummyNode extends Node
         $this->data = $data;
     }
 
-    public function render()
+    public function render() : string
     {
         return '';
     }

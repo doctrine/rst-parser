@@ -518,6 +518,7 @@ class Environment
 
         $this->currentTitleLevel++;
         $this->titleLetters[$this->currentTitleLevel] = $letter;
+
         return $this->currentTitleLevel;
     }
 
