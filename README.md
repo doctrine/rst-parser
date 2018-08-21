@@ -1,7 +1,6 @@
 # RST
 
-[![Build status](https://travis-ci.org/Gregwar/RST.svg?branch=master)](https://travis-ci.org/Gregwar/RST)
-[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=YUXRLWHQSWS6L)
+[![Build status](https://travis-ci.org/doctrine/rst-parser.svg?branch=master)](https://travis-ci.org/Gregwar/RST)
 
 PHP library to parse reStructuredText document
 
@@ -111,6 +110,10 @@ You can register your directive by directly calling `registerDirective()` on you
 Else, you will have to also create your own kernel by extending the `Kernel` class
 and adding your own logic to define extra directives, see `Kernel.php` for more information.
 Then, pass the kernel when constructing the `Parser` or the `Builder`
+
+## Attribution
+
+This repository was forked from [Gregwar\RST](https://github.com/Gregwar/RST).
 
 ## License
 
