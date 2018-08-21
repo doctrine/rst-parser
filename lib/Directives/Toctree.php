@@ -6,6 +6,7 @@ namespace Gregwar\RST\Directives;
 
 use Gregwar\RST\Directive;
 use Gregwar\RST\Environment;
+use Gregwar\RST\Nodes\Node;
 use Gregwar\RST\Parser;
 use function array_merge;
 use function count;
@@ -27,7 +28,10 @@ class Toctree extends Directive
         return 'toctree';
     }
 
-    public function process(Parser $parser, $node, $variable, $data, array $options) : void
+    /**
+     * @param string[] $options
+     */
+    public function process(Parser $parser, ?Node $node, string $variable, string $data, array $options) : void
     {
         $environment = $parser->getEnvironment();
         $kernel      = $parser->getKernel();
@@ -47,7 +51,7 @@ class Toctree extends Directive
                     $environment->addDependency($dependency);
                     $files[] = $dependency;
                 }
-            } elseif ($file) {
+            } elseif ($file !== '') {
                 $dependency = $this->getDependencyFromFile($environment, $file);
 
                 $environment->addDependency($dependency);
@@ -64,6 +68,9 @@ class Toctree extends Directive
         return true;
     }
 
+    /**
+     * @return string[]
+     */
     private function globSearch(Environment $environment, string $globPattern) : array
     {
         $currentFilePath = realpath(rtrim($environment->absoluteRelativePath(''), '/'));

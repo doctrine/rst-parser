@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Gregwar\RST;
 
 use Gregwar\RST\Nodes\CodeNode;
+use Gregwar\RST\Nodes\Node;
 
 /**
  * A directive that parses the sub block and call the processSub that can
@@ -19,9 +20,9 @@ use Gregwar\RST\Nodes\CodeNode;
 abstract class SubDirective extends Directive
 {
     /**
-     * Process a directive that should parces the next node as a "sub" document
+     * @param string[] $options
      */
-    final public function process(Parser $parser, $node, $variable, $data, array $options) : void
+    final public function process(Parser $parser, ?Node $node, string $variable, string $data, array $options) : void
     {
         $subParser = $parser->getSubParser();
 
@@ -33,11 +34,11 @@ abstract class SubDirective extends Directive
 
         $newNode = $this->processSub($parser, $document, $variable, $data, $options);
 
-        if (! $newNode) {
+        if ($newNode === null) {
             return;
         }
 
-        if ($variable) {
+        if ($variable !== '') {
             $parser->getEnvironment()->setVariable($variable, $newNode);
         } else {
             $parser->getDocument()->addNode($newNode);
@@ -45,9 +46,9 @@ abstract class SubDirective extends Directive
     }
 
     /**
-     * Process a sub directive
+     * @param string[] $options
      */
-    public function processSub(Parser $parser, $document, $variable, $data, array $options)
+    public function processSub(Parser $parser, ?Node $document, string $variable, string $data, array $options) : ?Node
     {
         return null;
     }

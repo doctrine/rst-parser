@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Gregwar\RST\LaTeX;
 
+use Gregwar\RST\Directive;
 use Gregwar\RST\Kernel as Base;
 use function array_merge;
 
@@ -14,6 +15,9 @@ class Kernel extends Base
         return 'LaTeX';
     }
 
+    /**
+     * @return Directive[]
+     */
     public function getDirectives() : array
     {
         $directives = parent::getDirectives();

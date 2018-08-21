@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Gregwar\RST\Directives;
 
 use Gregwar\RST\Directive;
+use Gregwar\RST\Nodes\Node;
 use Gregwar\RST\Parser;
 
 /**
@@ -19,7 +20,10 @@ class Replace extends Directive
         return 'replace';
     }
 
-    public function processNode(Parser $parser, $variable, $data, array $options)
+    /**
+     * @param string[] $options
+     */
+    public function processNode(Parser $parser, string $variable, string $data, array $options) : ?Node
     {
         return $parser->createSpan($data);
     }

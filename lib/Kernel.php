@@ -4,39 +4,37 @@ declare(strict_types=1);
 
 namespace Gregwar\RST;
 
+use Gregwar\RST\Nodes\Node;
+use Gregwar\RST\References\Doc;
+
 abstract class Kernel
 {
-    /**
-     * Get the name of the kernel
-     */
-    abstract function getName() : string;
+    abstract protected function getName() : string;
 
-    /**
-     * Gets the class for the given name
-     */
-    public function getClass($name)
+    public function getClass(string $name) : string
     {
         return 'Gregwar\RST\\' . $this->getName() . '\\' . $name;
     }
 
     /**
-     * Create an instance of some class
+     * @param mixed $arg1
+     * @param mixed $arg2
+     * @param mixed $arg3
+     * @param mixed $arg4
+     *
+     * @return Node|Environment
      */
-    public function build($name, $arg1 = null, $arg2 = null, $arg3 = null, $arg4 = null)
+    public function build(string $name, $arg1 = null, $arg2 = null, $arg3 = null, $arg4 = null)
     {
         $class = $this->getClass($name);
 
-        if ($class) {
-            return new $class($arg1, $arg2, $arg3, $arg4);
-        }
-
-        return null;
+        return new $class($arg1, $arg2, $arg3, $arg4);
     }
 
     /**
-     * Gets the available directives
+     * @return Directive[]
      */
-    public function getDirectives()
+    public function getDirectives() : array
     {
         return [
             new Directives\Dummy(),
@@ -50,9 +48,9 @@ abstract class Kernel
     }
 
     /**
-     * Document references
+     * @return Doc[]
      */
-    public function getReferences()
+    public function getReferences() : array
     {
         return [
             new References\Doc(),
@@ -60,24 +58,15 @@ abstract class Kernel
         ];
     }
 
-    /**
-     * Allowing the kernel to tweak document after the build
-     */
     public function postParse(Document $document) : void
     {
     }
 
-    /**
-     * Allowing the kernel to tweak the builder
-     */
     public function initBuilder(Builder $builder) : void
     {
     }
 
-    /**
-     * Get the output files extension
-     */
-    public function getFileExtension()
+    public function getFileExtension() : string
     {
         return 'txt';
     }

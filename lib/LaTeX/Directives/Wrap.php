@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Gregwar\RST\LaTeX\Directives;
 
+use Gregwar\RST\Nodes\Node;
 use Gregwar\RST\Parser;
 use Gregwar\RST\SubDirective;
 
@@ -12,9 +13,10 @@ use Gregwar\RST\SubDirective;
  */
 class Wrap extends SubDirective
 {
+    /** @var string */
     protected $class;
 
-    public function __construct($class)
+    public function __construct(string $class)
     {
         $this->class = $class;
     }
@@ -24,7 +26,10 @@ class Wrap extends SubDirective
         return $this->class;
     }
 
-    public function processSub(Parser $parser, $document, $variable, $data, array $options)
+    /**
+     * @param string[] $options
+     */
+    public function processSub(Parser $parser, ?Node $document, string $variable, string $data, array $options) : ?Node
     {
         return $document;
     }

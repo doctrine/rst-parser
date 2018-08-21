@@ -6,6 +6,7 @@ namespace Gregwar\RST\Directives;
 
 use Gregwar\RST\Directive;
 use Gregwar\RST\Nodes\CodeNode;
+use Gregwar\RST\Nodes\Node;
 use Gregwar\RST\Parser;
 
 /**
@@ -22,9 +23,12 @@ class Raw extends Directive
         return 'raw';
     }
 
-    public function process(Parser $parser, $node, $variable, $data, array $options) : void
+    /**
+     * @param string[] $options
+     */
+    public function process(Parser $parser, ?Node $node, string $variable, string $data, array $options) : void
     {
-        if (! $node) {
+        if ($node === null) {
             return;
         }
 
@@ -34,7 +38,7 @@ class Raw extends Directive
             $node->setRaw(true);
         }
 
-        if ($variable) {
+        if ($variable !== '') {
             $environment = $parser->getEnvironment();
             $environment->setVariable($variable, $node);
         } else {

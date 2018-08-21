@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Gregwar\RST\LaTeX\Directives;
 
 use Gregwar\RST\Directive;
+use Gregwar\RST\Nodes\Node;
 use Gregwar\RST\Parser;
 
 /**
@@ -19,7 +20,10 @@ class Stylesheet extends Directive
         return 'stylesheet';
     }
 
-    public function process(Parser $parser, $node, $variable, $data, array $options) : void
+    /**
+     * @param string[] $options
+     */
+    public function process(Parser $parser, ?Node $node, string $variable, string $data, array $options) : void
     {
     }
 }

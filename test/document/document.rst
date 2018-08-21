@@ -1,7 +1,7 @@
 .. document::
 .. title:: Demo document
 .. stylesheet:: style.css
-.. meta:: 
+.. meta::
     :description: A demo Gregwar/RST document
 
 .. .. this is a comment!
@@ -11,8 +11,8 @@ Gregwar/RST Sandbox
 
 Reference to :doc:`HoHo <some/doc>`
 
-.. note:: 
-    **Note**: 
+.. note::
+    **Note**:
     This is a testing sandbox, if you want to understand how it works, have a
     look to the rst original file
 
@@ -177,10 +177,10 @@ Links can be defined once for all using the trailing ``_``, like this::
     .. _PHP: http://php.net/
 
 Will result in:
-    
+
 PHP_ is a great language
 
-.. _PHP:   http://php.net/   
+.. _PHP:   http://php.net/
 
 #-) Anonymous links
 ~~~~~~~~~~~~~~~~~~~
@@ -203,7 +203,7 @@ You can use the following shortcut::
     I love GitHub__
 
     __ http://www.github.com/
-    
+
 #-) Inline links
 ~~~~~~~~~~~~~~~~
 
@@ -235,7 +235,7 @@ Some anchor section, you can link to it like `this <#anchor>`_
 
 #-) Include
 ~~~~~~~~~~~
-    
+
 .. include:: include.rst
 
 #-) Replace
@@ -248,7 +248,7 @@ You can use the replace directive like this::
     Hello |name| !
 
 Will result in:
-    
+
 .. |name| replace:: bob
 
 Hello |name| !

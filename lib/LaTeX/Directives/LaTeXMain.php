@@ -6,6 +6,7 @@ namespace Gregwar\RST\LaTeX\Directives;
 
 use Gregwar\RST\Directive;
 use Gregwar\RST\LaTeX\Nodes\LaTeXMainNode;
+use Gregwar\RST\Nodes\Node;
 use Gregwar\RST\Parser;
 
 /**
@@ -18,7 +19,10 @@ class LaTeXMain extends Directive
         return 'latex-main';
     }
 
-    public function processNode(Parser $parser, $variable, $data, array $options)
+    /**
+     * @param string[] $options
+     */
+    public function processNode(Parser $parser, string $variable, string $data, array $options) : ?Node
     {
         return new LaTeXMainNode();
     }

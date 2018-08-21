@@ -6,6 +6,7 @@ namespace Gregwar\RST\HTML\Directives;
 
 use Gregwar\RST\Directive;
 use Gregwar\RST\HTML\Nodes\ImageNode;
+use Gregwar\RST\Nodes\Node;
 use Gregwar\RST\Parser;
 
 /**
@@ -23,7 +24,10 @@ class Image extends Directive
         return 'image';
     }
 
-    public function processNode(Parser $parser, $variable, $data, array $options)
+    /**
+     * @param string[] $options
+     */
+    public function processNode(Parser $parser, string $variable, string $data, array $options) : ?Node
     {
         $environment = $parser->getEnvironment();
         $url         = $environment->relativeUrl($data);

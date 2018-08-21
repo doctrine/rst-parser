@@ -45,21 +45,26 @@ class Span extends Base
         return htmlspecialchars($span);
     }
 
+    /**
+     * @param string[] $reference
+     * @param string[] $value
+     */
     public function reference(array $reference, array $value) : string
     {
         $text = $value['text'] ?: ($reference['title'] ?? '');
         $text = trim($text);
 
         // reference to another document
-        if ($reference['url']) {
+        if ($reference['url'] !== null) {
             $url = $reference['url'];
-            if ($value['anchor']) {
+
+            if ($value['anchor'] !== null) {
                 $url .= '#' . $value['anchor'];
             }
             $link = $this->link($url, $text);
 
         // reference to anchor in existing document
-        } elseif ($value['url']) {
+        } elseif ($value['url'] !== null) {
             $url = $this->environment->getLink($value['url']);
 
             $link = $this->link($url, $text);

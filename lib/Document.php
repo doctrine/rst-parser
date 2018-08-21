@@ -14,30 +14,36 @@ use function is_string;
 
 abstract class Document extends Node
 {
+    /** @var Environment */
     protected $environment;
+
+    /** @var Node[] */
     protected $headerNodes = [];
-    protected $nodes       = [];
+
+    /** @var Node[] */
+    protected $nodes = [];
 
     public function __construct(Environment $environment)
     {
+        parent::__construct();
+
         $this->environment = $environment;
     }
 
-    public function getEnvironment()
+    public function getEnvironment() : Environment
     {
         return $this->environment;
     }
 
-    public function renderDocument()
+    public function renderDocument() : string
     {
         return $this->render();
     }
 
     /**
-     * Getting all nodes of the document that satisfies the given
-     * function. If the function is null, all the nodes are returned.
+     * @return Node[]
      */
-    public function getNodes($function = null)
+    public function getNodes(?callable $function = null) : array
     {
         $nodes = [];
 
@@ -56,10 +62,7 @@ abstract class Document extends Node
         return $nodes;
     }
 
-    /**
-     * Gets the main title of the document
-     */
-    public function getTitle()
+    public function getTitle() : ?string
     {
         foreach ($this->nodes as $node) {
             if ($node instanceof TitleNode && $node->getLevel() === 1) {
@@ -71,9 +74,9 @@ abstract class Document extends Node
     }
 
     /**
-     * Get the table of contents of the document
+     * @return string[]
      */
-    public function getTocs()
+    public function getTocs() : array
     {
         $tocs = [];
 
@@ -81,6 +84,7 @@ abstract class Document extends Node
             return $node instanceof TocNode;
         });
 
+        /** @var TocNode $toc */
         foreach ($nodes as $toc) {
             $files = $toc->getFiles();
 
@@ -95,17 +99,9 @@ abstract class Document extends Node
     }
 
     /**
-     * Gets the titles hierarchy in arrays, for instance :
-     *
-     * array(
-     *     array('Main title', array(
-     *         array('Sub title', array()),
-     *         array('Sub title 2', array(),
-     *         array(array('Redirection', 'target'), array(),
-     *     )
-     * )
+     * @return string[][]
      */
-    public function getTitles()
+    public function getTitles() : array
     {
         $titles = [];
         $levels = [&$titles];
@@ -118,7 +114,7 @@ abstract class Document extends Node
             $level       = $node->getLevel();
             $text        = (string) $node->getValue();
             $redirection = $node->getTarget();
-            $value       = $redirection ? [$text, $redirection] : $text;
+            $value       = $redirection !== '' ? [$text, $redirection] : $text;
 
             if (! isset($levels[$level-1])) {
                 continue;
@@ -133,6 +129,9 @@ abstract class Document extends Node
         return $titles;
     }
 
+    /**
+     * @param string|Node $node
+     */
     public function addNode($node) : void
     {
         if (is_string($node)) {
@@ -140,7 +139,7 @@ abstract class Document extends Node
         }
 
         if (! $node instanceof Node) {
-            $this->getEnvironment()->getErrorManager('addNode($node): $node should be a string or a Node');
+            $this->getEnvironment()->getErrorManager()->error('addNode($node): $node should be a string or a Node');
         }
 
         $this->nodes[] = $node;
@@ -156,7 +155,7 @@ abstract class Document extends Node
         $this->headerNodes[] = $node;
     }
 
-    public function __toString()
+    public function __toString() : string
     {
         return $this->render();
     }

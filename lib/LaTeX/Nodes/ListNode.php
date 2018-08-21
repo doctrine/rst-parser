@@ -13,6 +13,9 @@ class ListNode extends Base
         return '\item ' . $text;
     }
 
+    /**
+     * @return string[]
+     */
     protected function createList(bool $ordered) : array
     {
         $keyword = $ordered ? 'enumerate': 'itemize';

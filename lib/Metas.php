@@ -6,28 +6,38 @@ namespace Gregwar\RST;
 
 class Metas
 {
+    /** @var string[][] */
     protected $entries = [];
+
+    /** @var string[] */
     protected $parents = [];
 
-    public function __construct($entries)
+    /**
+     * @param string[][] $entries
+     */
+    public function __construct(?array $entries)
     {
-        if (! $entries) {
+        if ($entries === null) {
             return;
         }
 
         $this->entries = $entries;
     }
 
-    public function getAll()
+    /**
+     * @return string[][]
+     */
+    public function getAll() : array
     {
         return $this->entries;
     }
 
     /**
-     * Sets the meta for url, giving the title, the modification time and
-     * the dependencies list
+     * @param string[] $titles
+     * @param string[] $tocs
+     * @param string[] $depends
      */
-    public function set($file, $url, $title, $titles, $tocs, $ctime, array $depends) : void
+    public function set(string $file, string $url, string $title, array $titles, array $tocs, int $ctime, array $depends) : void
     {
         foreach ($tocs as $toc) {
             foreach ($toc as $child) {
@@ -58,9 +68,9 @@ class Metas
     }
 
     /**
-     * Gets the meta for a given document reference url
+     * @return string[]
      */
-    public function get($url)
+    public function get(string $url) : ?array
     {
         if (isset($this->entries[$url])) {
             return $this->entries[$url];

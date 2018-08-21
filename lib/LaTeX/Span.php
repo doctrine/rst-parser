@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Gregwar\RST\LaTeX;
 
 use Gregwar\RST\Span as Base;
-use function strlen;
 use function substr;
 use function trim;
 
@@ -38,12 +37,14 @@ class Span extends Base
 
     public function link(string $url, string $title, string $refDoc = '') : string
     {
-        if (strlen($url) && $url[0] === '#') {
-            if (! $refDoc) {
+        if ($url !== '' && $url[0] === '#') {
+            if ($refDoc === '') {
                 $refDoc = $this->environment->getUrl();
             }
+
             $url = substr($url, 1);
-            $url = $url ? '#' . $url : '';
+            $url = $url !== '' ? '#' . $url : '';
+
             return '\ref{' . $refDoc . $url . '}';
         }
 
@@ -55,16 +56,22 @@ class Span extends Base
         return $span;
     }
 
+    /**
+     * @param string[] $reference
+     * @param string[] $value
+     */
     public function reference(array $reference, array $value) : string
     {
-        if ($reference) {
+        if ($reference !== []) {
             $file   = $reference['file'];
             $text   = $value['text'] ?: ($reference['title'] ?? '');
             $refDoc = $file;
             $url    = '#';
-            if ($value['anchor']) {
+
+            if ($value['anchor'] !== '') {
                 $url .= $value['anchor'];
             }
+
             $link = $this->link($url, trim($text), $refDoc);
         } else {
             $link = $this->link('#', '(unresolved reference)');

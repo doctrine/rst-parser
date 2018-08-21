@@ -18,9 +18,13 @@ class Url extends Directive
         return 'url';
     }
 
-    public function processAction(Parser $parser, $variabe, $data, array $options) : void
+    /**
+     * @param string[] $options
+     */
+    public function processAction(Parser $parser, string $variable, string $data, array $options) : void
     {
         $environment = $parser->getEnvironment();
+
         $environment->setUrl(trim($data));
     }
 }

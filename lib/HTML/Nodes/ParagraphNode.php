@@ -11,9 +11,9 @@ class ParagraphNode extends Base
 {
     public function render() : string
     {
-        $text = (string) $this->value;
+        $text = trim((string) $this->value);
 
-        if (trim($text)) {
+        if ($text !== '') {
             return '<p>' . $text . '</p>';
         }
 

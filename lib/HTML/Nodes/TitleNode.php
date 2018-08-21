@@ -11,7 +11,7 @@ class TitleNode extends Base
 {
     public function render() : string
     {
-        $anchor = Environment::slugify($this->value);
+        $anchor = Environment::slugify((string) $this->value);
 
         return '<a id="' . $anchor . '"></a><h' . $this->level . '>' . $this->value . '</h' . $this->level . '>';
     }

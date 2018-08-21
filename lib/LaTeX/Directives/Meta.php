@@ -6,6 +6,7 @@ namespace Gregwar\RST\LaTeX\Directives;
 
 use Gregwar\RST\Directive;
 use Gregwar\RST\LaTeX\Nodes\MetaNode;
+use Gregwar\RST\Nodes\Node;
 use Gregwar\RST\Parser;
 
 /**
@@ -21,7 +22,10 @@ class Meta extends Directive
         return 'meta';
     }
 
-    public function process(Parser $parser, $node, $variable, $data, array $options) : void
+    /**
+     * @param string[] $options
+     */
+    public function process(Parser $parser, ?Node $node, string $variable, string $data, array $options) : void
     {
         $document = $parser->getDocument();
 
@@ -30,7 +34,7 @@ class Meta extends Directive
             $document->addHeaderNode($meta);
         }
 
-        if (! $node) {
+        if ($node === null) {
             return;
         }
 

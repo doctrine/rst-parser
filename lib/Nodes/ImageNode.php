@@ -6,11 +6,19 @@ namespace Gregwar\RST\Nodes;
 
 abstract class ImageNode extends Node
 {
+    /** @var string */
     protected $url;
+
+    /** @var string[] */
     protected $options;
 
-    public function __construct($url, array $options = [])
+    /**
+     * @param string[] $options
+     */
+    public function __construct(string $url, array $options = [])
     {
+        parent::__construct();
+
         $this->url     = $url;
         $this->options = $options;
     }

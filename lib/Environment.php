@@ -1,160 +1,184 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Gregwar\RST;
+
+use function array_pop;
+use function array_shift;
+use function basename;
+use function count;
+use function dirname;
+use function explode;
+use function iconv;
+use function implode;
+use function in_array;
+use function preg_match;
+use function preg_replace;
+use function strtolower;
+use function substr;
+use function trim;
 
 class Environment
 {
-    /**
-     * Letters used as separators for titles and horizontal line
-     */
-    public static $letters = array('=', '-', '~', '*', '+', '^', '"');
+    /** @var string[] */
+    public static $letters = ['=', '-', '~', '*', '+', '^', '"'];
 
-    // Error manager
+    /** @var ErrorManager */
     public $errorManager = null;
 
-    // Table letters
+    /** @var string */
     public static $tableLetter = '=';
+
+    /** @var string */
     public static $prettyTableLetter = '-';
+
+    /** @var string */
     public static $prettyTableHeader = '=';
+
+    /** @var string */
     public static $prettyTableJoint = '+';
 
-    // Title letter for each levels
+    /** @var int */
     protected $currentTitleLevel = 0;
-    protected $titleLetters = array();
 
-    // Current file name
-    protected $currentFileName = null;
+    /** @var string[] */
+    protected $titleLetters = [];
+
+    /** @var string */
+    protected $currentFileName = '';
+
+    /** @var string */
     protected $currentDirectory = '.';
+
+    /** @var string */
     protected $targetDirectory = '.';
+
+    /** @var null|string */
     protected $url = null;
 
-    // References that can be resolved
-    protected $references = array();
+    /** @var Reference[] */
+    protected $references = [];
 
-    // Metas
-    protected $metas = null;
+    /** @var Metas */
+    protected $metas;
 
-    // Dependencies of this document
-    protected $dependencies = array();
+    /** @var string[] */
+    protected $dependencies = [];
 
-    // Variables of the document
-    protected $variables = array();
+    /** @var string[] */
+    protected $variables = [];
 
-    // Links
-    protected $links = array();
+    /** @var string[] */
+    protected $links = [];
 
-    // Level counters
-    protected $levels = array();
-    protected $counters = array();
+    /** @var int[] */
+    protected $levels = [];
 
-    // Enable relative URLs
+    /** @var int[] */
+    protected $counters = [];
+
+    /** @var bool */
     protected $relativeUrls = true;
 
-    // Anonymous links stack
-    protected $anonymous = array();
+    /** @var string[] */
+    protected $anonymous = [];
 
     public function __construct()
     {
-        $this->errorManager = new ErrorManager;
+        $this->errorManager = new ErrorManager();
 
         $this->reset();
     }
 
-    /**
-     * Puts the environment in a clean state for a new parse, like title level order.
-     */
-    public function reset()
+    public function reset() : void
     {
-        $this->titleLetters = array();
+        $this->titleLetters      = [];
         $this->currentTitleLevel = 0;
-        $this->levels = array();
-        $this->counters = array();
+        $this->levels            = [];
+        $this->counters          = [];
 
-        for ($level=0; $level<16; $level++) {
-            $this->levels[$level] = 1;
+        for ($level = 0; $level < 16; $level++) {
+            $this->levels[$level]   = 1;
             $this->counters[$level] = 0;
         }
     }
 
-    public function getErrorManager()
+    public function getErrorManager() : ErrorManager
     {
         return $this->errorManager;
     }
 
-    public function setErrorManager(ErrorManager $errorManager)
+    public function setErrorManager(ErrorManager $errorManager) : void
     {
         $this->errorManager = $errorManager;
     }
 
-    public function setMetas($metas)
+    public function setMetas(Metas $metas) : void
     {
         $this->metas = $metas;
     }
 
     /**
-     * Get my parent metas
+     * @return null|string[]
      */
-    public function getParent()
+    public function getParent() : ?array
     {
-        if (!$this->currentFileName || !$this->metas) {
+        if ($this->currentFileName === '' || $this->metas === '') {
             return null;
         }
 
         $meta = $this->metas->get($this->currentFileName);
 
-        if (!$meta || !isset($meta['parent'])) {
+        if ($meta === null || ! isset($meta['parent'])) {
             return null;
         }
 
-        $parent = $this->metas->get($meta['parent']);
-
-        if (!$parent) {
-            return null;
-        }
-
-        return $parent;
+        return $this->metas->get($meta['parent']);
     }
 
     /**
-     * Get the docs involving this document
+     * @return null|string[]
      */
-    public function getMyToc()
+    public function getMyToc() : ?array
     {
         $parent = $this->getParent();
 
-        if ($parent) {
-            foreach ($parent['tocs'] as $toc) {
-                if (in_array($this->currentFileName, $toc)) {
-                    $before = array();
-                    $after = $toc;
+        if ($parent === null) {
+            return null;
+        }
 
-                    while ($after) {
-                        $file = array_shift($after);
-                        if ($file == $this->currentFileName) {
-                            return array($before, $after);
-                        }
-                        $before[] = $file;
-                    }
+        foreach ($parent['tocs'] as $toc) {
+            if (! in_array($this->currentFileName, $toc, true)) {
+                continue;
+            }
+
+            $before = [];
+            $after  = $toc;
+
+            while ($after) {
+                $file = array_shift($after);
+
+                if ($file === $this->currentFileName) {
+                    return [$before, $after];
                 }
+
+                $before[] = $file;
             }
         }
 
         return null;
     }
 
-    /**
-     * Registers a new reference
-     */
-    public function registerReference(Reference $reference)
+    public function registerReference(Reference $reference) : void
     {
-        $name = $reference->getName();
-        $this->references[$name] = $reference;
+        $this->references[$reference->getName()] = $reference;
     }
 
     /**
-     * Resolves a reference
+     * @return null|string[]
      */
-    public function resolve($section, $data)
+    public function resolve(string $section, string $data) : ?array
     {
         if (isset($this->references[$section])) {
             $reference = $this->references[$section];
@@ -162,13 +186,15 @@ class Environment
             return $reference->resolve($this, $data);
         }
 
-        $this->errorManager->error('Unknown reference section '.$section);
+        $this->errorManager->error('Unknown reference section ' . $section);
+
+        return null;
     }
 
     /**
-     * Resolves a reference by text
+     * @return null|string[]
      */
-    public function resolveByText($section, $text)
+    public function resolveByText(string $section, string $text) : ?array
     {
         if (isset($this->references[$section])) {
             $reference = $this->references[$section];
@@ -176,68 +202,70 @@ class Environment
             return $reference->resolveByText($this, $text);
         }
 
-        $this->errorManager->error('Unknown reference section '.$section);
+        $this->errorManager->error('Unknown reference section ' . $section);
+
+        return null;
     }
 
-    public function found($section, $data)
+    /**
+     * @return null|string[]
+     */
+    public function found(string $section, string $data) : ?array
     {
         if (isset($this->references[$section])) {
             $reference = $this->references[$section];
 
-            return $reference->found($this, $data);
+            $reference->found($this, $data);
+
+            return null;
         }
 
-        $this->errorManager->error('Unknown reference section '.$section);
+        $this->errorManager->error('Unknown reference section ' . $section);
+
+        return null;
     }
 
     /**
-     * Sets the giving variable to a value
-     *
-     * @param $variable the variable name
-     * @param $value the variable value
+     * @param mixed $value
      */
-    public function setVariable($variable, $value)
+    public function setVariable(string $variable, $value) : void
     {
         $this->variables[$variable] = $value;
     }
 
-    /**
-     * Title level
-     */
-    public function createTitle($level)
+    public function createTitle(int $level) : string
     {
-        for ($currentLevel=0; $currentLevel<16; $currentLevel++) {
-            if ($currentLevel > $level) {
-                $this->levels[$currentLevel] = 1;
-                $this->counters[$currentLevel] = 0;
+        for ($currentLevel = 0; $currentLevel < 16; $currentLevel++) {
+            if ($currentLevel <= $level) {
+                continue;
             }
+
+            $this->levels[$currentLevel]   = 1;
+            $this->counters[$currentLevel] = 0;
         }
 
         $this->levels[$level] = 1;
         $this->counters[$level]++;
-        $token = array('title');
+        $token = ['title'];
 
-        for ($i=1; $i<=$level; $i++) {
+        for ($i = 1; $i <= $level; $i++) {
             $token[] = $this->counters[$i];
         }
 
         return implode('.', $token);
     }
 
-    /**
-     * Get a level number
-     */
-    public function getNumber($level)
+    public function getNumber(int $level) : int
     {
         return $this->levels[$level]++;
     }
 
     /**
-     * Gets the variable value
+     * @param null|mixed $default
      *
-     * @param $name the variable name
+     * @return mixed
      */
-    public function getVariable($variable, $default = null)
+    public function getVariable(string $variable, $default = null)
     {
         if (isset($this->variables[$variable])) {
             return $this->variables[$variable];
@@ -246,42 +274,31 @@ class Environment
         return $default;
     }
 
-    /**
-     * Set the link url
-     */
-    public function setLink($name, $url)
+    public function setLink(string $name, string $url) : void
     {
         $name = trim(strtolower($name));
 
-        if ($name == '_') {
+        if ($name === '_') {
             $name = array_shift($this->anonymous);
         }
 
         $this->links[$name] = trim($url);
     }
 
-    /**
-     * Resets the anonymous stack
-     */
-    public function resetAnonymousStack()
+    public function resetAnonymousStack() : void
     {
-        $this->anonymous = array();
+        $this->anonymous = [];
     }
 
-    /**
-     * Set the current anonymous links name
-     */
-    public function pushAnonymous($name)
+    public function pushAnonymous(string $name) : void
     {
         $this->anonymous[] = trim(strtolower($name));
     }
 
-    /**
-     * Get a link value
-     */
-    public function getLink($name, $relative = true)
+    public function getLink(string $name, bool $relative = true) : ?string
     {
         $name = trim(strtolower($name));
+
         if (isset($this->links[$name])) {
             $link = $this->links[$name];
 
@@ -295,19 +312,16 @@ class Environment
         return null;
     }
 
-    /**
-     * Adds a dependency to the document
-     */
-    public function addDependency($dependency)
+    public function addDependency(string $dependency) : void
     {
-        $dependency = $this->canonicalUrl($dependency);
+        $dependency           = $this->canonicalUrl($dependency);
         $this->dependencies[] = $dependency;
     }
 
     /**
-     * Getting all the dependencies for this environment
+     * @return string[]
      */
-    public function getDependencies()
+    public function getDependencies() : array
     {
         return $this->dependencies;
     }
@@ -318,8 +332,12 @@ class Environment
      * relative URL to "path/to/something/else.html", the result will
      * be else.html. Else, "../" will be added to go to the upper directory
      */
-    public function relativeUrl($url)
+    public function relativeUrl(?string $url) : ?string
     {
+        if ($url === null) {
+            return null;
+        }
+
         // If string contains ://, it is considered as absolute
         if (preg_match('/:\\/\\//mUsi', $url)) {
             return $url;
@@ -327,8 +345,9 @@ class Environment
 
         // If string begins with "/", the "/" is removed to resolve the
         // relative path
-        if (strlen($url) && $url[0] == '/') {
+        if ($url !== '' && $url[0] === '/') {
             $url = substr($url, 1);
+
             if ($this->samePrefix($url)) {
                 // If the prefix is the same, simply returns the file name
                 $relative = basename($url);
@@ -349,76 +368,56 @@ class Environment
         return $relative;
     }
 
-    /**
-     * Use relative URLs for links
-     */
-    public function useRelativeUrls()
+    public function useRelativeUrls() : bool
     {
         return $this->relativeUrls;
     }
 
-    /**
-     * Use relative URLs for links
-     */
-    public function setUseRelativeUrls($enable)
+    public function setUseRelativeUrls(bool $relativeUrls) : void
     {
-        $this->relativeUrls = $enable;
+        $this->relativeUrls = $relativeUrls;
     }
 
-    /**
-     * Get the depth of the current file name (the number of parent
-     * directories)
-     */
-    public function getDepth()
+    public function getDepth() : int
     {
         return count(explode('/', $this->currentFileName))-1;
     }
 
-    /**
-     * Returns true if the given url have the same prefix as the
-     * current document
-     */
-    protected function samePrefix($url)
+    protected function samePrefix(string $url) : bool
     {
         $partsA = explode('/', $url);
         $partsB = explode('/', $this->currentFileName);
 
         $n = count($partsA);
-        if ($n != count($partsB)) {
+
+        if ($n !== count($partsB)) {
             return false;
         }
 
-        unset($partsA[$n-1]);
-        unset($partsB[$n-1]);
+        unset($partsA[$n - 1]);
+        unset($partsB[$n - 1]);
 
-        return $partsA == $partsB;
+        return $partsA === $partsB;
     }
 
-    /**
-     * Returns the directory name
-     */
-    public function getDirName()
+    public function getDirName() : string
     {
         $dirname = dirname($this->currentFileName);
 
-        if ($dirname == '.') {
+        if ($dirname === '.') {
             return '';
         }
 
         return $dirname;
     }
 
-    /**
-     * Canonicalize a path, a/b/c/../d/e will become
-     * a/b/d/e
-     */
-    protected function canonicalize($url)
+    protected function canonicalize(string $url) : string
     {
         $parts = explode('/', $url);
-        $stack = array();
+        $stack = [];
 
         foreach ($parts as $part) {
-            if ($part == '..') {
+            if ($part === '..') {
                 array_pop($stack);
             } else {
                 $stack[] = $part;
@@ -428,90 +427,78 @@ class Environment
         return implode('/', $stack);
     }
 
-    /**
-     * Gets a canonical URL from the given one
-     */
-    public function canonicalUrl($url)
+    public function canonicalUrl(string $url) : ?string
     {
-        if (strlen($url)) {
-            if ($url[0] == '/') {
+        if ($url !== '') {
+            if ($url[0] === '/') {
                 // If the URL begins with a "/", the following is the
                 // canonical URL
                 return substr($url, 1);
-            } else {
-                // Else, the canonical name is under the current dir
-                if ($this->getDirName()) {
-                    return $this->canonicalize($this->getDirName() . '/' .$url);
-                } else {
-                    return $this->canonicalize($url);
-                }
             }
+
+            // Else, the canonical name is under the current dir
+            if ($this->getDirName() !== '') {
+                return $this->canonicalize($this->getDirName() . '/' . $url);
+            }
+
+            return $this->canonicalize($url);
         }
 
         return null;
     }
 
-    /**
-     * Sets the current file name
-     */
-    public function setCurrentFileName($filename)
+    public function setCurrentFileName(string $filename) : void
     {
         $this->currentFileName = $filename;
     }
 
-    /**
-     * Sets the directory of the current parsing
-     */
-    public function setCurrentDirectory($directory)
+    public function setCurrentDirectory(string $directory) : void
     {
         $this->currentDirectory = $directory;
     }
 
-    /**
-     * Returns an absolute path for a relative given URL
-     */
-    public function absoluteRelativePath($url)
+    public function absoluteRelativePath(string $url) : string
     {
         return $this->currentDirectory . '/' . $this->getDirName() . '/' . $this->relativeUrl($url);
     }
 
-    public function setTargetDirectory($directory)
+    public function setTargetDirectory(string $directory) : void
     {
         $this->targetDirectory = $directory;
     }
 
-    public function getTargetDirectory()
+    public function getTargetDirectory() : string
     {
         return $this->targetDirectory;
     }
 
-    public function getUrl()
+    public function getUrl() : string
     {
-        if ($this->url) {
+        if ($this->url !== null) {
             return $this->url;
-        } else {
-            return $this->currentFileName;
         }
+
+        return $this->currentFileName;
     }
 
-    public function setUrl($url)
+    public function setUrl(string $url) : void
     {
-        if ($this->getDirName()) {
+        if ($this->getDirName() !== '') {
             $url = $this->getDirName() . '/' . $url;
         }
 
         $this->url = $url;
     }
 
-    public function getMetas()
+    public function getMetas() : ?Metas
     {
         return $this->metas;
     }
 
-    public function getLevel($letter)
+    public function getLevel(string $letter) : int
     {
         foreach ($this->titleLetters as $level => $titleLetter) {
-            if ($letter == $titleLetter) {
+            if ($letter === $titleLetter) {
                 return $level;
             }
         }
@@ -522,12 +509,15 @@ class Environment
         return $this->currentTitleLevel;
     }
 
-    public function getTitleLetters()
+    /**
+     * @return string[]
+     */
+    public function getTitleLetters() : array
     {
         return $this->titleLetters;
     }
 
-    public static function slugify($text)
+    public static function slugify(string $text) : string
     {
         // replace non letter or digits by -
         $text = preg_replace('~[^\pL\d]+~u', '-', $text);

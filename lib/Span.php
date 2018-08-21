@@ -20,13 +20,25 @@ use function trim;
 
 abstract class Span extends Node
 {
+    /** @var Parser */
     protected $parser;
+
+    /** @var string */
     protected $span;
+
+    /** @var string[] */
     protected $tokens;
+
+    /** @var Environment */
     protected $environment;
 
+    /**
+     * @param string|string[] $span
+     */
     public function __construct(Parser $parser, $span)
     {
+        parent::__construct();
+
         if (is_array($span)) {
             $span = implode("\n", $span);
         }
@@ -115,7 +127,7 @@ abstract class Span extends Node
 
             // anchors to current document
             if ($url === null) {
-                $anchor = $environment->slugify($link);
+                $anchor = Environment::slugify($link);
 
                 $tokens[$id] = [
                     'type' => 'link',
@@ -147,11 +159,7 @@ abstract class Span extends Node
         $this->span   = $span;
     }
 
-    /**
-     * Processes some data in the context of the span, this will process the
-     * **emphasis**, the nbsp, replace variables and end-of-line brs
-     */
-    public function process($data)
+    public function process(string $data) : string
     {
         $self        = $this;
         $environment = $this->parser->getEnvironment();
@@ -180,9 +188,6 @@ abstract class Span extends Node
         return $span;
     }
 
-    /**
-     * Renders the span
-     */
     public function render() : string
     {
         $environment = $this->parser->getEnvironment();
@@ -198,7 +203,7 @@ abstract class Span extends Node
                     // try to resolve by url first
                     $reference = $environment->resolve($value['section'], $value['url']);
 
-                    if ($reference) {
+                    if ($reference !== null) {
                         $link = $this->reference($reference, $value);
 
                     // try to resolve by text second
@@ -221,7 +226,9 @@ abstract class Span extends Node
                             $url = $value['url'];
                         }
                     } elseif ($value['anchor']) {
-                        if ($link = $environment->getLink($value['link'])) {
+                        $link = $environment->getLink($value['link']);
+
+                        if ($link !== null) {
                             $url = $link;
                         } else {
                             $url = '#' . $value['anchor'];
@@ -274,11 +281,15 @@ abstract class Span extends Node
         return $span;
     }
 
+    /**
+     * @param string[] $reference
+     * @param string[] $value
+     */
     public function reference(array $reference, array $value) : string
     {
-        if ($reference) {
+        if ($reference !== []) {
             $text = $value['text'] ?: ($reference['title'] ?? '');
-            $link = $this->link($url, trim($text));
+            $link = $this->link($reference['url'], trim($text));
         } else {
             $link = $this->link('#', '(unresolved reference)');
         }

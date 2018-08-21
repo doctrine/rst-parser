@@ -6,6 +6,7 @@ namespace Gregwar\RST\HTML\Directives;
 
 use Gregwar\RST\HTML\Nodes\FigureNode;
 use Gregwar\RST\HTML\Nodes\ImageNode;
+use Gregwar\RST\Nodes\Node;
 use Gregwar\RST\Parser;
 use Gregwar\RST\SubDirective;
 
@@ -26,7 +27,10 @@ class Figure extends SubDirective
         return 'figure';
     }
 
-    public function processSub(Parser $parser, $document, $variable, $data, array $options)
+    /**
+     * @param string[] $options
+     */
+    public function processSub(Parser $parser, ?Node $document, string $variable, string $data, array $options) : ?Node
     {
         $environment = $parser->getEnvironment();
         $url         = $environment->relativeUrl($data);

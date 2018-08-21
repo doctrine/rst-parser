@@ -13,12 +13,15 @@ class FigureNode extends Base
     {
         $html  = '<figure>';
         $html .= $this->image->render();
-        if ($this->document) {
+
+        if ($this->document !== null) {
             $caption = trim($this->document->render());
-            if ($caption) {
+
+            if ($caption !== '') {
                 $html .= '<figcaption>' . $caption . '</figcaption>';
             }
         }
+
         $html .= '</figure>';
 
         return $html;

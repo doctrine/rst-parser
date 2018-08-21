@@ -1,60 +1,95 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Gregwar\RST;
+
+use Gregwar\RST\HTML\Kernel;
+use Gregwar\RST\Nodes\ListNode;
+use Gregwar\RST\Nodes\QuoteNode;
+use Gregwar\RST\Nodes\TableNode;
+use function array_pop;
+use function count;
+use function explode;
+use function file_get_contents;
+use function implode;
+use function in_array;
+use function is_readable;
+use function preg_match;
+use function preg_replace_callback;
+use function realpath;
+use function sprintf;
+use function str_replace;
+use function strlen;
+use function strpos;
+use function substr;
+use function trim;
 
 class Parser
 {
-    const STATE_BEGIN = 0;
-    const STATE_NORMAL = 1;
-    const STATE_DIRECTIVE = 2;
-    const STATE_BLOCK = 3;
-    const STATE_TITLE = 4;
-    const STATE_LIST = 5;
-    const STATE_SEPARATOR = 6;
-    const STATE_CODE = 7;
-    const STATE_TABLE = 8;
-    const STATE_COMMENT = 9;
+    public const STATE_BEGIN     = 0;
+    public const STATE_NORMAL    = 1;
+    public const STATE_DIRECTIVE = 2;
+    public const STATE_BLOCK     = 3;
+    public const STATE_TITLE     = 4;
+    public const STATE_LIST      = 5;
+    public const STATE_SEPARATOR = 6;
+    public const STATE_CODE      = 7;
+    public const STATE_TABLE     = 8;
+    public const STATE_COMMENT   = 9;
 
-    // Current state
+    /** @var Kernel */
+    protected $kernel;
+
+    /** @var int */
     protected $state;
 
-    // Current document
+    /** @var Document */
     protected $document;
 
-    // The buffer is an array containing current lines that are parsed
-    protected $buffer;
+    /** @var TableNode|ListNode|string[] */
+    protected $buffer = [];
 
-    // Current level of special lines (==== and so)
+    /** @var null|string */
     protected $specialLetter;
 
-    // Current directive to be applied on next node
+    /** @var false|null|string[] */
     protected $directive = false;
 
-    // Current directives
-    protected $directives = array();
+    /** @var Directive[] */
+    protected $directives = [];
 
-    // Environment
+    /** @var null|Environment */
     protected $environment = null;
 
-    // Allow include directives?
+    /** @var bool */
     protected $includeAllowed = true;
 
-    // Behaves like PHP's open_basedir
+    /** @var string */
     protected $includeRoot = '';
 
-    // Is the current node code ?
+    /** @var bool */
     protected $isCode = false;
 
-    // Current line
+    /** @var int */
     protected $currentLine = 0;
 
-    // File name
+    /** @var null|string */
     protected $filename = null;
 
-    public function __construct($environment = null, $kernel = null)
+    /** @var null|false|string[] */
+    protected $lineInfo;
+
+    /** @var null|false|string[] */
+    protected $listLine;
+
+    /** @var bool */
+    protected $listFlow = false;
+
+    public function __construct(?Environment $environment = null, ?Kernel $kernel = null)
     {
-        if ($kernel == null) {
-            $kernel = new \Gregwar\RST\HTML\Kernel;
+        if ($kernel === null) {
+            $kernel = new Kernel();
         }
         $this->kernel = $kernel;
 
@@ -64,52 +99,49 @@ class Parser
         $this->initReferences();
     }
 
-    /**
-     * Get a parser with the same environment that this one
-     */
-    public function getSubParser()
+    public function getSubParser() : Parser
     {
         return new Parser($this->environment, $this->kernel);
     }
 
-    /**
-     * Try to parse a link definition
-     */
-    public function parseLink($line)
+    public function parseLink(string $line) : bool
     {
         // Links
         if (preg_match('/^\.\. _`(.+)`: (.+)$/mUsi', $line, $match)) {
             $this->environment->setLink($match[1], $match[2]);
+
             return true;
         }
 
         if (preg_match('/^\.\. _(.+): (.+)$/mUsi', $line, $match)) {
             $this->environment->setLink($match[1], $match[2]);
+
             return true;
         }
 
         // Short anonymous links
         if (preg_match('/^__ (.+)$/mUsi', trim($line), $match)) {
             $url = $match[1];
+
             $this->environment->setLink('_', $url);
+
             return true;
         }
 
         // Anchor link
         if (preg_match('/^\.\. _(.+):$/mUsi', trim($line), $match)) {
             $anchor = $match[1];
+
             $this->document->addNode($this->kernel->build('Nodes\AnchorNode', $anchor));
-            $this->environment->setLink($anchor, '#'.$anchor);
+            $this->environment->setLink($anchor, '#' . $anchor);
+
             return true;
         }
 
         return false;
     }
 
-    /**
-     * Initializing built-in directives
-     */
-    public function initDirectives()
+    public function initDirectives() : void
     {
         $directives = $this->kernel->getDirectives();
 
@@ -118,10 +150,7 @@ class Parser
         }
     }
 
-    /**
-     * Initializing references
-     */
-    public function initReferences()
+    public function initReferences() : void
     {
         $references = $this->kernel->getReferences();
 
@@ -130,48 +159,37 @@ class Parser
         }
     }
 
-    /**
-     * Get the current environment
-     */
-    public function getEnvironment()
+    public function getEnvironment() : Environment
     {
         return $this->environment;
     }
 
-    /**
-     * Get the current kernel
-     */
-    public function getKernel()
+    public function getKernel() : Kernel
     {
         return $this->kernel;
     }
 
-    /**
-     * Register a new directive handler
-     */
-    public function registerDirective(Directive $directive)
+    public function registerDirective(Directive $directive) : void
     {
         $this->directives[$directive->getName()] = $directive;
     }
 
-    /**
-     * Tells if the current buffer is announcing a block of code
-     */
-    protected function prepareCode()
+    protected function prepareCode() : bool
     {
-        if (!$this->buffer) {
+        if ($this->buffer === []) {
             return false;
         }
 
         $lastLine = trim($this->buffer[count($this->buffer)-1]);
 
         if (strlen($lastLine) >= 2) {
-            if (substr($lastLine, -2) == '::') {
-                if (trim($lastLine) == '::') {
+            if (substr($lastLine, -2) === '::') {
+                if (trim($lastLine) === '::') {
                     array_pop($this->buffer);
                 } else {
                     $this->buffer[count($this->buffer)-1] = substr($lastLine, 0, -1);
                 }
+
                 return true;
             }
         }
@@ -179,32 +197,28 @@ class Parser
         return false;
     }
 
-    protected function init()
+    protected function init() : void
     {
         $this->specialLetter = false;
-        $this->buffer = array();
+        $this->buffer        = [];
     }
 
-    /**
-     * Tell if a line is a special separating line for title and separators,
-     * returns the depth of the special line
-     */
-    protected function isSpecialLine($line)
+    protected function isSpecialLine(string $line) : ?string
     {
         if (strlen($line) < 3) {
-            return false;
+            return null;
         }
 
         $letter = $line[0];
 
         $environment = $this->environment;
-        if (!in_array($letter, $environment::$letters)) {
-            return false;
+        if (! in_array($letter, $environment::$letters, true)) {
+            return null;
         }
 
         for ($i=1; $i<strlen($line); $i++) {
-            if ($line[$i] != $letter) {
-                return false;
+            if ($line[$i] !== $letter) {
+                return null;
             }
         }
 
@@ -212,109 +226,106 @@ class Parser
     }
 
     /**
-     * Finding the table chars
+     * @return string[]
      */
-    protected function findTableChars($line)
+    protected function findTableChars(string $line) : ?array
     {
-        $lineChar = $line[0];
+        $lineChar  = $line[0];
         $spaceChar = null;
 
-        for ($i=0; $i<strlen($line); $i++) {
-            if ($line[$i] != $lineChar) {
-                if ($spaceChar == null) {
-                    $spaceChar = $line[$i];
-                } else {
-                    if ($line[$i] != $spaceChar) {
-                        return false;
-                    }
+        for ($i = 0; $i < strlen($line); $i++) {
+            if ($line[$i] === $lineChar) {
+                continue;
+            }
+
+            if ($spaceChar === null) {
+                $spaceChar = $line[$i];
+            } else {
+                if ($line[$i] !== $spaceChar) {
+                    return null;
                 }
             }
         }
 
-        return array($lineChar, $spaceChar);
+        return [$lineChar, $spaceChar];
     }
 
     /**
-     * If the given line is a table line, this will returns the parts
-     * of the given line, i.e the offset of the separators
-     *
-     * ====================== ========= ===========
-     * 0                      23        33
-     *
-     * +---------------------+---------+-----------+
-     *  1                     23        33
+     * @return null|string[]
      */
-    protected function parseTableLine($line)
+    protected function parseTableLine(string $line) : ?array
     {
         $header = false;
         $pretty = false;
-        $line = trim($line);
+        $line   = trim($line);
 
-        if (!strlen($line)) {
-            return false;
+        if ($line === '') {
+            return null;
         }
 
         // Finds the table chars
         $chars = $this->findTableChars($line);
 
-        if (!$chars) {
-            return false;
+        if ($chars === null) {
+            return null;
         }
 
-        if ($chars[0] == Environment::$prettyTableJoint && $chars[1] == Environment::$prettyTableLetter) {
+        if ($chars[0] === Environment::$prettyTableJoint && $chars[1] === Environment::$prettyTableLetter) {
             $pretty = true;
-            $chars = array(Environment::$prettyTableLetter, Environment::$prettyTableJoint);
-        } elseif ($chars[0] == Environment::$prettyTableJoint && $chars[1] == Environment::$prettyTableHeader) {
+            $chars  = [Environment::$prettyTableLetter, Environment::$prettyTableJoint];
+        } elseif ($chars[0] === Environment::$prettyTableJoint && $chars[1] === Environment::$prettyTableHeader) {
             $pretty = true;
             $header = true;
-            $chars = array(Environment::$prettyTableHeader, Environment::$prettyTableJoint);
+            $chars  = [Environment::$prettyTableHeader, Environment::$prettyTableJoint];
         } else {
-            if (!($chars[0] == Environment::$tableLetter && $chars[1] == ' ')) {
-                return false;
+            if (! ($chars[0] === Environment::$tableLetter && $chars[1] === ' ')) {
+                return null;
             }
         }
 
-        $parts = array();
+        $parts     = [];
         $separator = false;
-        // Crawl the line to match those chars
-        for ($i=0; $i<strlen($line); $i++) {
-            if ($line[$i] == $chars[0]) {
-                if (!$separator) {
-                    $parts[] = $i;
+
+        for ($i = 0; $i < strlen($line); $i++) {
+            if ($line[$i] === $chars[0]) {
+                if (! $separator) {
+                    $parts[]   = $i;
                     $separator = true;
                 }
             } else {
-                if ($line[$i] == $chars[1]) {
-                    $separator = false;
-                } else {
-                    return false;
+                if ($line[$i] !== $chars[1]) {
+                    return null;
                 }
+
+                $separator = false;
             }
         }
 
         if (count($parts) > 1) {
-            return array(
+            return [
                 $header,
                 $pretty,
-                $parts
-            );
+                $parts,
+            ];
         }
 
-        return false;
+        return null;
     }
 
     /**
-     * Parses a list line
+     * @return null|string[]
      */
-    protected function parseListLine($line)
+    protected function parseListLine(string $line) : ?array
     {
         $depth = 0;
-        for ($i=0; $i<strlen($line); $i++) {
+        $i     = 0;
+
+        for ($i = 0; $i < strlen($line); $i++) {
             $char = $line[$i];
 
-            if ($char == ' ') {
+            if ($char === ' ') {
                 $depth++;
-            } elseif ($char == "\t") {
+            } elseif ($char === "\t") {
                 $depth += 2;
             } else {
                 break;
@@ -322,59 +333,48 @@ class Parser
         }
 
         if (preg_match('/^((\*|\-)|([\d#]+)\.) (.+)$/', trim($line), $match)) {
-            return array(
+            return [
                 'prefix' => $line[$i],
-                'ordered' => ($line[$i] == '*' || $line[$i] == '-') ? false : true,
+                'ordered' => ($line[$i] === '*' || $line[$i] === '-') ? false : true,
                 'depth' => $depth,
-                'text' => array($match[4])
-            );
+                'text' => [$match[4]],
+            ];
         } elseif (strlen($line) === 1 && $line[0] === '-') {
-            return array(
+            return [
                 'prefix' => $line[$i],
-                'ordered' => ($line[$i] == '*' || $line[$i] == '-') ? false : true,
+                'ordered' => ($line[$i] === '*' || $line[$i] === '-') ? false : true,
                 'depth' => $depth,
-                'text' => array('')
-            );
+                'text' => [''],
+            ];
         }
 
-        return false;
+        return null;
     }
 
-    /**
-     * Is the given line a list line ?
-     */
-    protected function isListLine($line)
+    protected function isListLine(string $line) : bool
     {
-        // A buffer is a list if at least the first line is a list-style
         $listLine = $this->parseListLine($line);
 
-        if ($listLine) {
-            return $listLine['depth'] == 0 || !$this->isCode;
+        if ($listLine !== null) {
+            return $listLine['depth'] === 0 || ! $this->isCode;
         }
 
         return false;
     }
 
-    protected $lineInfo;
-    protected $listLine;
-    protected $listFlow;
-
-    /**
-     * Push a line to the current list node buffer
-     */
-    public function pushListLine($line, $flush = false)
+    public function pushListLine(?string $line, bool $flush = false) : bool
     {
-        if (trim($line)) {
+        if ($line !== null && trim($line) !== '') {
             $infos = $this->parseListLine($line);
 
-            if ($infos) {
+            if ($infos !== null) {
                 if ($this->lineInfo) {
                     $this->lineInfo['text'] = $this->createSpan($this->lineInfo['text']);
                     $this->buffer->addLine($this->lineInfo);
                 }
                 $this->lineInfo = $infos;
             } else {
-                if ($this->listFlow || $line[0] == ' ') {
+                if ($this->listFlow || $line[0] === ' ') {
                     $this->lineInfo['text'][] = $line;
                 } else {
                     $flush = true;
@@ -398,40 +398,24 @@ class Parser
         return true;
     }
 
-    /**
-     * A line is a code line if it's empty or if it begins with
-     * a trimable caracter, for instance:
-     *
-     *     This is a block because there is a space in the front
-     *     of the caracters
-     *
-     *     This is still part of the block, even if there is an empty line
-     */
-    protected function isBlockLine($line)
+    protected function isBlockLine(string $line) : bool
     {
-        if (strlen($line)) {
-            return !trim($line[0]);
-        } else {
-            return !trim($line);
+        if ($line !== '') {
+            return trim($line[0]) === '';
         }
+
+        return trim($line) === '';
     }
 
-    /**
-     * Get current directive if the buffer contains one
-     *
-     * .. |variable| name:: data
-     *     :option: value
-     *     :otherOption: otherValue
-     */
-    protected function initDirective($line)
+    protected function initDirective(string $line) : bool
     {
         if (preg_match('/^\.\. (\|(.+)\| |)([^\s]+)::( (.*)|)$/mUsi', $line, $match)) {
-            $this->directive = array(
+            $this->directive = [
                 'variable' => $match[2],
                 'name' => $match[3],
                 'data' => trim($match[4]),
-                'options' => array()
-            );
+                'options' => [],
+            ];
 
             return true;
         }
@@ -439,332 +423,331 @@ class Parser
         return false;
     }
 
-    /**
-     * Is this line a comment ?
-     */
-    protected function isComment($line)
+    protected function isComment(string $line) : bool
     {
-        return preg_match('/^\.\. (.*)$/mUsi', $line);
+        return preg_match('/^\.\. (.*)$/mUsi', $line) > 0;
     }
 
-    /**
-     * Is this line a directive ?
-     */
-    protected function isDirective($line)
+    protected function isDirective(string $line) : bool
     {
-        return preg_match('/^\.\. (\|(.+)\| |)([^\s]+)::(.*)$/mUsi', $line);
+        return preg_match('/^\.\. (\|(.+)\| |)([^\s]+)::(.*)$/mUsi', $line) > 0;
     }
 
-    /**
-     * Try to add an option line to the current directive, returns true if sucess
-     * and false if failure
-     */
-    protected function directiveAddOption($line)
+    protected function directiveAddOption(string $line) : bool
     {
         if (preg_match('/^(\s+):(.+): (.*)$/mUsi', $line, $match)) {
             $this->directive['options'][$match[2]] = trim($match[3]);
+
             return true;
-        } elseif (preg_match('/^(\s+):(.+):(\s*)$/mUsi', $line, $match)) {
-            $value = trim($match[3]);
-            $this->directive['options'][$match[2]] = true;
-            return true;
-        } else {
-            return false;
         }
+
+        if (preg_match('/^(\s+):(.+):(\s*)$/mUsi', $line, $match)) {
+            $value = trim($match[3]);
+
+            $this->directive['options'][$match[2]] = true;
+
+            return true;
+        }
+
+        return false;
     }
 
-    /**
-     * Gets the current directive
-     */
-    protected function getCurrentDirective()
+    protected function getCurrentDirective() : ?Directive
     {
-        if (!$this->directive) {
+        if (! $this->directive) {
             $this->getEnvironment()->getErrorManager()->error('Asking for current directive, but there is not');
         }
 
         $name = $this->directive['name'];
+
         if (isset($this->directives[$name])) {
             return $this->directives[$name];
-        } else {
-            $message = 'Unknown directive: '.$name;
-            $message .= ' in '.$this->getFilename().' line '.$this->getCurrentLine();
-            $this->getEnvironment()->getErrorManager()->error($message);
-            return null;
         }
+
+        $message  = 'Unknown directive: ' . $name;
+        $message .= ' in ' . $this->getFilename() . ' line ' . $this->getCurrentLine();
+
+        $this->getEnvironment()->getErrorManager()->error($message);
+
+        return null;
     }
 
-    /**
-     * Flushes the current buffer to create a node
-     */
-    protected function flush()
+    protected function flush() : void
     {
         $node = null;
 
         $this->isCode = false;
 
-        if ($this->buffer) {
+        if ($this->buffer !== []) {
             switch ($this->state) {
-            case self::STATE_TITLE:
-                $data = implode("\n", $this->buffer);
-                $level = $this->environment->getLevel($this->specialLetter);
-                $token = $this->environment->createTitle($level);
-                $node = $this->kernel->build('Nodes\TitleNode', $this->createSpan($data), $level, $token);
-                break;
-            case self::STATE_SEPARATOR:
-                $level = $this->environment->getLevel($this->specialLetter);
-                $node = $this->kernel->build('Nodes\SeparatorNode', $level);
-                break;
-            case self::STATE_CODE:
-                $node = $this->kernel->build('Nodes\CodeNode', $this->buffer);
-                break;
-            case self::STATE_BLOCK:
-                $node = $this->kernel->build('Nodes\QuoteNode', $this->buffer);
-                $data = $node->getValue();
-                $subParser = $this->getSubParser();
-                $document = $subParser->parseLocal($data);
-                $node->setValue($document);
-                break;
-            case self::STATE_LIST:
-                $this->pushListLine(null, true);
-                $node = $this->buffer;
-                break;
-            case self::STATE_TABLE:
-                $node = $this->buffer;
-                $node->finalize($this);
-                break;
-            case self::STATE_NORMAL:
-                $this->isCode = $this->prepareCode();
-                $node = $this->kernel->build('Nodes\ParagraphNode', $this->createSpan($this->buffer));
-                break;
+                case self::STATE_TITLE:
+                    $data  = implode("\n", $this->buffer);
+                    $level = $this->environment->getLevel($this->specialLetter);
+                    $token = $this->environment->createTitle($level);
+                    $node  = $this->kernel->build('Nodes\TitleNode', $this->createSpan($data), $level, $token);
+                    break;
+                case self::STATE_SEPARATOR:
+                    $level = $this->environment->getLevel($this->specialLetter);
+                    $node  = $this->kernel->build('Nodes\SeparatorNode', $level);
+                    break;
+                case self::STATE_CODE:
+                    $node = $this->kernel->build('Nodes\CodeNode', $this->buffer);
+                    break;
+                case self::STATE_BLOCK:
+                    /** @var QuoteNode $node */
+                    $node      = $this->kernel->build('Nodes\QuoteNode', $this->buffer);
+                    $data      = $node->getValue();
+                    $subParser = $this->getSubParser();
+                    $document  = $subParser->parseLocal($data);
+                    $node->setValue($document);
+                    break;
+                case self::STATE_LIST:
+                    $this->pushListLine(null, true);
+                    $node = $this->buffer;
+                    break;
+                case self::STATE_TABLE:
+                    $node = $this->buffer;
+                    $node->finalize($this);
+                    break;
+                case self::STATE_NORMAL:
+                    $this->isCode = $this->prepareCode();
+                    $node         = $this->kernel->build('Nodes\ParagraphNode', $this->createSpan($this->buffer));
+                    break;
             }
         }
 
         if ($this->directive) {
             $currentDirective = $this->getCurrentDirective();
-            if ($currentDirective) {
-                $currentDirective->process($this, $node, $this->directive['variable'], $this->directive['data'], $this->directive['options']);
+
+            if ($currentDirective !== null) {
+                $currentDirective->process(
+                    $this,
+                    $node,
+                    $this->directive['variable'],
+                    $this->directive['data'],
+                    $this->directive['options']
+                );
             }
             $node = null;
         }
 
         $this->directive = null;
 
-        if ($node) {
+        if ($node !== null) {
             $this->document->addNode($node);
         }
 
         $this->init();
     }
 
-    /**
-     * Get the current document
-     */
-    public function getDocument()
+    public function getDocument() : Document
     {
         return $this->document;
     }
 
-    /**
-     * Process one line
-     */
-    protected function parseLine(&$line)
+    protected function parseLine(string &$line) : bool
     {
         switch ($this->state) {
-        case self::STATE_BEGIN:
-            if (trim($line)) {
-                if ($this->isListLine($line)) {
-                    $this->state = self::STATE_LIST;
-                    $this->buffer = $this->kernel->build('Nodes\ListNode');
-                    $this->lineInfo = null;
-                    $this->listFlow = true;
-                    return false;
-                } elseif ($this->isBlockLine($line)) {
-                    if ($this->isCode) {
-                        $this->state = self::STATE_CODE;
+            case self::STATE_BEGIN:
+                if (trim($line) !== '') {
+                    if ($this->isListLine($line)) {
+                        $this->state    = self::STATE_LIST;
+                        $this->buffer   = $this->kernel->build('Nodes\ListNode');
+                        $this->lineInfo = null;
+                        $this->listFlow = true;
+                        return false;
+                    } elseif ($this->isBlockLine($line)) {
+                        if ($this->isCode) {
+                            $this->state = self::STATE_CODE;
+                        } else {
+                            $this->state = self::STATE_BLOCK;
+                        }
+                        return false;
+                    } elseif ($this->isDirective($line)) {
+                        $this->state  = self::STATE_DIRECTIVE;
+                        $this->buffer = [];
+                        $this->flush();
+                        $this->initDirective($line);
+                    } elseif ($this->parseLink($line)) {
+                        return true;
                     } else {
-                        $this->state = self::STATE_BLOCK;
+                        $tableParts = $this->parseTableLine($line);
+
+                        if ($tableParts === null) {
+                            $this->state = self::STATE_NORMAL;
+
+                            return false;
+                        }
+
+                        $this->state  = self::STATE_TABLE;
+                        $this->buffer = $this->kernel->build('Nodes\TableNode', $tableParts);
                     }
-                    return false;
-                } elseif ($this->isDirective($line)) {
-                    $this->state = self::STATE_DIRECTIVE;
-                    $this->buffer = array();
-                    $this->flush();
-                    $this->initDirective($line);
-                } elseif ($this->parseLink($line)) {
-                    return true;
-                } elseif ($parts = $this->parseTableLine($line)) {
-                    $this->state = self::STATE_TABLE;
-                    $this->buffer = $this->kernel->build('Nodes\TableNode', $parts);
-                } else {
-                    $this->state = self::STATE_NORMAL;
-                    return false;
                 }
-            }
-            break;
+                break;
 
-        case self::STATE_LIST:
-            if (!$this->pushListLine($line)) {
-                $this->flush();
-                $this->state = self::STATE_BEGIN;
-                return false;
-            }
-            break;
-
-        case self::STATE_TABLE:
-            if (!trim($line)) {
-                $this->flush();
-                $this->state = self::STATE_BEGIN;
-            } else {
-                $parts = $this->parseTableLine($line);
-
-                if (!$this->buffer->push($parts, $line)) {
+            case self::STATE_LIST:
+                if (! $this->pushListLine($line)) {
                     $this->flush();
                     $this->state = self::STATE_BEGIN;
                     return false;
                 }
-            }
+                break;
 
-            break;
-
-        case self::STATE_NORMAL:
-            if (trim($line)) {
-                $specialLetter = $this->isSpecialLine($line);
-
-                if ($specialLetter) {
-                    $this->specialLetter = $specialLetter;
-                    $lastLine = array_pop($this->buffer);
-
-                    if ($lastLine) {
-                        $this->buffer = array($lastLine);
-                        $this->state = self::STATE_TITLE;
-                    } else {
-                        $this->buffer[] = $line;
-                        $this->state = self::STATE_SEPARATOR;
-                    }
+            case self::STATE_TABLE:
+                if (trim($line) === '') {
                     $this->flush();
                     $this->state = self::STATE_BEGIN;
                 } else {
-                    if ($this->isDirective($line)) {
+                    $parts = $this->parseTableLine($line);
+
+                    if (! $this->buffer->push($parts, $line)) {
                         $this->flush();
                         $this->state = self::STATE_BEGIN;
                         return false;
                     }
-                    if ($this->isComment($line)) {
-                        $this->flush();
-                        $this->state = self::STATE_COMMENT;
-                    } else {
-                        $this->buffer[] = $line;
-                    }
                 }
-            } else {
-                $this->flush();
-                $this->state = self::STATE_BEGIN;
-            }
-            break;
 
-        case self::STATE_COMMENT:
-            $isComment = false;
+                break;
 
-            if (!$this->isComment($line) && (!trim($line) || $line[0] != ' ')) {
-                $this->state = self::STATE_BEGIN;
-                return false;
-            }
-            break;
+            case self::STATE_NORMAL:
+                if (trim($line) !== '') {
+                    $specialLetter = $this->isSpecialLine($line);
 
-        case self::STATE_BLOCK:
-        case self::STATE_CODE:
-            if (!$this->isBlockLine($line)) {
-                $this->flush();
-                $this->state = self::STATE_BEGIN;
-                return false;
-            } else {
-                $this->buffer[] = $line;
-            }
-            break;
+                    if ($specialLetter !== null) {
+                        $this->specialLetter = $specialLetter;
+                        $lastLine            = array_pop($this->buffer);
 
-        case self::STATE_DIRECTIVE:
-            if (!$this->directiveAddOption($line)) {
-                if ($this->isDirective($line)) {
-                    $this->flush();
-                    $this->initDirective($line);
+                        if ($lastLine !== null) {
+                            $this->buffer = [$lastLine];
+                            $this->state  = self::STATE_TITLE;
+                        } else {
+                            $this->buffer[] = $line;
+                            $this->state    = self::STATE_SEPARATOR;
+                        }
+                        $this->flush();
+                        $this->state = self::STATE_BEGIN;
+                    } else {
+                        if ($this->isDirective($line)) {
+                            $this->flush();
+                            $this->state = self::STATE_BEGIN;
+                            return false;
+                        }
+                        if ($this->isComment($line)) {
+                            $this->flush();
+                            $this->state = self::STATE_COMMENT;
+                        } else {
+                            $this->buffer[] = $line;
+                        }
+                    }
                 } else {
-                    $directive = $this->getCurrentDirective();
-                    $this->isCode = $directive ? $directive->wantCode() : false;
+                    $this->flush();
+                    $this->state = self::STATE_BEGIN;
+                }
+                break;
+
+            case self::STATE_COMMENT:
+                $isComment = false;
+
+                if (! $this->isComment($line) && (trim($line) === '' || $line[0] !== ' ')) {
                     $this->state = self::STATE_BEGIN;
                     return false;
                 }
-            }
-            break;
+                break;
 
-        default:
-            $this->getEnvironment()->getErrorManager()->error('Parser ended in an unexcepted state');
+            case self::STATE_BLOCK:
+            case self::STATE_CODE:
+                if (! $this->isBlockLine($line)) {
+                    $this->flush();
+                    $this->state = self::STATE_BEGIN;
+                    return false;
+                } else {
+                    $this->buffer[] = $line;
+                }
+                break;
+
+            case self::STATE_DIRECTIVE:
+                if (! $this->directiveAddOption($line)) {
+                    if (! $this->isDirective($line)) {
+                        $directive    = $this->getCurrentDirective();
+                        $this->isCode = $directive !== null ? $directive->wantCode() : false;
+                        $this->state  = self::STATE_BEGIN;
+                        return false;
+                    }
+
+                    $this->flush();
+                    $this->initDirective($line);
+                }
+                break;
+
+            default:
+                $this->getEnvironment()->getErrorManager()->error('Parser ended in an unexcepted state');
         }
 
         return true;
     }
 
-    /**
-     * Is this file allowed to be included?
-     */
-    public function includeFileAllowed($path)
+    public function includeFileAllowed(string $path) : bool
     {
-        if (!$this->includeAllowed) {
+        if (! $this->includeAllowed) {
             return false;
         }
-        if (!@is_readable($path)) {
+
+        if (! @is_readable($path)) {
             return false;
         }
-        if (empty($this->includeRoot)) {
+
+        if ($this->includeRoot === '') {
             return true;
         }
+
         $real = realpath($path);
+
         foreach (explode(':', $this->includeRoot) as $root) {
             if (strpos($real, $root) === 0) {
                 return true;
             }
         }
+
         return false;
     }
 
-    /**
-     * Include all files described in $document and returns the new string of the given
-     * document with includes processed
-     */
-    public function includeFiles($document)
+    public function includeFiles(string $document) : string
     {
         $environment = $this->getEnvironment();
-        $parser = $this;
+        $parser      = $this;
 
-        return preg_replace_callback('/^\.\. include:: (.+)$/m', function($match) use ($parser, $environment) {
+        return preg_replace_callback('/^\.\. include:: (.+)$/m', function ($match) use ($parser, $environment) {
             $path = $environment->absoluteRelativePath($match[1]);
             if ($parser->includeFileAllowed($path)) {
                 return $parser->includeFiles(file_get_contents($path));
-            } else {
-                return '';
             }
+
+            return '';
         }, $document);
     }
 
-    /**
-     * Process all the lines of a document string
-     */
-    protected function parseLines($document)
+    protected function parseLines(string $document) : void
     {
         // Including files
         $document = str_replace("\r\n", "\n", $document);
-        $document = "\n$document\n";
+        $document = sprintf("\n%s\n", $document);
         $document = $this->includeFiles($document);
 
         // Removing UTF-8 BOM
-        $bom = "\xef\xbb\xbf";
+        $bom      = "\xef\xbb\xbf";
         $document = str_replace($bom, '', $document);
 
-        $lines = explode("\n", $document);
+        $lines       = explode("\n", $document);
         $this->state = self::STATE_BEGIN;
 
         foreach ($lines as $n => $line) {
             $this->currentLine = $n;
-            while (!$this->parseLine($line));
+
+            while (true) {
+                if ($this->parseLine($line)) {
+                    break;
+                }
+            }
         }
 
         // Document is flushed twice to trigger the directives
@@ -772,19 +755,19 @@ class Parser
         $this->flush();
     }
 
-    /**
-     * Parse a document and return a Document instance
-     */
-    public function parse($document)
+    public function parse(string $document) : Document
     {
         $this->getEnvironment()->reset();
 
         return $this->parseLocal($document);
     }
-    public function parseLocal($document)
+
+    public function parseLocal(string $document) : Document
     {
         $this->document = $this->kernel->build('Document', $this->environment);
+
         $this->init();
+
         $this->parseLines(trim($document));
 
         foreach ($this->directives as $name => $directive) {
@@ -794,58 +777,49 @@ class Parser
         return $this->document;
     }
 
-    /**
-     * Parses a given file and return a Document instance
-     */
-    public function parseFile($file)
+    public function parseFile(string $file) : Document
     {
         $this->filename = $file;
+
         return $this->parse(file_get_contents($file));
     }
 
-    /**
-     * Gets the current filename
-     */
-    public function getFilename()
+    public function getFilename() : string
     {
         return $this->filename ?: '(unknown)';
     }
 
-    /**
-     * Gets the current line
-     */
-    public function getCurrentLine()
+    public function getCurrentLine() : int
     {
         return $this->currentLine;
     }
 
     /**
-     * Create a span, which is a text with inline style
+     * @param string|string[] $span
      */
-    public function createSpan($span)
+    public function createSpan($span) : Span
     {
         return $this->kernel->build('Span', $this, $span);
     }
 
-    public function getIncludeAllowed()
+    public function getIncludeAllowed() : bool
     {
         return $this->includeAllowed;
     }
 
-    public function getIncludeRoot()
+    public function getIncludeRoot() : string
     {
         return $this->includeRoot;
     }
 
-    /**
-     * Allow/disallow includes, or restrict them to a directory
-     */
-    public function setIncludePolicy($allow, $directory = null)
+    public function setIncludePolicy(bool $includeAllowed, ?string $directory = null) : self
     {
-        $this->includeAllowed = !empty($allow);
+        $this->includeAllowed = $includeAllowed;
+
         if ($directory !== null) {
-            $this->includeRoot = (string) $directory;
+            $this->includeRoot = $directory;
         }
+
         return $this;
     }
 }

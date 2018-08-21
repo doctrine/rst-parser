@@ -15,105 +15,98 @@ use function mkdir;
 use function shell_exec;
 use function var_export;
 
-/**
- * A builder can parses a whole directory to build the target architecture
- * of a document
- */
 class Builder
 {
     public const NO_PARSE = 1;
     public const PARSE    = 2;
 
-    // Tree index name
+    /** @var string */
     protected $indexName = 'index';
 
-    // Error manager
-    protected $errorManager = null;
+    /** @var ErrorManager */
+    protected $errorManager;
 
-    // Verbose build ?
+    /** @var bool */
     protected $verbose = true;
 
-    // Files to copy at the end of the build
-    protected $toCopy  = [];
+    /** @var string[] */
+    protected $toCopy = [];
+
+    /** @var string[] */
     protected $toMkdir = [];
 
-    // Source and target directory
+    /** @var string */
     protected $directory;
+
+    /** @var string */
     protected $targetDirectory;
 
-    // Metas for documents
+    /** @var Metas */
     protected $metas;
 
-    // States (decision) of the scanned documents
+    /** @var int */
     protected $states = [];
 
-    // Queue of documents to be parsed
+    /** @var string[] */
     protected $parseQueue = [];
 
-    // Parsed documents waiting to be rendered
+    /** @var Document[] */
     protected $documents = [];
 
-    // Kernel
+    /** @var Kernel */
     protected $kernel;
 
-    // Hooks before the parsing on the environment
+    /** @var callable[] */
     protected $beforeHooks = [];
 
-    // Hooks after the parsing
+    /** @var callable[] */
     protected $hooks = [];
 
-    // Use relative URLs
+    /** @var bool */
     protected $relativeUrls = true;
 
-    public function __construct($kernel = null)
+    public function __construct(?Kernel $kernel = null)
     {
         $this->errorManager = new ErrorManager();
 
-        if ($kernel) {
-            $this->kernel = $kernel;
-        } else {
-            $this->kernel = new HTML\Kernel();
-        }
+        $this->kernel = $kernel ?? new HTML\Kernel();
 
         $this->kernel->initBuilder($this);
     }
 
-    public function recreate()
+    public function recreate() : Builder
     {
         return new Builder($this->kernel);
     }
 
+    /**
+     * @return Document[]
+     */
     public function getDocuments() : array
     {
         return $this->documents;
     }
 
-    public function getErrorManager()
+    public function getErrorManager() : ErrorManager
     {
         return $this->errorManager;
     }
 
-    /**
-     * Adds an hook which will be called on each document after parsing
-     */
-    public function addHook($function)
+    public function addHook(callable $function) : self
     {
         $this->hooks[] = $function;
 
         return $this;
     }
 
-    /**
-     * Adds an hook which will be called on each environment during building
-     */
-    public function addBeforeHook($function)
+    public function addBeforeHook(callable $function) : self
     {
         $this->beforeHooks[] = $function;
 
         return $this;
     }
 
-    protected function display($text) : void
+    protected function display(string $text) : void
     {
         if (! $this->verbose) {
             return;
@@ -122,7 +115,7 @@ class Builder
         echo $text . "\n";
     }
 
-    public function build($directory, $targetDirectory = 'output', $verbose = true) : void
+    public function build(string $directory, string $targetDirectory = 'output', bool $verbose = true) : void
     {
         $this->verbose         = $verbose;
         $this->directory       = $directory;
@@ -158,17 +151,16 @@ class Builder
         $this->doCopy();
     }
 
-    /**
-     * Renders all the pending documents
-     */
     protected function render() : void
     {
         $this->display('* Rendering documents');
+
         foreach ($this->documents as $file => &$document) {
             $this->display(' -> Rendering ' . $file . '...');
             $target = $this->getTargetOf($file);
 
             $directory = dirname($target);
+
             if (! is_dir($directory)) {
                 mkdir($directory, 0755, true);
             }
@@ -177,10 +169,7 @@ class Builder
         }
     }
 
-    /**
-     * Adding a file to the parse queue
-     */
-    protected function addToParseQueue($file) : void
+    protected function addToParseQueue(string $file) : void
     {
         $this->states[$file] = self::PARSE;
 
@@ -191,25 +180,19 @@ class Builder
         $this->parseQueue[$file] = $file;
     }
 
-    /**
-     * Returns the next file to parse
-     */
-    protected function getFileToParse()
+    protected function getFileToParse() : ?string
     {
-        if ($this->parseQueue) {
+        if ($this->parseQueue !== []) {
             return array_shift($this->parseQueue);
         }
 
         return null;
     }
 
-    /**
-     * Parses all the document that need to be parsed
-     */
-
     protected function parseAll() : void
     {
         $this->display('* Parsing files');
+
         while ($file = $this->getFileToParse()) {
             $this->display(' -> Parsing ' . $file . '...');
             // Process the file
@@ -223,7 +206,7 @@ class Builder
 
             $environment = $parser->getEnvironment();
             $environment->setMetas($this->metas);
-            $environment->setCurrentFilename($file);
+            $environment->setCurrentFileName($file);
             $environment->setCurrentDirectory($this->directory);
             $environment->setTargetDirectory($this->targetDirectory);
             $environment->setErrorManager($this->errorManager);
@@ -245,7 +228,7 @@ class Builder
 
             $dependencies = $document->getEnvironment()->getDependencies();
 
-            if ($dependencies) {
+            if ($dependencies !== []) {
                 $this->display(' -> Scanning dependencies of ' . $file . '...');
                 // Scan the dependencies for this document
                 foreach ($dependencies as $dependency) {
@@ -266,11 +249,7 @@ class Builder
         }
     }
 
-    /**
-     * Scans a file, this will check the status of the file and tell if it
-     * needs to be parsed or not
-     */
-    public function scan($file) : void
+    public function scan(string $file) : void
     {
         // If no decision is already made about this file
         if (isset($this->states[$file])) {
@@ -282,7 +261,7 @@ class Builder
         $entry               = $this->metas->get($file);
         $rst                 = $this->getRST($file);
 
-        if (! $entry || ! file_exists($rst) || $entry['ctime'] < filectime($rst)) {
+        if ($entry === null || ! file_exists($rst) || $entry['ctime'] < filectime($rst)) {
             // File was never seen or changed and thus need to be parsed
             $this->addToParseQueue($file);
         } else {
@@ -308,9 +287,6 @@ class Builder
         }
     }
 
-    /**
-     * Scans all the metas
-     */
     public function scanMetas() : void
     {
         $entries = $this->metas->getAll();
@@ -320,19 +296,16 @@ class Builder
         }
     }
 
-    /**
-     * Get the meta file name
-     */
-    protected function getMetaFile()
+    protected function getMetaFile() : string
     {
         return $this->getTargetFile('meta.php');
     }
 
 
     /**
-     * Try to inport the metas from the meta files
+     * @return mixed[]
      */
-    protected function loadMetas()
+    protected function loadMetas() : ?array
     {
         $metaFile = $this->getMetaFile();
 
@@ -343,70 +316,51 @@ class Builder
         return null;
     }
 
-    /**
-     * Saving the meta files
-     */
     protected function saveMetas() : void
     {
         $metas = '<?php return ' . var_export($this->metas->getAll(), true) . ';';
+
         file_put_contents($this->getMetaFile(), $metas);
     }
 
-    /**
-     * Gets the .rst of a source file
-     */
-    public function getRST($file)
+    public function getRST(string $file) : string
     {
         return $this->getSourceFile($file . '.rst');
     }
 
-    /**
-     * Gets the name of a target for a file, for instance /introduction/part1 could
-     * be resolved into /path/to/introduction/part1.html
-     */
-    public function getTargetOf($file)
+    public function getTargetOf(string $file) : string
     {
         $meta = $this->metas->get($file);
 
         return $this->getTargetFile($meta['url']);
     }
 
-    /**
-     * Gets the URL of a target file
-     */
-    public function getUrl($document)
+    public function getUrl(Document $document) : string
     {
         $environment = $document->getEnvironment();
 
         return $environment->getUrl() . '.' . $this->kernel->getFileExtension();
     }
 
-    /**
-     * Gets the name of a target file
-     */
-    public function getTargetFile($filename)
+    public function getTargetFile(string $filename) : string
     {
         return $this->targetDirectory . '/' . $filename;
     }
 
-    /**
-     * Gets the name of a source file
-     */
-    public function getSourceFile($filename)
+    public function getSourceFile(string $filename) : string
     {
         return $this->directory . '/' . $filename;
     }
 
-    /**
-     * Run the copy
-     */
     public function doCopy() : void
     {
         foreach ($this->toCopy as $copy) {
             list($source, $destination) = $copy;
+
             if ($source[0] !== '/') {
                 $source = $this->getSourceFile($source);
             }
+
             $destination = $this->getTargetFile($destination);
 
             if (is_dir($source) && is_dir($destination)) {
@@ -417,10 +371,7 @@ class Builder
         }
     }
 
-    /**
-     * Add a file to copy
-     */
-    public function copy($source, $destination = null)
+    public function copy(string $source, ?string $destination = null) : self
     {
         if ($destination === null) {
             $destination = basename($source);
@@ -431,9 +382,6 @@ class Builder
         return $this;
     }
 
-    /**
-     * Run the directories creation
-     */
     public function doMkdir() : void
     {
         foreach ($this->toMkdir as $mkdir) {
@@ -447,35 +395,27 @@ class Builder
         }
     }
 
-    /**
-     * Creates a directory in the target
-     *
-     * @param $directory the directory name to create
-     */
-    public function mkdir($directory)
+    public function mkdir(string $directory) : self
     {
         $this->toMkdir[] = $directory;
 
         return $this;
     }
 
-    public function setIndexName($name)
+    public function setIndexName(string $name) : self
     {
         $this->indexName = $name;
 
         return $this;
     }
 
-    public function getIndexName()
+    public function getIndexName() : string
     {
         return $this->indexName;
     }
 
-    /**
-     * Use relative URLs for links
-     */
-    public function setUseRelativeUrls($enable) : void
+    public function setUseRelativeUrls(bool $relativeUrls) : void
     {
-        $this->relativeUrls = $enable;
+        $this->relativeUrls = $relativeUrls;
     }
 }

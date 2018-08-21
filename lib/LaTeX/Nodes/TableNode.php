@@ -17,7 +17,7 @@ class TableNode extends Base
 
         $rows = [];
         foreach ($this->data as &$row) {
-            if (! $row) {
+            if ($row === []) {
                 continue;
             }
 
@@ -33,9 +33,11 @@ class TableNode extends Base
 
                 $rowTex .= ' & ';
             }
+
             $rowTex .= ' \\\\' . "\n";
             $rows[]  = $rowTex;
         }
+
         $aligns = [];
         for ($i=0; $i<$cols; $i++) {
             $aligns[] = 'l';

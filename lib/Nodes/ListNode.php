@@ -9,6 +9,7 @@ use function count;
 
 abstract class ListNode extends Node
 {
+    /** @var string[][] */
     protected $lines = [];
 
     /**
@@ -18,6 +19,8 @@ abstract class ListNode extends Node
      * - depth: the depth in the list level
      * - prefix: the prefix char (*, - etc.)
      * - ordered: true of false if the list is ordered
+     *
+     * @param string[] $line
      */
     public function addLine(array $line) : void
     {
@@ -68,5 +71,9 @@ abstract class ListNode extends Node
     }
 
     abstract protected function createElement(string $text, string $prefix) : string;
+
+    /**
+     * @return string[]
+     */
     abstract protected function createList(bool $ordered) : array;
 }

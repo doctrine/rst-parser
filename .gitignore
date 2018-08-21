@@ -1,2 +1,4 @@
-**.swp
+/**.swp
 /vendor/
+/.phpcs-cache
+

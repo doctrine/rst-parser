@@ -13,43 +13,50 @@ use function utf8_encode;
 
 abstract class TableNode extends Node
 {
-    protected $parts;
-    protected $data    = [];
+    /** @var string[] */
+    protected $parts = [];
+
+    /** @var string[] */
+    protected $data = [];
+
+    /** @var string[] */
     protected $headers = [];
 
-    public function __construct($parts)
+    /**
+     * @param string[] $parts
+     */
+    public function __construct(array $parts)
     {
+        parent::__construct();
+
         $this->parts  = $parts;
         $this->data[] = [];
     }
 
-    /**
-     * Gets the columns count of the table
-     */
-    public function getCols()
+    public function getCols() : int
     {
         return count($this->parts[2]);
     }
 
-    /**
-     * Gets the rows count of the table
-     */
-    public function getRows()
+    public function getRows() : int
     {
         return count($this->data)-1;
     }
 
-    public function push($parts, $line)
+    /**
+     * @param string[] $parts
+     */
+    public function push(?array $parts, string $line) : bool
     {
         $line = utf8_decode($line);
 
-        if ($parts) {
+        if ($parts !== null) {
             // New line in the tab
             if ($parts[2] !== $this->parts[2]) {
                 return false;
             }
 
-            if ($parts[0]) {
+            if ($parts[0] === true) {
                 $this->headers[count($this->data)-1] = true;
             }
             $this->data[] = [];
@@ -85,7 +92,7 @@ abstract class TableNode extends Node
     public function finalize(Parser $parser) : void
     {
         foreach ($this->data as &$row) {
-            if (! $row) {
+            if ($row === []) {
                 continue;
             }
 

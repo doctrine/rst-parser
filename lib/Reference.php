@@ -22,30 +22,30 @@ abstract class Reference
     /**
      * Resolve the reference and returns an array
      *
-     * @param $environment the Environment in use
-     * @param $data the data of the reference
+     * @param Environment $environment the Environment in use
+     * @param string      $data        the data of the reference
      *
-     * @return array an array with key title and url
+     * @return string[] array an array with key title and url
      */
-    abstract public function resolve(Environment $environment, $data) : ?array;
+    abstract public function resolve(Environment $environment, string $data) : ?array;
 
     /**
      * Resolve the reference by text and returns an array
      *
-     * @param $environment the Environment in use
-     * @param $text the text label of the reference
+     * @param Environment $environment the Environment in use
+     * @param string      $text        the text label of the reference
      *
-     * @return array an array with key title and url
+     * @return string[] an array with key title and url
      */
-    abstract public function resolveByText(Environment $environment, $text) : array;
+    abstract public function resolveByText(Environment $environment, string $text) : array;
 
     /**
      * Called when a reference is just found
      *
-     * @param $environment the Environment in use
-     * @param $data the data of the reference
+     * @param Environment $environment the Environment in use
+     * @param string      $data        the data of the reference
      */
-    public function found(Environment $environment, $data) : void
+    public function found(Environment $environment, string $data) : void
     {
     }
 }

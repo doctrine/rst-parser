@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Gregwar\RST;
 
+use Gregwar\RST\Nodes\Node;
+
 /**
  * A directive is like a function you can call or apply to a block
  * Il looks like:
@@ -30,20 +32,20 @@ abstract class Directive
      *
      * The node that directly follows the directive is also passed to it
      *
-     * @param $parser the calling parser
-     * @param $node the node that follows the directive
-     * @param $variable the variable name of the directive
-     * @param $data the data of the directive (following ::)
-     * @param $ptions the array of options for this directive
+     * @param Parser    $parser   the calling parser
+     * @param null|Node $node     the node that follows the directive
+     * @param string    $variable the variable name of the directive
+     * @param string    $data     the data of the directive (following ::)
+     * @param string[]  $options  the array of options for this directive
      */
-    public function process(Parser $parser, $node, $variable, $data, array $options) : void
+    public function process(Parser $parser, ?Node $node, string $variable, string $data, array $options) : void
     {
         $document = $parser->getDocument();
 
         $processNode = $this->processNode($parser, $variable, $data, $options);
 
-        if ($processNode) {
-            if ($variable) {
+        if ($processNode !== null) {
+            if ($variable !== '') {
                 $environment = $parser->getEnvironment();
                 $environment->setVariable($variable, $processNode);
             } else {
@@ -51,7 +53,7 @@ abstract class Directive
             }
         }
 
-        if (! $node) {
+        if ($node === null) {
             return;
         }
 
@@ -63,8 +65,10 @@ abstract class Directive
      * document, which is common
      *
      * The arguments are the same that process
+     *
+     * @param string[] $options
      */
-    public function processNode(Parser $parser, $variable, $data, array $options)
+    public function processNode(Parser $parser, string $variable, string $data, array $options) : ?Node
     {
         $this->processAction($parser, $variable, $data, $options);
 
@@ -76,8 +80,10 @@ abstract class Directive
      * the nodes of the document
      *
      * The arguments are the same that process
+     *
+     * @param string[] $options
      */
-    public function processAction(Parser $parser, $variabe, $data, array $options) : void
+    public function processAction(Parser $parser, string $variable, string $data, array $options) : void
     {
     }
 
@@ -91,7 +97,7 @@ abstract class Directive
     /**
      * Should the following block be passed as a CodeNode?
      */
-    public function wantCode()
+    public function wantCode() : bool
     {
         return false;
     }

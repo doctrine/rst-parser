@@ -19,6 +19,9 @@ class ListNode extends Base
         return '<li' . $class . '>' . $text . '</li>';
     }
 
+    /**
+     * @return string[]
+     */
     protected function createList(bool $ordered) : array
     {
         $keyword = $ordered ? 'ol' : 'ul';

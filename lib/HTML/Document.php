@@ -28,20 +28,23 @@ class Document extends Base
 
         $document .= "<head>\n";
         $document .= "<meta charset=\"utf-8\" />\n";
+
         foreach ($this->headerNodes as $node) {
             $document .= $node->render() . "\n";
         }
+
         $document .= "</head>\n";
 
         $document .= "<body>\n";
         $document .= $this->render();
         $document .= "</body>\n";
+
         $document .= "</html>\n";
 
         return $document;
     }
 
-    public function addCss($css) : void
+    public function addCss(string $css) : void
     {
         $environment = $this->getEnvironment();
         $css         = $environment->relativeUrl($css);
@@ -49,7 +52,7 @@ class Document extends Base
         $this->addHeaderNode(new RawNode('<link rel="stylesheet" type="text/css" href="' . htmlspecialchars($css) . '" />'));
     }
 
-    public function addJs($js) : void
+    public function addJs(string $js) : void
     {
         $environment = $this->getEnvironment();
         $js          = $environment->relativeUrl($js);
@@ -57,7 +60,7 @@ class Document extends Base
         $this->addHeaderNode(new RawNode('<script type="text/javascript" src="' . htmlspecialchars($js) . '"></script>'));
     }
 
-    public function addFavicon($url = '/favicon.ico') : void
+    public function addFavicon(string $url = '/favicon.ico') : void
     {
         $environment = $this->getEnvironment();
         $url         = $environment->relativeUrl($url);

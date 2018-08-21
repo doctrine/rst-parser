@@ -6,6 +6,7 @@ namespace Gregwar\RST\Directives;
 
 use Gregwar\RST\Directive;
 use Gregwar\RST\Nodes\DocumentNode;
+use Gregwar\RST\Nodes\Node;
 use Gregwar\RST\Parser;
 
 /**
@@ -20,7 +21,10 @@ class Document extends Directive
         return 'document';
     }
 
-    public function processNode(Parser $parser, $variable, $data, array $options)
+    /**
+     * @param string[] $options
+     */
+    public function processNode(Parser $parser, string $variable, string $data, array $options) : ?Node
     {
         return new DocumentNode();
     }

@@ -6,6 +6,7 @@ namespace Gregwar\RST\Directives;
 
 use Gregwar\RST\Directive;
 use Gregwar\RST\Nodes\DummyNode;
+use Gregwar\RST\Nodes\Node;
 use Gregwar\RST\Parser;
 
 class Dummy extends Directive
@@ -15,7 +16,10 @@ class Dummy extends Directive
         return 'dummy';
     }
 
-    public function processNode(Parser $parser, $variable, $data, array $options)
+    /**
+     * @param string[] $options
+     */
+    public function processNode(Parser $parser, string $variable, string $data, array $options) : ?Node
     {
         return new DummyNode(['data' => $data, 'options' => $options]);
     }

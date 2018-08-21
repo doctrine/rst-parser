@@ -6,20 +6,23 @@ namespace Gregwar\RST\Nodes;
 
 abstract class CodeNode extends BlockNode
 {
-    protected $raw      = false;
+    /** @var bool */
+    protected $raw = false;
+
+    /** @var null|string */
     protected $language = null;
 
-    public function setLanguage($language = null) : void
+    public function setLanguage(?string $language = null) : void
     {
         $this->language = $language;
     }
 
-    public function getLanguage()
+    public function getLanguage() : ?string
     {
         return $this->language;
     }
 
-    public function setRaw($raw) : void
+    public function setRaw(bool $raw) : void
     {
         $this->raw = $raw;
     }

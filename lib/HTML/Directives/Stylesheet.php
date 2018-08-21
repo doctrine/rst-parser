@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Gregwar\RST\HTML\Directives;
 
 use Gregwar\RST\Directive;
+use Gregwar\RST\HTML\Document;
+use Gregwar\RST\Nodes\Node;
 use Gregwar\RST\Parser;
 
 /**
@@ -19,13 +21,17 @@ class Stylesheet extends Directive
         return 'stylesheet';
     }
 
-    public function process(Parser $parser, $node, $variable, $data, array $options) : void
+    /**
+     * @param string[] $options
+     */
+    public function process(Parser $parser, ?Node $node, string $variable, string $data, array $options) : void
     {
+        /** @var Document $document */
         $document = $parser->getDocument();
 
         $document->addCss($data);
 
-        if (! $node) {
+        if ($node === null) {
             return;
         }
 

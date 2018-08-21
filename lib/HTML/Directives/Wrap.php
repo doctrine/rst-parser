@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Gregwar\RST\HTML\Directives;
 
+use Gregwar\RST\Nodes\Node;
 use Gregwar\RST\Nodes\WrapperNode;
 use Gregwar\RST\Parser;
 use Gregwar\RST\SubDirective;
@@ -14,10 +15,13 @@ use function uniqid;
  */
 class Wrap extends SubDirective
 {
+    /** @var string */
     protected $class;
+
+    /** @var bool */
     protected $uniqid;
 
-    public function __construct($class, $uniqid = false)
+    public function __construct(string $class, bool $uniqid = false)
     {
         $this->class  = $class;
         $this->uniqid = $uniqid;
@@ -28,14 +32,19 @@ class Wrap extends SubDirective
         return $this->class;
     }
 
-    public function processSub(Parser $parser, $document, $variable, $data, array $options)
+    /**
+     * @param string[] $options
+     */
+    public function processSub(Parser $parser, ?Node $document, string $variable, string $data, array $options) : ?Node
     {
         $class = $this->class;
+
         if ($this->uniqid) {
             $id = ' id="' . uniqid($this->class) . '"';
         } else {
             $id = '';
         }
+
         return new WrapperNode($document, '<div class="' . $class . '"' . $id . '>', '</div>');
     }
 }

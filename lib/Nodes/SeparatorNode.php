@@ -6,10 +6,13 @@ namespace Gregwar\RST\Nodes;
 
 abstract class SeparatorNode extends Node
 {
+    /** @var int */
     protected $level;
 
-    public function __construct($level)
+    public function __construct(int $level)
     {
+        parent::__construct();
+
         $this->level = $level;
     }
 }

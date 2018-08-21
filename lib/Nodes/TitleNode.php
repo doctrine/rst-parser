@@ -6,28 +6,34 @@ namespace Gregwar\RST\Nodes;
 
 abstract class TitleNode extends Node
 {
+    /** @var int */
     protected $level;
-    protected $token;
-    protected $target = null;
 
-    public function __construct($value, $level, $token)
+    /** @var string */
+    protected $token;
+
+    /** @var string */
+    protected $target = '';
+
+    public function __construct(Node $value, int $level, string $token)
     {
         parent::__construct($value);
+
         $this->level = $level;
         $this->token = $token;
     }
 
-    public function getLevel()
+    public function getLevel() : int
     {
         return $this->level;
     }
 
-    public function setTarget($target) : void
+    public function setTarget(string $target) : void
     {
         $this->target = $target;
     }
 
-    public function getTarget()
+    public function getTarget() : string
     {
         return $this->target;
     }

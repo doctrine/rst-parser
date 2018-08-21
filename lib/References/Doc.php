@@ -10,9 +10,10 @@ use function trim;
 
 class Doc extends Reference
 {
+    /** @var string */
     protected $name;
 
-    public function __construct($name = 'doc')
+    public function __construct(string $name = 'doc')
     {
         $this->name = $name;
     }
@@ -22,12 +23,15 @@ class Doc extends Reference
         return $this->name;
     }
 
-    public function resolve(Environment $environment, $data) : ?array
+    /**
+     * @return string[]
+     */
+    public function resolve(Environment $environment, string $data) : ?array
     {
         $metas = $environment->getMetas();
         $file  = $environment->canonicalUrl($data);
 
-        if ($metas) {
+        if ($metas !== null) {
             $entry = $metas->get($file);
 
             // only call relativeUrl() if a document was found
@@ -45,7 +49,10 @@ class Doc extends Reference
         return $entry;
     }
 
-    public function resolveByText(Environment $environment, $text) : array
+    /**
+     * @return string[]
+     */
+    public function resolveByText(Environment $environment, string $text) : array
     {
         $text = trim($text);
 
@@ -53,7 +60,7 @@ class Doc extends Reference
 
         $entry = null;
 
-        if ($metas) {
+        if ($metas !== null) {
             // try to lookup the document reference by title
             foreach ($metas->getAll() as $e) {
                 if (trim($e['title']) === $text) {
@@ -72,7 +79,7 @@ class Doc extends Reference
 
             // only call relativeUrl() if a document was found
             // so we can later try to link to an anchor in this document
-            if ($entry['url']) {
+            if ($entry['url'] !== '') {
                 $entry['url'] = $environment->relativeUrl('/' . $entry['url']);
             }
         } else {
@@ -85,11 +92,14 @@ class Doc extends Reference
         return $entry;
     }
 
-    public function found(Environment $environment, $data) : void
+    public function found(Environment $environment, string $data) : void
     {
         $environment->addDependency($data);
     }
 
+    /**
+     * @param string[] $titles
+     */
     private function findEntryByText(array $titles, string $text) : bool
     {
         foreach ($titles as $title) {
