@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Gregwar\RST\LaTeX;
+namespace Doctrine\RST\LaTeX;
 
-use Gregwar\RST\Document as Base;
-use Gregwar\RST\LaTeX\Nodes\LaTeXMainNode;
+use Doctrine\RST\Document as Base;
+use Doctrine\RST\LaTeX\Nodes\LaTeXMainNode;
 use function count;
 
 class Document extends Base

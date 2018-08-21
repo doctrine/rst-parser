@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Gregwar\RST\LaTeX;
+namespace Doctrine\RST\LaTeX;
 
-use Gregwar\RST\Environment as Base;
+use Doctrine\RST\Environment as Base;
 
 class Environment extends Base
 {

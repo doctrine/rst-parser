@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Gregwar\RST\LaTeX\Nodes;
+namespace Doctrine\RST\LaTeX\Nodes;
 
-use Gregwar\RST\Nodes\SeparatorNode as Base;
+use Doctrine\RST\Nodes\SeparatorNode as Base;
 
 class SeparatorNode extends Base
 {

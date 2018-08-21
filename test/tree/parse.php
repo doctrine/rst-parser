@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 include '../../autoload.php';
 
-use Gregwar\RST\Builder;
+use Doctrine\RST\Builder;
 
 try {
     // Build the 'input' files to the 'output' directory

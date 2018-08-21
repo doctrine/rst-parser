@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Gregwar\RST\Directives;
+namespace Doctrine\RST\Directives;
 
-use Gregwar\RST\Directive;
-use Gregwar\RST\Nodes\Node;
-use Gregwar\RST\Nodes\TitleNode;
-use Gregwar\RST\Parser;
+use Doctrine\RST\Directive;
+use Doctrine\RST\Nodes\Node;
+use Doctrine\RST\Nodes\TitleNode;
+use Doctrine\RST\Parser;
 
 /**
  * This sets a new target for a following title, this can be used to change

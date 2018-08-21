@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Gregwar\RST\Directives;
+namespace Doctrine\RST\Directives;
 
-use Gregwar\RST\Directive;
-use Gregwar\RST\Nodes\DocumentNode;
-use Gregwar\RST\Nodes\Node;
-use Gregwar\RST\Parser;
+use Doctrine\RST\Directive;
+use Doctrine\RST\Nodes\DocumentNode;
+use Doctrine\RST\Nodes\Node;
+use Doctrine\RST\Parser;
 
 /**
  * Tell that this is a document, in the case of LaTeX for instance,

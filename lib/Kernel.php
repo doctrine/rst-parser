@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Gregwar\RST;
+namespace Doctrine\RST;
 
-use Gregwar\RST\Nodes\Node;
-use Gregwar\RST\References\Doc;
+use Doctrine\RST\Nodes\Node;
+use Doctrine\RST\References\Doc;
 
 abstract class Kernel
 {
@@ -13,7 +13,7 @@ abstract class Kernel
 
     public function getClass(string $name) : string
     {
-        return 'Gregwar\RST\\' . $this->getName() . '\\' . $name;
+        return 'Doctrine\RST\\' . $this->getName() . '\\' . $name;
     }
 
     /**

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Gregwar\RST;
+namespace Doctrine\RST;
 
-use Gregwar\RST\Nodes\Node;
+use Doctrine\RST\Nodes\Node;
 
 /**
  * A directive is like a function you can call or apply to a block

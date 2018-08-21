@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Gregwar\RST\HTML;
+namespace Doctrine\RST\HTML;
 
-use Gregwar\RST\Directive;
-use Gregwar\RST\Kernel as Base;
+use Doctrine\RST\Directive;
+use Doctrine\RST\Kernel as Base;
 use function array_merge;
 
 class Kernel extends Base

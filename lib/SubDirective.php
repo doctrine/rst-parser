@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Gregwar\RST;
+namespace Doctrine\RST;
 
-use Gregwar\RST\Nodes\CodeNode;
-use Gregwar\RST\Nodes\Node;
+use Doctrine\RST\Nodes\CodeNode;
+use Doctrine\RST\Nodes\Node;
 
 /**
  * A directive that parses the sub block and call the processSub that can

@@ -2,11 +2,11 @@
 .. title:: Demo document
 .. stylesheet:: style.css
 .. meta::
-    :description: A demo Gregwar/RST document
+    :description: A demo Doctrine/RST document
 
 .. .. this is a comment!
 
-Gregwar/RST Sandbox
+Doctrine/RST Sandbox
 ===================
 
 Reference to :doc:`HoHo <some/doc>`

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Gregwar\RST\LaTeX\Directives;
+namespace Doctrine\RST\LaTeX\Directives;
 
-use Gregwar\RST\Directive;
-use Gregwar\RST\LaTeX\Nodes\ImageNode;
-use Gregwar\RST\Nodes\Node;
-use Gregwar\RST\Parser;
+use Doctrine\RST\Directive;
+use Doctrine\RST\LaTeX\Nodes\ImageNode;
+use Doctrine\RST\Nodes\Node;
+use Doctrine\RST\Parser;
 
 /**
  * Renders an image, example :

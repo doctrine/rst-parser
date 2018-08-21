@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Gregwar\RST\LaTeX\Nodes;
+namespace Doctrine\RST\LaTeX\Nodes;
 
-use Gregwar\RST\Nodes\QuoteNode as Base;
+use Doctrine\RST\Nodes\QuoteNode as Base;
 
 class QuoteNode extends Base
 {

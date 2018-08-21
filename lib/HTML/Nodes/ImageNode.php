@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Gregwar\RST\HTML\Nodes;
+namespace Doctrine\RST\HTML\Nodes;
 
-use Gregwar\RST\Nodes\ImageNode as Base;
+use Doctrine\RST\Nodes\ImageNode as Base;
 use function htmlspecialchars;
 
 class ImageNode extends Base

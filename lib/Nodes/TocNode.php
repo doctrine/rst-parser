@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Gregwar\RST\Nodes;
+namespace Doctrine\RST\Nodes;
 
-use Gregwar\RST\Environment;
+use Doctrine\RST\Environment;
 
 abstract class TocNode extends Node
 {

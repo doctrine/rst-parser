@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Gregwar\RST\HTML\Directives;
+namespace Doctrine\RST\HTML\Directives;
 
-use Gregwar\RST\HTML\Nodes\FigureNode;
-use Gregwar\RST\HTML\Nodes\ImageNode;
-use Gregwar\RST\Nodes\Node;
-use Gregwar\RST\Parser;
-use Gregwar\RST\SubDirective;
+use Doctrine\RST\HTML\Nodes\FigureNode;
+use Doctrine\RST\HTML\Nodes\ImageNode;
+use Doctrine\RST\Nodes\Node;
+use Doctrine\RST\Parser;
+use Doctrine\RST\SubDirective;
 
 /**
  * Renders an image, example :

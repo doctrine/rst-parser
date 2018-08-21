@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Gregwar\RST\HTML\Nodes;
+namespace Doctrine\RST\HTML\Nodes;
 
-use Gregwar\RST\Nodes\FigureNode as Base;
+use Doctrine\RST\Nodes\FigureNode as Base;
 use function trim;
 
 class FigureNode extends Base

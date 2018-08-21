@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Gregwar\RST\Nodes;
+namespace Doctrine\RST\Nodes;
 
 use function array_pop;
 use function count;

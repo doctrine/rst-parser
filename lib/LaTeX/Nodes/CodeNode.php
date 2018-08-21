@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Gregwar\RST\LaTeX\Nodes;
+namespace Doctrine\RST\LaTeX\Nodes;
 
-use Gregwar\RST\Nodes\CodeNode as Base;
+use Doctrine\RST\Nodes\CodeNode as Base;
 
 class CodeNode extends Base
 {

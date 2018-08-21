@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Gregwar\RST\LaTeX\Nodes;
+namespace Doctrine\RST\LaTeX\Nodes;
 
-use Gregwar\RST\Nodes\TocNode as Base;
+use Doctrine\RST\Nodes\TocNode as Base;
 
 class TocNode extends Base
 {

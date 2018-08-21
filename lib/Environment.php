@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Gregwar\RST;
+namespace Doctrine\RST;
 
 use function array_pop;
 use function array_shift;

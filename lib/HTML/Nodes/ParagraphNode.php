@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Gregwar\RST\HTML\Nodes;
+namespace Doctrine\RST\HTML\Nodes;
 
-use Gregwar\RST\Nodes\ParagraphNode as Base;
+use Doctrine\RST\Nodes\ParagraphNode as Base;
 use function trim;
 
 class ParagraphNode extends Base

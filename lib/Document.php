@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Gregwar\RST;
+namespace Doctrine\RST;
 
-use Gregwar\RST\Nodes\Node;
-use Gregwar\RST\Nodes\RawNode;
-use Gregwar\RST\Nodes\TitleNode;
-use Gregwar\RST\Nodes\TocNode;
+use Doctrine\RST\Nodes\Node;
+use Doctrine\RST\Nodes\RawNode;
+use Doctrine\RST\Nodes\TitleNode;
+use Doctrine\RST\Nodes\TocNode;
 use function array_unshift;
 use function count;
 use function is_string;

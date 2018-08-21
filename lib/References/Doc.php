@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Gregwar\RST\References;
+namespace Doctrine\RST\References;
 
-use Gregwar\RST\Environment;
-use Gregwar\RST\Reference;
+use Doctrine\RST\Environment;
+use Doctrine\RST\Reference;
 use function trim;
 
 class Doc extends Reference

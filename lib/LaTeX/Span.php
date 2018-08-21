@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Gregwar\RST\LaTeX;
+namespace Doctrine\RST\LaTeX;
 
-use Gregwar\RST\Span as Base;
+use Doctrine\RST\Span as Base;
 use function substr;
 use function trim;
 

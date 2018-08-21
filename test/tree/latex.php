@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 include '../../autoload.php';
 
-use Gregwar\RST\Builder;
-use Gregwar\RST\LaTeX\Kernel;
+use Doctrine\RST\Builder;
+use Doctrine\RST\LaTeX\Kernel;
 
 try {
     // Build the 'input' files to the 'output' directory

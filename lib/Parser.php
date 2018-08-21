@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Gregwar\RST;
+namespace Doctrine\RST;
 
-use Gregwar\RST\HTML\Kernel;
-use Gregwar\RST\Nodes\ListNode;
-use Gregwar\RST\Nodes\QuoteNode;
-use Gregwar\RST\Nodes\TableNode;
+use Doctrine\RST\HTML\Kernel;
+use Doctrine\RST\Nodes\ListNode;
+use Doctrine\RST\Nodes\QuoteNode;
+use Doctrine\RST\Nodes\TableNode;
 use function array_pop;
 use function count;
 use function explode;

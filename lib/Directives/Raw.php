@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Gregwar\RST\Directives;
+namespace Doctrine\RST\Directives;
 
-use Gregwar\RST\Directive;
-use Gregwar\RST\Nodes\CodeNode;
-use Gregwar\RST\Nodes\Node;
-use Gregwar\RST\Parser;
+use Doctrine\RST\Directive;
+use Doctrine\RST\Nodes\CodeNode;
+use Doctrine\RST\Nodes\Node;
+use Doctrine\RST\Parser;
 
 /**
  * Renders a raw block, example:

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Gregwar\RST\LaTeX\Directives;
+namespace Doctrine\RST\LaTeX\Directives;
 
-use Gregwar\RST\Directive;
-use Gregwar\RST\Nodes\Node;
-use Gregwar\RST\Nodes\RawNode;
-use Gregwar\RST\Parser;
+use Doctrine\RST\Directive;
+use Doctrine\RST\Nodes\Node;
+use Doctrine\RST\Nodes\RawNode;
+use Doctrine\RST\Parser;
 
 /**
  * Add a meta title to the document

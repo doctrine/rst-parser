@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Gregwar\RST\Nodes;
+namespace Doctrine\RST\Nodes;
 
-use Gregwar\RST\Document;
+use Doctrine\RST\Document;
 
 abstract class FigureNode extends Node
 {

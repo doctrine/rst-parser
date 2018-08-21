@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Gregwar\RST\Directives;
+namespace Doctrine\RST\Directives;
 
-use Gregwar\RST\Directive;
-use Gregwar\RST\Environment;
-use Gregwar\RST\Nodes\Node;
-use Gregwar\RST\Parser;
+use Doctrine\RST\Directive;
+use Doctrine\RST\Environment;
+use Doctrine\RST\Nodes\Node;
+use Doctrine\RST\Parser;
 use function array_merge;
 use function count;
 use function explode;

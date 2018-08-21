@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Gregwar\RST\HTML\Directives;
+namespace Doctrine\RST\HTML\Directives;
 
-use Gregwar\RST\Nodes\Node;
-use Gregwar\RST\Nodes\WrapperNode;
-use Gregwar\RST\Parser;
-use Gregwar\RST\SubDirective;
+use Doctrine\RST\Nodes\Node;
+use Doctrine\RST\Nodes\WrapperNode;
+use Doctrine\RST\Parser;
+use Doctrine\RST\SubDirective;
 use function uniqid;
 
 /**

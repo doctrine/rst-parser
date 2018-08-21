@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Gregwar\RST\Builder;
+use Doctrine\RST\Builder;
 use PHPUnit\Framework\TestCase;
 
 /**

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Gregwar\RST\HTML;
+namespace Doctrine\RST\HTML;
 
-use Gregwar\RST\Span as Base;
+use Doctrine\RST\Span as Base;
 use function htmlspecialchars;
 use function trim;
 

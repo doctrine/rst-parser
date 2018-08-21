@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Gregwar\RST\HTML\Directives;
+namespace Doctrine\RST\HTML\Directives;
 
-use Gregwar\RST\Directive;
-use Gregwar\RST\Parser;
+use Doctrine\RST\Directive;
+use Doctrine\RST\Parser;
 use function trim;
 
 /**

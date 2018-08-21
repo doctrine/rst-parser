@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Gregwar\RST\HTML\Nodes;
+namespace Doctrine\RST\HTML\Nodes;
 
-use Gregwar\RST\Environment;
-use Gregwar\RST\Nodes\TitleNode as Base;
+use Doctrine\RST\Environment;
+use Doctrine\RST\Nodes\TitleNode as Base;
 
 class TitleNode extends Base
 {

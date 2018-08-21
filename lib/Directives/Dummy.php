@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Gregwar\RST\Directives;
+namespace Doctrine\RST\Directives;
 
-use Gregwar\RST\Directive;
-use Gregwar\RST\Nodes\DummyNode;
-use Gregwar\RST\Nodes\Node;
-use Gregwar\RST\Parser;
+use Doctrine\RST\Directive;
+use Doctrine\RST\Nodes\DummyNode;
+use Doctrine\RST\Nodes\Node;
+use Doctrine\RST\Parser;
 
 class Dummy extends Directive
 {

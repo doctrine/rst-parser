@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Gregwar\RST;
+namespace Doctrine\RST;
 
-use Gregwar\RST\Nodes\Node;
+use Doctrine\RST\Nodes\Node;
 use function htmlspecialchars;
 use function implode;
 use function is_array;

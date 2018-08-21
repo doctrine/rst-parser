@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-use Gregwar\RST\Document;
-use Gregwar\RST\Nodes\CodeNode;
-use Gregwar\RST\Nodes\DummyNode;
-use Gregwar\RST\Nodes\ListNode;
-use Gregwar\RST\Nodes\Node;
-use Gregwar\RST\Nodes\ParagraphNode;
-use Gregwar\RST\Nodes\QuoteNode;
-use Gregwar\RST\Nodes\TableNode;
-use Gregwar\RST\Nodes\TitleNode;
-use Gregwar\RST\Parser;
+use Doctrine\RST\Document;
+use Doctrine\RST\Nodes\CodeNode;
+use Doctrine\RST\Nodes\DummyNode;
+use Doctrine\RST\Nodes\ListNode;
+use Doctrine\RST\Nodes\Node;
+use Doctrine\RST\Nodes\ParagraphNode;
+use Doctrine\RST\Nodes\QuoteNode;
+use Doctrine\RST\Nodes\TableNode;
+use Doctrine\RST\Nodes\TitleNode;
+use Doctrine\RST\Parser;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -290,9 +290,9 @@ class ParserTests extends TestCase
         $nodes = $this->parse('inclusion-newline.rst')->getNodes();
 
         $this->assertCount(3, $nodes);
-        $this->assertInstanceOf('Gregwar\RST\Nodes\TitleNode', $nodes[0]);
-        $this->assertInstanceOf('Gregwar\RST\Nodes\ParagraphNode', $nodes[1]);
-        $this->assertInstanceOf('Gregwar\RST\Nodes\ParagraphNode', $nodes[2]);
+        $this->assertInstanceOf('Doctrine\RST\Nodes\TitleNode', $nodes[0]);
+        $this->assertInstanceOf('Doctrine\RST\Nodes\ParagraphNode', $nodes[1]);
+        $this->assertInstanceOf('Doctrine\RST\Nodes\ParagraphNode', $nodes[2]);
         $this->assertContains('<p>Test this paragraph is present.</p>', $nodes[1]->render());
         $this->assertContains('<p>And this one as well.</p>', $nodes[2]->render());
     }
@@ -308,7 +308,7 @@ class ParserTests extends TestCase
         $this->assertEquals("This first example will be parsed at the document level, and can\nthus contain any construct, including section headers.", $nodes[0]->getValue()->render());
         $this->assertEquals('This is included.', $nodes[1]->getValue()->render());
         $this->assertEquals('Back in the main document.', $nodes[2]->getValue()->render());
-        $this->assertInstanceOf('Gregwar\RST\Nodes\QuoteNode', $nodes[3]);
+        $this->assertInstanceOf('Doctrine\RST\Nodes\QuoteNode', $nodes[3]);
         $this->assertContains('This is included.', $nodes[3]->getValue()->render());
     }
 

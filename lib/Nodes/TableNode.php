@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Gregwar\RST\Nodes;
+namespace Doctrine\RST\Nodes;
 
-use Gregwar\RST\Parser;
+use Doctrine\RST\Parser;
 use function count;
 use function substr;
 use function trim;
