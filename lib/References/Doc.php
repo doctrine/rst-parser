@@ -70,7 +70,7 @@ class Doc extends Reference
 
                 // recursively search all the children nodes for a match
                 foreach ($e['titles'] as $title) {
-                    if ($this->findEntryByText($title[1], $text) === true) {
+                    if ($this->findEntryByText($title[1], $text)) {
                         $entry = $e;
                         break;
                     }
@@ -100,18 +100,18 @@ class Doc extends Reference
     /**
      * @param mixed[] $titles
      */
-    private function findEntryByText(array $titles, string $text) : ?bool
+    private function findEntryByText(array $titles, string $text) : bool
     {
         foreach ($titles as $title) {
             if ($title[0] === $text) {
                 return true;
             }
 
-            if ($this->findEntryByText($title[1], $text) === true) {
+            if ($this->findEntryByText($title[1], $text)) {
                 return true;
             }
         }
 
-        return null;
+        return false;
     }
 }
