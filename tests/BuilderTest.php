@@ -2,8 +2,15 @@
 
 declare(strict_types=1);
 
+namespace Doctrine\Tests\RST;
+
 use Doctrine\RST\Builder;
 use PHPUnit\Framework\TestCase;
+use function file_exists;
+use function file_get_contents;
+use function is_dir;
+use function shell_exec;
+use function substr_count;
 
 /**
  * Unit testing for RST
@@ -147,12 +154,12 @@ class BuilderTest extends TestCase
         $builder->build($this->sourceFile(), $this->targetFile(), false);
     }
 
-    protected function sourceFile($file = '')
+    protected function sourceFile(string $file = '') : string
     {
         return __DIR__ . '/builder/input/' . $file;
     }
 
-    protected function targetFile($file = '')
+    protected function targetFile(string $file = '') : string
     {
         return __DIR__ . '/builder/output/' . $file;
     }

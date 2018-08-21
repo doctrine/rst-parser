@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+namespace Doctrine\Tests\RST;
+
 use Doctrine\RST\Environment;
 use PHPUnit\Framework\TestCase;
 

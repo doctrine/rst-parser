@@ -2,8 +2,14 @@
 
 declare(strict_types=1);
 
+namespace Doctrine\Tests\RST;
+
+use Doctrine\RST\Document;
 use Doctrine\RST\Parser;
 use PHPUnit\Framework\TestCase;
+use Throwable;
+use function htmlspecialchars;
+use function substr_count;
 
 /**
  * Unit testing for RST
@@ -529,7 +535,7 @@ class HTMLTest extends TestCase
      * Helper function, parses a file and returns the document
      * produced by the parser
      */
-    private function parse($file)
+    private function parse(string $file) : Document
     {
         $directory   = __DIR__ . '/html/';
         $parser      = new Parser();
@@ -539,7 +545,7 @@ class HTMLTest extends TestCase
         return $parser->parseFile($directory . $file);
     }
 
-    private function parseHTML($file)
+    private function parseHTML(string $file) : string
     {
         return $this->parse($file)->renderDocument();
     }

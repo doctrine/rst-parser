@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+namespace Doctrine\Tests\RST;
+
 use Doctrine\RST\Document;
 use Doctrine\RST\Nodes\CodeNode;
 use Doctrine\RST\Nodes\DummyNode;
@@ -13,11 +15,15 @@ use Doctrine\RST\Nodes\TableNode;
 use Doctrine\RST\Nodes\TitleNode;
 use Doctrine\RST\Parser;
 use PHPUnit\Framework\TestCase;
+use function count;
+use function file_get_contents;
+use function sprintf;
+use function trim;
 
 /**
  * Unit testing for RST
  */
-class ParserTests extends TestCase
+class ParserTest extends TestCase
 {
     /**
      * Tests that comments are not present in the rendered document
@@ -275,8 +281,8 @@ class ParserTests extends TestCase
 
         /** @var TitleNode[] $nodes1 */
         /** @var TitleNode[] $nodes2 */
-        $nodes1 = $parser->parseFile("$directory/mixed-titles-1.rst")->getNodes();
-        $nodes2 = $parser->parseFile("$directory/mixed-titles-2.rst")->getNodes();
+        $nodes1 = $parser->parseFile(sprintf('%s/mixed-titles-1.rst', $directory))->getNodes();
+        $nodes2 = $parser->parseFile(sprintf('%s/mixed-titles-2.rst', $directory))->getNodes();
 
         $this->assertSame(1, $nodes1[0]->getLevel());
         $this->assertSame(2, $nodes1[1]->getLevel());
@@ -348,7 +354,7 @@ class ParserTests extends TestCase
      * Helper function, parses a file and returns the document
      * produced by the parser
      */
-    private function parse($file)
+    private function parse(string $file) : Document
     {
         $directory   = __DIR__ . '/files/';
         $parser      = new Parser();
@@ -356,13 +362,14 @@ class ParserTests extends TestCase
         $environment->setCurrentDirectory($directory);
 
         $data = file_get_contents($directory . $file);
+
         return $parser->parse($data);
     }
 
     /**
      * Asserts that a document has nodes that satisfy the function
      */
-    private function assertHasNode(Document $document, $function, $count = null) : void
+    private function assertHasNode(Document $document, callable $function, ?int $count = null) : void
     {
         $nodes = $document->getNodes($function);
         $this->assertNotEmpty($nodes);
@@ -372,14 +379,5 @@ class ParserTests extends TestCase
         }
 
         $this->assertEquals($count, count($nodes));
-    }
-
-    /**
-     * Asserts that a document has nodes that satisfy the function
-     */
-    private function assertNotHasNode(Document $document, $function) : void
-    {
-        $nodes = $document->getNodes($function);
-        $this->assertEmpty($nodes);
     }
 }
