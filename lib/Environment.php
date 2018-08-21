@@ -176,7 +176,7 @@ class Environment
     }
 
     /**
-     * @return null|string[]
+     * @return null|mixed[]
      */
     public function resolve(string $section, string $data) : ?array
     {
@@ -339,7 +339,7 @@ class Environment
         }
 
         // If string contains ://, it is considered as absolute
-        if (preg_match('/:\\/\\//mUsi', $url)) {
+        if (preg_match('/:\\/\\//mUsi', $url) > 0) {
             return $url;
         }
 
@@ -523,7 +523,7 @@ class Environment
         $text = preg_replace('~[^\pL\d]+~u', '-', $text);
 
         // transliterate
-        $text = iconv('utf-8', 'us-ascii//TRANSLIT', $text);
+        $text = (string) iconv('utf-8', 'us-ascii//TRANSLIT', $text);
 
         // remove unwanted characters
         $text = preg_replace('~[^-\w]+~', '', $text);

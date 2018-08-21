@@ -15,18 +15,23 @@ class TocNode extends Base
     protected $depth;
 
     /**
-     * @param string[] $titles
-     * @param string[] $path
+     * @param mixed[]|array $titles
+     * @param mixed[]       $path
      */
-    protected function renderLevel(?string $url, array $titles, int $level = 1, array $path = []) : string
-    {
+    protected function renderLevel(
+        ?string $url,
+        array $titles,
+        int $level = 1,
+        array $path = []
+    ) : string {
         if ($level > $this->depth) {
             return '';
         }
 
         $html = '';
         foreach ($titles as $k => $entry) {
-            $path[$level-1]       = $k+1;
+            $path[$level - 1] = (int) $k + 1;
+
             list($title, $childs) = $entry;
 
             $slug = $title;
@@ -54,7 +59,7 @@ class TocNode extends Base
             }
 
             $html .= '<ul>';
-            $html .= $this->renderLevel($url, $childs, $level+1, $path);
+            $html .= $this->renderLevel($url, $childs, $level + 1, $path);
             $html .= '</ul>';
         }
 
@@ -67,14 +72,16 @@ class TocNode extends Base
             return '';
         }
 
-        $this->depth = $this->options['depth'] ?? 2;
+        $this->depth = (int) ($this->options['depth'] ?? 2);
 
         $html = '<div class="toc"><ul>';
 
         foreach ($this->files as $file) {
-            $reference        = $this->environment->resolve('doc', $file);
+            $reference = $this->environment->resolve('doc', $file);
+
             $reference['url'] = $this->environment->relativeUrl($reference['url']);
-            $html            .= $this->renderLevel($reference['url'], $reference['titles'] ?? []);
+
+            $html .= $this->renderLevel($reference['url'], $reference['titles'] ?? []);
         }
 
         $html .= '</ul></div>';

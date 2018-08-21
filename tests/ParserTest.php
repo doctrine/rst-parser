@@ -14,6 +14,7 @@ use Doctrine\RST\Nodes\QuoteNode;
 use Doctrine\RST\Nodes\TableNode;
 use Doctrine\RST\Nodes\TitleNode;
 use Doctrine\RST\Parser;
+use Exception;
 use PHPUnit\Framework\TestCase;
 use function count;
 use function file_get_contents;
@@ -69,7 +70,7 @@ class ParserTest extends TestCase
         });
 
         self::assertEquals(1, count($nodes));
-        self::assertEquals("A\nB\n C", trim($nodes[0]->getValue()));
+        self::assertEquals("A\nB\n C", trim((string) $nodes[0]->getValue()));
     }
 
     /**
@@ -329,11 +330,24 @@ class ParserTest extends TestCase
         $nodes = $this->parse('inclusion-scope.rst')->getNodes();
 
         self::assertCount(4, $nodes);
-        self::assertEquals("This first example will be parsed at the document level, and can\nthus contain any construct, including section headers.", $nodes[0]->getValue()->render());
-        self::assertEquals('This is included.', $nodes[1]->getValue()->render());
-        self::assertEquals('Back in the main document.', $nodes[2]->getValue()->render());
+
+        /** @var Node $node */
+        $node = $nodes[0]->getValue();
+        self::assertEquals("This first example will be parsed at the document level, and can\nthus contain any construct, including section headers.", $node->render());
+
+        /** @var Node $node */
+        $node = $nodes[1]->getValue();
+        self::assertEquals('This is included.', $node->render());
+
+        /** @var Node $node */
+        $node = $nodes[2]->getValue();
+        self::assertEquals('Back in the main document.', $node->render());
+
         self::assertInstanceOf('Doctrine\RST\Nodes\QuoteNode', $nodes[3]);
-        self::assertContains('This is included.', $nodes[3]->getValue()->render());
+
+        /** @var Node $node */
+        $node = $nodes[3]->getValue();
+        self::assertContains('This is included.', $node->render());
     }
 
     public function testIncludesPolicy() : void
@@ -380,6 +394,10 @@ class ParserTest extends TestCase
         $environment->setCurrentDirectory($directory);
 
         $data = file_get_contents($directory . $file);
+
+        if ($data === false) {
+            throw new Exception('Could not open file.');
+        }
 
         return $parser->parse($data);
     }

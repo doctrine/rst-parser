@@ -243,7 +243,7 @@ class Builder
                 $document->getTitle(),
                 $document->getTitles(),
                 $document->getTocs(),
-                filectime($rst),
+                (int) filectime($rst),
                 $dependencies
             );
         }

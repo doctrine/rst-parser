@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\RST\LaTeX\Nodes;
 
 use Doctrine\RST\Nodes\TableNode as Base;
+use Doctrine\RST\Span;
 use function count;
 use function implode;
 use function max;
@@ -24,10 +25,11 @@ class TableNode extends Base
             $rowTex = '';
             $cols   = max($cols, count($row));
 
+            /** @var Span $col */
             foreach ($row as $n => &$col) {
                 $rowTex .= $col->render();
 
-                if ($n+1 >= count($row)) {
+                if ((int) $n + 1 >= count($row)) {
                     continue;
                 }
 

@@ -22,12 +22,17 @@ abstract class SubDirective extends Directive
     /**
      * @param string[] $options
      */
-    final public function process(Parser $parser, ?Node $node, string $variable, string $data, array $options) : void
-    {
+    final public function process(
+        Parser $parser,
+        ?Node $node,
+        string $variable,
+        string $data,
+        array $options
+    ) : void {
         $subParser = $parser->getSubParser();
 
         if ($node instanceof CodeNode) {
-            $document = $subParser->parseLocal($node->getValue());
+            $document = $subParser->parseLocal((string) $node->getValue());
         } else {
             $document = $node;
         }
@@ -48,8 +53,13 @@ abstract class SubDirective extends Directive
     /**
      * @param string[] $options
      */
-    public function processSub(Parser $parser, ?Node $document, string $variable, string $data, array $options) : ?Node
-    {
+    public function processSub(
+        Parser $parser,
+        ?Node $document,
+        string $variable,
+        string $data,
+        array $options
+    ) : ?Node {
         return null;
     }
 

@@ -8,6 +8,6 @@ class RawNode extends Node
 {
     public function render() : string
     {
-        return $this->value;
+        return (string) $this->value;
     }
 }

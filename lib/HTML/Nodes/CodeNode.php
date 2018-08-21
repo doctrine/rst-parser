@@ -12,9 +12,9 @@ class CodeNode extends Base
     public function render() : string
     {
         if ($this->raw) {
-            return $this->value;
+            return (string) $this->value;
         }
 
-        return '<pre><code class="' . $this->language . '">' . htmlspecialchars($this->value) . '</code></pre>';
+        return '<pre><code class="' . $this->language . '">' . htmlspecialchars((string) $this->value) . '</code></pre>';
     }
 }

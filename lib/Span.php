@@ -52,15 +52,19 @@ abstract class Span extends Node
 
         // Replacing literal with tokens
         $tokens = [];
-        $span   = preg_replace_callback('/``(.+)``(?!`)/mUsi', function ($match) use (&$tokens, $generator) {
-            $id          = $generator();
-            $tokens[$id] = [
-                'type' => 'literal',
-                'text' => htmlspecialchars($match[1]),
-            ];
+        $span   = preg_replace_callback(
+            '/``(.+)``(?!`)/mUsi',
+            function ($match) use (&$tokens, $generator) {
+                $id          = $generator();
+                $tokens[$id] = [
+                    'type' => 'literal',
+                    'text' => htmlspecialchars($match[1]),
+                ];
 
-            return $id;
-        }, $span);
+                return $id;
+            },
+            $span
+        );
 
         $environment       = $parser->getEnvironment();
         $this->environment = $environment;
@@ -74,7 +78,8 @@ abstract class Span extends Node
 
         // Signaling anonymous names
         $environment->resetAnonymousStack();
-        if (preg_match_all('/(([a-z0-9]+)|(`(.+)`))__/mUsi', $span, $matches)) {
+
+        if (preg_match_all('/(([a-z0-9]+)|(`(.+)`))__/mUsi', $span, $matches) > 0) {
             foreach ($matches[2] as $k => $y) {
                 $name = $matches[2][$k] ?: $matches[4][$k];
                 $environment->pushAnonymous($name);
@@ -89,12 +94,12 @@ abstract class Span extends Node
             $anchor  = null;
 
             $text = null;
-            if (preg_match('/^(.+)<(.+)>$/mUsi', $url, $match)) {
+            if (preg_match('/^(.+)<(.+)>$/mUsi', $url, $match) > 0) {
                 $text = $match[1];
                 $url  = $match[2];
             }
 
-            if (preg_match('/^(.+)#(.+)$/mUsi', $url, $match)) {
+            if (preg_match('/^(.+)#(.+)$/mUsi', $url, $match) > 0) {
                 $url    = $match[1];
                 $anchor = $match[2];
             }
@@ -119,7 +124,7 @@ abstract class Span extends Node
             $next = $match[5];
             $url  = null;
 
-            if (preg_match('/^(.+) <(.+)>$/mUsi', $link, $m)) {
+            if (preg_match('/^(.+) <(.+)>$/mUsi', $link, $m) > 0) {
                 $link = $m[1];
                 $environment->setLink($link, $m[2]);
                 $url = $m[2];

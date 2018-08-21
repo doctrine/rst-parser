@@ -5,15 +5,23 @@ declare(strict_types=1);
 namespace Doctrine\RST;
 
 use Doctrine\RST\HTML\Kernel as HTMLKernel;
+use Doctrine\RST\Nodes\AnchorNode;
+use Doctrine\RST\Nodes\CodeNode;
 use Doctrine\RST\Nodes\ListNode;
+use Doctrine\RST\Nodes\Node;
+use Doctrine\RST\Nodes\ParagraphNode;
 use Doctrine\RST\Nodes\QuoteNode;
+use Doctrine\RST\Nodes\SeparatorNode;
 use Doctrine\RST\Nodes\TableNode;
+use Doctrine\RST\Nodes\TitleNode;
+use Exception;
 use function array_pop;
 use function count;
 use function explode;
 use function file_get_contents;
 use function implode;
 use function in_array;
+use function is_array;
 use function is_readable;
 use function preg_match;
 use function preg_replace_callback;
@@ -47,7 +55,7 @@ class Parser
     /** @var Document */
     protected $document;
 
-    /** @var mixed[]|TableNode|ListNode */
+    /** @var mixed[]|Node */
     protected $buffer = [];
 
     /** @var null|false|string */
@@ -107,20 +115,20 @@ class Parser
     public function parseLink(string $line) : bool
     {
         // Links
-        if (preg_match('/^\.\. _`(.+)`: (.+)$/mUsi', $line, $match)) {
+        if (preg_match('/^\.\. _`(.+)`: (.+)$/mUsi', $line, $match) > 0) {
             $this->environment->setLink($match[1], $match[2]);
 
             return true;
         }
 
-        if (preg_match('/^\.\. _(.+): (.+)$/mUsi', $line, $match)) {
+        if (preg_match('/^\.\. _(.+): (.+)$/mUsi', $line, $match) > 0) {
             $this->environment->setLink($match[1], $match[2]);
 
             return true;
         }
 
         // Short anonymous links
-        if (preg_match('/^__ (.+)$/mUsi', trim($line), $match)) {
+        if (preg_match('/^__ (.+)$/mUsi', trim($line), $match) > 0) {
             $url = $match[1];
 
             $this->environment->setLink('_', $url);
@@ -129,10 +137,14 @@ class Parser
         }
 
         // Anchor link
-        if (preg_match('/^\.\. _(.+):$/mUsi', trim($line), $match)) {
+        if (preg_match('/^\.\. _(.+):$/mUsi', trim($line), $match) > 0) {
             $anchor = $match[1];
 
-            $this->document->addNode($this->kernel->build('Nodes\AnchorNode', $anchor));
+            /** @var AnchorNode $anchorNode */
+            $anchorNode = $this->kernel->build('Nodes\AnchorNode', $anchor);
+
+            $this->document->addNode($anchorNode);
+
             $this->environment->setLink($anchor, '#' . $anchor);
 
             return true;
@@ -177,6 +189,10 @@ class Parser
     protected function prepareCode() : bool
     {
         if ($this->buffer === []) {
+            return false;
+        }
+
+        if (! is_array($this->buffer)) {
             return false;
         }
 
@@ -338,7 +354,7 @@ class Parser
             }
         }
 
-        if (preg_match('/^((\*|\-)|([\d#]+)\.) (.+)$/', trim($line), $match)) {
+        if (preg_match('/^((\*|\-)|([\d#]+)\.) (.+)$/', trim($line), $match) > 0) {
             return [
                 'prefix' => $line[$i],
                 'ordered' => ($line[$i] === '*' || $line[$i] === '-') ? false : true,
@@ -374,9 +390,13 @@ class Parser
             $infos = $this->parseListLine($line);
 
             if ($infos !== null) {
-                if ($this->lineInfo) {
+                if (is_array($this->lineInfo) && isset($this->lineInfo['text'])) {
                     $this->lineInfo['text'] = $this->createSpan($this->lineInfo['text']);
-                    $this->buffer->addLine($this->lineInfo);
+
+                    /** @var ListNode $listNode */
+                    $listNode = $this->buffer;
+
+                    $listNode->addLine($this->lineInfo);
                 }
                 $this->lineInfo = $infos;
             } else {
@@ -392,9 +412,14 @@ class Parser
         }
 
         if ($flush) {
-            if ($this->lineInfo) {
+            if (is_array($this->lineInfo) && isset($this->lineInfo['text'])) {
                 $this->lineInfo['text'] = $this->createSpan($this->lineInfo['text']);
-                $this->buffer->addLine($this->lineInfo);
+
+                /** @var ListNode $listNode */
+                $listNode = $this->buffer;
+
+                $listNode->addLine($this->lineInfo);
+
                 $this->lineInfo = null;
             }
 
@@ -415,7 +440,7 @@ class Parser
 
     protected function initDirective(string $line) : bool
     {
-        if (preg_match('/^\.\. (\|(.+)\| |)([^\s]+)::( (.*)|)$/mUsi', $line, $match)) {
+        if (preg_match('/^\.\. (\|(.+)\| |)([^\s]+)::( (.*)|)$/mUsi', $line, $match) > 0) {
             $this->directive = [
                 'variable' => $match[2],
                 'name' => $match[3],
@@ -441,13 +466,13 @@ class Parser
 
     protected function directiveAddOption(string $line) : bool
     {
-        if (preg_match('/^(\s+):(.+): (.*)$/mUsi', $line, $match)) {
+        if (preg_match('/^(\s+):(.+): (.*)$/mUsi', $line, $match) > 0) {
             $this->directive['options'][$match[2]] = trim($match[3]);
 
             return true;
         }
 
-        if (preg_match('/^(\s+):(.+):(\s*)$/mUsi', $line, $match)) {
+        if (preg_match('/^(\s+):(.+):(\s*)$/mUsi', $line, $match) > 0) {
             $value = trim($match[3]);
 
             $this->directive['options'][$match[2]] = true;
@@ -460,7 +485,7 @@ class Parser
 
     protected function getCurrentDirective() : ?Directive
     {
-        if (! $this->directive) {
+        if ($this->directive === []) {
             $this->getEnvironment()->getErrorManager()->error('Asking for current directive, but there is not');
         }
 
@@ -487,42 +512,94 @@ class Parser
         if ($this->buffer !== []) {
             switch ($this->state) {
                 case self::STATE_TITLE:
-                    $data  = implode("\n", $this->buffer);
-                    $level = $this->environment->getLevel($this->specialLetter);
+                    /** @var array $buffer */
+                    $buffer = $this->buffer;
+
+                    $data = implode("\n", $buffer);
+
+                    $level = $this->environment->getLevel((string) $this->specialLetter);
+
                     $token = $this->environment->createTitle($level);
-                    $node  = $this->kernel->build('Nodes\TitleNode', $this->createSpan($data), $level, $token);
+
+                    /** @var TitleNode $node */
+                    $node = $this->kernel->build(
+                        'Nodes\TitleNode',
+                        $this->createSpan($data),
+                        $level,
+                        $token
+                    );
+
                     break;
+
                 case self::STATE_SEPARATOR:
-                    $level = $this->environment->getLevel($this->specialLetter);
-                    $node  = $this->kernel->build('Nodes\SeparatorNode', $level);
+                    $level = $this->environment->getLevel((string) $this->specialLetter);
+
+                    /** @var SeparatorNode $node */
+                    $node = $this->kernel->build(
+                        'Nodes\SeparatorNode',
+                        $level
+                    );
+
                     break;
+
                 case self::STATE_CODE:
-                    $node = $this->kernel->build('Nodes\CodeNode', $this->buffer);
+                    /** @var CodeNode $node */
+                    $node = $this->kernel->build(
+                        'Nodes\CodeNode',
+                        $this->buffer
+                    );
+
                     break;
+
                 case self::STATE_BLOCK:
                     /** @var QuoteNode $node */
-                    $node      = $this->kernel->build('Nodes\QuoteNode', $this->buffer);
-                    $data      = $node->getValue();
-                    $subParser = $this->getSubParser();
-                    $document  = $subParser->parseLocal($data);
+                    $node = $this->kernel->build(
+                        'Nodes\QuoteNode',
+                        $this->buffer
+                    );
+
+                    /** @var string $data */
+                    $data = $node->getValue();
+
+                    $document = $this->getSubParser()->parseLocal($data);
+
                     $node->setValue($document);
+
                     break;
+
                 case self::STATE_LIST:
                     $this->pushListLine(null, true);
+
+                    /** @var ListNode $node */
                     $node = $this->buffer;
+
                     break;
+
                 case self::STATE_TABLE:
+                    /** @var TableNode $node */
                     $node = $this->buffer;
+
                     $node->finalize($this);
+
                     break;
+
                 case self::STATE_NORMAL:
                     $this->isCode = $this->prepareCode();
-                    $node         = $this->kernel->build('Nodes\ParagraphNode', $this->createSpan($this->buffer));
+
+                    /** @var array $buffer */
+                    $buffer = $this->buffer;
+
+                    /** @var ParagraphNode $node */
+                    $node = $this->kernel->build(
+                        'Nodes\ParagraphNode',
+                        $this->createSpan($buffer)
+                    );
+
                     break;
             }
         }
 
-        if ($this->directive) {
+        if (is_array($this->directive) && $this->directive !== []) {
             $currentDirective = $this->getCurrentDirective();
 
             if ($currentDirective !== null) {
@@ -534,6 +611,7 @@ class Parser
                     $this->directive['options']
                 );
             }
+
             $node = null;
         }
 
@@ -557,10 +635,16 @@ class Parser
             case self::STATE_BEGIN:
                 if (trim($line) !== '') {
                     if ($this->isListLine($line)) {
-                        $this->state    = self::STATE_LIST;
-                        $this->buffer   = $this->kernel->build('Nodes\ListNode');
+                        $this->state = self::STATE_LIST;
+
+                        /** @var ListNode $listNode */
+                        $listNode = $this->kernel->build('Nodes\ListNode');
+
+                        $this->buffer = $listNode;
+
                         $this->lineInfo = null;
                         $this->listFlow = true;
+
                         return false;
                     } elseif ($this->isBlockLine($line)) {
                         if ($this->isCode) {
@@ -585,8 +669,12 @@ class Parser
                             return false;
                         }
 
-                        $this->state  = self::STATE_TABLE;
-                        $this->buffer = $this->kernel->build('Nodes\TableNode', $tableParts);
+                        $this->state = self::STATE_TABLE;
+
+                        /** @var TableNode $tableNode */
+                        $tableNode = $this->kernel->build('Nodes\TableNode', $tableParts);
+
+                        $this->buffer = $tableNode;
                     }
                 }
                 break;
@@ -606,9 +694,11 @@ class Parser
                 } else {
                     $parts = $this->parseTableLine($line);
 
-                    if (! $this->buffer->push($parts, $line)) {
+                    if ($this->buffer instanceof TableNode && ! $this->buffer->push($parts, $line)) {
                         $this->flush();
+
                         $this->state = self::STATE_BEGIN;
+
                         return false;
                     }
                 }
@@ -619,9 +709,10 @@ class Parser
                 if (trim($line) !== '') {
                     $specialLetter = $this->isSpecialLine($line);
 
-                    if ($specialLetter !== null) {
+                    if ($specialLetter !== null && is_array($this->buffer)) {
                         $this->specialLetter = $specialLetter;
-                        $lastLine            = array_pop($this->buffer);
+
+                        $lastLine = array_pop($this->buffer);
 
                         if ($lastLine !== null) {
                             $this->buffer = [$lastLine];
@@ -708,6 +799,10 @@ class Parser
 
         $real = realpath($path);
 
+        if ($real === false) {
+            return false;
+        }
+
         foreach (explode(':', $this->includeRoot) as $root) {
             if (strpos($real, $root) === 0) {
                 return true;
@@ -719,17 +814,25 @@ class Parser
 
     public function includeFiles(string $document) : string
     {
-        $environment = $this->getEnvironment();
-        $parser      = $this;
+        return preg_replace_callback(
+            '/^\.\. include:: (.+)$/m',
+            function ($match) {
+                $path = $this->environment->absoluteRelativePath($match[1]);
 
-        return preg_replace_callback('/^\.\. include:: (.+)$/m', function ($match) use ($parser, $environment) {
-            $path = $environment->absoluteRelativePath($match[1]);
-            if ($parser->includeFileAllowed($path)) {
-                return $parser->includeFiles(file_get_contents($path));
-            }
+                if ($this->includeFileAllowed($path)) {
+                    $contents = file_get_contents($path);
 
-            return '';
-        }, $document);
+                    if ($contents === false) {
+                        throw new Exception(sprintf('Could not load file from path %s', $path));
+                    }
+
+                    return $this->includeFiles($contents);
+                }
+
+                return '';
+            },
+            $document
+        );
     }
 
     protected function parseLines(string $document) : void
@@ -761,20 +864,23 @@ class Parser
         $this->flush();
     }
 
-    public function parse(string $document) : Document
+    public function parse(string $contents) : Document
     {
         $this->getEnvironment()->reset();
 
-        return $this->parseLocal($document);
+        return $this->parseLocal($contents);
     }
 
-    public function parseLocal(string $document) : Document
+    public function parseLocal(string $contents) : Document
     {
-        $this->document = $this->kernel->build('Document', $this->environment);
+        /** @var Document $document */
+        $document = $this->kernel->build('Document', $this->environment);
+
+        $this->document = $document;
 
         $this->init();
 
-        $this->parseLines(trim($document));
+        $this->parseLines(trim($contents));
 
         foreach ($this->directives as $name => $directive) {
             $directive->finalize($this->document);
@@ -787,7 +893,13 @@ class Parser
     {
         $this->filename = $file;
 
-        return $this->parse(file_get_contents($file));
+        $contents = file_get_contents($file);
+
+        if ($contents === false) {
+            throw new Exception(sprintf('Could not load file from path %s', $file));
+        }
+
+        return $this->parse($contents);
     }
 
     public function getFilename() : string
@@ -801,11 +913,14 @@ class Parser
     }
 
     /**
-     * @param string|string[] $span
+     * @param string|string[]|Span $span
      */
     public function createSpan($span) : Span
     {
-        return $this->kernel->build('Span', $this, $span);
+        /** @var Span $span */
+        $span = $this->kernel->build('Span', $this, $span);
+
+        return $span;
     }
 
     public function getIncludeAllowed() : bool
