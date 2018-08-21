@@ -1,8 +1,8 @@
 <?php
 
-use Gregwar\RST\Builder;
-use Gregwar\RST\Document;
-use Gregwar\RST\Parser;
+declare(strict_types=1);
+
+use Doctrine\RST\Builder;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -13,7 +13,7 @@ class BuilderTest extends TestCase
     /**
      * Tests that the build produced the excepted documents
      */
-    public function testBuild()
+    public function testBuild() : void
     {
         $this->assertTrue(is_dir($this->targetFile()));
         $this->assertTrue(file_exists($this->targetFile('index.html')));
@@ -27,7 +27,7 @@ class BuilderTest extends TestCase
     /**
      * Tests the ..url :: directive
      */
-    public function testUrl()
+    public function testUrl() : void
     {
         $contents = file_get_contents($this->targetFile('index.html'));
 
@@ -38,7 +38,7 @@ class BuilderTest extends TestCase
     /**
      * Tests the links
      */
-    public function testLinks()
+    public function testLinks() : void
     {
         $contents = file_get_contents($this->targetFile('subdir/test.html'));
 
@@ -54,7 +54,7 @@ class BuilderTest extends TestCase
     /**
      * Tests that the index toctree worked
      */
-    public function testToctree()
+    public function testToctree() : void
     {
         $contents = file_get_contents($this->targetFile('index.html'));
 
@@ -62,7 +62,7 @@ class BuilderTest extends TestCase
         $this->assertContains('Introduction page', $contents);
     }
 
-    public function testToctreeGlob()
+    public function testToctreeGlob() : void
     {
         $contents = file_get_contents($this->targetFile('toc-glob.html'));
 
@@ -72,7 +72,7 @@ class BuilderTest extends TestCase
         $this->assertContains('subdir/test.html#subdirectory', $contents);
     }
 
-    public function testToctreeInSubdirectory()
+    public function testToctreeInSubdirectory() : void
     {
         $contents = file_get_contents($this->targetFile('subdir/toc.html'));
 
@@ -82,7 +82,7 @@ class BuilderTest extends TestCase
         $this->assertContains('test.html#subdirectory', $contents);
     }
 
-    public function testAnchors()
+    public function testAnchors() : void
     {
         $contents = file_get_contents($this->targetFile('index.html'));
 
@@ -96,7 +96,7 @@ class BuilderTest extends TestCase
     /**
      * Testing references to other documents
      */
-    public function testReferences()
+    public function testReferences() : void
     {
         $contents = file_get_contents($this->targetFile('introduction.html'));
 
@@ -112,7 +112,7 @@ class BuilderTest extends TestCase
     /**
      * Testing wrapping sub directive
      */
-    public function testSubDirective()
+    public function testSubDirective() : void
     {
         $contents = file_get_contents($this->targetFile('subdirective.html'));
 
@@ -129,7 +129,7 @@ class BuilderTest extends TestCase
     /**
      * Test that redirection-title worked
      */
-    public function testRedirectionTitle()
+    public function testRedirectionTitle() : void
     {
         $contents = file_get_contents($this->targetFile('magic-link.html'));
         $this->assertNotContains('redirection', $contents);
@@ -138,10 +138,10 @@ class BuilderTest extends TestCase
         $this->assertContains('"subdirective.html">See also', $contents);
     }
 
-    public function setUp()
+    public function setUp() : void
     {
-        shell_exec('rm -rf '.$this->targetFile());
-        $builder = new Builder;
+        shell_exec('rm -rf ' . $this->targetFile());
+        $builder = new Builder();
         $builder->copy('file.txt');
         $builder->setUseRelativeUrls(true);
         $builder->build($this->sourceFile(), $this->targetFile(), false);
@@ -149,11 +149,11 @@ class BuilderTest extends TestCase
 
     protected function sourceFile($file = '')
     {
-        return __DIR__.'/builder/input/'.$file;
+        return __DIR__ . '/builder/input/' . $file;
     }
 
     protected function targetFile($file = '')
     {
-        return __DIR__.'/builder/output/'.$file;
+        return __DIR__ . '/builder/output/' . $file;
     }
 }

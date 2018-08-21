@@ -1,19 +1,18 @@
 <?php
 
-include('../../autoload.php');
+declare(strict_types=1);
 
-use Gregwar\RST\Builder;
-use Gregwar\RST\LaTeX\Kernel;
+include '../../autoload.php';
 
-try
-{
+use Doctrine\RST\Builder;
+use Doctrine\RST\LaTeX\Kernel;
+
+try {
     // Build the 'input' files to the 'output' directory
-    $builder = new Builder(new Kernel);
+    $builder = new Builder(new Kernel());
     $builder->copy('css', 'css');
     $builder->build('input', 'output');
-}
-catch (\Exception $exception)
-{
+} catch (Throwable $exception) {
     echo "\n";
-    echo "Error: ".$exception->getMessage()."\n";
+    echo 'Error: ' . $exception->getMessage() . "\n";
 }

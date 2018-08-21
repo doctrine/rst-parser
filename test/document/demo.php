@@ -1,8 +1,10 @@
 <?php
 
-include('../../autoload.php');
+declare(strict_types=1);
 
-$parser = new Gregwar\RST\Parser;
+include '../../autoload.php';
+
+$parser = new Doctrine\RST\Parser();
 
 $rst = '
 Hello world
@@ -14,7 +16,7 @@ This is a **RST** document!
 
 Where can I get it?
 -------------------
-You can get it on the `GitHub page <https://github.com/Gregwar/RST>`_
+You can get it on the `GitHub page <https://github.com/Doctrine/RST>`_
 ';
 
 $document = $parser->parse($rst);
@@ -25,5 +27,5 @@ echo $document;
 <a id="title.1.1"></a><h2>What is it?</h2>
 <p>This is a <b>RST</b> document!</p>
 <a id="title.1.2"></a><h2>Where can I get it?</h2>
-<p>You can get it on the <a href="https://github.com/Gregwar/RST">GitHub page</a></p>
+<p>You can get it on the <a href="https://github.com/Doctrine/RST">GitHub page</a></p>
 */

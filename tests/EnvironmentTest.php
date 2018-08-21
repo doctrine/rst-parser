@@ -1,6 +1,8 @@
 <?php
 
-use Gregwar\RST\Environment;
+declare(strict_types=1);
+
+use Doctrine\RST\Environment;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -8,9 +10,9 @@ use PHPUnit\Framework\TestCase;
  */
 class EnvironmentTest extends TestCase
 {
-    public function testRelativeUrl()
+    public function testRelativeUrl() : void
     {
-        $environment = new Environment;
+        $environment = new Environment();
         $environment->setCurrentFileName('path/to/something.rst');
         $environment->setCurrentDirectory('input/dir');
 
