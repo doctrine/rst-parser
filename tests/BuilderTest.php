@@ -56,7 +56,7 @@ class BuilderTest extends TestCase
         self::assertContains('"http://google.com"', $contents);
         self::assertContains('"http://yahoo.com"', $contents);
 
-        self::assertEquals(2, substr_count($contents, 'http://something.com'));
+        self::assertSame(2, substr_count($contents, 'http://something.com'));
     }
 
     /**
@@ -124,12 +124,12 @@ class BuilderTest extends TestCase
     {
         $contents = $this->getFileContents($this->targetFile('subdirective.html'));
 
-        self::assertEquals(2, substr_count($contents, '<div class="note">'));
-        self::assertEquals(2, substr_count($contents, '<li>'));
+        self::assertSame(2, substr_count($contents, '<div class="note">'));
+        self::assertSame(2, substr_count($contents, '<li>'));
         self::assertContains('</div>', $contents);
-        self::assertEquals(2, substr_count($contents, '</li>'));
-        self::assertEquals(1, substr_count($contents, '<ul>'));
-        self::assertEquals(1, substr_count($contents, '</ul>'));
+        self::assertSame(2, substr_count($contents, '</li>'));
+        self::assertSame(1, substr_count($contents, '<ul>'));
+        self::assertSame(1, substr_count($contents, '</ul>'));
         self::assertContains('<p>This is a simple note!</p>', $contents);
         self::assertContains('<h2>There is a title here</h2>', $contents);
     }
