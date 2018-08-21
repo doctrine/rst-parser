@@ -8,6 +8,8 @@ use Doctrine\RST\Directive;
 use Doctrine\RST\LaTeX\Nodes\ImageNode;
 use Doctrine\RST\Nodes\Node;
 use Doctrine\RST\Parser;
+use Exception;
+use function sprintf;
 
 /**
  * Renders an image, example :
@@ -30,7 +32,12 @@ class Image extends Directive
     public function processNode(Parser $parser, string $variable, string $data, array $options) : ?Node
     {
         $environment = $parser->getEnvironment();
-        $url         = $environment->relativeUrl($data);
+
+        $url = $environment->relativeUrl($data);
+
+        if ($url === null) {
+            throw new Exception(sprintf('Could not build relative url for %s', $data));
+        }
 
         return new ImageNode($url, $options);
     }

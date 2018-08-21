@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\RST;
 
+use Exception;
 use function array_pop;
 use function array_shift;
 use function basename;
@@ -15,6 +16,7 @@ use function implode;
 use function in_array;
 use function preg_match;
 use function preg_replace;
+use function sprintf;
 use function strtolower;
 use function substr;
 use function trim;
@@ -120,11 +122,11 @@ class Environment
     }
 
     /**
-     * @return null|string[]
+     * @return null|mixed[]
      */
     public function getParent() : ?array
     {
-        if ($this->currentFileName === '' || $this->metas === '') {
+        if ($this->currentFileName === '' || $this->metas === null) {
             return null;
         }
 
@@ -138,7 +140,7 @@ class Environment
     }
 
     /**
-     * @return null|string[]
+     * @return null|mixed[]
      */
     public function getMyToc() : ?array
     {
@@ -176,7 +178,7 @@ class Environment
     }
 
     /**
-     * @return null|string[]
+     * @return null|mixed[]
      */
     public function resolve(string $section, string $data) : ?array
     {
@@ -314,7 +316,15 @@ class Environment
 
     public function addDependency(string $dependency) : void
     {
-        $dependency           = $this->canonicalUrl($dependency);
+        $dependency = $this->canonicalUrl($dependency);
+
+        if ($dependency === null) {
+            throw new Exception(sprintf(
+                'Could not get canonical url for dependency %s',
+                $dependency
+            ));
+        }
+
         $this->dependencies[] = $dependency;
     }
 
@@ -339,7 +349,7 @@ class Environment
         }
 
         // If string contains ://, it is considered as absolute
-        if (preg_match('/:\\/\\//mUsi', $url)) {
+        if (preg_match('/:\\/\\//mUsi', $url) > 0) {
             return $url;
         }
 
@@ -523,7 +533,7 @@ class Environment
         $text = preg_replace('~[^\pL\d]+~u', '-', $text);
 
         // transliterate
-        $text = iconv('utf-8', 'us-ascii//TRANSLIT', $text);
+        $text = (string) iconv('utf-8', 'us-ascii//TRANSLIT', $text);
 
         // remove unwanted characters
         $text = preg_replace('~[^-\w]+~', '', $text);

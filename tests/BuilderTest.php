@@ -2,8 +2,16 @@
 
 declare(strict_types=1);
 
+namespace Doctrine\Tests\RST;
+
 use Doctrine\RST\Builder;
+use Exception;
 use PHPUnit\Framework\TestCase;
+use function file_exists;
+use function file_get_contents;
+use function is_dir;
+use function shell_exec;
+use function substr_count;
 
 /**
  * Unit testing for RST
@@ -15,13 +23,13 @@ class BuilderTest extends TestCase
      */
     public function testBuild() : void
     {
-        $this->assertTrue(is_dir($this->targetFile()));
-        $this->assertTrue(file_exists($this->targetFile('index.html')));
-        $this->assertTrue(file_exists($this->targetFile('introduction.html')));
-        $this->assertTrue(file_exists($this->targetFile('subdirective.html')));
-        $this->assertTrue(file_exists($this->targetFile('magic-link.html')));
-        $this->assertTrue(file_exists($this->targetFile('file.txt')));
-        $this->assertTrue(file_exists($this->targetFile('subdir/test.html')));
+        self::assertTrue(is_dir($this->targetFile()));
+        self::assertTrue(file_exists($this->targetFile('index.html')));
+        self::assertTrue(file_exists($this->targetFile('introduction.html')));
+        self::assertTrue(file_exists($this->targetFile('subdirective.html')));
+        self::assertTrue(file_exists($this->targetFile('magic-link.html')));
+        self::assertTrue(file_exists($this->targetFile('file.txt')));
+        self::assertTrue(file_exists($this->targetFile('subdir/test.html')));
     }
 
     /**
@@ -29,10 +37,10 @@ class BuilderTest extends TestCase
      */
     public function testUrl() : void
     {
-        $contents = file_get_contents($this->targetFile('index.html'));
+        $contents = $this->getFileContents($this->targetFile('index.html'));
 
-        $this->assertContains('"magic-link.html', $contents);
-        $this->assertContains('Another page', $contents);
+        self::assertContains('"magic-link.html', $contents);
+        self::assertContains('Another page', $contents);
     }
 
     /**
@@ -40,15 +48,15 @@ class BuilderTest extends TestCase
      */
     public function testLinks() : void
     {
-        $contents = file_get_contents($this->targetFile('subdir/test.html'));
+        $contents = $this->getFileContents($this->targetFile('subdir/test.html'));
 
-        $this->assertContains('"../to/resource"', $contents);
-        $this->assertContains('"http://absolute/"', $contents);
+        self::assertContains('"../to/resource"', $contents);
+        self::assertContains('"http://absolute/"', $contents);
 
-        $this->assertContains('"http://google.com"', $contents);
-        $this->assertContains('"http://yahoo.com"', $contents);
+        self::assertContains('"http://google.com"', $contents);
+        self::assertContains('"http://yahoo.com"', $contents);
 
-        $this->assertEquals(2, substr_count($contents, 'http://something.com'));
+        self::assertEquals(2, substr_count($contents, 'http://something.com'));
     }
 
     /**
@@ -56,41 +64,41 @@ class BuilderTest extends TestCase
      */
     public function testToctree() : void
     {
-        $contents = file_get_contents($this->targetFile('index.html'));
+        $contents = $this->getFileContents($this->targetFile('index.html'));
 
-        $this->assertContains('introduction.html', $contents);
-        $this->assertContains('Introduction page', $contents);
+        self::assertContains('introduction.html', $contents);
+        self::assertContains('Introduction page', $contents);
     }
 
     public function testToctreeGlob() : void
     {
-        $contents = file_get_contents($this->targetFile('toc-glob.html'));
+        $contents = $this->getFileContents($this->targetFile('toc-glob.html'));
 
-        $this->assertContains('magic-link.html#another-page', $contents);
-        $this->assertContains('introduction.html#introduction-page', $contents);
-        $this->assertContains('subdirective.html', $contents);
-        $this->assertContains('subdir/test.html#subdirectory', $contents);
+        self::assertContains('magic-link.html#another-page', $contents);
+        self::assertContains('introduction.html#introduction-page', $contents);
+        self::assertContains('subdirective.html', $contents);
+        self::assertContains('subdir/test.html#subdirectory', $contents);
     }
 
     public function testToctreeInSubdirectory() : void
     {
-        $contents = file_get_contents($this->targetFile('subdir/toc.html'));
+        $contents = $this->getFileContents($this->targetFile('subdir/toc.html'));
 
-        $this->assertContains('../introduction.html#introduction-page', $contents);
-        $this->assertContains('../subdirective.html#sub-directives', $contents);
-        $this->assertContains('../magic-link.html#another-page', $contents);
-        $this->assertContains('test.html#subdirectory', $contents);
+        self::assertContains('../introduction.html#introduction-page', $contents);
+        self::assertContains('../subdirective.html#sub-directives', $contents);
+        self::assertContains('../magic-link.html#another-page', $contents);
+        self::assertContains('test.html#subdirectory', $contents);
     }
 
     public function testAnchors() : void
     {
-        $contents = file_get_contents($this->targetFile('index.html'));
+        $contents = $this->getFileContents($this->targetFile('index.html'));
 
-        $this->assertContains('<a id="reference_anchor"></a>', $contents);
+        self::assertContains('<a id="reference_anchor"></a>', $contents);
 
-        $contents = file_get_contents($this->targetFile('introduction.html'));
+        $contents = $this->getFileContents($this->targetFile('introduction.html'));
 
-        $this->assertContains('<p>Reference to the <a href="index.html#reference_anchor">Summary</a></p>', $contents);
+        self::assertContains('<p>Reference to the <a href="index.html#reference_anchor">Summary</a></p>', $contents);
     }
 
     /**
@@ -98,15 +106,15 @@ class BuilderTest extends TestCase
      */
     public function testReferences() : void
     {
-        $contents = file_get_contents($this->targetFile('introduction.html'));
+        $contents = $this->getFileContents($this->targetFile('introduction.html'));
 
-        $this->assertContains('<a href="index.html#toc">Index, paragraph toc</a>', $contents);
-        $this->assertContains('<a href="index.html">Index</a>', $contents);
-        $this->assertContains('<a href="index.html">Summary</a>', $contents);
+        self::assertContains('<a href="index.html#toc">Index, paragraph toc</a>', $contents);
+        self::assertContains('<a href="index.html">Index</a>', $contents);
+        self::assertContains('<a href="index.html">Summary</a>', $contents);
 
-        $contents = file_get_contents($this->targetFile('subdir/test.html'));
+        $contents = $this->getFileContents($this->targetFile('subdir/test.html'));
 
-        $this->assertContains('"../index.html"', $contents);
+        self::assertContains('"../index.html"', $contents);
     }
 
     /**
@@ -114,16 +122,16 @@ class BuilderTest extends TestCase
      */
     public function testSubDirective() : void
     {
-        $contents = file_get_contents($this->targetFile('subdirective.html'));
+        $contents = $this->getFileContents($this->targetFile('subdirective.html'));
 
-        $this->assertEquals(2, substr_count($contents, '<div class="note">'));
-        $this->assertEquals(2, substr_count($contents, '<li>'));
-        $this->assertContains('</div>', $contents);
-        $this->assertEquals(2, substr_count($contents, '</li>'));
-        $this->assertEquals(1, substr_count($contents, '<ul>'));
-        $this->assertEquals(1, substr_count($contents, '</ul>'));
-        $this->assertContains('<p>This is a simple note!</p>', $contents);
-        $this->assertContains('<h2>There is a title here</h2>', $contents);
+        self::assertEquals(2, substr_count($contents, '<div class="note">'));
+        self::assertEquals(2, substr_count($contents, '<li>'));
+        self::assertContains('</div>', $contents);
+        self::assertEquals(2, substr_count($contents, '</li>'));
+        self::assertEquals(1, substr_count($contents, '<ul>'));
+        self::assertEquals(1, substr_count($contents, '</ul>'));
+        self::assertContains('<p>This is a simple note!</p>', $contents);
+        self::assertContains('<h2>There is a title here</h2>', $contents);
     }
 
     /**
@@ -131,11 +139,11 @@ class BuilderTest extends TestCase
      */
     public function testRedirectionTitle() : void
     {
-        $contents = file_get_contents($this->targetFile('magic-link.html'));
-        $this->assertNotContains('redirection', $contents);
+        $contents = $this->getFileContents($this->targetFile('magic-link.html'));
+        self::assertNotContains('redirection', $contents);
 
-        $contents = file_get_contents($this->targetFile('index.html'));
-        $this->assertContains('"subdirective.html">See also', $contents);
+        $contents = $this->getFileContents($this->targetFile('index.html'));
+        self::assertContains('"subdirective.html">See also', $contents);
     }
 
     public function setUp() : void
@@ -147,13 +155,27 @@ class BuilderTest extends TestCase
         $builder->build($this->sourceFile(), $this->targetFile(), false);
     }
 
-    protected function sourceFile($file = '')
+    private function sourceFile(string $file = '') : string
     {
         return __DIR__ . '/builder/input/' . $file;
     }
 
-    protected function targetFile($file = '')
+    private function targetFile(string $file = '') : string
     {
         return __DIR__ . '/builder/output/' . $file;
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function getFileContents(string $path) : string
+    {
+        $contents = file_get_contents($path);
+
+        if ($contents === false) {
+            throw new Exception('Could not load file.');
+        }
+
+        return $contents;
     }
 }

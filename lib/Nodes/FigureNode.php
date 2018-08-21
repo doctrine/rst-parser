@@ -4,17 +4,15 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\Nodes;
 
-use Doctrine\RST\Document;
-
 abstract class FigureNode extends Node
 {
     /** @var ImageNode */
     protected $image;
 
-    /** @var null|Document */
+    /** @var null|Node */
     protected $document;
 
-    public function __construct(ImageNode $image, ?Document $document = null)
+    public function __construct(ImageNode $image, ?Node $document = null)
     {
         parent::__construct();
 

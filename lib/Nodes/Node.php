@@ -6,11 +6,11 @@ namespace Doctrine\RST\Nodes;
 
 abstract class Node
 {
-    /** @var Node|string */
+    /** @var Node|string|null */
     protected $value;
 
     /**
-     * @param Node|string $value
+     * @param Node|string|null $value
      */
     public function __construct($value = null)
     {
@@ -18,7 +18,7 @@ abstract class Node
     }
 
     /**
-     * @return Node|string
+     * @return Node|string|null
      */
     public function getValue()
     {
@@ -26,7 +26,7 @@ abstract class Node
     }
 
     /**
-     * @param Node|string $value
+     * @param Node|string|null $value
      */
     public function setValue($value) : void
     {

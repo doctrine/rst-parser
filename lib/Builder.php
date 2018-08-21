@@ -29,7 +29,7 @@ class Builder
     /** @var bool */
     protected $verbose = true;
 
-    /** @var string[] */
+    /** @var string[][] */
     protected $toCopy = [];
 
     /** @var string[] */
@@ -44,7 +44,7 @@ class Builder
     /** @var Metas */
     protected $metas;
 
-    /** @var int */
+    /** @var int[] */
     protected $states = [];
 
     /** @var string[] */
@@ -128,6 +128,7 @@ class Builder
 
         // Try to load metas, if it does not exists, create it
         $this->display('* Loading metas');
+
         $this->metas = new Metas($this->loadMetas());
 
         // Scan all the metas and the index
@@ -243,7 +244,7 @@ class Builder
                 $document->getTitle(),
                 $document->getTitles(),
                 $document->getTocs(),
-                filectime($rst),
+                (int) filectime($rst),
                 $dependencies
             );
         }
@@ -303,7 +304,7 @@ class Builder
 
 
     /**
-     * @return mixed[]
+     * @return mixed[]|null
      */
     protected function loadMetas() : ?array
     {

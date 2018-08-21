@@ -9,6 +9,8 @@ use Doctrine\RST\HTML\Nodes\ImageNode;
 use Doctrine\RST\Nodes\Node;
 use Doctrine\RST\Parser;
 use Doctrine\RST\SubDirective;
+use Exception;
+use function sprintf;
 
 /**
  * Renders an image, example :
@@ -30,10 +32,20 @@ class Figure extends SubDirective
     /**
      * @param string[] $options
      */
-    public function processSub(Parser $parser, ?Node $document, string $variable, string $data, array $options) : ?Node
-    {
+    public function processSub(
+        Parser $parser,
+        ?Node $document,
+        string $variable,
+        string $data,
+        array $options
+    ) : ?Node {
         $environment = $parser->getEnvironment();
-        $url         = $environment->relativeUrl($data);
+
+        $url = $environment->relativeUrl($data);
+
+        if ($url === null) {
+            throw new Exception(sprintf('Could not get relative url for %s', $data));
+        }
 
         return new FigureNode(new ImageNode($url, $options), $document);
     }

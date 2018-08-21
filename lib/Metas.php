@@ -6,14 +6,14 @@ namespace Doctrine\RST;
 
 class Metas
 {
-    /** @var string[][] */
+    /** @var mixed[] */
     protected $entries = [];
 
     /** @var string[] */
     protected $parents = [];
 
     /**
-     * @param string[][] $entries
+     * @param mixed[]|null $entries
      */
     public function __construct(?array $entries)
     {
@@ -25,7 +25,7 @@ class Metas
     }
 
     /**
-     * @return string[][]
+     * @return mixed[]
      */
     public function getAll() : array
     {
@@ -33,12 +33,19 @@ class Metas
     }
 
     /**
-     * @param string[] $titles
-     * @param string[] $tocs
-     * @param string[] $depends
+     * @param string[][] $titles
+     * @param mixed[][]  $tocs
+     * @param string[]   $depends
      */
-    public function set(string $file, string $url, string $title, array $titles, array $tocs, int $ctime, array $depends) : void
-    {
+    public function set(
+        string $file,
+        string $url,
+        ?string $title,
+        array $titles,
+        array $tocs,
+        int $ctime,
+        array $depends
+    ) : void {
         foreach ($tocs as $toc) {
             foreach ($toc as $child) {
                 $this->parents[$child] = $file;

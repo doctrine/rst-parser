@@ -74,7 +74,7 @@ abstract class Document extends Node
     }
 
     /**
-     * @return string[]
+     * @return mixed[]
      */
     public function getTocs() : array
     {
@@ -136,10 +136,6 @@ abstract class Document extends Node
     {
         if (is_string($node)) {
             $node = new RawNode($node);
-        }
-
-        if (! $node instanceof Node) {
-            $this->getEnvironment()->getErrorManager()->error('addNode($node): $node should be a string or a Node');
         }
 
         $this->nodes[] = $node;

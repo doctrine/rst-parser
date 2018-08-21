@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Doctrine\RST\HTML;
 
 use Doctrine\RST\Span as Base;
+use Exception;
 use function htmlspecialchars;
+use function sprintf;
 use function trim;
 
 class Span extends Base
@@ -46,8 +48,8 @@ class Span extends Base
     }
 
     /**
-     * @param string[] $reference
-     * @param string[] $value
+     * @param mixed[] $reference
+     * @param mixed[] $value
      */
     public function reference(array $reference, array $value) : string
     {
@@ -66,6 +68,10 @@ class Span extends Base
         // reference to anchor in existing document
         } elseif ($value['url'] !== null) {
             $url = $this->environment->getLink($value['url']);
+
+            if ($url === null) {
+                throw new Exception(sprintf('Could not get link for %s', $value['url']));
+            }
 
             $link = $this->link($url, $text);
         } else {

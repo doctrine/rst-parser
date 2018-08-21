@@ -7,6 +7,7 @@ namespace Doctrine\RST\Directives;
 use Doctrine\RST\Directive;
 use Doctrine\RST\Environment;
 use Doctrine\RST\Nodes\Node;
+use Doctrine\RST\Nodes\TocNode;
 use Doctrine\RST\Parser;
 use function array_merge;
 use function count;
@@ -31,13 +32,26 @@ class Toctree extends Directive
     /**
      * @param string[] $options
      */
-    public function process(Parser $parser, ?Node $node, string $variable, string $data, array $options) : void
-    {
-        $environment = $parser->getEnvironment();
-        $kernel      = $parser->getKernel();
-        $files       = [];
+    public function process(
+        Parser $parser,
+        ?Node $node,
+        string $variable,
+        string $data,
+        array $options
+    ) : void {
+        if ($node === null) {
+            return;
+        }
 
-        foreach (explode("\n", $node->getValue()) as $file) {
+        $environment = $parser->getEnvironment();
+
+        $kernel = $parser->getKernel();
+
+        $files = [];
+
+        $value = (string) $node->getValue();
+
+        foreach (explode("\n", $value) as $file) {
             $file = trim($file);
 
             if (isset($options['glob']) && strpos($file, '*') !== false) {
@@ -59,8 +73,10 @@ class Toctree extends Directive
             }
         }
 
-        $document = $parser->getDocument();
-        $document->addNode($kernel->build('Nodes\TocNode', $files, $environment, $options));
+        /** @var TocNode $tocNode */
+        $tocNode = $kernel->build('Nodes\TocNode', $files, $environment, $options);
+
+        $parser->getDocument()->addNode($tocNode);
     }
 
     public function wantCode() : bool
@@ -73,8 +89,10 @@ class Toctree extends Directive
      */
     private function globSearch(Environment $environment, string $globPattern) : array
     {
-        $currentFilePath = realpath(rtrim($environment->absoluteRelativePath(''), '/'));
-        $rootDocPath     = rtrim(str_replace($environment->getDirName(), '', $currentFilePath), '/');
+        $currentFilePath = (string) realpath(rtrim($environment->absoluteRelativePath(''), '/'));
+
+        $rootDocPath = rtrim(str_replace($environment->getDirName(), '', $currentFilePath), '/');
+
         $globPatternPath = $rootDocPath . '/' . $globPattern;
 
         $allFiles = [];

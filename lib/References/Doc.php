@@ -31,7 +31,7 @@ class Doc extends Reference
         $metas = $environment->getMetas();
         $file  = $environment->canonicalUrl($data);
 
-        if ($metas !== null) {
+        if ($metas !== null && $file !== null) {
             $entry = $metas->get($file);
 
             // only call relativeUrl() if a document was found
@@ -98,7 +98,7 @@ class Doc extends Reference
     }
 
     /**
-     * @param string[] $titles
+     * @param mixed[] $titles
      */
     private function findEntryByText(array $titles, string $text) : bool
     {

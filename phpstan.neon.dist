@@ -3,6 +3,8 @@ includes:
     - vendor/phpstan/phpstan-strict-rules/rules.neon
 
 parameters:
-    level: 2
+    level: 7
     paths:
       - lib
+      - test
+      - tests
