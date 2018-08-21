@@ -120,7 +120,7 @@ class Environment
     }
 
     /**
-     * @return null|string[]
+     * @return null|string[][]
      */
     public function getParent() : ?array
     {
@@ -138,7 +138,7 @@ class Environment
     }
 
     /**
-     * @return null|string[]
+     * @return null|mixed[]
      */
     public function getMyToc() : ?array
     {

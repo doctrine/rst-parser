@@ -26,7 +26,7 @@ abstract class Span extends Node
     /** @var string */
     protected $span;
 
-    /** @var string[] */
+    /** @var mixed[] */
     protected $tokens;
 
     /** @var Environment */

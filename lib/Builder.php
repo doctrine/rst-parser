@@ -29,7 +29,7 @@ class Builder
     /** @var bool */
     protected $verbose = true;
 
-    /** @var string[] */
+    /** @var string[][] */
     protected $toCopy = [];
 
     /** @var string[] */
@@ -44,7 +44,7 @@ class Builder
     /** @var Metas */
     protected $metas;
 
-    /** @var int */
+    /** @var int[] */
     protected $states = [];
 
     /** @var string[] */

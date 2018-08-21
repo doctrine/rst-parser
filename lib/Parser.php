@@ -47,13 +47,13 @@ class Parser
     /** @var Document */
     protected $document;
 
-    /** @var TableNode|ListNode|string[] */
+    /** @var mixed[]|TableNode|ListNode */
     protected $buffer = [];
 
-    /** @var null|string */
+    /** @var null|false|string */
     protected $specialLetter;
 
-    /** @var false|null|string[] */
+    /** @var false|null|mixed[] */
     protected $directive = false;
 
     /** @var Directive[] */
@@ -180,7 +180,13 @@ class Parser
             return false;
         }
 
-        $lastLine = trim($this->buffer[count($this->buffer)-1]);
+        $lastLineKey = count($this->buffer) - 1;
+
+        if (! isset($this->buffer[$lastLineKey])) {
+            return false;
+        }
+
+        $lastLine = trim($this->buffer[$lastLineKey]);
 
         if (strlen($lastLine) >= 2) {
             if (substr($lastLine, -2) === '::') {
@@ -251,7 +257,7 @@ class Parser
     }
 
     /**
-     * @return null|string[]
+     * @return null|mixed[]
      */
     protected function parseTableLine(string $line) : ?array
     {
@@ -313,7 +319,7 @@ class Parser
     }
 
     /**
-     * @return null|string[]
+     * @return null|mixed[]
      */
     protected function parseListLine(string $line) : ?array
     {

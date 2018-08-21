@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\RST\Nodes;
 
 use Doctrine\RST\Parser;
+use Doctrine\RST\Span;
 use function count;
 use function substr;
 use function trim;
@@ -16,10 +17,10 @@ abstract class TableNode extends Node
     /** @var string[] */
     protected $parts = [];
 
-    /** @var string[] */
+    /** @var Span[][] */
     protected $data = [];
 
-    /** @var string[] */
+    /** @var bool[] */
     protected $headers = [];
 
     /**
@@ -57,15 +58,16 @@ abstract class TableNode extends Node
             }
 
             if ($parts[0] === true) {
-                $this->headers[count($this->data)-1] = true;
+                $this->headers[count($this->data) - 1] = true;
             }
             $this->data[] = [];
         } else {
             // Pushing data in the cells
             list($header, $pretty, $parts) = $this->parts;
-            $row                           = &$this->data[count($this->data)-1];
 
-            for ($k=1; $k<=count($parts); $k++) {
+            $row = &$this->data[count($this->data)-1];
+
+            for ($k = 1; $k <= count($parts); $k++) {
                 if ($k === count($parts)) {
                     $data = substr($line, $parts[$k-1]);
                 } else {

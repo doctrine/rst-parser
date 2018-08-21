@@ -74,7 +74,7 @@ abstract class Document extends Node
     }
 
     /**
-     * @return string[]
+     * @return mixed[]
      */
     public function getTocs() : array
     {
