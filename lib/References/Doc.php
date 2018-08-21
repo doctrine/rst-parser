@@ -98,7 +98,7 @@ class Doc extends Reference
     }
 
     /**
-     * @param string[] $titles
+     * @param mixed[] $titles
      */
     private function findEntryByText(array $titles, string $text) : bool
     {

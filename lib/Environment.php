@@ -120,7 +120,7 @@ class Environment
     }
 
     /**
-     * @return null|string[][]
+     * @return null|mixed[][]
      */
     public function getParent() : ?array
     {

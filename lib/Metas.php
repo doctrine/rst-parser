@@ -6,7 +6,7 @@ namespace Doctrine\RST;
 
 class Metas
 {
-    /** @var mixed[][] */
+    /** @var mixed[] */
     protected $entries = [];
 
     /** @var string[] */
@@ -33,9 +33,9 @@ class Metas
     }
 
     /**
-     * @param string[]  $titles
-     * @param mixed[][] $tocs
-     * @param string[]  $depends
+     * @param string[][] $titles
+     * @param mixed[][]  $tocs
+     * @param string[]   $depends
      */
     public function set(
         string $file,

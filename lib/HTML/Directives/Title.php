@@ -25,13 +25,20 @@ class Title extends Directive
     /**
      * @param string[] $options
      */
-    public function process(Parser $parser, ?Node $node, string $variable, string $data, array $options) : void
-    {
+    public function process(
+        Parser $parser,
+        ?Node $node,
+        string $variable,
+        string $data,
+        array $options
+    ) : void {
         $document = $parser->getDocument();
 
-        $document->addHeaderNode(new RawNode('<title>' . htmlspecialchars($data) . '</title>'));
+        $document->addHeaderNode(
+            new RawNode('<title>' . htmlspecialchars($data) . '</title>')
+        );
 
-        if ($node !== null) {
+        if ($node === null) {
             return;
         }
 

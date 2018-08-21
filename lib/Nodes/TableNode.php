@@ -14,10 +14,10 @@ use function utf8_encode;
 
 abstract class TableNode extends Node
 {
-    /** @var string[] */
+    /** @var mixed[] */
     protected $parts = [];
 
-    /** @var Span[][] */
+    /** @var string[][]|Span[][] */
     protected $data = [];
 
     /** @var bool[] */

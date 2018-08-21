@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\RST;
 
-use Doctrine\RST\HTML\Kernel;
+use Doctrine\RST\HTML\Kernel as HTMLKernel;
 use Doctrine\RST\Nodes\ListNode;
 use Doctrine\RST\Nodes\QuoteNode;
 use Doctrine\RST\Nodes\TableNode;
@@ -89,7 +89,7 @@ class Parser
     public function __construct(?Environment $environment = null, ?Kernel $kernel = null)
     {
         if ($kernel === null) {
-            $kernel = new Kernel();
+            $kernel = new HTMLKernel();
         }
         $this->kernel = $kernel;
 
