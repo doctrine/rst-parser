@@ -124,7 +124,7 @@ class Environment
      */
     public function getParent() : ?array
     {
-        if ($this->currentFileName === '' || $this->metas === '') {
+        if ($this->currentFileName === '' || $this->metas === null) {
             return null;
         }
 

@@ -13,7 +13,7 @@ class Metas
     protected $parents = [];
 
     /**
-     * @param string[][] $entries
+     * @param string[][]|null $entries
      */
     public function __construct(?array $entries)
     {

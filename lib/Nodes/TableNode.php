@@ -45,7 +45,7 @@ abstract class TableNode extends Node
     }
 
     /**
-     * @param string[] $parts
+     * @param mixed[]|null $parts
      */
     public function push(?array $parts, string $line) : bool
     {

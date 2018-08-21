@@ -46,8 +46,8 @@ class Span extends Base
     }
 
     /**
-     * @param string[] $reference
-     * @param string[] $value
+     * @param mixed[] $reference
+     * @param mixed[] $value
      */
     public function reference(array $reference, array $value) : string
     {

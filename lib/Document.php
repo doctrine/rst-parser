@@ -138,10 +138,6 @@ abstract class Document extends Node
             $node = new RawNode($node);
         }
 
-        if (! $node instanceof Node) {
-            $this->getEnvironment()->getErrorManager()->error('addNode($node): $node should be a string or a Node');
-        }
-
         $this->nodes[] = $node;
     }
 

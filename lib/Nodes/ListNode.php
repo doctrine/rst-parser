@@ -9,7 +9,7 @@ use function count;
 
 abstract class ListNode extends Node
 {
-    /** @var string[][] */
+    /** @var mixed[][] */
     protected $lines = [];
 
     /**
@@ -20,7 +20,7 @@ abstract class ListNode extends Node
      * - prefix: the prefix char (*, - etc.)
      * - ordered: true of false if the list is ordered
      *
-     * @param string[] $line
+     * @param mixed[] $line
      */
     public function addLine(array $line) : void
     {
