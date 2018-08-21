@@ -19,12 +19,12 @@ class EnvironmentTest extends TestCase
         $environment->setCurrentDirectory('input/dir');
 
         // Assert that rules of relative url are respected
-        self::assertEquals($environment->relativeUrl('test.jpg'), 'test.jpg');
-        self::assertEquals($environment->relativeUrl('/path/to/test.jpg'), 'test.jpg');
-        self::assertEquals($environment->relativeUrl('/path/x/test.jpg'), '../../path/x/test.jpg');
-        self::assertEquals($environment->relativeUrl('/test.jpg'), '../../test.jpg');
-        self::assertEquals($environment->relativeUrl('http://example.com/test.jpg'), 'http://example.com/test.jpg');
-        self::assertEquals($environment->relativeUrl('imgs/test.jpg'), 'imgs/test.jpg');
-        self::assertEquals($environment->relativeUrl('/imgs/test.jpg'), '../../imgs/test.jpg');
+        self::assertSame($environment->relativeUrl('test.jpg'), 'test.jpg');
+        self::assertSame($environment->relativeUrl('/path/to/test.jpg'), 'test.jpg');
+        self::assertSame($environment->relativeUrl('/path/x/test.jpg'), '../../path/x/test.jpg');
+        self::assertSame($environment->relativeUrl('/test.jpg'), '../../test.jpg');
+        self::assertSame($environment->relativeUrl('http://example.com/test.jpg'), 'http://example.com/test.jpg');
+        self::assertSame($environment->relativeUrl('imgs/test.jpg'), 'imgs/test.jpg');
+        self::assertSame($environment->relativeUrl('/imgs/test.jpg'), '../../imgs/test.jpg');
     }
 }

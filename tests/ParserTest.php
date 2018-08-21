@@ -69,8 +69,8 @@ class ParserTest extends TestCase
             return $node instanceof CodeNode;
         });
 
-        self::assertEquals(1, count($nodes));
-        self::assertEquals("A\nB\n C", trim((string) $nodes[0]->getValue()));
+        self::assertSame(1, count($nodes));
+        self::assertSame("A\nB\n C", trim((string) $nodes[0]->getValue()));
     }
 
     /**
@@ -168,8 +168,8 @@ class ParserTest extends TestCase
     {
         $document = $this->parse('titles.rst');
 
-        self::assertEquals($document->getTitle(), 'The main title');
-        self::assertEquals($document->getTitles(), [
+        self::assertSame($document->getTitle(), 'The main title');
+        self::assertSame($document->getTitles(), [
             [
         'The main title',
         [
@@ -203,14 +203,14 @@ class ParserTest extends TestCase
             return $node instanceof TableNode;
         });
 
-        self::assertEquals(count($nodes), 1);
+        self::assertSame(count($nodes), 1);
 
         if ($nodes !== []) {
             /** @var TableNode $table */
             $table = $nodes[0];
 
-            self::assertEquals(3, $table->getCols());
-            self::assertEquals(3, $table->getRows());
+            self::assertSame(3, $table->getCols());
+            self::assertSame(3, $table->getRows());
         }
 
         $document = $this->parse('pretty-table.rst');
@@ -219,7 +219,7 @@ class ParserTest extends TestCase
             return $node instanceof TableNode;
         });
 
-        self::assertEquals(count($nodes), 1);
+        self::assertSame(count($nodes), 1);
 
         if ($nodes === []) {
             return;
@@ -228,8 +228,8 @@ class ParserTest extends TestCase
         /** @var TableNode $table */
         $table = $nodes[0];
 
-        self::assertEquals(3, $table->getCols());
-        self::assertEquals(2, $table->getRows());
+        self::assertSame(3, $table->getCols());
+        self::assertSame(2, $table->getRows());
     }
 
     /**
@@ -260,7 +260,7 @@ class ParserTest extends TestCase
             return $node instanceof DummyNode;
         });
 
-        self::assertEquals(1, count($nodes));
+        self::assertSame(1, count($nodes));
 
         if ($nodes === []) {
             return;
@@ -271,13 +271,13 @@ class ParserTest extends TestCase
 
         $data = $node->data;
 
-        self::assertEquals('some data', $data['data']);
+        self::assertSame('some data', $data['data']);
         $options = $data['options'];
         self::assertTrue(isset($options['maxdepth']));
         self::assertTrue(isset($options['titlesonly']));
         self::assertTrue(isset($options['glob']));
         self::assertTrue($options['titlesonly']);
-        self::assertEquals(123, $options['maxdepth']);
+        self::assertSame('123', $options['maxdepth']);
     }
 
     public function testSubsequentParsesDontHaveTheSameTitleLevelOrder() : void
@@ -333,15 +333,15 @@ class ParserTest extends TestCase
 
         /** @var Node $node */
         $node = $nodes[0]->getValue();
-        self::assertEquals("This first example will be parsed at the document level, and can\nthus contain any construct, including section headers.", $node->render());
+        self::assertSame("This first example will be parsed at the document level, and can\nthus contain any construct, including section headers.", $node->render());
 
         /** @var Node $node */
         $node = $nodes[1]->getValue();
-        self::assertEquals('This is included.', $node->render());
+        self::assertSame('This is included.', $node->render());
 
         /** @var Node $node */
         $node = $nodes[2]->getValue();
-        self::assertEquals('Back in the main document.', $node->render());
+        self::assertSame('Back in the main document.', $node->render());
 
         self::assertInstanceOf('Doctrine\RST\Nodes\QuoteNode', $nodes[3]);
 
@@ -414,6 +414,6 @@ class ParserTest extends TestCase
             return;
         }
 
-        self::assertEquals($count, count($nodes));
+        self::assertSame($count, count($nodes));
     }
 }

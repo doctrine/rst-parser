@@ -78,24 +78,24 @@ class HTMLTest extends TestCase
     {
         $document = $this->parseHTML('table.rst');
 
-        self::assertEquals(1, substr_count($document, '<table class="table table-bordered">'));
-        self::assertEquals(1, substr_count($document, '</table>'));
-        self::assertEquals(2, substr_count($document, '<tr>'));
-        self::assertEquals(2, substr_count($document, '</tr>'));
-        self::assertEquals(6, substr_count($document, '<td'));
-        self::assertEquals(6, substr_count($document, '</td>'));
+        self::assertSame(1, substr_count($document, '<table class="table table-bordered">'));
+        self::assertSame(1, substr_count($document, '</table>'));
+        self::assertSame(2, substr_count($document, '<tr>'));
+        self::assertSame(2, substr_count($document, '</tr>'));
+        self::assertSame(6, substr_count($document, '<td'));
+        self::assertSame(6, substr_count($document, '</td>'));
         self::assertNotContains('==', $document);
         self::assertContains('First col', $document);
         self::assertContains('Last col', $document);
 
         $document = $this->parseHTML('pretty-table.rst');
 
-        self::assertEquals(1, substr_count($document, '<table class="table table-bordered">'));
-        self::assertEquals(1, substr_count($document, '</table>'));
-        self::assertEquals(2, substr_count($document, '<tr>'));
-        self::assertEquals(2, substr_count($document, '</tr>'));
-        self::assertEquals(6, substr_count($document, '<td'));
-        self::assertEquals(6, substr_count($document, '</td>'));
+        self::assertSame(1, substr_count($document, '<table class="table table-bordered">'));
+        self::assertSame(1, substr_count($document, '</table>'));
+        self::assertSame(2, substr_count($document, '<tr>'));
+        self::assertSame(2, substr_count($document, '</tr>'));
+        self::assertSame(6, substr_count($document, '<td'));
+        self::assertSame(6, substr_count($document, '</td>'));
         self::assertNotContains('--', $document);
         self::assertNotContains('+', $document);
         self::assertNotContains('|', $document);
@@ -110,8 +110,8 @@ class HTMLTest extends TestCase
     {
         $document = $this->parseHTML('table2.rst');
 
-        self::assertEquals(2, substr_count($document, '<th>'));
-        self::assertEquals(2, substr_count($document, '</th>'));
+        self::assertSame(2, substr_count($document, '<th>'));
+        self::assertSame(2, substr_count($document, '</th>'));
         self::assertNotContains('==', $document);
     }
 
@@ -124,8 +124,8 @@ class HTMLTest extends TestCase
 
         $code = 'this is a *boring* literal `a`_ containing some dirty things <3 hey_ !';
         self::assertContains(htmlspecialchars($code), $document);
-        self::assertEquals(1, substr_count($document, '<code>'));
-        self::assertEquals(1, substr_count($document, '</code>'));
+        self::assertSame(1, substr_count($document, '<code>'));
+        self::assertSame(1, substr_count($document, '</code>'));
     }
 
     /**
@@ -184,8 +184,8 @@ class HTMLTest extends TestCase
     {
         $document = $this->parseHTML('image-follow.rst');
 
-        self::assertEquals(1, substr_count($document, '<img'));
-        self::assertEquals(1, substr_count($document, '"img/test.jpg"'));
+        self::assertSame(1, substr_count($document, '<img'));
+        self::assertSame(1, substr_count($document, '"img/test.jpg"'));
     }
 
     /**
@@ -195,65 +195,65 @@ class HTMLTest extends TestCase
     {
         $document = $this->parseHTML('list.rst');
 
-        self::assertEquals(1, substr_count($document, '<ul>'));
-        self::assertEquals(1, substr_count($document, '</ul>'));
+        self::assertSame(1, substr_count($document, '<ul>'));
+        self::assertSame(1, substr_count($document, '</ul>'));
         self::assertNotContains('<ol>', $document);
-        self::assertEquals(4, substr_count($document, '<li>'));
-        self::assertEquals(4, substr_count($document, '</li>'));
+        self::assertSame(4, substr_count($document, '<li>'));
+        self::assertSame(4, substr_count($document, '</li>'));
         self::assertNotContains('*', $document);
         self::assertContains('This is', $document);
         self::assertContains('Last line', $document);
 
         $document = $this->parseHTML('indented-list.rst');
 
-        self::assertEquals(1, substr_count($document, '<ul>'));
-        self::assertEquals(1, substr_count($document, '</ul>'));
+        self::assertSame(1, substr_count($document, '<ul>'));
+        self::assertSame(1, substr_count($document, '</ul>'));
         self::assertNotContains('<ol>', $document);
-        self::assertEquals(4, substr_count($document, '<li>'));
-        self::assertEquals(4, substr_count($document, '</li>'));
+        self::assertSame(4, substr_count($document, '<li>'));
+        self::assertSame(4, substr_count($document, '</li>'));
         self::assertNotContains('*', $document);
         self::assertContains('This is', $document);
 
         $document = $this->parseHTML('ordered.rst');
 
-        self::assertEquals(1, substr_count($document, '<ol>'));
-        self::assertEquals(1, substr_count($document, '</ol>'));
+        self::assertSame(1, substr_count($document, '<ol>'));
+        self::assertSame(1, substr_count($document, '</ol>'));
         self::assertNotContains('<ul>', $document);
-        self::assertEquals(3, substr_count($document, '<li>'));
-        self::assertEquals(3, substr_count($document, '</li>'));
+        self::assertSame(3, substr_count($document, '<li>'));
+        self::assertSame(3, substr_count($document, '</li>'));
         self::assertNotContains('.', $document);
         self::assertContains('First item', $document);
 
         $document = $this->parseHTML('ordered2.rst');
 
-        self::assertEquals(1, substr_count($document, '<ol>'));
-        self::assertEquals(1, substr_count($document, '</ol>'));
+        self::assertSame(1, substr_count($document, '<ol>'));
+        self::assertSame(1, substr_count($document, '</ol>'));
         self::assertNotContains('<ul>', $document);
-        self::assertEquals(3, substr_count($document, '<li>'));
-        self::assertEquals(3, substr_count($document, '</li>'));
+        self::assertSame(3, substr_count($document, '<li>'));
+        self::assertSame(3, substr_count($document, '</li>'));
         self::assertNotContains('.', $document);
         self::assertContains('First item', $document);
 
         $document = $this->parseHTML('list-empty.rst');
-        self::assertEquals(1, substr_count($document, '<ol>'));
-        self::assertEquals(1, substr_count($document, '</ol>'));
-        self::assertEquals(1, substr_count($document, '<ul>'));
-        self::assertEquals(1, substr_count($document, '</ul>'));
-        self::assertEquals(5, substr_count($document, '<li>'));
-        self::assertEquals(5, substr_count($document, '</li>'));
+        self::assertSame(1, substr_count($document, '<ol>'));
+        self::assertSame(1, substr_count($document, '</ol>'));
+        self::assertSame(1, substr_count($document, '<ul>'));
+        self::assertSame(1, substr_count($document, '</ul>'));
+        self::assertSame(5, substr_count($document, '<li>'));
+        self::assertSame(5, substr_count($document, '</li>'));
         self::assertContains('<p>This is not in the list</p>', $document);
 
         $document = $this->parseHTML('list-dash.rst');
-        self::assertEquals(1, substr_count($document, '<ul>'));
-        self::assertEquals(1, substr_count($document, '</ul>'));
-        self::assertEquals(2, substr_count($document, '<li class="dash">'));
-        self::assertEquals(2, substr_count($document, '</li>'));
+        self::assertSame(1, substr_count($document, '<ul>'));
+        self::assertSame(1, substr_count($document, '</ul>'));
+        self::assertSame(2, substr_count($document, '<li class="dash">'));
+        self::assertSame(2, substr_count($document, '</li>'));
 
         $document = $this->parseHTML('list-alternate-syntax.rst');
-        self::assertEquals(1, substr_count($document, '<ul>'));
-        self::assertEquals(1, substr_count($document, '</ul>'));
-        self::assertEquals(3, substr_count($document, '<li class="dash">'));
-        self::assertEquals(3, substr_count($document, '</li>'));
+        self::assertSame(1, substr_count($document, '<ul>'));
+        self::assertSame(1, substr_count($document, '</ul>'));
+        self::assertSame(3, substr_count($document, '<li class="dash">'));
+        self::assertSame(3, substr_count($document, '</li>'));
     }
 
     public function testEmptyParagraph() : void
@@ -280,9 +280,9 @@ class HTMLTest extends TestCase
     {
         $document = $this->parseHTML('directive-title.rst');
 
-        self::assertEquals(1, substr_count($document, '<div class="note'));
-        self::assertEquals(1, substr_count($document, '<h1>'));
-        self::assertEquals(1, substr_count($document, '</h1>'));
+        self::assertSame(1, substr_count($document, '<div class="note'));
+        self::assertSame(1, substr_count($document, '<h1>'));
+        self::assertSame(1, substr_count($document, '</h1>'));
     }
 
     /**
@@ -293,8 +293,8 @@ class HTMLTest extends TestCase
     {
         $document = $this->parseHTML('quote-title.rst');
 
-        self::assertEquals(1, substr_count($document, '<h1>Title</h1>'));
-        self::assertEquals(1, substr_count($document, '<h2>Another title</h2>'));
+        self::assertSame(1, substr_count($document, '<h1>Title</h1>'));
+        self::assertSame(1, substr_count($document, '<h2>Another title</h2>'));
     }
 
     /**
@@ -304,28 +304,28 @@ class HTMLTest extends TestCase
     {
         $document = $this->parseHTML('quote.rst');
 
-        self::assertEquals(1, substr_count($document, '<blockquote>'));
+        self::assertSame(1, substr_count($document, '<blockquote>'));
         self::assertContains('<p>', $document);
         self::assertContains('</p>', $document);
-        self::assertEquals(1, substr_count($document, '</blockquote>'));
+        self::assertSame(1, substr_count($document, '</blockquote>'));
 
         $document = $this->parseHTML('quote2.rst');
 
-        self::assertEquals(1, substr_count($document, '<blockquote>'));
+        self::assertSame(1, substr_count($document, '<blockquote>'));
         self::assertContains('<p>', $document);
         self::assertContains('</p>', $document);
-        self::assertEquals(1, substr_count($document, '</blockquote>'));
-        self::assertEquals(1, substr_count($document, '<strong>'));
-        self::assertEquals(1, substr_count($document, '</strong>'));
+        self::assertSame(1, substr_count($document, '</blockquote>'));
+        self::assertSame(1, substr_count($document, '<strong>'));
+        self::assertSame(1, substr_count($document, '</strong>'));
         self::assertNotContains('*', $document);
 
         $document = $this->parseHTML('quote3.rst');
 
-        self::assertEquals(1, substr_count($document, '<blockquote>'));
+        self::assertSame(1, substr_count($document, '<blockquote>'));
         self::assertContains('<p>', $document);
         self::assertContains('</p>', $document);
-        self::assertEquals(1, substr_count($document, '</blockquote>'));
-        self::assertEquals(1, substr_count($document, '<img'));
+        self::assertSame(1, substr_count($document, '</blockquote>'));
+        self::assertSame(1, substr_count($document, '<img'));
     }
 
     /**
@@ -335,34 +335,34 @@ class HTMLTest extends TestCase
     {
         $document = $this->parseHTML('code.rst');
 
-        self::assertEquals(1, substr_count($document, '<pre>'));
-        self::assertEquals(1, substr_count($document, '</pre>'));
-        self::assertEquals(1, substr_count($document, '<code'));
-        self::assertEquals(1, substr_count($document, '</code>'));
+        self::assertSame(1, substr_count($document, '<pre>'));
+        self::assertSame(1, substr_count($document, '</pre>'));
+        self::assertSame(1, substr_count($document, '<code'));
+        self::assertSame(1, substr_count($document, '</code>'));
         self::assertContains('This is a code block', $document);
         self::assertNotContains('::', $document);
         self::assertNotContains('<br', $document);
 
         $document = $this->parseHTML('code-block.rst');
 
-        self::assertEquals(1, substr_count($document, '<pre>'));
-        self::assertEquals(1, substr_count($document, '</pre>'));
-        self::assertEquals(1, substr_count($document, '<code'));
-        self::assertEquals(1, substr_count($document, '</code>'));
+        self::assertSame(1, substr_count($document, '<pre>'));
+        self::assertSame(1, substr_count($document, '</pre>'));
+        self::assertSame(1, substr_count($document, '<code'));
+        self::assertSame(1, substr_count($document, '</code>'));
         $code = 'cout << "Hello world!" << endl;';
         self::assertContains(htmlspecialchars($code), $document);
 
         $document = $this->parseHTML('code-java.rst');
 
-        self::assertEquals(1, substr_count($document, '<pre>'));
-        self::assertEquals(1, substr_count($document, '</pre>'));
-        self::assertEquals(1, substr_count($document, '<code class="java"'));
-        self::assertEquals(1, substr_count($document, '</code>'));
+        self::assertSame(1, substr_count($document, '<pre>'));
+        self::assertSame(1, substr_count($document, '</pre>'));
+        self::assertSame(1, substr_count($document, '<code class="java"'));
+        self::assertSame(1, substr_count($document, '</code>'));
 
         $document = $this->parseHTML('code-list.rst');
 
-        self::assertEquals(1, substr_count($document, '<pre>'));
-        self::assertEquals(1, substr_count($document, '</pre>'));
+        self::assertSame(1, substr_count($document, '<pre>'));
+        self::assertSame(1, substr_count($document, '</pre>'));
         self::assertContains('*', $document);
     }
 
@@ -373,12 +373,12 @@ class HTMLTest extends TestCase
     {
         $document = $this->parseHTML('titles.rst');
 
-        self::assertEquals(1, substr_count($document, '<h1>'));
-        self::assertEquals(1, substr_count($document, '<h1>'));
-        self::assertEquals(2, substr_count($document, '<h2>'));
-        self::assertEquals(2, substr_count($document, '</h2>'));
-        self::assertEquals(4, substr_count($document, '<h3>'));
-        self::assertEquals(4, substr_count($document, '</h3>'));
+        self::assertSame(1, substr_count($document, '<h1>'));
+        self::assertSame(1, substr_count($document, '<h1>'));
+        self::assertSame(2, substr_count($document, '<h2>'));
+        self::assertSame(2, substr_count($document, '</h2>'));
+        self::assertSame(4, substr_count($document, '<h3>'));
+        self::assertSame(4, substr_count($document, '</h3>'));
         self::assertContains('<a id="main-title"></a><h1>Main title</h1>', $document);
         self::assertContains('<a id="first-subtitle"></a><h2>First subtitle</h2>', $document);
         self::assertContains('<a id="first-subsubtitle"></a><h3>First subsubtitle</h3>', $document);
@@ -394,12 +394,12 @@ class HTMLTest extends TestCase
     {
         $document = $this->parseHTML('titles-auto.rst');
 
-        self::assertEquals(1, substr_count($document, '<h1>'));
-        self::assertEquals(1, substr_count($document, '<h1>'));
-        self::assertEquals(2, substr_count($document, '<h2>'));
-        self::assertEquals(2, substr_count($document, '</h2>'));
-        self::assertEquals(4, substr_count($document, '<h3>'));
-        self::assertEquals(4, substr_count($document, '</h3>'));
+        self::assertSame(1, substr_count($document, '<h1>'));
+        self::assertSame(1, substr_count($document, '<h1>'));
+        self::assertSame(2, substr_count($document, '<h2>'));
+        self::assertSame(2, substr_count($document, '</h2>'));
+        self::assertSame(4, substr_count($document, '<h3>'));
+        self::assertSame(4, substr_count($document, '</h3>'));
         self::assertContains('<a id="main-title"></a>', $document);
         self::assertNotContains('==', $document);
         self::assertNotContains('--', $document);
@@ -413,7 +413,7 @@ class HTMLTest extends TestCase
     {
         $document = $this->parseHTML('wrap.rst');
 
-        self::assertEquals(1, substr_count($document, 'note'));
+        self::assertSame(1, substr_count($document, 'note'));
     }
 
     /**
@@ -423,16 +423,16 @@ class HTMLTest extends TestCase
     {
         $document = $this->parseHTML('variable-wrap.rst');
 
-        self::assertEquals(2, substr_count($document, 'note'));
-        self::assertEquals(2, substr_count($document, 'important'));
+        self::assertSame(2, substr_count($document, 'note'));
+        self::assertSame(2, substr_count($document, 'important'));
     }
 
     public function testReferenceUnderDirective() : void
     {
         $document = $this->parseHTML('reference-directive.rst');
 
-        self::assertEquals(1, substr_count($document, 'note'));
-        self::assertEquals(1, substr_count($document, 'unresolved'));
+        self::assertSame(1, substr_count($document, 'note'));
+        self::assertSame(1, substr_count($document, 'unresolved'));
     }
 
     public function testReferenceMatchingIsntTooEager() : void
@@ -467,10 +467,10 @@ class HTMLTest extends TestCase
     {
         $document = $this->parseHTML('div.rst');
 
-        self::assertEquals(1, substr_count($document, '<div'));
-        self::assertEquals(1, substr_count($document, 'class="testing"'));
-        self::assertEquals(1, substr_count($document, 'Hello!'));
-        self::assertEquals(1, substr_count($document, '</div>'));
+        self::assertSame(1, substr_count($document, '<div'));
+        self::assertSame(1, substr_count($document, 'class="testing"'));
+        self::assertSame(1, substr_count($document, 'Hello!'));
+        self::assertSame(1, substr_count($document, '</div>'));
     }
 
     /**
@@ -480,8 +480,8 @@ class HTMLTest extends TestCase
     {
         $document = $this->parseHTML('comment-3.rst');
 
-        self::assertEquals(1, substr_count($document, '... This is not a comment!'));
-        self::assertEquals(0, substr_count($document, 'This is a comment!'));
+        self::assertSame(1, substr_count($document, '... This is not a comment!'));
+        self::assertSame(0, substr_count($document, 'This is a comment!'));
     }
 
     /**
@@ -491,7 +491,7 @@ class HTMLTest extends TestCase
     {
         $document = $this->parseHTML('crlf.rst');
 
-        self::assertEquals(1, substr_count($document, '<h1>'), 'CRLF should be supported');
+        self::assertSame(1, substr_count($document, '<h1>'), 'CRLF should be supported');
     }
 
     /**
@@ -501,7 +501,7 @@ class HTMLTest extends TestCase
     {
         $document = $this->parseHTML('link-span.rst');
 
-        self::assertEquals(1, substr_count($document, '<strong>'));
+        self::assertSame(1, substr_count($document, '<strong>'));
     }
 
     /**
