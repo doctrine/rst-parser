@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\RST;
 
+use Exception;
 use function array_pop;
 use function array_shift;
 use function basename;
@@ -15,6 +16,7 @@ use function implode;
 use function in_array;
 use function preg_match;
 use function preg_replace;
+use function sprintf;
 use function strtolower;
 use function substr;
 use function trim;
@@ -120,7 +122,7 @@ class Environment
     }
 
     /**
-     * @return null|mixed[][]
+     * @return null|mixed[]
      */
     public function getParent() : ?array
     {
@@ -314,7 +316,15 @@ class Environment
 
     public function addDependency(string $dependency) : void
     {
-        $dependency           = $this->canonicalUrl($dependency);
+        $dependency = $this->canonicalUrl($dependency);
+
+        if ($dependency === null) {
+            throw new Exception(sprintf(
+                'Could not get canonical url for dependency %s',
+                $dependency
+            ));
+        }
+
         $this->dependencies[] = $dependency;
     }
 

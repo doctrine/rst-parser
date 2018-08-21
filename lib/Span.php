@@ -213,6 +213,7 @@ abstract class Span extends Node
 
                     // try to resolve by text second
                     } else {
+                        /** @var string[] $reference */
                         $reference = $environment->resolveByText($value['section'], $value['text']);
 
                         // if we resolved by text set the anchor to the url

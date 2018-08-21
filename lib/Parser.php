@@ -67,8 +67,8 @@ class Parser
     /** @var Directive[] */
     protected $directives = [];
 
-    /** @var null|Environment */
-    protected $environment = null;
+    /** @var Environment */
+    protected $environment;
 
     /** @var bool */
     protected $includeAllowed = true;

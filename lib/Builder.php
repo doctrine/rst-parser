@@ -128,6 +128,7 @@ class Builder
 
         // Try to load metas, if it does not exists, create it
         $this->display('* Loading metas');
+
         $this->metas = new Metas($this->loadMetas());
 
         // Scan all the metas and the index
@@ -303,7 +304,7 @@ class Builder
 
 
     /**
-     * @return mixed[]
+     * @return mixed[]|null
      */
     protected function loadMetas() : ?array
     {

@@ -13,7 +13,7 @@ class Metas
     protected $parents = [];
 
     /**
-     * @param string[][]|null $entries
+     * @param mixed[]|null $entries
      */
     public function __construct(?array $entries)
     {
@@ -40,7 +40,7 @@ class Metas
     public function set(
         string $file,
         string $url,
-        string $title,
+        ?string $title,
         array $titles,
         array $tocs,
         int $ctime,

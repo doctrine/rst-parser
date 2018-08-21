@@ -39,6 +39,10 @@ class Toctree extends Directive
         string $data,
         array $options
     ) : void {
+        if ($node === null) {
+            return;
+        }
+
         $environment = $parser->getEnvironment();
 
         $kernel = $parser->getKernel();
