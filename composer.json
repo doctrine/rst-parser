@@ -27,7 +27,6 @@
         "phpstan/phpstan-strict-rules": "^0.10",
         "phpunit/phpunit": "^7.0"
     },
-    "target-dir": "Doctrine/RST",
     "autoload": {
         "psr-4": {
             "Doctrine\\RST\\": "lib/"
