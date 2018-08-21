@@ -6,3 +6,5 @@ parameters:
     level: 3
     paths:
       - lib
+      - test
+      - tests

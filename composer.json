@@ -32,5 +32,10 @@
         "psr-4": {
             "Doctrine\\RST\\": "lib/"
         }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Doctrine\\Tests\\RST\\": "tests/"
+        }
     }
 }
