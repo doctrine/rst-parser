@@ -68,6 +68,8 @@ abstract class TableNode extends Node
             $row = &$this->data[count($this->data)-1];
 
             for ($k = 1; $k <= count($parts); $k++) {
+                /** @var string $data */
+
                 if ($k === count($parts)) {
                     $data = substr($line, $parts[$k-1]);
                 } else {
@@ -78,7 +80,7 @@ abstract class TableNode extends Node
                     $data = substr($data, 0, -1);
                 }
 
-                $data = is_string($data) ? utf8_encode(trim($data)) : '';
+                $data = utf8_encode(trim($data));
 
                 if (isset($row[$k-1])) {
                     $row[$k-1] .= ' ' . $data;
