@@ -113,7 +113,7 @@ Then, pass the kernel when constructing the `Parser` or the `Builder`
 
 ## Attribution
 
-This repository was forked from [Gregwar\RST](https://github.com/Gregwar/RST).
+This repository was forked from [Gregwar\RST](https://github.com/Gregwar/RST) for the [Doctrine Website](https://github.com/doctrine/doctrine-website).
 
 ## License
 
