@@ -212,7 +212,7 @@ abstract class Span extends Node
                         $link = $this->reference($reference, $value);
 
                     // try to resolve by text second
-                    } else {
+                    } elseif (isset($value['text']) && $value['text'] !== null) {
                         /** @var string[] $reference */
                         $reference = $environment->resolveByText($value['section'], $value['text']);
 
@@ -220,6 +220,8 @@ abstract class Span extends Node
                         $value['anchor'] = $value['url'];
 
                         $link = $this->reference($reference, $value);
+                    } else {
+                        $link = '';
                     }
 
                     $span = str_replace($id, $link, $span);

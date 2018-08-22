@@ -78,7 +78,7 @@ abstract class TableNode extends Node
                     $data = substr($data, 0, -1);
                 }
 
-                $data = utf8_encode(trim($data));
+                $data = is_string($data) ? utf8_encode(trim($data)) : '';
 
                 if (isset($row[$k-1])) {
                     $row[$k-1] .= ' ' . $data;
