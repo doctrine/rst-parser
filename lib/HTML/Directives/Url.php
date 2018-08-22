@@ -21,8 +21,12 @@ class Url extends Directive
     /**
      * @param string[] $options
      */
-    public function processAction(Parser $parser, string $variable, string $data, array $options) : void
-    {
+    public function processAction(
+        Parser $parser,
+        string $variable,
+        string $data,
+        array $options
+    ) : void {
         $environment = $parser->getEnvironment();
 
         $environment->setUrl(trim($data));

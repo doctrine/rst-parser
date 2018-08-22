@@ -29,8 +29,13 @@ class Wrap extends SubDirective
     /**
      * @param string[] $options
      */
-    public function processSub(Parser $parser, ?Node $document, string $variable, string $data, array $options) : ?Node
-    {
+    public function processSub(
+        Parser $parser,
+        ?Node $document,
+        string $variable,
+        string $data,
+        array $options
+    ) : ?Node {
         return $document;
     }
 }
