@@ -194,7 +194,7 @@ class Environment
     }
 
     /**
-     * @return null|string[]
+     * @return string[]|null
      */
     public function resolveByText(string $section, string $text) : ?array
     {
@@ -297,7 +297,7 @@ class Environment
         $this->anonymous[] = trim(strtolower($name));
     }
 
-    public function getLink(string $name, bool $relative = true) : ?string
+    public function getLink(string $name, bool $relative = true) : string
     {
         $name = trim(strtolower($name));
 
@@ -305,13 +305,13 @@ class Environment
             $link = $this->links[$name];
 
             if ($relative) {
-                return $this->relativeUrl($link);
+                return (string) $this->relativeUrl($link);
             }
 
             return $link;
         }
 
-        return null;
+        return '';
     }
 
     public function addDependency(string $dependency) : void

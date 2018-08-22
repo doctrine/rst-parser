@@ -35,9 +35,9 @@ abstract class Reference
      * @param Environment $environment the Environment in use
      * @param string      $text        the text label of the reference
      *
-     * @return string[] an array with key title and url
+     * @return string[]|null an array with key title and url
      */
-    abstract public function resolveByText(Environment $environment, string $text) : array;
+    abstract public function resolveByText(Environment $environment, string $text) : ?array;
 
     /**
      * Called when a reference is just found
