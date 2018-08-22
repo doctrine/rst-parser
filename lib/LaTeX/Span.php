@@ -35,7 +35,7 @@ class Span extends Base
         return '\verb|' . $text . '|';
     }
 
-    public function link(string $url, string $title, string $refDoc = '') : string
+    public function link(string $url, string $title, ?string $refDoc = '') : string
     {
         if ($url !== '' && $url[0] === '#') {
             if ($refDoc === '') {
@@ -57,10 +57,10 @@ class Span extends Base
     }
 
     /**
-     * @param string[] $reference
-     * @param string[] $value
+     * @param null|string[] $reference
+     * @param string[]      $value
      */
-    public function reference(array $reference, array $value) : string
+    public function reference(?array $reference, array $value) : string
     {
         if ($reference !== []) {
             $file   = $reference['file'];

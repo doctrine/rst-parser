@@ -59,6 +59,14 @@ class BuilderTest extends TestCase
         self::assertSame(2, substr_count($contents, 'http://something.com'));
     }
 
+    public function testAnchor() : void
+    {
+        $contents = $this->getFileContents($this->targetFile('subdir/test.html'));
+
+        self::assertContains('<p>This is a <a href="#test-anchor">test anchor</a></p>', $contents);
+        self::assertContains('<a id="test-anchor"></a>', $contents);
+    }
+
     /**
      * Tests that the index toctree worked
      */

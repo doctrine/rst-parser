@@ -50,9 +50,9 @@ class Doc extends Reference
     }
 
     /**
-     * @return string[]
+     * @return string[]|null
      */
-    public function resolveByText(Environment $environment, string $text) : array
+    public function resolveByText(Environment $environment, string $text) : ?array
     {
         $text = trim($text);
 
@@ -79,7 +79,7 @@ class Doc extends Reference
 
             // only call relativeUrl() if a document was found
             // so we can later try to link to an anchor in this document
-            if ($entry['url'] !== '') {
+            if (isset($entry['url']) && $entry['url'] !== '') {
                 $entry['url'] = $environment->relativeUrl('/' . $entry['url']);
             }
         } else {

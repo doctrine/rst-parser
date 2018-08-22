@@ -236,7 +236,7 @@ abstract class Span extends Node
                     } elseif ($value['anchor']) {
                         $link = $environment->getLink($value['link']);
 
-                        if ($link !== null) {
+                        if ($link !== '') {
                             $url = $link;
                         } else {
                             $url = '#' . $value['anchor'];
@@ -290,12 +290,12 @@ abstract class Span extends Node
     }
 
     /**
-     * @param string[] $reference
-     * @param string[] $value
+     * @param null|string[] $reference
+     * @param string[]      $value
      */
-    public function reference(array $reference, array $value) : string
+    public function reference(?array $reference, array $value) : string
     {
-        if ($reference !== []) {
+        if ($reference !== null && $reference !== []) {
             $text = $value['text'] ?: ($reference['title'] ?? '');
             $link = $this->link($reference['url'], trim($text));
         } else {
