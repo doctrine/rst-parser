@@ -106,15 +106,6 @@ class Builder
         return $this;
     }
 
-    protected function display(string $text) : void
-    {
-        if (! $this->verbose) {
-            return;
-        }
-
-        echo $text . "\n";
-    }
-
     public function build(string $directory, string $targetDirectory = 'output', bool $verbose = true) : void
     {
         $this->verbose         = $verbose;
@@ -150,6 +141,158 @@ class Builder
         $this->display('* Running the copies');
         $this->doMkdir();
         $this->doCopy();
+    }
+
+    public function scan(string $file) : void
+    {
+        // If no decision is already made about this file
+        if (isset($this->states[$file])) {
+            return;
+        }
+
+        $this->display(' -> Scanning ' . $file . '...');
+        $this->states[$file] = self::NO_PARSE;
+        $entry               = $this->metas->get($file);
+        $rst                 = $this->getRST($file);
+
+        if ($entry === null || ! file_exists($rst) || $entry['ctime'] < filectime($rst)) {
+            // File was never seen or changed and thus need to be parsed
+            $this->addToParseQueue($file);
+        } else {
+            // Have a look to the file dependencies to knoww if you need to parse
+            // it or not
+            $depends = $entry['depends'];
+
+            if (isset($entry['parent'])) {
+                $depends[] = $entry['parent'];
+            }
+
+            foreach ($depends as $dependency) {
+                $this->scan($dependency);
+
+                // If any dependency needs to be parsed, this file needs also to be
+                // parsed
+                if ($this->states[$dependency] !== self::PARSE) {
+                    continue;
+                }
+
+                $this->addToParseQueue($file);
+            }
+        }
+    }
+
+    public function scanMetas() : void
+    {
+        $entries = $this->metas->getAll();
+
+        foreach ($entries as $file => $infos) {
+            $this->scan($file);
+        }
+    }
+
+    public function getRST(string $file) : string
+    {
+        return $this->getSourceFile($file . '.rst');
+    }
+
+    public function getTargetOf(string $file) : string
+    {
+        $meta = $this->metas->get($file);
+
+        return $this->getTargetFile($meta['url']);
+    }
+
+    public function getUrl(Document $document) : string
+    {
+        $environment = $document->getEnvironment();
+
+        return $environment->getUrl() . '.' . $this->kernel->getFileExtension();
+    }
+
+    public function getTargetFile(string $filename) : string
+    {
+        return $this->targetDirectory . '/' . $filename;
+    }
+
+    public function getSourceFile(string $filename) : string
+    {
+        return $this->directory . '/' . $filename;
+    }
+
+    public function doCopy() : void
+    {
+        foreach ($this->toCopy as $copy) {
+            list($source, $destination) = $copy;
+
+            if ($source[0] !== '/') {
+                $source = $this->getSourceFile($source);
+            }
+
+            $destination = $this->getTargetFile($destination);
+
+            if (is_dir($source) && is_dir($destination)) {
+                $destination = dirname($destination);
+            }
+
+            shell_exec('cp -R ' . $source . ' ' . $destination);
+        }
+    }
+
+    public function copy(string $source, ?string $destination = null) : self
+    {
+        if ($destination === null) {
+            $destination = basename($source);
+        }
+
+        $this->toCopy[] = [$source, $destination];
+
+        return $this;
+    }
+
+    public function doMkdir() : void
+    {
+        foreach ($this->toMkdir as $mkdir) {
+            $dir = $this->getTargetFile($mkdir);
+
+            if (is_dir($dir)) {
+                continue;
+            }
+
+            mkdir($dir, 0755, true);
+        }
+    }
+
+    public function mkdir(string $directory) : self
+    {
+        $this->toMkdir[] = $directory;
+
+        return $this;
+    }
+
+    public function setIndexName(string $name) : self
+    {
+        $this->indexName = $name;
+
+        return $this;
+    }
+
+    public function getIndexName() : string
+    {
+        return $this->indexName;
+    }
+
+    public function setUseRelativeUrls(bool $relativeUrls) : void
+    {
+        $this->relativeUrls = $relativeUrls;
+    }
+
+    protected function display(string $text) : void
+    {
+        if (! $this->verbose) {
+            return;
+        }
+
+        echo $text . "\n";
     }
 
     protected function render() : void
@@ -250,58 +393,10 @@ class Builder
         }
     }
 
-    public function scan(string $file) : void
-    {
-        // If no decision is already made about this file
-        if (isset($this->states[$file])) {
-            return;
-        }
-
-        $this->display(' -> Scanning ' . $file . '...');
-        $this->states[$file] = self::NO_PARSE;
-        $entry               = $this->metas->get($file);
-        $rst                 = $this->getRST($file);
-
-        if ($entry === null || ! file_exists($rst) || $entry['ctime'] < filectime($rst)) {
-            // File was never seen or changed and thus need to be parsed
-            $this->addToParseQueue($file);
-        } else {
-            // Have a look to the file dependencies to knoww if you need to parse
-            // it or not
-            $depends = $entry['depends'];
-
-            if (isset($entry['parent'])) {
-                $depends[] = $entry['parent'];
-            }
-
-            foreach ($depends as $dependency) {
-                $this->scan($dependency);
-
-                // If any dependency needs to be parsed, this file needs also to be
-                // parsed
-                if ($this->states[$dependency] !== self::PARSE) {
-                    continue;
-                }
-
-                $this->addToParseQueue($file);
-            }
-        }
-    }
-
-    public function scanMetas() : void
-    {
-        $entries = $this->metas->getAll();
-
-        foreach ($entries as $file => $infos) {
-            $this->scan($file);
-        }
-    }
-
     protected function getMetaFile() : string
     {
         return $this->getTargetFile('meta.php');
     }
-
 
     /**
      * @return mixed[]|null
@@ -322,101 +417,5 @@ class Builder
         $metas = '<?php return ' . var_export($this->metas->getAll(), true) . ';';
 
         file_put_contents($this->getMetaFile(), $metas);
-    }
-
-    public function getRST(string $file) : string
-    {
-        return $this->getSourceFile($file . '.rst');
-    }
-
-    public function getTargetOf(string $file) : string
-    {
-        $meta = $this->metas->get($file);
-
-        return $this->getTargetFile($meta['url']);
-    }
-
-    public function getUrl(Document $document) : string
-    {
-        $environment = $document->getEnvironment();
-
-        return $environment->getUrl() . '.' . $this->kernel->getFileExtension();
-    }
-
-    public function getTargetFile(string $filename) : string
-    {
-        return $this->targetDirectory . '/' . $filename;
-    }
-
-    public function getSourceFile(string $filename) : string
-    {
-        return $this->directory . '/' . $filename;
-    }
-
-    public function doCopy() : void
-    {
-        foreach ($this->toCopy as $copy) {
-            list($source, $destination) = $copy;
-
-            if ($source[0] !== '/') {
-                $source = $this->getSourceFile($source);
-            }
-
-            $destination = $this->getTargetFile($destination);
-
-            if (is_dir($source) && is_dir($destination)) {
-                $destination = dirname($destination);
-            }
-
-            shell_exec('cp -R ' . $source . ' ' . $destination);
-        }
-    }
-
-    public function copy(string $source, ?string $destination = null) : self
-    {
-        if ($destination === null) {
-            $destination = basename($source);
-        }
-
-        $this->toCopy[] = [$source, $destination];
-
-        return $this;
-    }
-
-    public function doMkdir() : void
-    {
-        foreach ($this->toMkdir as $mkdir) {
-            $dir = $this->getTargetFile($mkdir);
-
-            if (is_dir($dir)) {
-                continue;
-            }
-
-            mkdir($dir, 0755, true);
-        }
-    }
-
-    public function mkdir(string $directory) : self
-    {
-        $this->toMkdir[] = $directory;
-
-        return $this;
-    }
-
-    public function setIndexName(string $name) : self
-    {
-        $this->indexName = $name;
-
-        return $this;
-    }
-
-    public function getIndexName() : string
-    {
-        return $this->indexName;
-    }
-
-    public function setUseRelativeUrls(bool $relativeUrls) : void
-    {
-        $this->relativeUrls = $relativeUrls;
     }
 }
