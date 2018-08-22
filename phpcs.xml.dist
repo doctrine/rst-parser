@@ -10,7 +10,6 @@
     <arg value="nps"/>
 
     <file>lib</file>
-    <file>test</file>
     <file>tests</file>
 
     <exclude-pattern>tests/builder/output/meta.php</exclude-pattern>
