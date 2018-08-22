@@ -23,7 +23,12 @@ class Stylesheet extends Directive
     /**
      * @param string[] $options
      */
-    public function process(Parser $parser, ?Node $node, string $variable, string $data, array $options) : void
-    {
+    public function process(
+        Parser $parser,
+        ?Node $node,
+        string $variable,
+        string $data,
+        array $options
+    ) : void {
     }
 }

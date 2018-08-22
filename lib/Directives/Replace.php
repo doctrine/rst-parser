@@ -23,8 +23,12 @@ class Replace extends Directive
     /**
      * @param string[] $options
      */
-    public function processNode(Parser $parser, string $variable, string $data, array $options) : ?Node
-    {
+    public function processNode(
+        Parser $parser,
+        string $variable,
+        string $data,
+        array $options
+    ) : ?Node {
         return $parser->createSpan($data);
     }
 }
