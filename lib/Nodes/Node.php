@@ -17,6 +17,8 @@ abstract class Node
         $this->value = $value;
     }
 
+    abstract public function render() : string;
+
     /**
      * @return Node|string|null
      */
@@ -32,8 +34,6 @@ abstract class Node
     {
         $this->value = $value;
     }
-
-    abstract public function render() : string;
 
     public function __toString() : string
     {

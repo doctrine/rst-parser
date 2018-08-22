@@ -186,6 +186,188 @@ class Parser
         $this->directives[$directive->getName()] = $directive;
     }
 
+    public function pushListLine(?string $line, bool $flush = false) : bool
+    {
+        if ($line !== null && trim($line) !== '') {
+            $infos = $this->parseListLine($line);
+
+            if ($infos !== null) {
+                if (is_array($this->lineInfo) && isset($this->lineInfo['text'])) {
+                    $this->lineInfo['text'] = $this->createSpan($this->lineInfo['text']);
+
+                    /** @var ListNode $listNode */
+                    $listNode = $this->buffer;
+
+                    $listNode->addLine($this->lineInfo);
+                }
+                $this->lineInfo = $infos;
+            } else {
+                if ($this->listFlow || $line[0] === ' ') {
+                    $this->lineInfo['text'][] = $line;
+                } else {
+                    $flush = true;
+                }
+            }
+            $this->listFlow = true;
+        } else {
+            $this->listFlow = false;
+        }
+
+        if ($flush) {
+            if (is_array($this->lineInfo) && isset($this->lineInfo['text'])) {
+                $this->lineInfo['text'] = $this->createSpan($this->lineInfo['text']);
+
+                /** @var ListNode $listNode */
+                $listNode = $this->buffer;
+
+                $listNode->addLine($this->lineInfo);
+
+                $this->lineInfo = null;
+            }
+
+            return false;
+        }
+
+        return true;
+    }
+
+    public function getDocument() : Document
+    {
+        return $this->document;
+    }
+
+    public function includeFileAllowed(string $path) : bool
+    {
+        if (! $this->includeAllowed) {
+            return false;
+        }
+
+        if (! @is_readable($path)) {
+            return false;
+        }
+
+        if ($this->includeRoot === '') {
+            return true;
+        }
+
+        $real = realpath($path);
+
+        if ($real === false) {
+            return false;
+        }
+
+        foreach (explode(':', $this->includeRoot) as $root) {
+            if (strpos($real, $root) === 0) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function includeFiles(string $document) : string
+    {
+        return preg_replace_callback(
+            '/^\.\. include:: (.+)$/m',
+            function ($match) {
+                $path = $this->environment->absoluteRelativePath($match[1]);
+
+                if ($this->includeFileAllowed($path)) {
+                    $contents = file_get_contents($path);
+
+                    if ($contents === false) {
+                        throw new Exception(sprintf('Could not load file from path %s', $path));
+                    }
+
+                    return $this->includeFiles($contents);
+                }
+
+                return '';
+            },
+            $document
+        );
+    }
+
+    public function parse(string $contents) : Document
+    {
+        $this->getEnvironment()->reset();
+
+        return $this->parseLocal($contents);
+    }
+
+    public function parseLocal(string $contents) : Document
+    {
+        /** @var Document $document */
+        $document = $this->kernel->build('Document', $this->environment);
+
+        $this->document = $document;
+
+        $this->init();
+
+        $this->parseLines(trim($contents));
+
+        foreach ($this->directives as $name => $directive) {
+            $directive->finalize($this->document);
+        }
+
+        return $this->document;
+    }
+
+    public function parseFile(string $file) : Document
+    {
+        $this->filename = $file;
+
+        $contents = file_get_contents($file);
+
+        if ($contents === false) {
+            throw new Exception(sprintf('Could not load file from path %s', $file));
+        }
+
+        return $this->parse($contents);
+    }
+
+    public function getFilename() : string
+    {
+        return $this->filename ?: '(unknown)';
+    }
+
+    public function getCurrentLine() : int
+    {
+        return $this->currentLine;
+    }
+
+    /**
+     * @param string|string[]|Span $span
+     */
+    public function createSpan($span) : Span
+    {
+        /** @var Span $span */
+        $span = $this->kernel->build('Span', $this, $span);
+
+        return $span;
+    }
+
+    public function getIncludeAllowed() : bool
+    {
+        return $this->includeAllowed;
+    }
+
+    public function getIncludeRoot() : string
+    {
+        return $this->includeRoot;
+    }
+
+    public function setIncludePolicy(bool $includeAllowed, ?string $directory = null) : self
+    {
+        $this->includeAllowed = $includeAllowed;
+
+        if ($directory !== null) {
+            $this->includeRoot = $directory;
+        }
+
+        return $this;
+    }
+
     protected function prepareCode() : bool
     {
         if ($this->buffer === []) {
@@ -384,51 +566,6 @@ class Parser
         return false;
     }
 
-    public function pushListLine(?string $line, bool $flush = false) : bool
-    {
-        if ($line !== null && trim($line) !== '') {
-            $infos = $this->parseListLine($line);
-
-            if ($infos !== null) {
-                if (is_array($this->lineInfo) && isset($this->lineInfo['text'])) {
-                    $this->lineInfo['text'] = $this->createSpan($this->lineInfo['text']);
-
-                    /** @var ListNode $listNode */
-                    $listNode = $this->buffer;
-
-                    $listNode->addLine($this->lineInfo);
-                }
-                $this->lineInfo = $infos;
-            } else {
-                if ($this->listFlow || $line[0] === ' ') {
-                    $this->lineInfo['text'][] = $line;
-                } else {
-                    $flush = true;
-                }
-            }
-            $this->listFlow = true;
-        } else {
-            $this->listFlow = false;
-        }
-
-        if ($flush) {
-            if (is_array($this->lineInfo) && isset($this->lineInfo['text'])) {
-                $this->lineInfo['text'] = $this->createSpan($this->lineInfo['text']);
-
-                /** @var ListNode $listNode */
-                $listNode = $this->buffer;
-
-                $listNode->addLine($this->lineInfo);
-
-                $this->lineInfo = null;
-            }
-
-            return false;
-        }
-
-        return true;
-    }
-
     protected function isBlockLine(string $line) : bool
     {
         if ($line !== '') {
@@ -624,11 +761,6 @@ class Parser
         $this->init();
     }
 
-    public function getDocument() : Document
-    {
-        return $this->document;
-    }
-
     protected function parseLine(string &$line) : bool
     {
         switch ($this->state) {
@@ -783,58 +915,6 @@ class Parser
         return true;
     }
 
-    public function includeFileAllowed(string $path) : bool
-    {
-        if (! $this->includeAllowed) {
-            return false;
-        }
-
-        if (! @is_readable($path)) {
-            return false;
-        }
-
-        if ($this->includeRoot === '') {
-            return true;
-        }
-
-        $real = realpath($path);
-
-        if ($real === false) {
-            return false;
-        }
-
-        foreach (explode(':', $this->includeRoot) as $root) {
-            if (strpos($real, $root) === 0) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public function includeFiles(string $document) : string
-    {
-        return preg_replace_callback(
-            '/^\.\. include:: (.+)$/m',
-            function ($match) {
-                $path = $this->environment->absoluteRelativePath($match[1]);
-
-                if ($this->includeFileAllowed($path)) {
-                    $contents = file_get_contents($path);
-
-                    if ($contents === false) {
-                        throw new Exception(sprintf('Could not load file from path %s', $path));
-                    }
-
-                    return $this->includeFiles($contents);
-                }
-
-                return '';
-            },
-            $document
-        );
-    }
-
     protected function parseLines(string $document) : void
     {
         // Including files
@@ -862,85 +942,5 @@ class Parser
         // Document is flushed twice to trigger the directives
         $this->flush();
         $this->flush();
-    }
-
-    public function parse(string $contents) : Document
-    {
-        $this->getEnvironment()->reset();
-
-        return $this->parseLocal($contents);
-    }
-
-    public function parseLocal(string $contents) : Document
-    {
-        /** @var Document $document */
-        $document = $this->kernel->build('Document', $this->environment);
-
-        $this->document = $document;
-
-        $this->init();
-
-        $this->parseLines(trim($contents));
-
-        foreach ($this->directives as $name => $directive) {
-            $directive->finalize($this->document);
-        }
-
-        return $this->document;
-    }
-
-    public function parseFile(string $file) : Document
-    {
-        $this->filename = $file;
-
-        $contents = file_get_contents($file);
-
-        if ($contents === false) {
-            throw new Exception(sprintf('Could not load file from path %s', $file));
-        }
-
-        return $this->parse($contents);
-    }
-
-    public function getFilename() : string
-    {
-        return $this->filename ?: '(unknown)';
-    }
-
-    public function getCurrentLine() : int
-    {
-        return $this->currentLine;
-    }
-
-    /**
-     * @param string|string[]|Span $span
-     */
-    public function createSpan($span) : Span
-    {
-        /** @var Span $span */
-        $span = $this->kernel->build('Span', $this, $span);
-
-        return $span;
-    }
-
-    public function getIncludeAllowed() : bool
-    {
-        return $this->includeAllowed;
-    }
-
-    public function getIncludeRoot() : string
-    {
-        return $this->includeRoot;
-    }
-
-    public function setIncludePolicy(bool $includeAllowed, ?string $directory = null) : self
-    {
-        $this->includeAllowed = $includeAllowed;
-
-        if ($directory !== null) {
-            $this->includeRoot = $directory;
-        }
-
-        return $this;
     }
 }

@@ -14,6 +14,29 @@ class TocNode extends Base
     /** @var int */
     protected $depth;
 
+    public function render() : string
+    {
+        if (isset($this->options['hidden'])) {
+            return '';
+        }
+
+        $this->depth = (int) ($this->options['depth'] ?? 2);
+
+        $html = '<div class="toc"><ul>';
+
+        foreach ($this->files as $file) {
+            $reference = $this->environment->resolve('doc', $file);
+
+            $reference['url'] = $this->environment->relativeUrl($reference['url']);
+
+            $html .= $this->renderLevel($reference['url'], $reference['titles'] ?? []);
+        }
+
+        $html .= '</ul></div>';
+
+        return $html;
+    }
+
     /**
      * @param mixed[]|array $titles
      * @param mixed[]       $path
@@ -64,29 +87,6 @@ class TocNode extends Base
             $html .= $this->renderLevel($url, $childs, $level + 1, $path);
             $html .= '</ul>';
         }
-
-        return $html;
-    }
-
-    public function render() : string
-    {
-        if (isset($this->options['hidden'])) {
-            return '';
-        }
-
-        $this->depth = (int) ($this->options['depth'] ?? 2);
-
-        $html = '<div class="toc"><ul>';
-
-        foreach ($this->files as $file) {
-            $reference = $this->environment->resolve('doc', $file);
-
-            $reference['url'] = $this->environment->relativeUrl($reference['url']);
-
-            $html .= $this->renderLevel($reference['url'], $reference['titles'] ?? []);
-        }
-
-        $html .= '</ul></div>';
 
         return $html;
     }

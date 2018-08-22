@@ -393,23 +393,6 @@ class Environment
         return count(explode('/', $this->currentFileName))-1;
     }
 
-    protected function samePrefix(string $url) : bool
-    {
-        $partsA = explode('/', $url);
-        $partsB = explode('/', $this->currentFileName);
-
-        $n = count($partsA);
-
-        if ($n !== count($partsB)) {
-            return false;
-        }
-
-        unset($partsA[$n - 1]);
-        unset($partsB[$n - 1]);
-
-        return $partsA === $partsB;
-    }
-
     public function getDirName() : string
     {
         $dirname = dirname($this->currentFileName);
@@ -419,22 +402,6 @@ class Environment
         }
 
         return $dirname;
-    }
-
-    protected function canonicalize(string $url) : string
-    {
-        $parts = explode('/', $url);
-        $stack = [];
-
-        foreach ($parts as $part) {
-            if ($part === '..') {
-                array_pop($stack);
-            } else {
-                $stack[] = $part;
-            }
-        }
-
-        return implode('/', $stack);
     }
 
     public function canonicalUrl(string $url) : ?string
@@ -548,5 +515,38 @@ class Environment
         $text = strtolower($text);
 
         return $text;
+    }
+
+    protected function samePrefix(string $url) : bool
+    {
+        $partsA = explode('/', $url);
+        $partsB = explode('/', $this->currentFileName);
+
+        $n = count($partsA);
+
+        if ($n !== count($partsB)) {
+            return false;
+        }
+
+        unset($partsA[$n - 1]);
+        unset($partsB[$n - 1]);
+
+        return $partsA === $partsB;
+    }
+
+    protected function canonicalize(string $url) : string
+    {
+        $parts = explode('/', $url);
+        $stack = [];
+
+        foreach ($parts as $part) {
+            if ($part === '..') {
+                array_pop($stack);
+            } else {
+                $stack[] = $part;
+            }
+        }
+
+        return implode('/', $stack);
     }
 }
