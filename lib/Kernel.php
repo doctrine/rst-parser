@@ -4,39 +4,23 @@ declare(strict_types=1);
 
 namespace Doctrine\RST;
 
-use Doctrine\RST\Nodes\Node;
 use Doctrine\RST\References\Doc;
+use function array_merge;
 
 abstract class Kernel
 {
-    abstract protected function getName() : string;
+    /** @var Directive[] */
+    private $directives;
 
-    public function getClass(string $name) : string
-    {
-        return 'Doctrine\RST\\' . $this->getName() . '\\' . $name;
-    }
-
-    /**
-     * @param mixed $arg1
-     * @param mixed $arg2
-     * @param mixed $arg3
-     * @param mixed $arg4
-     *
-     * @return Node|Environment
-     */
-    public function build(string $name, $arg1 = null, $arg2 = null, $arg3 = null, $arg4 = null)
-    {
-        $class = $this->getClass($name);
-
-        return new $class($arg1, $arg2, $arg3, $arg4);
-    }
+    /** @var Factory */
+    private $factory;
 
     /**
-     * @return Directive[]
+     * @param Directive[] $directives
      */
-    public function getDirectives() : array
+    public function __construct(array $directives = [])
     {
-        return [
+        $this->directives = array_merge([
             new Directives\Dummy(),
             new Directives\CodeBlock(),
             new Directives\Raw(),
@@ -44,7 +28,24 @@ abstract class Kernel
             new Directives\Toctree(),
             new Directives\Document(),
             new Directives\RedirectionTitle(),
-        ];
+        ], $directives);
+
+        $this->factory = new Factory($this->getName());
+    }
+
+    abstract protected function getName() : string;
+
+    public function getFactory() : Factory
+    {
+        return $this->factory;
+    }
+
+    /**
+     * @return Directive[]
+     */
+    public function getDirectives() : array
+    {
+        return $this->directives;
     }
 
     /**

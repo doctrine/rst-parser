@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\LaTeX;
 
+use Doctrine\RST\References\ResolvedReference;
 use Doctrine\RST\Span as Base;
 use function substr;
 use function trim;
@@ -57,26 +58,25 @@ class Span extends Base
     }
 
     /**
-     * @param null|string[] $reference
-     * @param string[]      $value
+     * @param string[] $value
      */
-    public function reference(?array $reference, array $value) : string
+    public function reference(ResolvedReference $reference, array $value) : string
     {
-        if ($reference !== []) {
-            $file   = $reference['file'];
-            $text   = $value['text'] ?: ($reference['title'] ?? '');
-            $refDoc = $file;
-            $url    = '#';
+        $text = $value['text'] ?: $reference->getTitle();
+        $url  = $reference->getUrl();
 
-            if ($value['anchor'] !== '') {
-                $url .= $value['anchor'];
-            }
-
-            $link = $this->link($url, trim($text), $refDoc);
-        } else {
-            $link = $this->link('#', '(unresolved reference)');
+        if ($value['anchor'] !== '') {
+            $url .= $value['anchor'];
         }
 
-        return $link;
+        if ($text === null) {
+            $text = '';
+        }
+
+        if ($url === null) {
+            $url = '';
+        }
+
+        return $this->link($url, trim($text), $url);
     }
 }

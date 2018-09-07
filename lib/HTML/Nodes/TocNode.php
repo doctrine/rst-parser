@@ -12,7 +12,7 @@ use function str_replace;
 class TocNode extends Base
 {
     /** @var int */
-    protected $depth;
+    private $depth;
 
     public function render() : string
     {
@@ -27,9 +27,9 @@ class TocNode extends Base
         foreach ($this->files as $file) {
             $reference = $this->environment->resolve('doc', $file);
 
-            $reference['url'] = $this->environment->relativeUrl($reference['url']);
+            $url = $this->environment->relativeUrl($reference->getUrl());
 
-            $html .= $this->renderLevel($reference['url'], $reference['titles'] ?? []);
+            $html .= $this->renderLevel($url, $reference->getTitles());
         }
 
         $html .= '</ul></div>';
@@ -41,7 +41,7 @@ class TocNode extends Base
      * @param mixed[]|array $titles
      * @param mixed[]       $path
      */
-    protected function renderLevel(
+    private function renderLevel(
         ?string $url,
         array $titles,
         int $level = 1,
@@ -71,7 +71,7 @@ class TocNode extends Base
 
                 $info = $this->environment->resolve('doc', $target);
 
-                $target = $this->environment->relativeUrl($info['url']);
+                $target = $this->environment->relativeUrl($info->getUrl());
             }
 
             $id = str_replace('../', '', (string) $target);

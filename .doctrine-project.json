@@ -1,0 +1,17 @@
+{
+    "active": true,
+    "name": "RST Parser",
+    "slug": "rst-parser",
+    "docsSlug": "doctrine-rst-parser",
+    "versions": [
+        {
+            "name": "master",
+            "branchName": "master",
+            "slug": "latest",
+            "aliases": [
+                "current",
+                "stable"
+            ]
+        }
+    ]
+}

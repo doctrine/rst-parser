@@ -13,9 +13,11 @@ class TocNode extends Base
         $tex = '\tableofcontents' . "\n";
 
         foreach ($this->files as $file) {
-            $reference        = $this->environment->resolve('doc', $file);
-            $reference['url'] = $this->environment->relativeUrl($reference['url']);
-            $tex             .= '\\input{' . $reference['url'] . "}\n";
+            $reference = $this->environment->resolve('doc', $file);
+
+            $url = $this->environment->relativeUrl($reference->getUrl());
+
+            $tex .= '\\input{' . $url . "}\n";
         }
 
         return $tex;

@@ -8,17 +8,17 @@ use Exception;
 
 class ErrorManager
 {
-    /** @var bool */
-    protected $abort = true;
+    /** @var Configuration */
+    private $configuration;
 
-    public function abortOnError(bool $abort) : void
+    public function __construct(Configuration $configuration)
     {
-        $this->abort = $abort;
+        $this->configuration = $configuration;
     }
 
     public function error(string $message) : void
     {
-        if ($this->abort) {
+        if ($this->configuration->isAbortOnError()) {
             throw new Exception($message);
         }
 

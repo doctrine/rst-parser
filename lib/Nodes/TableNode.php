@@ -42,7 +42,7 @@ abstract class TableNode extends Node
 
     public function getRows() : int
     {
-        return count($this->data)-1;
+        return count($this->data) - 1;
     }
 
     /**
@@ -66,14 +66,14 @@ abstract class TableNode extends Node
             // Pushing data in the cells
             list($header, $pretty, $parts) = $this->parts;
 
-            $row = &$this->data[count($this->data)-1];
+            $row = &$this->data[count($this->data) - 1];
 
             for ($k = 1; $k <= count($parts); $k++) {
                 if (strlen($line) >= $parts[$k - 1]) {
                     if ($k === count($parts)) {
-                        $data = substr($line, $parts[$k-1]);
+                        $data = substr($line, $parts[$k - 1]);
                     } else {
-                        $data = substr($line, $parts[$k-1], $parts[$k]-$parts[$k-1]);
+                        $data = substr($line, $parts[$k - 1], $parts[$k] - $parts[$k - 1]);
                     }
 
                     if ($pretty) {
@@ -85,10 +85,10 @@ abstract class TableNode extends Node
                     $data = '';
                 }
 
-                if (isset($row[$k-1])) {
-                    $row[$k-1] .= ' ' . $data;
+                if (isset($row[$k - 1])) {
+                    $row[$k - 1] .= ' ' . $data;
                 } else {
-                    $row[$k-1] = $data;
+                    $row[$k - 1] = $data;
                 }
             }
         }

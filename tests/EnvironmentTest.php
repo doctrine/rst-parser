@@ -27,4 +27,15 @@ class EnvironmentTest extends TestCase
         self::assertSame($environment->relativeUrl('imgs/test.jpg'), 'imgs/test.jpg');
         self::assertSame($environment->relativeUrl('/imgs/test.jpg'), '../../imgs/test.jpg');
     }
+
+    public function testCanonicalUrl() : void
+    {
+        $environment = new Environment();
+        $environment->setCurrentFileName('subdir1/subdir2/test.rst');
+
+        self::assertSame($environment->canonicalUrl('subdir1/subdir2/test.rst'), 'subdir1/subdir2/test.rst');
+        self::assertSame($environment->canonicalUrl('test.rst'), 'subdir1/subdir2/test.rst');
+        self::assertSame($environment->canonicalUrl('../index.rst'), 'subdir1/index.rst');
+        self::assertSame($environment->canonicalUrl('../../index.rst'), 'index.rst');
+    }
 }

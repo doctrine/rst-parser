@@ -13,3 +13,23 @@ This is the builder test summary
     subdir/index
 
 .. _reference_anchor:
+
+Link to :ref:`the same doc reference <same_doc_reference>`
+
+.. _same_doc_reference:
+
+Link to :ref:`Subdirectory <subdirectory>`
+
+Link to :ref:`Subdirectory Test <subdirectory>`
+
+Link to :ref:`Subdirectory Child <subdirectory-child>`
+
+Link to :ref:`Subdirectory Child Test <subdirectory-child>`
+
+Link to :ref:`Subdirectory Child Level 2 <subdirectory-child-level-2>`
+
+Link to :ref:`Subdirectory Child Level 2 Test <subdirectory-child-level-2>`
+
+Link to :ref:`Subdirectory Child Level 3 <subdirectory-child-level-3>`
+
+Link to :ref:`Subdirectory Child Level 3 Test <subdirectory-child-level-3>`
