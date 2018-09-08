@@ -549,6 +549,15 @@ class HTMLTest extends TestCase
     }
 
     /**
+     * @expectedException Exception
+     * @expectedExceptionMessage The anchor "@Anchor Section" was not found.
+     */
+    public function testInvalidAnchor() : void
+    {
+        $this->parse('anchor-failure.rst');
+    }
+
+    /**
      * Helper function, parses a file and returns the document
      * produced by the parser
      */
