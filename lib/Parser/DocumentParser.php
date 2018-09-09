@@ -148,6 +148,8 @@ class DocumentParser
             return false;
         }
 
+        $lastline = trim($lastLine);
+
         if (strlen($lastLine) >= 2) {
             if (substr($lastLine, -2) === '::') {
                 if (trim($lastLine) === '::') {
