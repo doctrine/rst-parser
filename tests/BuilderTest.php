@@ -63,7 +63,7 @@ class BuilderTest extends TestCase
     {
         $contents = $this->getFileContents($this->targetFile('subdir/test.html'));
 
-        self::assertContains('<p>This is a <a href="#test-anchor">test anchor</a></p>', $contents);
+        self::assertContains('<p>This is a <a href="test.html#test-anchor">test anchor</a></p>', $contents);
         self::assertContains('<a id="test-anchor"></a>', $contents);
     }
 
@@ -106,7 +106,7 @@ class BuilderTest extends TestCase
 
         $contents = $this->getFileContents($this->targetFile('introduction.html'));
 
-        self::assertContains('<p>Reference to the <a href="index.html#reference_anchor">Summary</a></p>', $contents);
+        self::assertContains('<p>Reference to the <a href="index.html#reference_anchor">Summary Reference</a></p>', $contents);
     }
 
     /**
@@ -119,10 +119,35 @@ class BuilderTest extends TestCase
         self::assertContains('<a href="index.html#toc">Index, paragraph toc</a>', $contents);
         self::assertContains('<a href="index.html">Index</a>', $contents);
         self::assertContains('<a href="index.html">Summary</a>', $contents);
+        self::assertContains('<a href="subdir/test.html#test_reference">Test Reference</a>', $contents);
+        self::assertContains('<a href="subdir/test.html#camelCaseReference">Camel Case Reference</a>', $contents);
 
         $contents = $this->getFileContents($this->targetFile('subdir/test.html'));
 
         self::assertContains('"../index.html"', $contents);
+        self::assertContains('<a href="test.html#subdir_same_doc_reference">the subdir same doc reference</a>', $contents);
+
+        $contents = $this->getFileContents($this->targetFile('index.html'));
+
+        self::assertContains('Link to <a href="subdir/test.html#subdirectory">Subdirectory</a>', $contents);
+        self::assertContains('Link to <a href="subdir/test.html#subdirectory">Subdirectory Test</a>', $contents);
+
+        self::assertContains('Link to <a href="subdir/test.html#subdirectory-child">Subdirectory Child', $contents);
+        self::assertContains('Link to <a href="subdir/test.html#subdirectory-child">Subdirectory Child Test</a>', $contents);
+
+        self::assertContains('Link to <a href="subdir/test.html#subdirectory-child-level-2">Subdirectory Child Level 2', $contents);
+        self::assertContains('Link to <a href="subdir/test.html#subdirectory-child-level-2">Subdirectory Child Level 2 Test</a>', $contents);
+
+        self::assertContains('Link to <a href="subdir/test.html#subdirectory-child-level-3">Subdirectory Child Level 3', $contents);
+        self::assertContains('Link to <a href="subdir/test.html#subdirectory-child-level-3">Subdirectory Child Level 3 Test</a>', $contents);
+    }
+
+    public function testSubdirReferences() : void
+    {
+        $contents = $this->getFileContents($this->targetFile('subdir/test.html'));
+
+        self::assertContains('<p>This is a <a href="test.html#test-anchor">test anchor</a></p>', $contents);
+        self::assertContains('<p>This is a <a href="test.html#test-subdir-anchor">test subdir reference with anchor</a></p>', $contents);
     }
 
     /**

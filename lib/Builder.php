@@ -4,72 +4,80 @@ declare(strict_types=1);
 
 namespace Doctrine\RST;
 
+use InvalidArgumentException;
+use Symfony\Component\Filesystem\Filesystem;
 use function array_shift;
 use function basename;
 use function dirname;
 use function file_exists;
-use function file_put_contents;
 use function filectime;
 use function is_dir;
-use function mkdir;
-use function shell_exec;
-use function var_export;
+use function sprintf;
 
 class Builder
 {
     public const NO_PARSE = 1;
     public const PARSE    = 2;
 
-    /** @var string */
-    protected $indexName = 'index';
+    /** @var Kernel */
+    private $kernel;
+
+    /** @var Configuration */
+    private $configuration;
 
     /** @var ErrorManager */
-    protected $errorManager;
+    private $errorManager;
 
-    /** @var bool */
-    protected $verbose = true;
-
-    /** @var string[][] */
-    protected $toCopy = [];
-
-    /** @var string[] */
-    protected $toMkdir = [];
-
-    /** @var string */
-    protected $directory;
-
-    /** @var string */
-    protected $targetDirectory;
+    /** @var Filesystem */
+    private $filesystem;
 
     /** @var Metas */
-    protected $metas;
+    private $metas;
 
-    /** @var int[] */
-    protected $states = [];
-
-    /** @var string[] */
-    protected $parseQueue = [];
-
-    /** @var Document[] */
-    protected $documents = [];
-
-    /** @var Kernel */
-    protected $kernel;
-
-    /** @var callable[] */
-    protected $beforeHooks = [];
-
-    /** @var callable[] */
-    protected $hooks = [];
+    /** @var string */
+    private $indexName = 'index';
 
     /** @var bool */
-    protected $relativeUrls = true;
+    private $verbose = true;
 
-    public function __construct(?Kernel $kernel = null)
+    /** @var string[][] */
+    private $toCopy = [];
+
+    /** @var string[] */
+    private $toMkdir = [];
+
+    /** @var string */
+    private $directory;
+
+    /** @var string */
+    private $targetDirectory;
+
+    /** @var int[] */
+    private $states = [];
+
+    /** @var string[] */
+    private $parseQueue = [];
+
+    /** @var Document[] */
+    private $documents = [];
+
+    /** @var callable[] */
+    private $beforeHooks = [];
+
+    /** @var callable[] */
+    private $hooks = [];
+
+    public function __construct(?Kernel $kernel = null, ?Configuration $configuration = null)
     {
-        $this->errorManager = new ErrorManager();
-
         $this->kernel = $kernel ?? new HTML\Kernel();
+
+        $this->configuration = $configuration ?? new Configuration();
+
+        $this->errorManager = new ErrorManager($this->configuration);
+
+        $this->filesystem = new Filesystem();
+
+        $this->metas = new Metas();
 
         $this->kernel->initBuilder($this);
     }
@@ -114,13 +122,13 @@ class Builder
 
         // Creating output directory if doesn't exists
         if (! is_dir($targetDirectory)) {
-            mkdir($targetDirectory, 0755, true);
+            $this->filesystem->mkdir($targetDirectory, 0755);
         }
 
         // Try to load metas, if it does not exists, create it
         $this->display('* Loading metas');
 
-        $this->metas = new Metas($this->loadMetas());
+        $this->metas = new Metas();
 
         // Scan all the metas and the index
         $this->display('* Pre-scanning files');
@@ -132,10 +140,6 @@ class Builder
 
         // Renders all the documents
         $this->render();
-
-        // Saving the meta
-        $this->display('* Writing metas');
-        $this->saveMetas();
 
         // Copy the files
         $this->display('* Running the copies');
@@ -155,16 +159,16 @@ class Builder
         $entry               = $this->metas->get($file);
         $rst                 = $this->getRST($file);
 
-        if ($entry === null || ! file_exists($rst) || $entry['ctime'] < filectime($rst)) {
+        if ($entry === null || ! file_exists($rst) || $entry->getCtime() < filectime($rst)) {
             // File was never seen or changed and thus need to be parsed
             $this->addToParseQueue($file);
         } else {
             // Have a look to the file dependencies to knoww if you need to parse
             // it or not
-            $depends = $entry['depends'];
+            $depends = $entry->getDepends();
 
-            if (isset($entry['parent'])) {
-                $depends[] = $entry['parent'];
+            if ($entry->getParent() !== null) {
+                $depends[] = $entry->getParent();
             }
 
             foreach ($depends as $dependency) {
@@ -197,9 +201,13 @@ class Builder
 
     public function getTargetOf(string $file) : string
     {
-        $meta = $this->metas->get($file);
+        $metaEntry = $this->metas->get($file);
 
-        return $this->getTargetFile($meta['url']);
+        if ($metaEntry === null) {
+            throw new InvalidArgumentException(sprintf('Could not find target file for %s', $file));
+        }
+
+        return $this->getTargetFile($metaEntry->getUrl());
     }
 
     public function getUrl(Document $document) : string
@@ -234,7 +242,11 @@ class Builder
                 $destination = dirname($destination);
             }
 
-            shell_exec('cp -R ' . $source . ' ' . $destination);
+            if (is_dir($source)) {
+                $this->filesystem->mirror($source, $destination);
+            } else {
+                $this->filesystem->copy($source, $destination);
+            }
         }
     }
 
@@ -258,7 +270,7 @@ class Builder
                 continue;
             }
 
-            mkdir($dir, 0755, true);
+            $this->filesystem->mkdir($dir, 0755);
         }
     }
 
@@ -281,12 +293,12 @@ class Builder
         return $this->indexName;
     }
 
-    public function setUseRelativeUrls(bool $relativeUrls) : void
+    public function setUseRelativeUrls(bool $useRelativeUrls) : void
     {
-        $this->relativeUrls = $relativeUrls;
+        $this->configuration->setUseRelativeUrls($useRelativeUrls);
     }
 
-    protected function display(string $text) : void
+    private function display(string $text) : void
     {
         if (! $this->verbose) {
             return;
@@ -295,7 +307,7 @@ class Builder
         echo $text . "\n";
     }
 
-    protected function render() : void
+    private function render() : void
     {
         $this->display('* Rendering documents');
 
@@ -306,14 +318,14 @@ class Builder
             $directory = dirname($target);
 
             if (! is_dir($directory)) {
-                mkdir($directory, 0755, true);
+                $this->filesystem->mkdir($directory, 0755);
             }
 
-            file_put_contents($target, $document->renderDocument());
+            $this->filesystem->dumpFile($target, $document->renderDocument());
         }
     }
 
-    protected function addToParseQueue(string $file) : void
+    private function addToParseQueue(string $file) : void
     {
         $this->states[$file] = self::PARSE;
 
@@ -324,7 +336,7 @@ class Builder
         $this->parseQueue[$file] = $file;
     }
 
-    protected function getFileToParse() : ?string
+    private function getFileToParse() : ?string
     {
         if ($this->parseQueue !== []) {
             return array_shift($this->parseQueue);
@@ -333,7 +345,7 @@ class Builder
         return null;
     }
 
-    protected function parseAll() : void
+    private function parseAll() : void
     {
         $this->display('* Parsing files');
 
@@ -346,7 +358,7 @@ class Builder
                 continue;
             }
 
-            $parser = new Parser(null, $this->kernel);
+            $parser = new Parser(null, $this->kernel, $this->configuration);
 
             $environment = $parser->getEnvironment();
             $environment->setMetas($this->metas);
@@ -354,7 +366,7 @@ class Builder
             $environment->setCurrentDirectory($this->directory);
             $environment->setTargetDirectory($this->targetDirectory);
             $environment->setErrorManager($this->errorManager);
-            $environment->setUseRelativeUrls($this->relativeUrls);
+            $environment->setUseRelativeUrls($this->configuration->useRelativeUrls());
 
             foreach ($this->beforeHooks as $hook) {
                 $hook($parser);
@@ -384,38 +396,13 @@ class Builder
             $this->metas->set(
                 $file,
                 $this->getUrl($document),
-                $document->getTitle(),
+                (string) $document->getTitle(),
                 $document->getTitles(),
                 $document->getTocs(),
                 (int) filectime($rst),
-                $dependencies
+                $dependencies,
+                $environment->getLinks()
             );
         }
-    }
-
-    protected function getMetaFile() : string
-    {
-        return $this->getTargetFile('meta.php');
-    }
-
-    /**
-     * @return mixed[]|null
-     */
-    protected function loadMetas() : ?array
-    {
-        $metaFile = $this->getMetaFile();
-
-        if (file_exists($metaFile)) {
-            return @include $metaFile;
-        }
-
-        return null;
-    }
-
-    protected function saveMetas() : void
-    {
-        $metas = '<?php return ' . var_export($this->metas->getAll(), true) . ';';
-
-        file_put_contents($this->getMetaFile(), $metas);
     }
 }

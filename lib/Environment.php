@@ -4,91 +4,76 @@ declare(strict_types=1);
 
 namespace Doctrine\RST;
 
-use Exception;
-use function array_pop;
+use Doctrine\RST\References\ResolvedReference;
+use InvalidArgumentException;
 use function array_shift;
-use function basename;
-use function count;
 use function dirname;
-use function explode;
 use function iconv;
 use function implode;
-use function in_array;
-use function preg_match;
 use function preg_replace;
 use function sprintf;
 use function strtolower;
-use function substr;
 use function trim;
 
 class Environment
 {
-    /** @var string[] */
-    public static $letters = ['=', '-', '~', '*', '+', '^', '"'];
+    /** @var Configuration */
+    private $configuration;
 
     /** @var ErrorManager */
-    public $errorManager = null;
+    private $errorManager;
 
-    /** @var string */
-    public static $tableLetter = '=';
-
-    /** @var string */
-    public static $prettyTableLetter = '-';
-
-    /** @var string */
-    public static $prettyTableHeader = '=';
-
-    /** @var string */
-    public static $prettyTableJoint = '+';
+    /** @var UrlGenerator */
+    private $urlGenerator;
 
     /** @var int */
-    protected $currentTitleLevel = 0;
+    private $currentTitleLevel = 0;
 
     /** @var string[] */
-    protected $titleLetters = [];
+    private $titleLetters = [];
 
     /** @var string */
-    protected $currentFileName = '';
+    private $currentFileName = '';
 
     /** @var string */
-    protected $currentDirectory = '.';
+    private $currentDirectory = '.';
 
     /** @var string */
-    protected $targetDirectory = '.';
+    private $targetDirectory = '.';
 
     /** @var null|string */
-    protected $url = null;
+    private $url = null;
 
     /** @var Reference[] */
-    protected $references = [];
+    private $references = [];
 
     /** @var Metas */
-    protected $metas;
+    private $metas;
 
     /** @var string[] */
-    protected $dependencies = [];
+    private $dependencies = [];
 
     /** @var string[] */
-    protected $variables = [];
+    private $variables = [];
 
     /** @var string[] */
-    protected $links = [];
+    private $links = [];
 
     /** @var int[] */
-    protected $levels = [];
+    private $levels = [];
 
     /** @var int[] */
-    protected $counters = [];
-
-    /** @var bool */
-    protected $relativeUrls = true;
+    private $counters = [];
 
     /** @var string[] */
-    protected $anonymous = [];
+    private $anonymous = [];
 
-    public function __construct()
+    public function __construct(?Configuration $configuration = null)
     {
-        $this->errorManager = new ErrorManager();
+        $this->configuration = $configuration ?? new Configuration();
+        $this->errorManager  = new ErrorManager($this->configuration);
+        $this->urlGenerator  = new UrlGenerator();
+        $this->metas         = new Metas();
 
         $this->reset();
     }
@@ -121,92 +106,20 @@ class Environment
         $this->metas = $metas;
     }
 
-    /**
-     * @return null|mixed[]
-     */
-    public function getParent() : ?array
-    {
-        if ($this->currentFileName === '' || $this->metas === null) {
-            return null;
-        }
-
-        $meta = $this->metas->get($this->currentFileName);
-
-        if ($meta === null || ! isset($meta['parent'])) {
-            return null;
-        }
-
-        return $this->metas->get($meta['parent']);
-    }
-
-    /**
-     * @return null|mixed[]
-     */
-    public function getMyToc() : ?array
-    {
-        $parent = $this->getParent();
-
-        if ($parent === null) {
-            return null;
-        }
-
-        foreach ($parent['tocs'] as $toc) {
-            if (! in_array($this->currentFileName, $toc, true)) {
-                continue;
-            }
-
-            $before = [];
-            $after  = $toc;
-
-            while ($after) {
-                $file = array_shift($after);
-
-                if ($file === $this->currentFileName) {
-                    return [$before, $after];
-                }
-
-                $before[] = $file;
-            }
-        }
-
-        return null;
-    }
-
     public function registerReference(Reference $reference) : void
     {
         $this->references[$reference->getName()] = $reference;
     }
 
-    /**
-     * @return null|mixed[]
-     */
-    public function resolve(string $section, string $data) : ?array
+    public function resolve(string $section, string $data) : ResolvedReference
     {
-        if (isset($this->references[$section])) {
-            $reference = $this->references[$section];
-
-            return $reference->resolve($this, $data);
+        if (! isset($this->references[$section])) {
+            throw new InvalidArgumentException(sprintf('Unknown reference section %s', $section));
         }
 
-        $this->errorManager->error('Unknown reference section ' . $section);
+        $reference = $this->references[$section];
 
-        return null;
-    }
-
-    /**
-     * @return string[]|null
-     */
-    public function resolveByText(string $section, string $text) : ?array
-    {
-        if (isset($this->references[$section])) {
-            $reference = $this->references[$section];
-
-            return $reference->resolveByText($this, $text);
-        }
-
-        $this->errorManager->error('Unknown reference section ' . $section);
-
-        return null;
+        return $reference->resolve($this, $data);
     }
 
     /**
@@ -297,6 +210,14 @@ class Environment
         $this->anonymous[] = trim(strtolower($name));
     }
 
+    /**
+     * @return string[]
+     */
+    public function getLinks() : array
+    {
+        return $this->links;
+    }
+
     public function getLink(string $name, bool $relative = true) : string
     {
         $name = trim(strtolower($name));
@@ -319,7 +240,7 @@ class Environment
         $dependency = $this->canonicalUrl($dependency);
 
         if ($dependency === null) {
-            throw new Exception(sprintf(
+            throw new InvalidArgumentException(sprintf(
                 'Could not get canonical url for dependency %s',
                 $dependency
             ));
@@ -336,61 +257,19 @@ class Environment
         return $this->dependencies;
     }
 
-    /**
-     * Resolves a relative URL using directories, for instance, if the
-     * current directory is "path/to/something", and you want to get the
-     * relative URL to "path/to/something/else.html", the result will
-     * be else.html. Else, "../" will be added to go to the upper directory
-     */
     public function relativeUrl(?string $url) : ?string
     {
-        if ($url === null) {
-            return null;
-        }
-
-        // If string contains ://, it is considered as absolute
-        if (preg_match('/:\\/\\//mUsi', $url) > 0) {
-            return $url;
-        }
-
-        // If string begins with "/", the "/" is removed to resolve the
-        // relative path
-        if ($url !== '' && $url[0] === '/') {
-            $url = substr($url, 1);
-
-            if ($this->samePrefix($url)) {
-                // If the prefix is the same, simply returns the file name
-                $relative = basename($url);
-            } else {
-                // Else, returns enough ../ to get upper
-                $relative = '';
-
-                for ($k=0; $k<$this->getDepth(); $k++) {
-                    $relative .= '../';
-                }
-
-                $relative .= $url;
-            }
-        } else {
-            $relative = $url;
-        }
-
-        return $relative;
+        return $this->urlGenerator->relativeUrl($url, $this->currentFileName);
     }
 
     public function useRelativeUrls() : bool
     {
-        return $this->relativeUrls;
+        return $this->configuration->useRelativeUrls();
     }
 
-    public function setUseRelativeUrls(bool $relativeUrls) : void
+    public function setUseRelativeUrls(bool $useRelativeUrls) : void
     {
-        $this->relativeUrls = $relativeUrls;
-    }
-
-    public function getDepth() : int
-    {
-        return count(explode('/', $this->currentFileName))-1;
+        $this->configuration->setUseRelativeUrls($useRelativeUrls);
     }
 
     public function getDirName() : string
@@ -406,22 +285,7 @@ class Environment
 
     public function canonicalUrl(string $url) : ?string
     {
-        if ($url !== '') {
-            if ($url[0] === '/') {
-                // If the URL begins with a "/", the following is the
-                // canonical URL
-                return substr($url, 1);
-            }
-
-            // Else, the canonical name is under the current dir
-            if ($this->getDirName() !== '') {
-                return $this->canonicalize($this->getDirName() . '/' . $url);
-            }
-
-            return $this->canonicalize($url);
-        }
-
-        return null;
+        return $this->urlGenerator->canonicalUrl($this->getDirName(), $url);
     }
 
     public function setCurrentFileName(string $filename) : void
@@ -467,7 +331,7 @@ class Environment
         $this->url = $url;
     }
 
-    public function getMetas() : ?Metas
+    public function getMetas() : Metas
     {
         return $this->metas;
     }
@@ -515,38 +379,5 @@ class Environment
         $text = strtolower($text);
 
         return $text;
-    }
-
-    protected function samePrefix(string $url) : bool
-    {
-        $partsA = explode('/', $url);
-        $partsB = explode('/', $this->currentFileName);
-
-        $n = count($partsA);
-
-        if ($n !== count($partsB)) {
-            return false;
-        }
-
-        unset($partsA[$n - 1]);
-        unset($partsB[$n - 1]);
-
-        return $partsA === $partsB;
-    }
-
-    protected function canonicalize(string $url) : string
-    {
-        $parts = explode('/', $url);
-        $stack = [];
-
-        foreach ($parts as $part) {
-            if ($part === '..') {
-                array_pop($stack);
-            } else {
-                $stack[] = $part;
-            }
-        }
-
-        return implode('/', $stack);
     }
 }

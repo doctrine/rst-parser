@@ -4,28 +4,37 @@ declare(strict_types=1);
 
 namespace Doctrine\RST;
 
+use function strtolower;
+
 class Metas
 {
-    /** @var mixed[] */
-    protected $entries = [];
+    /** @var MetaEntry[] */
+    private $entries = [];
 
     /** @var string[] */
-    protected $parents = [];
+    private $parents = [];
 
     /**
-     * @param mixed[]|null $entries
+     * @param MetaEntry[] $entries
      */
-    public function __construct(?array $entries)
+    public function __construct(array $entries = [])
     {
-        if ($entries === null) {
-            return;
-        }
-
         $this->entries = $entries;
     }
 
+    public function findLinkMetaEntry(string $link) : ?MetaEntry
+    {
+        foreach ($this->entries as $entry) {
+            if ($this->doesLinkExist($entry->getLinks(), $link)) {
+                return $entry;
+            }
+        }
+
+        return $this->findByTitle($link);
+    }
+
     /**
-     * @return mixed[]
+     * @return MetaEntry[]
      */
     public function getAll() : array
     {
@@ -36,51 +45,80 @@ class Metas
      * @param string[][] $titles
      * @param mixed[][]  $tocs
      * @param string[]   $depends
+     * @param string[]   $links
      */
     public function set(
         string $file,
         string $url,
-        ?string $title,
+        string $title,
         array $titles,
         array $tocs,
         int $ctime,
-        array $depends
+        array $depends,
+        array $links
     ) : void {
         foreach ($tocs as $toc) {
             foreach ($toc as $child) {
                 $this->parents[$child] = $file;
+
                 if (! isset($this->entries[$child])) {
                     continue;
                 }
 
-                $this->entries[$child]['parent'] = $file;
+                $this->entries[$child]->setParent($file);
             }
         }
 
-        $this->entries[$file] = [
-            'file' => $file,
-            'url' => $url,
-            'title' => $title,
-            'titles' => $titles,
-            'tocs' => $tocs,
-            'ctime' => $ctime,
-            'depends' => $depends,
-        ];
+        $this->entries[$file] = new MetaEntry(
+            $file,
+            $url,
+            $title,
+            $titles,
+            $tocs,
+            $depends,
+            $links,
+            $ctime
+        );
 
         if (! isset($this->parents[$file])) {
             return;
         }
 
-        $this->entries[$file]['parent'] = $this->parents[$file];
+        $this->entries[$file]->setParent($this->parents[$file]);
     }
 
-    /**
-     * @return string[]
-     */
-    public function get(string $url) : ?array
+    public function get(string $url) : ?MetaEntry
     {
         if (isset($this->entries[$url])) {
             return $this->entries[$url];
+        }
+
+        return null;
+    }
+
+    /**
+     * @param string[] $links
+     */
+    private function doesLinkExist(array $links, string $link) : bool
+    {
+        foreach ($links as $name => $url) {
+            if ($name === strtolower($link)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function findByTitle(string $text) : ?MetaEntry
+    {
+        $text = Environment::slugify($text);
+
+        // try to lookup the document reference by title
+        foreach ($this->entries as $entry) {
+            if ($entry->hasTitle($text)) {
+                return $entry;
+            }
         }
 
         return null;

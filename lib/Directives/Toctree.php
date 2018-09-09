@@ -7,7 +7,6 @@ namespace Doctrine\RST\Directives;
 use Doctrine\RST\Directive;
 use Doctrine\RST\Environment;
 use Doctrine\RST\Nodes\Node;
-use Doctrine\RST\Nodes\TocNode;
 use Doctrine\RST\Parser;
 use function array_merge;
 use function count;
@@ -73,8 +72,7 @@ class Toctree extends Directive
             }
         }
 
-        /** @var TocNode $tocNode */
-        $tocNode = $kernel->build('Nodes\TocNode', $files, $environment, $options);
+        $tocNode = $kernel->getFactory()->createTocNode($environment, $files, $options);
 
         $parser->getDocument()->addNode($tocNode);
     }

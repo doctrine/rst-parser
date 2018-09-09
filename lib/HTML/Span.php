@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\HTML;
 
+use Doctrine\RST\References\ResolvedReference;
 use Doctrine\RST\Span as Base;
 use function htmlspecialchars;
 use function trim;
@@ -46,17 +47,16 @@ class Span extends Base
     }
 
     /**
-     * @param null|mixed[] $reference
-     * @param mixed[]      $value
+     * @param mixed[] $value
      */
-    public function reference(?array $reference, array $value) : string
+    public function reference(ResolvedReference $reference, array $value) : string
     {
-        $text = $value['text'] ?: ($reference['title'] ?? '');
+        $text = $value['text'] ?: ($reference->getTitle() ?? '');
         $text = trim($text);
 
         // reference to another document
-        if ($reference['url'] !== null) {
-            $url = $reference['url'];
+        if ($reference->getUrl() !== null) {
+            $url = $reference->getUrl();
 
             if ($value['anchor'] !== null) {
                 $url .= '#' . $value['anchor'];

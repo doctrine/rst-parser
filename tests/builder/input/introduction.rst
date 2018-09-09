@@ -11,4 +11,8 @@ Reference to the :doc:`Index, paragraph toc <index#toc>`
 
 Reference to the :doc:`Glob TOC <toc-glob>`
 
-Reference to the :doc:`Summary <reference_anchor>`
+Reference to the :doc:`Summary Reference <reference_anchor>`
+
+Reference to the :doc:`Test Reference <test_reference>`
+
+Reference to the :doc:`Camel Case Reference <camelCaseReference>`

@@ -8,11 +8,11 @@ use Doctrine\RST\Environment;
 
 abstract class TocNode extends Node
 {
-    /** @var string[] */
-    protected $files;
-
     /** @var Environment */
     protected $environment;
+
+    /** @var string[] */
+    protected $files;
 
     /** @var string[] */
     protected $options;
@@ -21,7 +21,7 @@ abstract class TocNode extends Node
      * @param string[] $files
      * @param string[] $options
      */
-    public function __construct(array $files, Environment $environment, array $options)
+    public function __construct(Environment $environment, array $files, array $options)
     {
         parent::__construct();
 

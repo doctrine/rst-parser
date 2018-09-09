@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Doctrine\RST;
 
+use Doctrine\RST\References\ResolvedReference;
+
 /**
  * A reference is something that can be resolved in the document, for instance:
  *
@@ -25,19 +27,8 @@ abstract class Reference
      * @param Environment $environment the Environment in use
      * @param string      $data        the data of the reference
      *
-     * @return string[] array an array with key title and url
      */
-    abstract public function resolve(Environment $environment, string $data) : ?array;
-
-    /**
-     * Resolve the reference by text and returns an array
-     *
-     * @param Environment $environment the Environment in use
-     * @param string      $text        the text label of the reference
-     *
-     * @return string[]|null an array with key title and url
-     */
-    abstract public function resolveByText(Environment $environment, string $text) : ?array;
+    abstract public function resolve(Environment $environment, string $data) : ResolvedReference;
 
     /**
      * Called when a reference is just found

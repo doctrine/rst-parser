@@ -47,7 +47,7 @@ abstract class ListNode extends Node
             }
 
             while ($depth > $newDepth) {
-                $top = $stack[count($stack)-1];
+                $top = $stack[count($stack) - 1];
 
                 if ($top[0] <= $newDepth) {
                     continue;
@@ -55,7 +55,7 @@ abstract class ListNode extends Node
 
                 $value .= $top[1];
                 array_pop($stack);
-                $top   = $stack[count($stack)-1];
+                $top   = $stack[count($stack) - 1];
                 $depth = $top[0];
             }
 

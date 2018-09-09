@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\RST\LaTeX;
 
 use Doctrine\RST\Directive;
+use Doctrine\RST\Factory;
 use Doctrine\RST\Kernel as Base;
 use function array_merge;
 
@@ -12,7 +13,7 @@ class Kernel extends Base
 {
     public function getName() : string
     {
-        return 'LaTeX';
+        return Factory::LATEX;
     }
 
     /**

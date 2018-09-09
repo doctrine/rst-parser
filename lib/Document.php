@@ -116,14 +116,14 @@ abstract class Document extends Node
             $redirection = $node->getTarget();
             $value       = $redirection !== '' ? [$text, $redirection] : $text;
 
-            if (! isset($levels[$level-1])) {
+            if (! isset($levels[$level - 1])) {
                 continue;
             }
 
-            $parent         = &$levels[$level-1];
+            $parent         = &$levels[$level - 1];
             $element        = [$value, []];
             $parent[]       = $element;
-            $levels[$level] = &$parent[count($parent)-1][1];
+            $levels[$level] = &$parent[count($parent) - 1][1];
         }
 
         return $titles;

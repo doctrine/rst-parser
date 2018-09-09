@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace Doctrine\RST;
 
 use Doctrine\RST\Nodes\Node;
+use Doctrine\RST\References\ResolvedReference;
+use function assert;
 use function htmlspecialchars;
 use function implode;
 use function is_array;
+use function is_string;
 use function mt_rand;
 use function preg_match;
 use function preg_match_all;
@@ -16,7 +19,6 @@ use function preg_replace_callback;
 use function sha1;
 use function str_replace;
 use function time;
-use function trim;
 
 abstract class Span extends Node
 {
@@ -33,7 +35,7 @@ abstract class Span extends Node
     protected $environment;
 
     /**
-     * @param string|string[] $span
+     * @param string|string[]|Span $span
      */
     public function __construct(Parser $parser, $span)
     {
@@ -41,6 +43,10 @@ abstract class Span extends Node
 
         if (is_array($span)) {
             $span = implode("\n", $span);
+        }
+
+        if ($span instanceof Span) {
+            $span = (string) $span;
         }
 
         $tokenId   = 0;
@@ -205,24 +211,9 @@ abstract class Span extends Node
                     $span = str_replace($id, $this->literal($value['text']), $span);
                     break;
                 case 'reference':
-                    // try to resolve by url first
                     $reference = $environment->resolve($value['section'], $value['url']);
 
-                    if ($reference !== null) {
-                        $link = $this->reference($reference, $value);
-
-                    // try to resolve by text second
-                    } elseif (isset($value['text']) && $value['text'] !== null) {
-                        /** @var string[] $reference */
-                        $reference = $environment->resolveByText($value['section'], $value['text']);
-
-                        // if we resolved by text set the anchor to the url
-                        $value['anchor'] = $value['url'];
-
-                        $link = $this->reference($reference, $value);
-                    } else {
-                        $link = '';
-                    }
+                    $link = $this->reference($reference, $value);
 
                     $span = str_replace($id, $link, $span);
                     break;
@@ -290,18 +281,16 @@ abstract class Span extends Node
     }
 
     /**
-     * @param null|string[] $reference
-     * @param string[]      $value
+     * @param string[] $value
      */
-    public function reference(?array $reference, array $value) : string
+    public function reference(ResolvedReference $reference, array $value) : string
     {
-        if ($reference !== null && $reference !== []) {
-            $text = $value['text'] ?: ($reference['title'] ?? '');
-            $link = $this->link($reference['url'], trim($text));
-        } else {
-            $link = $this->link('#', '(unresolved reference)');
-        }
+        $url  = $reference->getUrl();
+        $text = $value['text'] ?: $reference->getTitle();
 
-        return $link;
+        assert(is_string($url));
+        assert(is_string($text));
+
+        return $this->link($url, $text);
     }
 }
