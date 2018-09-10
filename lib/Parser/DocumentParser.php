@@ -148,14 +148,14 @@ class DocumentParser
             return false;
         }
 
-        $lastline = trim($lastLine);
+        $trimmedLastLine = trim($lastLine);
 
-        if (strlen($lastLine) >= 2) {
-            if (substr($lastLine, -2) === '::') {
-                if (trim($lastLine) === '::') {
+        if (strlen($trimmedLastLine) >= 2) {
+            if (substr($trimmedLastLine, -2) === '::') {
+                if (trim($trimmedLastLine) === '::') {
                     $this->buffer->pop();
                 } else {
-                    $this->buffer->set($this->buffer->count() - 1, substr($lastLine, 0, -1));
+                    $this->buffer->set($this->buffer->count() - 1, substr($trimmedLastLine, 0, -1));
                 }
 
                 return true;

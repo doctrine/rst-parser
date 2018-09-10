@@ -26,6 +26,15 @@ use function trim;
  */
 class ParserTest extends TestCase
 {
+    public function testCodeBlockWithWhiteSpace() : void
+    {
+        $document = $this->parse('code-with-whitespace.rst');
+
+        $render = $document->render();
+
+        self::assertContains('<pre><code class="">Test code block with whitespace.', $render);
+    }
+
     /**
      * Tests that comments are not present in the rendered document
      */
