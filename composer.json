@@ -1,7 +1,7 @@
 {
     "name": "doctrine/rst-parser",
-    "description": "PHP library to parse reStructuredText documents",
-    "keywords": ["rst", "markup", "parser"],
+    "description": "PHP library to parse reStructuredText documents and generate HTML or LaTeX documents.",
+    "keywords": ["rst", "markup", "parser", "restructuredtext", "html", "latex"],
     "homepage": "https://github.com/doctrine/rst-parser",
     "license": "MIT",
     "authors": [
