@@ -6,7 +6,13 @@ namespace Doctrine\RST\Nodes;
 
 use Doctrine\RST\Parser;
 use Doctrine\RST\Span;
+use RuntimeException;
+use function array_fill_keys;
+use function array_keys;
+use function array_map;
 use function count;
+use function implode;
+use function sprintf;
 use function strlen;
 use function substr;
 use function trim;
@@ -15,6 +21,9 @@ use function utf8_encode;
 
 abstract class TableNode extends Node
 {
+    public const TYPE_SIMPLE = 'simple';
+    public const TYPE_PRETTY = 'pretty';
+
     /** @var mixed[] */
     protected $parts = [];
 
@@ -24,15 +33,19 @@ abstract class TableNode extends Node
     /** @var bool[] */
     protected $headers = [];
 
+    /** @var string */
+    protected $type;
+
     /**
      * @param string[] $parts
      */
-    public function __construct(array $parts)
+    public function __construct(array $parts, string $type)
     {
         parent::__construct();
 
         $this->parts  = $parts;
         $this->data[] = [];
+        $this->type   = $type;
     }
 
     public function getCols() : int
@@ -58,11 +71,19 @@ abstract class TableNode extends Node
                 return false;
             }
 
-            if ($parts[0] === true) {
-                $this->headers[count($this->data) - 1] = true;
+            if ($this->type === self::TYPE_PRETTY) {
+                if ($parts[0] === true) {
+                    $this->headers[count($this->data) - 1] = true;
+                }
+                $this->data[] = [];
+            } elseif (count($this->headers) === 0) {
+                $this->headers = array_fill_keys(array_keys($this->data), true);
             }
-            $this->data[] = [];
         } else {
+            if ($this->type === self::TYPE_SIMPLE) {
+                $this->data[] = [];
+            }
+
             // Pushing data in the cells
             [$header, $pretty, $parts] = $this->parts;
 
@@ -98,6 +119,14 @@ abstract class TableNode extends Node
 
     public function finalize(Parser $parser) : void
     {
+        if (count($this->headers) === count($this->data)) {
+            $data = array_map(static function ($item) {
+                return implode(' | ', $item);
+            }, $this->data);
+
+            throw new RuntimeException(sprintf("Malformed table:\n%s\n\nin file: \"%s\"", implode("\n", $data), $parser->getFilename()));
+        }
+
         foreach ($this->data as &$row) {
             if ($row === []) {
                 continue;

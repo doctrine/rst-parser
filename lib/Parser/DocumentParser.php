@@ -354,7 +354,7 @@ class DocumentParser
 
                         $this->state = State::TABLE;
 
-                        $tableNode = $this->factory->createTableNode($tableParts);
+                        $tableNode = $this->factory->createTableNode($tableParts, $this->tableParser->guessTableType($line));
 
                         $this->nodeBuffer = $tableNode;
                     }
