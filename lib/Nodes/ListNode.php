@@ -63,8 +63,8 @@ abstract class ListNode extends Node
         }
 
         while ($stack) {
-            list($d, $closing) = array_pop($stack);
-            $value            .= $closing;
+            [$d, $closing] = array_pop($stack);
+            $value        .= $closing;
         }
 
         return $value;

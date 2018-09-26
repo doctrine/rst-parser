@@ -48,8 +48,6 @@ class TableNode extends Base
         $aligns = '|' . implode('|', $aligns) . '|';
         $rows   = "\\hline\n" . implode("\\hline\n", $rows) . "\\hline\n";
 
-        $tex = "\\begin{tabular}{" . $aligns . "}\n" . $rows . "\n\\end{tabular}\n";
-
-        return $tex;
+        return "\\begin{tabular}{" . $aligns . "}\n" . $rows . "\n\\end{tabular}\n";
     }
 }

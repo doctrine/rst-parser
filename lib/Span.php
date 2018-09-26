@@ -51,7 +51,7 @@ abstract class Span extends Node
 
         $tokenId   = 0;
         $prefix    = mt_rand() . '|' . time();
-        $generator = function () use ($prefix, &$tokenId) {
+        $generator = static function () use ($prefix, &$tokenId) {
             $tokenId++;
             return sha1($prefix . '|' . $tokenId);
         };
@@ -60,7 +60,7 @@ abstract class Span extends Node
         $tokens = [];
         $span   = preg_replace_callback(
             '/``(.+)``(?!`)/mUsi',
-            function ($match) use (&$tokens, $generator) {
+            static function ($match) use (&$tokens, $generator) {
                 $id          = $generator();
                 $tokens[$id] = [
                     'type' => 'literal',
@@ -77,7 +77,7 @@ abstract class Span extends Node
 
         // Replacing numbering
         foreach ($environment->getTitleLetters() as $level => $letter) {
-            $span = preg_replace_callback('/\#\\' . $letter . '/mUsi', function ($match) use ($environment, $level) {
+            $span = preg_replace_callback('/\#\\' . $letter . '/mUsi', static function ($match) use ($environment, $level) {
                 return $environment->getNumber($level);
             }, $span);
         }
@@ -93,7 +93,7 @@ abstract class Span extends Node
         }
 
         // Looking for references to other documents
-        $span = preg_replace_callback('/:([a-z0-9]+):`(.+)`/mUsi', function ($match) use (&$environment, $generator, &$tokens) {
+        $span = preg_replace_callback('/:([a-z0-9]+):`(.+)`/mUsi', static function ($match) use (&$environment, $generator, &$tokens) {
             $section = $match[1];
             $url     = $match[2];
             $id      = $generator();
@@ -124,7 +124,7 @@ abstract class Span extends Node
         }, $span);
 
         // Link callback
-        $linkCallback = function ($match) use ($environment, $generator, &$tokens) {
+        $linkCallback = static function ($match) use ($environment, $generator, &$tokens) {
             $link = $match[2] ?: $match[4];
             $id   = $generator();
             $next = $match[5];
@@ -178,10 +178,10 @@ abstract class Span extends Node
         $span = $this->escape($data);
 
         // Emphasis
-        $span = preg_replace_callback('/\*\*(.+)\*\*/mUsi', function ($matches) use ($self) {
+        $span = preg_replace_callback('/\*\*(.+)\*\*/mUsi', static function ($matches) use ($self) {
             return $self->strongEmphasis($matches[1]);
         }, $span);
-        $span = preg_replace_callback('/\*(.+)\*/mUsi', function ($matches) use ($self) {
+        $span = preg_replace_callback('/\*(.+)\*/mUsi', static function ($matches) use ($self) {
             return $self->emphasis($matches[1]);
         }, $span);
 
@@ -189,7 +189,7 @@ abstract class Span extends Node
         $span = preg_replace('/~/', $this->nbsp(), $span);
 
         // Replacing variables
-        $span = preg_replace_callback('/\|(.+)\|/mUsi', function ($match) use ($environment) {
+        $span = preg_replace_callback('/\|(.+)\|/mUsi', static function ($match) use ($environment) {
             return $environment->getVariable($match[1]);
         }, $span);
 

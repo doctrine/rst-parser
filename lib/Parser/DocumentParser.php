@@ -44,10 +44,10 @@ class DocumentParser
     /** @var Document */
     private $document;
 
-    /** @var null|false|string */
+    /** @var false|string|null */
     private $specialLetter;
 
-    /** @var null|ParserDirective */
+    /** @var ParserDirective|null */
     private $directive;
 
     /** @var LineDataParser */
@@ -71,7 +71,7 @@ class DocumentParser
     /** @var int */
     private $state;
 
-    /** @var null|ListLine */
+    /** @var ListLine|null */
     private $listLine;
 
     /** @var bool */

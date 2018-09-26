@@ -9,7 +9,7 @@ abstract class CodeNode extends BlockNode
     /** @var bool */
     protected $raw = false;
 
-    /** @var null|string */
+    /** @var string|null */
     protected $language = null;
 
     public function setLanguage(?string $language = null) : void

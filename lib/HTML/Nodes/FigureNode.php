@@ -22,8 +22,6 @@ class FigureNode extends Base
             }
         }
 
-        $html .= '</figure>';
-
-        return $html;
+        return $html .= '</figure>';
     }
 }

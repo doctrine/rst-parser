@@ -26,7 +26,6 @@ abstract class Reference
      *
      * @param Environment $environment the Environment in use
      * @param string      $data        the data of the reference
-     *
      */
     abstract public function resolve(Environment $environment, string $data) : ResolvedReference;
 

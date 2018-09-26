@@ -230,7 +230,7 @@ class Builder
     public function doCopy() : void
     {
         foreach ($this->toCopy as $copy) {
-            list($source, $destination) = $copy;
+            [$source, $destination] = $copy;
 
             if ($source[0] !== '/') {
                 $source = $this->getSourceFile($source);

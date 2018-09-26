@@ -20,7 +20,6 @@ use function sprintf;
  *      :title: An image
  *
  *      Here is an awesome caption
- *
  */
 class Figure extends SubDirective
 {

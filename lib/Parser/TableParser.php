@@ -10,20 +10,16 @@ use function trim;
 
 class TableParser
 {
-    /** @var string */
     private const TABLE_LETTER = '=';
 
-    /** @var string */
     private const PRETTY_TABLE_LETTER = '-';
 
-    /** @var string */
     private const PRETTY_TABLE_HEADER = '=';
 
-    /** @var string */
     private const PRETTY_TABLE_JOINT = '+';
 
     /**
-     * @return null|mixed[]
+     * @return mixed[]|null
      */
     public function parseTableLine(string $line) : ?array
     {
