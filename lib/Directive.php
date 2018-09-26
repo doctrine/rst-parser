@@ -33,7 +33,7 @@ abstract class Directive
      * The node that directly follows the directive is also passed to it
      *
      * @param Parser    $parser   the calling parser
-     * @param null|Node $node     the node that follows the directive
+     * @param Node|null $node     the node that follows the directive
      * @param string    $variable the variable name of the directive
      * @param string    $data     the data of the directive (following ::)
      * @param string[]  $options  the array of options for this directive

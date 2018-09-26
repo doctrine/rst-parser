@@ -11,7 +11,6 @@ use function trim;
 
 class LineChecker
 {
-    /** @var string[] */
     private const HEADER_LETTERS = ['=', '-', '~', '*', '+', '^', '"'];
 
     /** @var LineDataParser */

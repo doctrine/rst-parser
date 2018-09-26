@@ -74,7 +74,7 @@ class ParserTest extends TestCase
     {
         $document = $this->parse('code-block-lastline.rst');
 
-        $nodes = $document->getNodes(function ($node) {
+        $nodes = $document->getNodes(static function ($node) {
             return $node instanceof CodeNode;
         });
 
@@ -89,7 +89,7 @@ class ParserTest extends TestCase
     {
         $document = $this->parse('paragraph.rst');
 
-        self::assertHasNode($document, function ($node) {
+        self::assertHasNode($document, static function ($node) {
             return $node instanceof ParagraphNode;
         }, 1);
         self::assertContains('Hello world!', $document->render());
@@ -102,7 +102,7 @@ class ParserTest extends TestCase
     {
         $document = $this->parse('paragraphs.rst');
 
-        self::assertHasNode($document, function ($node) {
+        self::assertHasNode($document, static function ($node) {
             return $node instanceof ParagraphNode;
         }, 3);
     }
@@ -114,13 +114,13 @@ class ParserTest extends TestCase
     {
         $quote = $this->parse('quote.rst');
 
-        self::assertHasNode($quote, function ($node) {
+        self::assertHasNode($quote, static function ($node) {
             return $node instanceof QuoteNode;
         }, 1);
 
         $code = $this->parse('code.rst');
 
-        self::assertHasNode($quote, function ($node) {
+        self::assertHasNode($quote, static function ($node) {
             return $node instanceof QuoteNode;
         }, 1);
 
@@ -134,14 +134,14 @@ class ParserTest extends TestCase
     {
         $document = $this->parse('title.rst');
 
-        self::assertHasNode($document, function ($node) {
+        self::assertHasNode($document, static function ($node) {
             return $node instanceof TitleNode
                 && $node->getLevel() === 1;
         }, 1);
 
         $document = $this->parse('title2.rst');
 
-        self::assertHasNode($document, function ($node) {
+        self::assertHasNode($document, static function ($node) {
             return $node instanceof TitleNode
                 && $node->getLevel() === 2;
         }, 1);
@@ -154,18 +154,18 @@ class ParserTest extends TestCase
     {
         $document = $this->parse('list.rst');
 
-        self::assertHasNode($document, function ($node) {
+        self::assertHasNode($document, static function ($node) {
             return $node instanceof ListNode;
         }, 1);
 
         $document = $this->parse('indented-list.rst');
 
-        self::assertHasNode($document, function ($node) {
+        self::assertHasNode($document, static function ($node) {
             return $node instanceof ListNode;
         }, 1);
 
         $document = $this->parse('list-empty.rst');
-        self::assertHasNode($document, function ($node) {
+        self::assertHasNode($document, static function ($node) {
             return $node instanceof ListNode;
         }, 1);
     }
@@ -180,23 +180,23 @@ class ParserTest extends TestCase
         self::assertSame($document->getTitle(), 'The main title');
         self::assertSame($document->getTitles(), [
             [
-        'The main title',
-        [
+                'The main title',
                 [
-        'First level title',
-        [
-                    ['Second level title', []],
-                    ['Other second level title', []],
+                    [
+                        'First level title',
+                        [
+                            ['Second level title', []],
+                            ['Other second level title', []],
+                        ],
+                    ],
+                    [
+                        'Other first level title',
+                        [
+                            ['Next second level title', []],
+                            ['Yet another second level title', []],
+                        ],
+                    ],
                 ],
-                ],
-                [
-                'Other first level title',
-                [
-                    ['Next second level title', []],
-                    ['Yet another second level title', []],
-                ],
-                ],
-            ],
             ],
         ]);
     }
@@ -208,7 +208,7 @@ class ParserTest extends TestCase
     {
         $document = $this->parse('table.rst');
 
-        $nodes = $document->getNodes(function ($node) {
+        $nodes = $document->getNodes(static function ($node) {
             return $node instanceof TableNode;
         });
 
@@ -224,7 +224,7 @@ class ParserTest extends TestCase
 
         $document = $this->parse('pretty-table.rst');
 
-        $nodes = $document->getNodes(function ($node) {
+        $nodes = $document->getNodes(static function ($node) {
             return $node instanceof TableNode;
         });
 
@@ -265,7 +265,7 @@ class ParserTest extends TestCase
     {
         $document = $this->parse('directive.rst');
 
-        $nodes = $document->getNodes(function ($node) {
+        $nodes = $document->getNodes(static function ($node) {
             return $node instanceof DummyNode;
         });
 

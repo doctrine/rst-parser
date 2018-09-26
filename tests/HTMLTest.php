@@ -7,6 +7,7 @@ namespace Doctrine\Tests\RST;
 use Doctrine\RST\Document;
 use Doctrine\RST\Parser;
 use PHPUnit\Framework\TestCase;
+use Throwable;
 use function htmlspecialchars;
 use function substr_count;
 
@@ -446,7 +447,7 @@ class HTMLTest extends TestCase
 
     public function testUnknownDirective() : void
     {
-        $this->expectException(\Throwable::class);
+        $this->expectException(Throwable::class);
         $this->expectExceptionMessage('Unknown directive: unknown-directive');
 
         $this->parseHTML('unknown-directive.rst');

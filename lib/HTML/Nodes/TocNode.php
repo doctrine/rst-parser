@@ -55,7 +55,7 @@ class TocNode extends Base
         foreach ($titles as $k => $entry) {
             $path[$level - 1] = (int) $k + 1;
 
-            list($title, $childs) = $entry;
+            [$title, $childs] = $entry;
 
             $slug = $title;
 
@@ -67,7 +67,7 @@ class TocNode extends Base
             $target = $url . '#' . $anchor;
 
             if (is_array($title)) {
-                list($title, $target) = $title;
+                [$title, $target] = $title;
 
                 $info = $this->environment->resolve('doc', $target);
 

@@ -86,14 +86,14 @@ class LineDataParser
         if (preg_match('/^((\*|\-)|([\d#]+)\.) (.+)$/', trim($line), $match) > 0) {
             return new ListLine(
                 $line[$i],
-                ($line[$i] === '*' || $line[$i] === '-') ? false : true,
+                $line[$i] === '*' || $line[$i] === '-' ? false : true,
                 $depth,
                 [$match[4]]
             );
         } elseif (strlen($line) === 1 && $line[0] === '-') {
             return new ListLine(
                 $line[$i],
-                ($line[$i] === '*' || $line[$i] === '-') ? false : true,
+                $line[$i] === '*' || $line[$i] === '-' ? false : true,
                 $depth,
                 ['']
             );

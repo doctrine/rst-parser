@@ -64,7 +64,7 @@ abstract class TableNode extends Node
             $this->data[] = [];
         } else {
             // Pushing data in the cells
-            list($header, $pretty, $parts) = $this->parts;
+            [$header, $pretty, $parts] = $this->parts;
 
             $row = &$this->data[count($this->data) - 1];
 

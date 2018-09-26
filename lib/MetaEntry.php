@@ -34,7 +34,7 @@ class MetaEntry
     /** @var string[] */
     private $links;
 
-    /** @var null|string */
+    /** @var string|null */
     private $parent;
 
     /**

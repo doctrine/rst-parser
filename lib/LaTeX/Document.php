@@ -22,7 +22,7 @@ class Document extends Base
 
     public function renderDocument() : string
     {
-        $isMain = count($this->getNodes(function ($node) {
+        $isMain = count($this->getNodes(static function ($node) {
             return $node instanceof LaTeXMainNode;
         })) !== 0;
 

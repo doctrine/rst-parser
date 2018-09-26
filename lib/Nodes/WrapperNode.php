@@ -6,7 +6,7 @@ namespace Doctrine\RST\Nodes;
 
 class WrapperNode extends Node
 {
-    /** @var null|Node */
+    /** @var Node|null */
     protected $node;
 
     /** @var string */

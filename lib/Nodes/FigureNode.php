@@ -9,7 +9,7 @@ abstract class FigureNode extends Node
     /** @var ImageNode */
     protected $image;
 
-    /** @var null|Node */
+    /** @var Node|null */
     protected $document;
 
     public function __construct(ImageNode $image, ?Node $document = null)

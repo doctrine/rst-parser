@@ -17,7 +17,6 @@ use function sprintf;
  * .. image:: image.jpg
  *      :width: 100
  *      :title: An image
- *
  */
 class Image extends Directive
 {

@@ -6,10 +6,10 @@ namespace Doctrine\RST\References;
 
 class ResolvedReference
 {
-    /** @var null|string */
+    /** @var string|null */
     private $title;
 
-    /** @var null|string */
+    /** @var string|null */
     private $url;
 
     /** @var string[][]|string[][][] */

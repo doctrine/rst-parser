@@ -41,7 +41,7 @@ class Environment
     /** @var string */
     private $targetDirectory = '.';
 
-    /** @var null|string */
+    /** @var string|null */
     private $url = null;
 
     /** @var Reference[] */
@@ -123,7 +123,7 @@ class Environment
     }
 
     /**
-     * @return null|string[]
+     * @return string[]|null
      */
     public function found(string $section, string $data) : ?array
     {
@@ -176,7 +176,7 @@ class Environment
     }
 
     /**
-     * @param null|mixed $default
+     * @param mixed|null $default
      *
      * @return mixed
      */

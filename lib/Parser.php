@@ -31,7 +31,7 @@ class Parser
     /** @var string */
     private $includeRoot = '';
 
-    /** @var null|string */
+    /** @var string|null */
     private $filename = null;
 
     /** @var DocumentParser|null */

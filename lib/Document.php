@@ -80,7 +80,7 @@ abstract class Document extends Node
     {
         $tocs = [];
 
-        $nodes = $this->getNodes(function ($node) {
+        $nodes = $this->getNodes(static function ($node) {
             return $node instanceof TocNode;
         });
 
