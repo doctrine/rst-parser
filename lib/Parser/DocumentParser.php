@@ -7,8 +7,8 @@ namespace Doctrine\RST\Parser;
 use Doctrine\RST\Directive;
 use Doctrine\RST\Document;
 use Doctrine\RST\Environment;
-use Doctrine\RST\Factory;
 use Doctrine\RST\FileIncluder;
+use Doctrine\RST\NodeFactory;
 use Doctrine\RST\Nodes\ListNode;
 use Doctrine\RST\Nodes\Node;
 use Doctrine\RST\Nodes\TableNode;
@@ -29,8 +29,8 @@ class DocumentParser
     /** @var Environment */
     private $environment;
 
-    /** @var Factory */
-    private $factory;
+    /** @var NodeFactory */
+    private $nodeFactory;
 
     /** @var Directive[] */
     private $directives = [];
@@ -83,14 +83,14 @@ class DocumentParser
     public function __construct(
         Parser $parser,
         Environment $environment,
-        Factory $factory,
+        NodeFactory $nodeFactory,
         array $directives,
         bool $includeAllowed,
         string $includeRoot
     ) {
         $this->parser         = $parser;
         $this->environment    = $environment;
-        $this->factory        = $factory;
+        $this->nodeFactory    = $nodeFactory;
         $this->directives     = $directives;
         $this->includeAllowed = $includeAllowed;
         $this->includeRoot    = $includeRoot;
@@ -107,7 +107,7 @@ class DocumentParser
 
     public function parse(string $contents) : Document
     {
-        $this->document = $this->factory->createDocument($this->environment);
+        $this->document = $this->nodeFactory->createDocument($this->environment);
 
         $this->init();
 
@@ -221,7 +221,7 @@ class DocumentParser
 
                     $token = $this->environment->createTitle($level);
 
-                    $node = $this->factory->createTitleNode(
+                    $node = $this->nodeFactory->createTitle(
                         $this->parser->createSpan($data),
                         $level,
                         $token
@@ -232,7 +232,7 @@ class DocumentParser
                 case State::SEPARATOR:
                     $level = $this->environment->getLevel((string) $this->specialLetter);
 
-                    $node = $this->factory->createSeparatorNode($level);
+                    $node = $this->nodeFactory->createSeparator($level);
 
                     break;
 
@@ -240,7 +240,7 @@ class DocumentParser
                     /** @var string[] $buffer */
                     $buffer = $this->buffer->getLines();
 
-                    $node = $this->factory->createCodeNode($buffer);
+                    $node = $this->nodeFactory->createCode($buffer);
 
                     break;
 
@@ -248,7 +248,7 @@ class DocumentParser
                     /** @var string[] $buffer */
                     $buffer = $this->buffer->getLines();
 
-                    $node = $this->factory->createQuoteNode($buffer);
+                    $node = $this->nodeFactory->createQuote($buffer);
 
                     /** @var string $data */
                     $data = $node->getValue();
@@ -281,7 +281,7 @@ class DocumentParser
                     /** @var string $buffer */
                     $buffer = $this->buffer->getLines();
 
-                    $node = $this->factory->createParagraphNode($this->parser->createSpan($buffer));
+                    $node = $this->nodeFactory->createParagraph($this->parser->createSpan($buffer));
 
                     break;
             }
@@ -321,7 +321,7 @@ class DocumentParser
                         $this->state = State::LIST;
 
                         /** @var ListNode $listNode */
-                        $listNode = $this->factory->createListNode();
+                        $listNode = $this->nodeFactory->createList();
 
                         $this->nodeBuffer = $listNode;
 
@@ -354,7 +354,11 @@ class DocumentParser
 
                         $this->state = State::TABLE;
 
-                        $tableNode = $this->factory->createTableNode($tableParts, $this->tableParser->guessTableType($line), $this->lineChecker);
+                        $tableNode = $this->nodeFactory->createTable(
+                            $tableParts,
+                            $this->tableParser->guessTableType($line),
+                            $this->lineChecker
+                        );
 
                         $this->nodeBuffer = $tableNode;
                     }
@@ -507,8 +511,8 @@ class DocumentParser
         }
 
         if ($link->getType() === Link::TYPE_ANCHOR) {
-            $anchorNode = $this->factory
-                ->createAnchorNode($link->getName());
+            $anchorNode = $this->nodeFactory
+                ->createAnchor($link->getName());
 
             $this->document->addNode($anchorNode);
         }

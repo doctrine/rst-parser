@@ -19,8 +19,8 @@ class Parser
     /** @var Kernel */
     private $kernel;
 
-    /** @var Factory */
-    private $factory;
+    /** @var NodeFactory */
+    private $nodeFactory;
 
     /** @var Directive[] */
     private $directives = [];
@@ -47,8 +47,8 @@ class Parser
         }
 
         $this->kernel      = $kernel;
-        $this->factory     = $this->kernel->getFactory();
-        $this->environment = $environment ?: $this->factory->createEnvironment($configuration);
+        $this->nodeFactory = $this->kernel->getNodeFactory();
+        $this->environment = $environment ?: $this->kernel->createEnvironment($configuration);
 
         $this->initDirectives();
         $this->initReferences();
@@ -63,7 +63,7 @@ class Parser
     {
         $directives = $this->kernel->getDirectives();
 
-        foreach ($directives as $name => $directive) {
+        foreach ($directives as $directive) {
             $this->registerDirective($directive);
         }
     }
@@ -132,7 +132,7 @@ class Parser
      */
     public function createSpan($span) : Span
     {
-        return $this->factory->createSpan($this, $span);
+        return $this->nodeFactory->createSpan($this, $span);
     }
 
     public function parse(string $contents) : Document
@@ -147,7 +147,7 @@ class Parser
         $this->documentParser = new DocumentParser(
             $this,
             $this->environment,
-            $this->factory,
+            $this->nodeFactory,
             $this->directives,
             $this->includeAllowed,
             $this->includeRoot
@@ -161,7 +161,7 @@ class Parser
         $documentParser = new DocumentParser(
             $this,
             $this->environment,
-            $this->factory,
+            $this->nodeFactory,
             $this->directives,
             $this->includeAllowed,
             $this->includeRoot
