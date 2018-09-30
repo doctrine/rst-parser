@@ -18,6 +18,9 @@ class EnvironmentTest extends TestCase
         $environment->setCurrentFileName('path/to/something.rst');
         $environment->setCurrentDirectory('input/dir');
 
+        self::assertSame('path/to/something.rst', $environment->getCurrentFileName());
+        self::assertSame('input/dir', $environment->getCurrentDirectory());
+
         // Assert that rules of relative url are respected
         self::assertSame($environment->relativeUrl('test.jpg'), 'test.jpg');
         self::assertSame($environment->relativeUrl('/path/to/test.jpg'), 'test.jpg');

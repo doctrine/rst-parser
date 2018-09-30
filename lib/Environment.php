@@ -298,9 +298,19 @@ class Environment
         $this->currentFileName = $filename;
     }
 
+    public function getCurrentFileName() : string
+    {
+        return $this->currentFileName;
+    }
+
     public function setCurrentDirectory(string $directory) : void
     {
         $this->currentDirectory = $directory;
+    }
+
+    public function getCurrentDirectory() : string
+    {
+        return $this->currentDirectory;
     }
 
     public function absoluteRelativePath(string $url) : string
