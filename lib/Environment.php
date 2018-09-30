@@ -91,6 +91,11 @@ class Environment
         }
     }
 
+    public function getConfiguration() : Configuration
+    {
+        return $this->configuration;
+    }
+
     public function getErrorManager() : ErrorManager
     {
         return $this->errorManager;

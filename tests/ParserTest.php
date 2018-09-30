@@ -16,6 +16,7 @@ use Doctrine\RST\Nodes\TitleNode;
 use Doctrine\RST\Parser;
 use Exception;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 use function count;
 use function file_get_contents;
 use function sprintf;
@@ -26,6 +27,17 @@ use function trim;
  */
 class ParserTest extends TestCase
 {
+    public function testGetSubParserPassesConfiguration() : void
+    {
+        $parser = new Parser();
+
+        $configuration = $parser->getEnvironment()->getConfiguration();
+
+        $subParser = $parser->getSubParser();
+
+        self::assertSame($configuration, $subParser->getEnvironment()->getConfiguration());
+    }
+
     public function testCodeBlockWithWhiteSpace() : void
     {
         $document = $this->parse('code-with-whitespace.rst');
@@ -259,6 +271,21 @@ class ParserTest extends TestCase
         $document = $this->parse('inclusion.rst');
 
         self::assertContains('I was actually included', $document->renderDocument());
+    }
+
+    public function testThrowExceptionOnInvalidFileInclude() : void
+    {
+        $parser      = new Parser();
+        $environment = $parser->getEnvironment();
+
+        $data = file_get_contents(__DIR__ . '/files/inclusion-bad.rst');
+
+        self::assertInternalType('string', $data);
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Include ".. include:: non-existent-file.rst" does not exist or is not readable.');
+
+        $parser->parse($data);
     }
 
     public function testDirective() : void

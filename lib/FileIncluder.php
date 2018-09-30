@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace Doctrine\RST;
 
-use Exception;
+use RuntimeException;
 use function explode;
+use function file_exists;
 use function file_get_contents;
 use function is_readable;
 use function preg_replace_callback;
@@ -24,8 +25,11 @@ class FileIncluder
     /** @var string */
     private $includeRoot;
 
-    public function __construct(Environment $environment, bool $includeAllowed, string $includeRoot)
-    {
+    public function __construct(
+        Environment $environment,
+        bool $includeAllowed,
+        string $includeRoot
+    ) {
         $this->environment    = $environment;
         $this->includeAllowed = $includeAllowed;
         $this->includeRoot    = $includeRoot;
@@ -38,11 +42,15 @@ class FileIncluder
             function ($match) {
                 $path = $this->environment->absoluteRelativePath($match[1]);
 
-                if ($this->includeFileAllowed($path)) {
+                if (! file_exists($path)) {
+                    throw new RuntimeException(sprintf('Include "%s" does not exist or is not readable.', $match[0]));
+                }
+
+                if ($this->isFileIncludeAllowed($path)) {
                     $contents = file_get_contents($path);
 
                     if ($contents === false) {
-                        throw new Exception(sprintf('Could not load file from path %s', $path));
+                        throw new RuntimeException(sprintf('Could not load file from path %s', $path));
                     }
 
                     return $this->includeFiles($contents);
@@ -54,7 +62,7 @@ class FileIncluder
         );
     }
 
-    private function includeFileAllowed(string $path) : bool
+    private function isFileIncludeAllowed(string $path) : bool
     {
         if (! $this->includeAllowed) {
             return false;
