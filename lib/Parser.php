@@ -156,6 +156,20 @@ class Parser
         return $this->documentParser->parse($contents);
     }
 
+    public function parseFragment(string $contents) : Document
+    {
+        $documentParser = new DocumentParser(
+            $this,
+            $this->environment,
+            $this->factory,
+            $this->directives,
+            $this->includeAllowed,
+            $this->includeRoot
+        );
+
+        return $documentParser->parse($contents);
+    }
+
     public function parseFile(string $file) : Document
     {
         $this->filename = $file;
