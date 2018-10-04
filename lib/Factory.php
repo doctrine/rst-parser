@@ -161,14 +161,14 @@ class Factory
     /**
      * @param string[] $parts
      */
-    public function createTableNode(array $parts) : TableNode
+    public function createTableNode(array $parts, string $type) : TableNode
     {
         switch ($this->name) {
             case self::HTML:
-                return new HTML\Nodes\TableNode($parts);
+                return new HTML\Nodes\TableNode($parts, $type);
 
             case self::LATEX:
-                return new LaTeX\Nodes\TableNode($parts);
+                return new LaTeX\Nodes\TableNode($parts, $type);
         }
     }
 

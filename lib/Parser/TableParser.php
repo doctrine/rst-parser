@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\Parser;
 
+use Doctrine\RST\Nodes\TableNode;
 use function count;
 use function strlen;
 use function trim;
@@ -78,6 +79,11 @@ class TableParser
         }
 
         return null;
+    }
+
+    public function guessTableType(string $line) : string
+    {
+        return $line[0] === self::TABLE_LETTER ? TableNode::TYPE_SIMPLE : TableNode::TYPE_PRETTY;
     }
 
     /**

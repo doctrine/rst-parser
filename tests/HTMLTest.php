@@ -7,6 +7,7 @@ namespace Doctrine\Tests\RST;
 use Doctrine\RST\Document;
 use Doctrine\RST\Parser;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 use Throwable;
 use function htmlspecialchars;
 use function substr_count;
@@ -75,19 +76,25 @@ class HTMLTest extends TestCase
      */
     public function testTable() : void
     {
-        $document = $this->parseHTML('table.rst');
+        $document = $this->parseHTML('simple-table.rst');
 
         self::assertSame(1, substr_count($document, '<table class="table table-bordered">'));
         self::assertSame(1, substr_count($document, '</table>'));
-        self::assertSame(2, substr_count($document, '<tr>'));
-        self::assertSame(2, substr_count($document, '</tr>'));
+        self::assertSame(3, substr_count($document, '<tr>'));
+        self::assertSame(3, substr_count($document, '</tr>'));
         self::assertSame(6, substr_count($document, '<td'));
         self::assertSame(6, substr_count($document, '</td>'));
+        self::assertSame(3, substr_count($document, '<th>'));
+        self::assertSame(3, substr_count($document, '</th>'));
+        self::assertSame(1, substr_count($document, '<tbody>'));
+        self::assertSame(1, substr_count($document, '</tbody>'));
+        self::assertSame(1, substr_count($document, '<thead>'));
+        self::assertSame(1, substr_count($document, '</thead>'));
         self::assertNotContains('==', $document);
         self::assertContains('First col', $document);
         self::assertContains('Last col', $document);
 
-        $document = $this->parseHTML('pretty-table.rst');
+        $document = $this->parseHTML('pretty-table-no-header.rst');
 
         self::assertSame(1, substr_count($document, '<table class="table table-bordered">'));
         self::assertSame(1, substr_count($document, '</table>'));
@@ -95,23 +102,31 @@ class HTMLTest extends TestCase
         self::assertSame(2, substr_count($document, '</tr>'));
         self::assertSame(6, substr_count($document, '<td'));
         self::assertSame(6, substr_count($document, '</td>'));
+        self::assertSame(1, substr_count($document, '<tbody>'));
+        self::assertSame(1, substr_count($document, '</tbody>'));
+        self::assertSame(0, substr_count($document, '<thead>'));
+        self::assertSame(0, substr_count($document, '</thead>'));
         self::assertNotContains('--', $document);
         self::assertNotContains('+', $document);
         self::assertNotContains('|', $document);
         self::assertContains('Some', $document);
         self::assertContains('Data', $document);
-    }
 
-    /**
-     * Testing HTML table with headers
-     */
-    public function testHeaderTable() : void
-    {
-        $document = $this->parseHTML('table2.rst');
+        $document = $this->parseHTML('pretty-table-header.rst');
 
+        self::assertSame(1, substr_count($document, '<thead>'));
+        self::assertSame(1, substr_count($document, '</thead>'));
         self::assertSame(2, substr_count($document, '<th>'));
         self::assertSame(2, substr_count($document, '</th>'));
         self::assertNotContains('==', $document);
+    }
+
+    public function testTableError() : void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Malformed table');
+
+        $this->parseHTML('simple-table-error.rst');
     }
 
     /**
