@@ -9,15 +9,18 @@ use Doctrine\RST\MetaEntry;
 
 class Resolver
 {
-    public function resolve(Environment $environment, string $data) : ResolvedReference
+    /**
+     * @param string[] $attributes
+     */
+    public function resolve(Environment $environment, string $data, array $attributes = []) : ResolvedReference
     {
-        $resolvedFileReference = $this->resolveFileReference($environment, $data);
+        $resolvedFileReference = $this->resolveFileReference($environment, $data, $attributes);
 
         if ($resolvedFileReference !== null) {
             return $resolvedFileReference;
         }
 
-        $resolvedAnchorReference = $this->resolveAnchorReference($environment, $data);
+        $resolvedAnchorReference = $this->resolveAnchorReference($environment, $data, $attributes);
 
         if ($resolvedAnchorReference !== null) {
             return $resolvedAnchorReference;
@@ -25,11 +28,16 @@ class Resolver
 
         return new ResolvedReference(
             '(unresolved)',
-            '#' . $data
+            '#' . $data,
+            [],
+            $attributes
         );
     }
 
-    private function resolveFileReference(Environment $environment, string $data) : ?ResolvedReference
+    /**
+     * @param string[] $attributes
+     */
+    private function resolveFileReference(Environment $environment, string $data, array $attributes = []) : ?ResolvedReference
     {
         $entry = null;
 
@@ -43,23 +51,30 @@ class Resolver
             return null;
         }
 
-        return $this->createResolvedReference($environment, $entry);
+        return $this->createResolvedReference($environment, $entry, $attributes);
     }
 
-    private function resolveAnchorReference(Environment $environment, string $data) : ?ResolvedReference
+    /**
+     * @param string[] $attributes
+     */
+    private function resolveAnchorReference(Environment $environment, string $data, array $attributes = []) : ?ResolvedReference
     {
         $entry = $environment->getMetas()->findLinkMetaEntry($data);
 
         if ($entry !== null) {
-            return $this->createResolvedReference($environment, $entry, $data);
+            return $this->createResolvedReference($environment, $entry, $attributes, $data);
         }
 
         return null;
     }
 
+    /**
+     * @param string[] $attributes
+     */
     private function createResolvedReference(
         Environment $environment,
         MetaEntry $entry,
+        array $attributes = [],
         ?string $anchor = null
     ) : ResolvedReference {
         $url = $entry->getUrl();
@@ -71,7 +86,8 @@ class Resolver
         return new ResolvedReference(
             $entry->getTitle(),
             $url,
-            $entry->getTitles()
+            $entry->getTitles(),
+            $attributes
         );
     }
 }
