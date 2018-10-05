@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace Doctrine\RST\Nodes;
 
 use Doctrine\RST\Parser;
+use Doctrine\RST\Parser\LineChecker;
 use Doctrine\RST\Span;
 use RuntimeException;
 use function array_fill_keys;
 use function array_keys;
 use function array_map;
 use function count;
+use function explode;
 use function implode;
 use function sprintf;
 use function strlen;
@@ -36,16 +38,20 @@ abstract class TableNode extends Node
     /** @var string */
     protected $type;
 
+    /** @var LineChecker */
+    private $lineChecker;
+
     /**
      * @param string[] $parts
      */
-    public function __construct(array $parts, string $type)
+    public function __construct(array $parts, string $type, LineChecker $lineChecker)
     {
         parent::__construct();
 
-        $this->parts  = $parts;
-        $this->data[] = [];
-        $this->type   = $type;
+        $this->parts       = $parts;
+        $this->data[]      = [];
+        $this->type        = $type;
+        $this->lineChecker = $lineChecker;
     }
 
     public function getCols() : int
@@ -107,10 +113,11 @@ abstract class TableNode extends Node
                 }
 
                 if (isset($row[$k - 1])) {
-                    $row[$k - 1] .= ' ' . $data;
+                    $row[$k - 1] .= "\n" . $data;
                 } else {
                     $row[$k - 1] = $data;
                 }
+                $row[$k - 1] = trim((string) $row[$k - 1]);
             }
         }
 
@@ -133,7 +140,13 @@ abstract class TableNode extends Node
             }
 
             foreach ($row as &$col) {
-                $col = $parser->createSpan($col);
+                $lines = explode("\n", (string) $col);
+
+                if ($this->lineChecker->isListLine($lines[0], false)) {
+                    $col = $parser->parseFragment((string) $col)->getNodes()[0];
+                } else {
+                    $col = $parser->createSpan($col);
+                }
             }
         }
     }

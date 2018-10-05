@@ -14,6 +14,7 @@ use Doctrine\RST\Nodes\SeparatorNode;
 use Doctrine\RST\Nodes\TableNode;
 use Doctrine\RST\Nodes\TitleNode;
 use Doctrine\RST\Nodes\TocNode;
+use Doctrine\RST\Parser\LineChecker;
 
 class Factory
 {
@@ -161,14 +162,14 @@ class Factory
     /**
      * @param string[] $parts
      */
-    public function createTableNode(array $parts, string $type) : TableNode
+    public function createTableNode(array $parts, string $type, LineChecker $lineChecker) : TableNode
     {
         switch ($this->name) {
             case self::HTML:
-                return new HTML\Nodes\TableNode($parts, $type);
+                return new HTML\Nodes\TableNode($parts, $type, $lineChecker);
 
             case self::LATEX:
-                return new LaTeX\Nodes\TableNode($parts, $type);
+                return new LaTeX\Nodes\TableNode($parts, $type, $lineChecker);
         }
     }
 

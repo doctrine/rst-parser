@@ -130,6 +130,20 @@ class HTMLTest extends TestCase
     }
 
     /**
+     * Testing HTML table with headers
+     */
+    public function testTableWithNestedList() : void
+    {
+        $document = $this->parseHTML('table-nested-list.rst');
+
+        self::assertSame(1, substr_count($document, '<ul>'));
+        self::assertSame(1, substr_count($document, '</ul>'));
+        self::assertSame(4, substr_count($document, '<li'));
+        self::assertSame(4, substr_count($document, '</li>'));
+        self::assertNotContains('- ', $document);
+    }
+
+    /**
      * Testing literals
      */
     public function testLiteral() : void
