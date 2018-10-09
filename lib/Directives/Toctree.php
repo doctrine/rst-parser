@@ -72,7 +72,7 @@ class Toctree extends Directive
             }
         }
 
-        $tocNode = $kernel->getFactory()->createTocNode($environment, $files, $options);
+        $tocNode = $kernel->getNodeFactory()->createToc($environment, $files, $options);
 
         $parser->getDocument()->addNode($tocNode);
     }

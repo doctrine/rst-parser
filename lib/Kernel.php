@@ -9,17 +9,26 @@ use function array_merge;
 
 abstract class Kernel
 {
-    /** @var Directive[] */
-    private $directives;
+    /** @var NodeFactory */
+    protected $nodeFactory;
 
-    /** @var Factory */
-    private $factory;
+    /** @var Directive[] */
+    protected $directives;
+
+    /** @var Reference[] */
+    protected $references;
 
     /**
      * @param Directive[] $directives
+     * @param Reference[] $references
      */
-    public function __construct(array $directives = [])
-    {
+    public function __construct(
+        ?NodeFactory $nodeFactory = null,
+        array $directives = [],
+        array $references = []
+    ) {
+        $this->nodeFactory = $nodeFactory ?? $this->createNodeFactory();
+
         $this->directives = array_merge([
             new Directives\Dummy(),
             new Directives\CodeBlock(),
@@ -28,16 +37,19 @@ abstract class Kernel
             new Directives\Toctree(),
             new Directives\Document(),
             new Directives\RedirectionTitle(),
-        ], $directives);
+        ], $this->createDirectives(), $directives);
 
-        $this->factory = new Factory($this->getName());
+        $this->references = array_merge([
+            new References\Doc(),
+            new References\Doc('ref'),
+        ], $this->createReferences(), $references);
     }
 
-    abstract protected function getName() : string;
+    abstract public function createEnvironment(?Configuration $configuration = null) : Environment;
 
-    public function getFactory() : Factory
+    public function getNodeFactory() : NodeFactory
     {
-        return $this->factory;
+        return $this->nodeFactory;
     }
 
     /**
@@ -49,14 +61,11 @@ abstract class Kernel
     }
 
     /**
-     * @return Doc[]
+     * @return Reference[]
      */
     public function getReferences() : array
     {
-        return [
-            new References\Doc(),
-            new References\Doc('ref'),
-        ];
+        return $this->references;
     }
 
     public function postParse(Document $document) : void
@@ -71,4 +80,19 @@ abstract class Kernel
     {
         return 'txt';
     }
+
+    /**
+     * @return Doc[]
+     */
+    protected function createReferences() : array
+    {
+        return [];
+    }
+
+    abstract protected function createNodeFactory() : NodeFactory;
+
+    /**
+     * @return Directive[]
+     */
+    abstract protected function createDirectives() : array;
 }
