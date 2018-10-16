@@ -3,7 +3,8 @@ TOC in Subdir
 
 .. toctree::
 
-    introduction
-    subdirective
-    another
-    subdir/index
+    /introduction
+    /subdirective
+    /another
+    /subdir/index
+    file
