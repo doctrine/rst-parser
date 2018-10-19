@@ -91,7 +91,7 @@ class Toctree extends Directive
 
         $rootDocPath = rtrim(str_replace($environment->getDirName(), '', $currentFilePath), '/');
 
-        $globPatternPath = $rootDocPath . '/' . $globPattern;
+        $globPatternPath = $currentFilePath . '/' . $globPattern;
 
         $allFiles = [];
 

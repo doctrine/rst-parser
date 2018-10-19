@@ -1,0 +1,6 @@
+Title
+=====
+
+.. toctree::
+
+    subdir/toctree
