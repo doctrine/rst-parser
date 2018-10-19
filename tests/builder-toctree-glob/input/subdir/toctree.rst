@@ -1,0 +1,8 @@
+Toctree
+=======
+
+.. toctree::
+    :glob:
+
+    *
+
