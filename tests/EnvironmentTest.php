@@ -31,6 +31,16 @@ class EnvironmentTest extends TestCase
         self::assertSame($environment->relativeUrl('/imgs/test.jpg'), '../../imgs/test.jpg');
     }
 
+    public function testAbsoluteUrl() : void
+    {
+        $environment = new Environment();
+        $environment->setCurrentFileName('path/to/something.rst');
+        $environment->setCurrentDirectory('input/dir');
+
+        self::assertSame('/test', $environment->absoluteUrl('/test'));
+        self::assertSame('path/to/test', $environment->absoluteUrl('test'));
+    }
+
     public function testCanonicalUrl() : void
     {
         $environment = new Environment();

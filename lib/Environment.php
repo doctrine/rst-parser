@@ -267,6 +267,16 @@ class Environment
         return $this->urlGenerator->relativeUrl($url, $this->currentFileName);
     }
 
+    public function absoluteUrl(string $url) : string
+    {
+        return $this->urlGenerator->absoluteUrl($this->getDirName(), $url);
+    }
+
+    public function canonicalUrl(string $url) : ?string
+    {
+        return $this->urlGenerator->canonicalUrl($this->getDirName(), $url);
+    }
+
     public function useRelativeUrls() : bool
     {
         return $this->configuration->useRelativeUrls();
@@ -286,11 +296,6 @@ class Environment
         }
 
         return $dirname;
-    }
-
-    public function canonicalUrl(string $url) : ?string
-    {
-        return $this->urlGenerator->canonicalUrl($this->getDirName(), $url);
     }
 
     public function setCurrentFileName(string $filename) : void
