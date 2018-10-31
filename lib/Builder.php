@@ -355,7 +355,7 @@ class Builder
             $rst = $this->getRST($file);
 
             if (! file_exists($rst)) {
-                continue;
+                throw new \RuntimeException(sprintf('File "%s" does not exist', $rst));
             }
 
             $parser = new Parser(null, $this->kernel, $this->configuration);
