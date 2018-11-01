@@ -18,6 +18,7 @@ use function rtrim;
 use function str_repeat;
 use function str_replace;
 use function strpos;
+use function substr;
 use function trim;
 
 class Toctree extends Directive
@@ -90,7 +91,11 @@ class Toctree extends Directive
 
         $rootDocPath = rtrim(str_replace($environment->getDirName(), '', $currentFilePath), '/');
 
-        $globPatternPath = $currentFilePath . '/' . $globPattern;
+        if (substr($globPattern, 0, 1) === '/') {
+            $globPatternPath = $rootDocPath . $globPattern;
+        } else {
+            $globPatternPath = $currentFilePath . '/' . $globPattern;
+        }
 
         $allFiles = [];
 

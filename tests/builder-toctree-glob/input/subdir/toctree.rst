@@ -6,3 +6,8 @@ Toctree
 
     *
 
+.. toctree::
+    :glob:
+
+    /subdir/*
+
