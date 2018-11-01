@@ -10,12 +10,9 @@ use Doctrine\RST\Nodes\Node;
 use Doctrine\RST\Parser;
 use Symfony\Component\Finder\Finder;
 use function array_merge;
-use function count;
 use function explode;
-use function implode;
 use function realpath;
 use function rtrim;
-use function str_repeat;
 use function str_replace;
 use function strpos;
 use function substr;
@@ -59,13 +56,11 @@ class Toctree extends Directive
                 $globFiles = $this->globSearch($environment, $globPattern);
 
                 foreach ($globFiles as $globFile) {
-                    $dependency = $this->getDependencyFromFile($environment, $globFile);
-
-                    $environment->addDependency($dependency);
-                    $files[] = $dependency;
+                    $environment->addDependency($globFile);
+                    $files[] = $globFile;
                 }
             } elseif ($file !== '') {
-                $dependency = $this->getDependencyFromFile($environment, $file);
+                $dependency = $environment->absoluteUrl($file);
 
                 $environment->addDependency($dependency);
                 $files[] = $dependency;
@@ -123,25 +118,5 @@ class Toctree extends Directive
         }
 
         return $allFiles;
-    }
-
-    private function getDependencyFromFile(Environment $environment, string $file) : string
-    {
-        $url = $environment->getUrl();
-
-        $e = explode('/', $url);
-
-        if (count($e) > 1) {
-            unset($e[count($e) - 1]);
-            $folderPath = implode('/', $e) . '/';
-
-            if (strpos($file, $folderPath) !== false) {
-                $file = str_replace($folderPath, '', $file);
-            } else {
-                $file = str_repeat('../', count($e)) . $file;
-            }
-        }
-
-        return $file;
     }
 }

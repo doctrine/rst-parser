@@ -19,7 +19,7 @@ class BuilderTocTreeGlobTest extends TestCase
         shell_exec('rm -rf ' . $this->targetFile());
         $builder = new Builder();
         $builder->setUseRelativeUrls(true);
-        $builder->build($this->sourceFile(), $this->targetFile(), false);
+        $builder->build($this->sourceFile(), $this->targetFile());
     }
 
     public function testTocTreeGlob() : void

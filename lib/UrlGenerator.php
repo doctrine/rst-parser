@@ -10,11 +10,24 @@ use function count;
 use function explode;
 use function implode;
 use function preg_match;
+use function rtrim;
 use function strpos;
 use function substr;
 
 class UrlGenerator
 {
+    public function absoluteUrl(string $dirName, string $url) : string
+    {
+        // if $url is already an absolute path, just return it
+        if ($url[0] === '/') {
+            return $url;
+        }
+
+        // $url is a relative path so join it together with the
+        // current $dirName to produce an absolute url
+        return rtrim($dirName, '/') . '/' . $url;
+    }
+
     /**
      * Resolves a relative URL using directories, for instance, if the
      * current directory is "path/to/something", and you want to get the

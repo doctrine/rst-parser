@@ -30,6 +30,7 @@ class BuilderTest extends TestCase
         self::assertTrue(file_exists($this->targetFile('magic-link.html')));
         self::assertTrue(file_exists($this->targetFile('file.txt')));
         self::assertTrue(file_exists($this->targetFile('subdir/test.html')));
+        self::assertTrue(file_exists($this->targetFile('subdir/file.html')));
     }
 
     /**
@@ -74,8 +75,12 @@ class BuilderTest extends TestCase
     {
         $contents = $this->getFileContents($this->targetFile('index.html'));
 
-        self::assertContains('introduction.html', $contents);
+        self::assertContains('"introduction.html', $contents);
         self::assertContains('Introduction page', $contents);
+
+        self::assertContains('"subdirective.html', $contents);
+        self::assertContains('"subdir/test.html', $contents);
+        self::assertContains('"subdir/file.html', $contents);
     }
 
     public function testToctreeGlob() : void
@@ -86,6 +91,7 @@ class BuilderTest extends TestCase
         self::assertContains('introduction.html#introduction-page', $contents);
         self::assertContains('subdirective.html', $contents);
         self::assertContains('subdir/test.html#subdirectory', $contents);
+        self::assertContains('subdir/file.html#a-file', $contents);
     }
 
     public function testToctreeInSubdirectory() : void
@@ -96,6 +102,7 @@ class BuilderTest extends TestCase
         self::assertContains('../subdirective.html#sub-directives', $contents);
         self::assertContains('../magic-link.html#another-page', $contents);
         self::assertContains('test.html#subdirectory', $contents);
+        self::assertContains('file.html#a-file', $contents);
     }
 
     public function testAnchors() : void
@@ -119,6 +126,7 @@ class BuilderTest extends TestCase
         self::assertContains('<a href="index.html#toc">Index, paragraph toc</a>', $contents);
         self::assertContains('<a href="index.html">Index</a>', $contents);
         self::assertContains('<a href="index.html">Summary</a>', $contents);
+        self::assertContains('<a href="index.html">Link index absolutely</a>', $contents);
         self::assertContains('<a href="subdir/test.html#test_reference">Test Reference</a>', $contents);
         self::assertContains('<a href="subdir/test.html#camelCaseReference">Camel Case Reference</a>', $contents);
 
@@ -126,6 +134,9 @@ class BuilderTest extends TestCase
 
         self::assertContains('"../index.html"', $contents);
         self::assertContains('<a href="test.html#subdir_same_doc_reference">the subdir same doc reference</a>', $contents);
+        self::assertContains('<a href="../index.html">Reference absolute to index</a>', $contents);
+        self::assertContains('<a href="file.html">Reference absolute to file</a>', $contents);
+        self::assertContains('<a href="file.html">Reference relative to file</a>', $contents);
 
         $contents = $this->getFileContents($this->targetFile('index.html'));
 
@@ -148,6 +159,12 @@ class BuilderTest extends TestCase
 
         self::assertContains('<p>This is a <a href="test.html#test-anchor">test anchor</a></p>', $contents);
         self::assertContains('<p>This is a <a href="test.html#test-subdir-anchor">test subdir reference with anchor</a></p>', $contents);
+    }
+
+    public function testFileInclude() : void
+    {
+        $contents = $this->getFileContents($this->targetFile('subdir/test.html'));
+        self::assertSame(2, substr_count($contents, 'This file is included'));
     }
 
     /**
@@ -185,17 +202,17 @@ class BuilderTest extends TestCase
         $builder = new Builder();
         $builder->copy('file.txt');
         $builder->setUseRelativeUrls(true);
-        $builder->build($this->sourceFile(), $this->targetFile(), false);
+        $builder->build($this->sourceFile(), $this->targetFile());
     }
 
     private function sourceFile(string $file = '') : string
     {
-        return __DIR__ . '/builder/input/' . $file;
+        return __DIR__ . '/builder-fixtures/input/' . $file;
     }
 
     private function targetFile(string $file = '') : string
     {
-        return __DIR__ . '/builder/output/' . $file;
+        return __DIR__ . '/builder-fixtures/output/' . $file;
     }
 
     /**

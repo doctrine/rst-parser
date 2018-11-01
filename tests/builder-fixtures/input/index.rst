@@ -11,6 +11,7 @@ This is the builder test summary
     subdirective
     another
     subdir/index
+    /subdir/file
 
 .. _reference_anchor:
 

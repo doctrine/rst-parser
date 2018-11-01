@@ -20,12 +20,12 @@ class BuilderIncludeTest extends TestCase
         shell_exec('rm -rf ' . $this->targetFile());
         $builder = new Builder();
         $builder->setUseRelativeUrls(true);
-        $builder->build($this->sourceFile(), $this->targetFile(), false);
+        $builder->build($this->sourceFile(), $this->targetFile());
 
         self::assertTrue(file_exists($this->targetFile('index.html')));
         self::assertContains('This file is included', file_get_contents($this->targetFile('index.html')));
 
-        foreach ($builder->getDocuments() as $document) {
+        foreach ($builder->getDocuments()->getAll() as $document) {
             foreach ($document->getEnvironment()->getMetas()->getAll() as $meta) {
                 foreach ($meta->getTocs() as $toc) {
                     self::assertNotContains('include.inc', $toc);
