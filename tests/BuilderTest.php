@@ -202,17 +202,17 @@ class BuilderTest extends TestCase
         $builder = new Builder();
         $builder->copy('file.txt');
         $builder->setUseRelativeUrls(true);
-        $builder->build($this->sourceFile(), $this->targetFile(), false);
+        $builder->build($this->sourceFile(), $this->targetFile());
     }
 
     private function sourceFile(string $file = '') : string
     {
-        return __DIR__ . '/builder/input/' . $file;
+        return __DIR__ . '/builder-fixtures/input/' . $file;
     }
 
     private function targetFile(string $file = '') : string
     {
-        return __DIR__ . '/builder/output/' . $file;
+        return __DIR__ . '/builder-fixtures/output/' . $file;
     }
 
     /**

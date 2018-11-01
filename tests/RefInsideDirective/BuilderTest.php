@@ -17,8 +17,7 @@ class BuilderTest extends TestCase
 
         $builder->build(
             __DIR__ . '/rst',
-            __DIR__ . '/output',
-            false
+            __DIR__ . '/output'
         );
 
         $expected = 'Test a reference in a directive <a href="file.html#some_reference">A file</a>.';
