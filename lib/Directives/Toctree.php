@@ -5,21 +5,21 @@ declare(strict_types=1);
 namespace Doctrine\RST\Directives;
 
 use Doctrine\RST\Directive;
-use Doctrine\RST\Environment;
+use Doctrine\RST\GlobSearcher;
 use Doctrine\RST\Nodes\Node;
 use Doctrine\RST\Parser;
-use Symfony\Component\Finder\Finder;
-use function array_merge;
-use function explode;
-use function realpath;
-use function rtrim;
-use function str_replace;
-use function strpos;
-use function substr;
-use function trim;
+use Doctrine\RST\ToctreeBuilder;
 
 class Toctree extends Directive
 {
+    /** @var ToctreeBuilder */
+    private $toctreeBuilder;
+
+    public function __construct()
+    {
+        $this->toctreeBuilder = new ToctreeBuilder(new GlobSearcher());
+    }
+
     public function getName() : string
     {
         return 'toctree';
@@ -41,33 +41,15 @@ class Toctree extends Directive
 
         $environment = $parser->getEnvironment();
 
-        $kernel = $parser->getKernel();
+        $toctreeFiles = $this->toctreeBuilder
+            ->buildToctreeFiles($environment, $node, $options);
 
-        $files = [];
-
-        $value = (string) $node->getValue();
-
-        foreach (explode("\n", $value) as $file) {
-            $file = trim($file);
-
-            if (isset($options['glob']) && strpos($file, '*') !== false) {
-                $globPattern = $file;
-
-                $globFiles = $this->globSearch($environment, $globPattern);
-
-                foreach ($globFiles as $globFile) {
-                    $environment->addDependency($globFile);
-                    $files[] = $globFile;
-                }
-            } elseif ($file !== '') {
-                $dependency = $environment->absoluteUrl($file);
-
-                $environment->addDependency($dependency);
-                $files[] = $dependency;
-            }
+        foreach ($toctreeFiles as $file) {
+            $environment->addDependency($file);
         }
 
-        $tocNode = $kernel->getNodeFactory()->createToc($environment, $files, $options);
+        $tocNode = $parser->getKernel()->getNodeFactory()
+            ->createToc($environment, $toctreeFiles, $options);
 
         $parser->getDocument()->addNode($tocNode);
     }
@@ -75,48 +57,5 @@ class Toctree extends Directive
     public function wantCode() : bool
     {
         return true;
-    }
-
-    /**
-     * @return string[]
-     */
-    private function globSearch(Environment $environment, string $globPattern) : array
-    {
-        $currentFilePath = (string) realpath(rtrim($environment->absoluteRelativePath(''), '/'));
-
-        $rootDocPath = rtrim(str_replace($environment->getDirName(), '', $currentFilePath), '/');
-
-        if (substr($globPattern, 0, 1) === '/') {
-            $globPatternPath = $rootDocPath . $globPattern;
-        } else {
-            $globPatternPath = $currentFilePath . '/' . $globPattern;
-        }
-
-        $allFiles = [];
-
-        $finder = new Finder();
-        $finder->in(rtrim($globPatternPath, '*'))
-            ->name('*.rst')
-            ->files();
-
-        foreach ($finder as $file) {
-            if ($file->isDir()) {
-                // remove the root directory so it is a relative path from the root
-                $relativePath = str_replace($rootDocPath . '/', '', (string) $file->getRealPath());
-
-                // recursively search in this directory
-                $dirFiles = $this->globSearch($environment, $relativePath . '/*');
-
-                $allFiles = array_merge($allFiles, $dirFiles);
-            } else {
-                // Trim the root path and the .rst extension. This is what the
-                // RST parser requires to add a dependency.
-                $file = str_replace([$rootDocPath . '/', '.rst'], '', (string) $file->getRealPath());
-
-                $allFiles[] = $file;
-            }
-        }
-
-        return $allFiles;
     }
 }

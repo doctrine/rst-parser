@@ -94,6 +94,20 @@ class BuilderTest extends TestCase
         self::assertContains('subdir/file.html#a-file', $contents);
     }
 
+    public function testToctreeGlobOrder() : void
+    {
+        $contents = $this->getFileContents($this->targetFile('toc-glob.html'));
+
+        // assert `index` is first since it is defined first in toc-glob.rst
+        self::assertContains('<div class="toc"><ul><li id="index-html-summary" class="toc-item"><a href="index.html#summary">Summary</a></li>', $contents);
+
+        // assert `index` is not included and duplicated by the glob
+        self::assertNotContains('</ul><li id="index-html-summary" class="toc-item"><a href="index.html#summary">Summary</a></li>', $contents);
+
+        // assert `introduction` is at the end after the glob since it is defined last in toc-glob.rst
+        self::assertContains('<a href="introduction.html#introduction-page">Introduction page</a></li></ul></div>', $contents);
+    }
+
     public function testToctreeInSubdirectory() : void
     {
         $contents = $this->getFileContents($this->targetFile('subdir/toc.html'));
