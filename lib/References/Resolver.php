@@ -12,8 +12,11 @@ class Resolver
     /**
      * @param string[] $attributes
      */
-    public function resolve(Environment $environment, string $data, array $attributes = []) : ResolvedReference
-    {
+    public function resolve(
+        Environment $environment,
+        string $data,
+        array $attributes = []
+    ) : ResolvedReference {
         $resolvedFileReference = $this->resolveFileReference($environment, $data, $attributes);
 
         if ($resolvedFileReference !== null) {
@@ -26,9 +29,9 @@ class Resolver
             return $resolvedAnchorReference;
         }
 
-        return new ResolvedReference(
-            '(unresolved)',
-            '#' . $data,
+        return new InvalidReference(
+            InvalidReference::INVALID_REFERENCE,
+            $data,
             [],
             $attributes
         );
@@ -37,8 +40,11 @@ class Resolver
     /**
      * @param string[] $attributes
      */
-    private function resolveFileReference(Environment $environment, string $data, array $attributes = []) : ?ResolvedReference
-    {
+    private function resolveFileReference(
+        Environment $environment,
+        string $data,
+        array $attributes = []
+    ) : ?ResolvedReference {
         $entry = null;
 
         $file = $environment->canonicalUrl($data);
@@ -57,8 +63,11 @@ class Resolver
     /**
      * @param string[] $attributes
      */
-    private function resolveAnchorReference(Environment $environment, string $data, array $attributes = []) : ?ResolvedReference
-    {
+    private function resolveAnchorReference(
+        Environment $environment,
+        string $data,
+        array $attributes = []
+    ) : ?ResolvedReference {
         $entry = $environment->getMetas()->findLinkMetaEntry($data);
 
         if ($entry !== null) {

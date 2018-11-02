@@ -10,6 +10,7 @@ use Doctrine\RST\ErrorManager;
 use Doctrine\RST\Kernel;
 use Doctrine\RST\Metas;
 use Doctrine\RST\Parser;
+use function array_filter;
 use function file_exists;
 use function filectime;
 
@@ -85,12 +86,6 @@ class ParseQueueProcessor
     {
         $fileAbsolutePath = $this->buildFileAbsolutePath($file);
 
-        if (! file_exists($fileAbsolutePath)) {
-            //$this->errorManager->error(sprintf('Could not find file at path %s', $fileAbsolutePath));
-
-            return;
-        }
-
         $parser = $this->createFileParser($file);
 
         $environment = $parser->getEnvironment();
@@ -107,7 +102,7 @@ class ParseQueueProcessor
 
         $dependencies = $environment->getDependencies();
 
-        foreach ($dependencies as $dependency) {
+        foreach ($this->buildDependenciesToScan($dependencies) as $dependency) {
             $this->scanner->scan($this->directory, $dependency);
         }
 
@@ -136,6 +131,18 @@ class ParseQueueProcessor
         $environment->setUseRelativeUrls($this->configuration->useRelativeUrls());
 
         return $parser;
+    }
+
+    /**
+     * @param string[] $dependencies
+     *
+     * @return string[]
+     */
+    private function buildDependenciesToScan(array $dependencies) : array
+    {
+        return array_filter($dependencies, function (string $dependency) : bool {
+            return file_exists($this->buildFileAbsolutePath($dependency));
+        });
     }
 
     private function buildFileAbsolutePath(string $file) : string

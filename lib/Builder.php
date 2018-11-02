@@ -60,7 +60,11 @@ class Builder
 
         $this->metas = new Metas();
 
-        $this->documents = new Builder\Documents($this->filesystem, $this->metas);
+        $this->documents = new Builder\Documents(
+            $this->errorManager,
+            $this->filesystem,
+            $this->metas
+        );
 
         $this->parseQueue = new Builder\ParseQueue($this->documents);
 
