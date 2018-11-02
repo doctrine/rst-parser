@@ -36,7 +36,6 @@ abstract class Kernel
             new Directives\Replace(),
             new Directives\Toctree(),
             new Directives\Document(),
-            new Directives\RedirectionTitle(),
         ], $this->createDirectives(), $directives);
 
         $this->references = array_merge([
