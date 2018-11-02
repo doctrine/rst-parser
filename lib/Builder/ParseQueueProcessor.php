@@ -10,10 +10,8 @@ use Doctrine\RST\ErrorManager;
 use Doctrine\RST\Kernel;
 use Doctrine\RST\Metas;
 use Doctrine\RST\Parser;
-use function array_filter;
 use function file_exists;
 use function filectime;
-use function sprintf;
 
 class ParseQueueProcessor
 {

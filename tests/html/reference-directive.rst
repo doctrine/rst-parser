@@ -1,4 +1,0 @@
-
-.. note::
-    :doc:`other`
-

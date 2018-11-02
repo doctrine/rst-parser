@@ -455,14 +455,6 @@ class HTMLTest extends TestCase
         self::assertSame(2, substr_count($document, 'important'));
     }
 
-    public function testReferenceUnderDirective() : void
-    {
-        $document = $this->parseHTML('reference-directive.rst');
-
-        self::assertSame(1, substr_count($document, 'note'));
-        self::assertSame(1, substr_count($document, 'unresolved'));
-    }
-
     public function testReferenceMatchingIsntTooEager() : void
     {
         // Before, it would render

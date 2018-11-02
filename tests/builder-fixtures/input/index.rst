@@ -34,3 +34,6 @@ Link to :ref:`Subdirectory Child Level 2 Test <subdirectory-child-level-2>`
 Link to :ref:`Subdirectory Child Level 3 <subdirectory-child-level-3>`
 
 Link to :ref:`Subdirectory Child Level 3 Test <subdirectory-child-level-3>`
+
+.. note::
+    :ref:`Reference in directory <introduction>`
