@@ -45,7 +45,7 @@ class Scanner
 
     public function scanMetaEntry(MetaEntry $entry, string $directory, string $file) : void
     {
-        // Have a look to the file dependencies to knoww if you need to parse
+        // Have a look to the file dependencies to know if you need to parse
         // it or not
         $depends = $entry->getDepends();
 
@@ -65,6 +65,8 @@ class Scanner
             }
 
             $this->parseQueue->addToParseQueue($file);
+
+            break;
         }
     }
 

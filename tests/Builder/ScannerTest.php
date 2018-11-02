@@ -74,11 +74,6 @@ class ScannerTest extends TestCase
             ->method('addToParseQueue')
             ->with('file');
 
-        $this->parseQueue->expects(self::at(3))
-            ->method('getState')
-            ->with('parent')
-            ->willReturn(State::PARSE);
-
         $this->scanner->scanMetaEntry($metaEntry, '/directory', 'file');
     }
 

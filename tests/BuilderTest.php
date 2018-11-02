@@ -192,16 +192,14 @@ class BuilderTest extends BaseBuilderTest
         self::assertContains('<h2>There is a title here</h2>', $contents);
     }
 
-    /**
-     * Test that redirection-title worked
-     */
-    public function testRedirectionTitle() : void
+    public function testReferenceInDirective() : void
     {
-        $contents = $this->getFileContents($this->targetFile('magic-link.html'));
-        self::assertNotContains('redirection', $contents);
-
         $contents = $this->getFileContents($this->targetFile('index.html'));
-        self::assertContains('"subdirective.html">See also', $contents);
+
+        self::assertContains(
+            '<div class="note"><p><a href="introduction.html">Reference in directory</a></p>',
+            $contents
+        );
     }
 
     protected function getFixturesDirectory() : string

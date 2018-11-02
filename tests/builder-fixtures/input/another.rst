@@ -6,8 +6,6 @@ Another page
 
 Hello!
 
-.. redirection-title:: subdirective
-
 See also
 --------
 
