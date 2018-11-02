@@ -10,8 +10,10 @@ use Doctrine\RST\ErrorManager;
 use Doctrine\RST\Kernel;
 use Doctrine\RST\Metas;
 use Doctrine\RST\Parser;
+use function array_filter;
 use function file_exists;
 use function filectime;
+use function sprintf;
 
 class ParseQueueProcessor
 {
@@ -77,59 +79,73 @@ class ParseQueueProcessor
     public function process() : void
     {
         while ($file = $this->parseQueue->getFileToParse()) {
-            // Process the file
-            $rst = $this->directory . '/' . $file . '.rst';
-
-            if (! file_exists($rst)) {
-                continue;
-            }
-
-            $parser = new Parser(null, $this->kernel, $this->configuration);
-
-            $environment = $parser->getEnvironment();
-            $environment->setMetas($this->metas);
-            $environment->setCurrentFileName($file);
-            $environment->setCurrentDirectory($this->directory);
-            $environment->setTargetDirectory($this->targetDirectory);
-            $environment->setErrorManager($this->errorManager);
-            $environment->setUseRelativeUrls($this->configuration->useRelativeUrls());
-
-            $this->hooks->callBeforeHooks($parser);
-
-            $document = $parser->parseFile($rst);
-
-            $this->documents->addDocument($file, $document);
-
-            // Calling all the post-process hooks
-            $this->hooks->callHooks($document);
-
-            // Calling the kernel document tweaking
-            $this->kernel->postParse($document);
-
-            $dependencies = $document->getEnvironment()->getDependencies();
-
-            if ($dependencies !== []) {
-                // Scan the dependencies for this document
-                foreach ($dependencies as $dependency) {
-                    $this->scanner->scan($this->directory, $dependency);
-                }
-            }
-
-            // Append the meta for this document
-            $this->metas->set(
-                $file,
-                $this->getUrl($document),
-                (string) $document->getTitle(),
-                $document->getTitles(),
-                $document->getTocs(),
-                (int) filectime($rst),
-                $dependencies,
-                $environment->getLinks()
-            );
+            $this->processFile($file);
         }
     }
 
-    private function getUrl(Document $document) : string
+    private function processFile(string $file) : void
+    {
+        $fileAbsolutePath = $this->buildFileAbsolutePath($file);
+
+        if (! file_exists($fileAbsolutePath)) {
+            //$this->errorManager->error(sprintf('Could not find file at path %s', $fileAbsolutePath));
+
+            return;
+        }
+
+        $parser = $this->createFileParser($file);
+
+        $environment = $parser->getEnvironment();
+
+        $this->hooks->callBeforeHooks($parser);
+
+        $document = $parser->parseFile($fileAbsolutePath);
+
+        $this->documents->addDocument($file, $document);
+
+        $this->hooks->callHooks($document);
+
+        $this->kernel->postParse($document);
+
+        $dependencies = $environment->getDependencies();
+
+        foreach ($dependencies as $dependency) {
+            $this->scanner->scan($this->directory, $dependency);
+        }
+
+        $this->metas->set(
+            $file,
+            $this->buildDocumentUrl($document),
+            (string) $document->getTitle(),
+            $document->getTitles(),
+            $document->getTocs(),
+            (int) filectime($fileAbsolutePath),
+            $dependencies,
+            $environment->getLinks()
+        );
+    }
+
+    private function createFileParser(string $file) : Parser
+    {
+        $parser = new Parser(null, $this->kernel, $this->configuration);
+
+        $environment = $parser->getEnvironment();
+        $environment->setMetas($this->metas);
+        $environment->setCurrentFileName($file);
+        $environment->setCurrentDirectory($this->directory);
+        $environment->setTargetDirectory($this->targetDirectory);
+        $environment->setErrorManager($this->errorManager);
+        $environment->setUseRelativeUrls($this->configuration->useRelativeUrls());
+
+        return $parser;
+    }
+
+    private function buildFileAbsolutePath(string $file) : string
+    {
+        return $this->directory . '/' . $file . '.rst';
+    }
+
+    private function buildDocumentUrl(Document $document) : string
     {
         return $document->getEnvironment()->getUrl() . '.' . $this->fileExtension;
     }
