@@ -4,28 +4,20 @@ declare(strict_types=1);
 
 namespace Doctrine\Tests\RST;
 
-use Doctrine\RST\Builder;
-use PHPUnit\Framework\TestCase;
 use function file_exists;
 use function file_get_contents;
-use function shell_exec;
 
 /**
  * Unit testing build with ".. include::" directive
  */
-class BuilderIncludeTest extends TestCase
+class BuilderIncludeTest extends BaseBuilderTest
 {
     public function testTocTreeGlob() : void
     {
-        shell_exec('rm -rf ' . $this->targetFile());
-        $builder = new Builder();
-        $builder->setUseRelativeUrls(true);
-        $builder->build($this->sourceFile(), $this->targetFile());
-
         self::assertTrue(file_exists($this->targetFile('index.html')));
         self::assertContains('This file is included', file_get_contents($this->targetFile('index.html')));
 
-        foreach ($builder->getDocuments()->getAll() as $document) {
+        foreach ($this->builder->getDocuments()->getAll() as $document) {
             foreach ($document->getEnvironment()->getMetas()->getAll() as $meta) {
                 foreach ($meta->getTocs() as $toc) {
                     self::assertNotContains('include.inc', $toc);
@@ -34,13 +26,8 @@ class BuilderIncludeTest extends TestCase
         }
     }
 
-    private function sourceFile(string $file = '') : string
+    protected function getFixturesDirectory() : string
     {
-        return __DIR__ . '/builder-include/input/' . $file;
-    }
-
-    private function targetFile(string $file = '') : string
-    {
-        return __DIR__ . '/builder-include/output/' . $file;
+        return 'builder-include';
     }
 }

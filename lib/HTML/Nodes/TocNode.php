@@ -6,11 +6,13 @@ namespace Doctrine\RST\HTML\Nodes;
 
 use Doctrine\RST\Environment;
 use Doctrine\RST\Nodes\TocNode as Base;
+use function count;
 use function is_array;
-use function str_replace;
 
 class TocNode extends Base
 {
+    private const DEFAULT_DEPTH = 2;
+
     /** @var int */
     private $depth;
 
@@ -20,7 +22,7 @@ class TocNode extends Base
             return '';
         }
 
-        $this->depth = (int) ($this->options['depth'] ?? 2);
+        $this->depth = $this->getDepth();
 
         $html = '<div class="toc"><ul>';
 
@@ -47,47 +49,81 @@ class TocNode extends Base
         int $level = 1,
         array $path = []
     ) : string {
-        if ($level > $this->depth) {
-            return '';
-        }
-
         $html = '';
+
         foreach ($titles as $k => $entry) {
             $path[$level - 1] = (int) $k + 1;
 
-            [$title, $childs] = $entry;
+            [$title, $children] = $entry;
 
-            $slug = $title;
+            [$title, $target] = $this->generateTarget($url, $title);
 
-            if (is_array($title)) {
-                $slug = $title[1];
+            $html .= '<li id="' . $this->generateTargetId($target) . '" class="toc-item">';
+
+            $html .= '<a href="' . $target . '">' . $title . '</a>';
+
+            // render children until we hit the configured maxdepth
+            if (count($children) > 0 && $level < $this->depth) {
+                $html .= '<ul>';
+                $html .= $this->renderLevel($url, $children, $level + 1, $path);
+                $html .= '</ul>';
             }
 
-            $anchor = Environment::slugify($slug);
-            $target = $url . '#' . $anchor;
-
-            if (is_array($title)) {
-                [$title, $target] = $title;
-
-                $info = $this->environment->resolve('doc', $target);
-
-                $target = $this->environment->relativeUrl($info->getUrl());
-            }
-
-            $id = str_replace('../', '', (string) $target);
-            $id = str_replace(['#', '.', '/'], '-', $id);
-
-            $html .= '<li id="' . $id . '" class="toc-item"><a href="' . $target . '">' . $title . '</a></li>';
-
-            if (! $childs) {
-                continue;
-            }
-
-            $html .= '<ul>';
-            $html .= $this->renderLevel($url, $childs, $level + 1, $path);
-            $html .= '</ul>';
+            $html .= '</li>';
         }
 
         return $html;
+    }
+
+    private function generateTargetId(string $target) : string
+    {
+        return Environment::slugify($target);
+    }
+
+    /**
+     * @param string[]|string $title
+     *
+     * @return mixed[]
+     */
+    private function generateTarget(?string $url, $title) : array
+    {
+        $anchor = $this->generateAnchorFromTitle($title);
+
+        $target = $url . '#' . $anchor;
+
+        if (is_array($title)) {
+            [$title, $target] = $title;
+
+            $info = $this->environment->resolve('doc', $target);
+
+            $target = $this->environment->relativeUrl($info->getUrl());
+        }
+
+        return [$title, $target];
+    }
+
+    /**
+     * @param string[]|string $title
+     */
+    private function generateAnchorFromTitle($title) : string
+    {
+        $slug = is_array($title)
+            ? $title[1]
+            : $title;
+
+        return Environment::slugify($slug);
+    }
+
+    private function getDepth() : int
+    {
+        if (isset($this->options['depth'])) {
+            return (int) $this->options['depth'];
+        }
+
+        if (isset($this->options['maxdepth'])) {
+            return (int) $this->options['maxdepth'];
+        }
+
+        return self::DEFAULT_DEPTH;
     }
 }
