@@ -4,19 +4,14 @@ declare(strict_types=1);
 
 namespace Doctrine\Tests\RST;
 
-use Doctrine\RST\Builder;
-use Exception;
-use PHPUnit\Framework\TestCase;
 use function file_exists;
-use function file_get_contents;
 use function is_dir;
-use function shell_exec;
 use function substr_count;
 
 /**
  * Unit testing for RST
  */
-class BuilderTest extends TestCase
+class BuilderTest extends BaseBuilderTest
 {
     /**
      * Tests that the build produced the excepted documents
@@ -28,7 +23,6 @@ class BuilderTest extends TestCase
         self::assertTrue(file_exists($this->targetFile('introduction.html')));
         self::assertTrue(file_exists($this->targetFile('subdirective.html')));
         self::assertTrue(file_exists($this->targetFile('magic-link.html')));
-        self::assertTrue(file_exists($this->targetFile('file.txt')));
         self::assertTrue(file_exists($this->targetFile('subdir/test.html')));
         self::assertTrue(file_exists($this->targetFile('subdir/file.html')));
     }
@@ -210,36 +204,8 @@ class BuilderTest extends TestCase
         self::assertContains('"subdirective.html">See also', $contents);
     }
 
-    public function setUp() : void
+    protected function getFixturesDirectory() : string
     {
-        shell_exec('rm -rf ' . $this->targetFile());
-        $builder = new Builder();
-        $builder->copy('file.txt');
-        $builder->setUseRelativeUrls(true);
-        $builder->build($this->sourceFile(), $this->targetFile());
-    }
-
-    private function sourceFile(string $file = '') : string
-    {
-        return __DIR__ . '/builder-fixtures/input/' . $file;
-    }
-
-    private function targetFile(string $file = '') : string
-    {
-        return __DIR__ . '/builder-fixtures/output/' . $file;
-    }
-
-    /**
-     * @throws Exception
-     */
-    private function getFileContents(string $path) : string
-    {
-        $contents = file_get_contents($path);
-
-        if ($contents === false) {
-            throw new Exception('Could not load file.');
-        }
-
-        return $contents;
+        return 'builder-fixtures';
     }
 }
