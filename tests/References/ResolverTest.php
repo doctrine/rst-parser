@@ -7,6 +7,7 @@ namespace Doctrine\Tests\RST\References;
 use Doctrine\RST\Environment;
 use Doctrine\RST\MetaEntry;
 use Doctrine\RST\Metas;
+use Doctrine\RST\References\InvalidReference;
 use Doctrine\RST\References\ResolvedReference;
 use Doctrine\RST\References\Resolver;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -16,10 +17,13 @@ class ResolverTest extends TestCase
 {
     /** @var Environment|MockObject */
     private $environment;
+
     /** @var Metas|MockObject */
     private $metas;
+
     /** @var MetaEntry|MockObject */
     private $metaEntry;
+
     /** @var Resolver */
     private $resolver;
 
@@ -99,8 +103,8 @@ class ResolverTest extends TestCase
             ->willReturn(null);
 
         self::assertEquals(
-            new ResolvedReference('(unresolved)', '#unresolved-url'),
-            $this->resolver->resolve($this->environment, 'unresolved-url')
+            new InvalidReference(InvalidReference::INVALID_REFERENCE, 'invalid-reference'),
+            $this->resolver->resolve($this->environment, 'invalid-reference')
         );
     }
 
@@ -119,8 +123,8 @@ class ResolverTest extends TestCase
             ->willReturn(null);
 
         self::assertEquals(
-            new ResolvedReference('(unresolved)', '#unresolved-url'),
-            $this->resolver->resolve($this->environment, 'unresolved-url')
+            new InvalidReference(InvalidReference::INVALID_REFERENCE, 'invalid-reference'),
+            $this->resolver->resolve($this->environment, 'invalid-reference')
         );
     }
 }

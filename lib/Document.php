@@ -8,6 +8,9 @@ use Doctrine\RST\Nodes\Node;
 use Doctrine\RST\Nodes\RawNode;
 use Doctrine\RST\Nodes\TitleNode;
 use Doctrine\RST\Nodes\TocNode;
+use Doctrine\RST\References\InvalidReference;
+use Doctrine\RST\References\ResolvedReference;
+use function array_filter;
 use function array_unshift;
 use function count;
 use function is_string;
@@ -28,6 +31,19 @@ abstract class Document extends Node
         parent::__construct();
 
         $this->environment = $environment;
+    }
+
+    /**
+     * @return InvalidReference[]
+     */
+    public function getInvalidReferences() : array
+    {
+        return array_filter(
+            $this->environment->getResolvedReferences(),
+            static function (ResolvedReference $resolvedReference) {
+                return $resolvedReference instanceof InvalidReference;
+            }
+        );
     }
 
     public function getEnvironment() : Environment

@@ -65,8 +65,6 @@ class Scanner
             }
 
             $this->parseQueue->addToParseQueue($file);
-
-            break;
         }
     }
 

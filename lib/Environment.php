@@ -68,6 +68,9 @@ class Environment
     /** @var string[] */
     private $anonymous = [];
 
+    /** @var ResolvedReference[] */
+    private $resolvedReferences = [];
+
     public function __construct(?Configuration $configuration = null)
     {
         $this->configuration = $configuration ?? new Configuration();
@@ -124,7 +127,19 @@ class Environment
 
         $reference = $this->references[$section];
 
-        return $reference->resolve($this, $data);
+        $resolvedReference = $reference->resolve($this, $data);
+
+        $this->resolvedReferences[] = $resolvedReference;
+
+        return $resolvedReference;
+    }
+
+    /**
+     * @return ResolvedReference[]
+     */
+    public function getResolvedReferences() : array
+    {
+        return $this->resolvedReferences;
     }
 
     /**
