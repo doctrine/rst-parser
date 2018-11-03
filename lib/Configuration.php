@@ -6,20 +6,20 @@ namespace Doctrine\RST;
 
 class Configuration
 {
-    /** @var bool */
-    private $useRelativeUrls = true;
+    /** @var string */
+    private $baseUrl = '';
 
     /** @var bool */
     private $abortOnError = true;
 
-    public function useRelativeUrls() : bool
+    public function getBaseUrl() : string
     {
-        return $this->useRelativeUrls;
+        return $this->baseUrl;
     }
 
-    public function setUseRelativeUrls(bool $useRelativeUrls) : self
+    public function setBaseUrl(string $baseUrl) : self
     {
-        $this->useRelativeUrls = $useRelativeUrls;
+        $this->baseUrl = $baseUrl;
 
         return $this;
     }

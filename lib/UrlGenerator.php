@@ -9,6 +9,7 @@ use function basename;
 use function count;
 use function explode;
 use function implode;
+use function ltrim;
 use function preg_match;
 use function rtrim;
 use function strpos;
@@ -16,6 +17,25 @@ use function substr;
 
 class UrlGenerator
 {
+    /** @var string */
+    private $baseUrl;
+
+    public function __construct(string $baseUrl)
+    {
+        $this->baseUrl = $baseUrl;
+    }
+
+    public function generateUrl(string $path, string $currentFileName, string $dirName) : string
+    {
+        if ($this->baseUrl === '') {
+            return (string) $this->relativeUrl($path, $currentFileName);
+        }
+
+        $canonicalPath = (string) $this->canonicalUrl($dirName, $path);
+
+        return rtrim($this->baseUrl, '/') . '/' . ltrim($canonicalPath, '/');
+    }
+
     public function absoluteUrl(string $dirName, string $url) : string
     {
         // if $url is already an absolute path, just return it

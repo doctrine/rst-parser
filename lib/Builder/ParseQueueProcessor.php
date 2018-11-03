@@ -128,7 +128,6 @@ class ParseQueueProcessor
         $environment->setCurrentDirectory($this->directory);
         $environment->setTargetDirectory($this->targetDirectory);
         $environment->setErrorManager($this->errorManager);
-        $environment->setUseRelativeUrls($this->configuration->useRelativeUrls());
 
         return $parser;
     }

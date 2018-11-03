@@ -1,4 +1,5 @@
 /**.swp
 /vendor/
 /.phpcs-cache
+/tests/builder-*/output
 

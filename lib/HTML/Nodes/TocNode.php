@@ -60,7 +60,7 @@ class TocNode extends Base
 
             $html .= '<li id="' . $this->generateTargetId($target) . '" class="toc-item">';
 
-            $html .= '<a href="' . $target . '">' . $title . '</a>';
+            $html .= '<a href="' . $this->environment->generateUrl($target) . '">' . $title . '</a>';
 
             // render children until we hit the configured maxdepth
             if (count($children) > 0 && $level < $this->depth) {

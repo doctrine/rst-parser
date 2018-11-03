@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\Tests\RST\HTML;
 
+use Doctrine\RST\Environment;
 use Doctrine\RST\HTML\Span;
 use Doctrine\RST\Parser;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -20,7 +21,20 @@ class SpanTest extends TestCase
     {
         /** @var Parser|MockObject $parser */
         $parser = $this->createMock(Parser::class);
-        $span   = new Span($parser, 'span');
+
+        /** @var Environment|MockObject $environment */
+        $environment = $this->createMock(Environment::class);
+
+        $parser->expects(self::once())
+            ->method('getEnvironment')
+            ->willReturn($environment);
+
+        $environment->expects(self::once())
+            ->method('generateUrl')
+            ->with($url)
+            ->willReturn($url);
+
+        $span = new Span($parser, 'span');
 
         self::assertSame(
             $expectedLink,
@@ -45,7 +59,7 @@ class SpanTest extends TestCase
                 'url'          => '/url?foo=bar&bar=foo',
                 'title'        => 'link',
                 'attributes'   => [],
-                'expectedLink' => '<a href="/url?foo=bar&amp;bar=foo">link</a>',
+                'expectedLink' => '<a href="/url?foo=bar&bar=foo">link</a>',
             ],
 
             'no attributes #3' => [

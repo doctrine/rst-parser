@@ -113,11 +113,6 @@ class Builder
         return $this->indexName;
     }
 
-    public function setUseRelativeUrls(bool $useRelativeUrls) : void
-    {
-        $this->configuration->setUseRelativeUrls($useRelativeUrls);
-    }
-
     public function build(
         string $directory,
         string $targetDirectory = 'output'
