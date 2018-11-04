@@ -75,7 +75,9 @@ class Environment
     {
         $this->configuration = $configuration ?? new Configuration();
         $this->errorManager  = new ErrorManager($this->configuration);
-        $this->urlGenerator  = new UrlGenerator();
+        $this->urlGenerator  = new UrlGenerator(
+            $this->configuration->getBaseUrl()
+        );
         $this->metas         = new Metas();
 
         $this->reset();
@@ -292,14 +294,13 @@ class Environment
         return $this->urlGenerator->canonicalUrl($this->getDirName(), $url);
     }
 
-    public function useRelativeUrls() : bool
+    public function generateUrl(string $path) : string
     {
-        return $this->configuration->useRelativeUrls();
-    }
-
-    public function setUseRelativeUrls(bool $useRelativeUrls) : void
-    {
-        $this->configuration->setUseRelativeUrls($useRelativeUrls);
+        return $this->urlGenerator->generateUrl(
+            $path,
+            $this->currentFileName,
+            $this->getDirName()
+        );
     }
 
     public function getDirName() : string

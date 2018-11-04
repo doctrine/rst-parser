@@ -56,7 +56,9 @@ class Span extends Base
             )
         );
 
-        return '<a href="' . htmlspecialchars((string) $url) . '"' . ( $htmlAttributes !== '' ? ' ' . $htmlAttributes : '') . '>' . $title . '</a>';
+        $url = (string) $url;
+
+        return '<a href="' . $this->environment->generateUrl($url) . '"' . ( $htmlAttributes !== '' ? ' ' . $htmlAttributes : '') . '>' . $title . '</a>';
     }
 
     public function escape(string $span) : string

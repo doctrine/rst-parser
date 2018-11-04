@@ -22,7 +22,6 @@ abstract class BaseBuilderTest extends TestCase
         shell_exec('rm -rf ' . $this->targetFile());
 
         $this->builder = new Builder();
-        $this->builder->setUseRelativeUrls(true);
         $this->builder->build($this->sourceFile(), $this->targetFile());
     }
 

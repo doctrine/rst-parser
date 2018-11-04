@@ -9,46 +9,63 @@ use PHPUnit\Framework\TestCase;
 
 class UrlGeneratorTest extends TestCase
 {
-    /** @var UrlGenerator */
-    private $urlGenerator;
+    public function testGenerateUrlRelative() : void
+    {
+        $urlGenerator = new UrlGenerator('');
+
+        self::assertSame('../index', $urlGenerator->generateUrl('/index', 'subdir/index', ''));
+        self::assertSame('index', $urlGenerator->generateUrl('/subdir/index', 'subdir/index', ''));
+        self::assertSame('subdir/index', $urlGenerator->generateUrl('/subdir/index', 'index', ''));
+    }
+
+    public function testGenerateUrlAbsoluteBaseUrl() : void
+    {
+        $urlGenerator = new UrlGenerator('https://www.domain.com/directory/');
+
+        self::assertSame(
+            'https://www.domain.com/directory/path',
+            $urlGenerator->generateUrl('/path', 'path', '')
+        );
+    }
 
     public function testAbsoluteUrl() : void
     {
-        self::assertSame('/test', $this->urlGenerator->absoluteUrl('/', '/test'));
+        $urlGenerator = new UrlGenerator('');
 
-        self::assertSame('/test', $this->urlGenerator->absoluteUrl('/subdir', '/test'));
+        self::assertSame('/test', $urlGenerator->absoluteUrl('/', '/test'));
 
-        self::assertSame('/test', $this->urlGenerator->absoluteUrl('/', 'test'));
+        self::assertSame('/test', $urlGenerator->absoluteUrl('/subdir', '/test'));
 
-        self::assertSame('/subdir/test', $this->urlGenerator->absoluteUrl('/subdir', 'test'));
+        self::assertSame('/test', $urlGenerator->absoluteUrl('/', 'test'));
+
+        self::assertSame('/subdir/test', $urlGenerator->absoluteUrl('/subdir', 'test'));
     }
 
     public function testRelativeUrl() : void
     {
-        self::assertNull($this->urlGenerator->relativeUrl(null, ''));
+        $urlGenerator = new UrlGenerator('');
 
-        self::assertSame('://test', $this->urlGenerator->relativeUrl('://test', ''));
+        self::assertNull($urlGenerator->relativeUrl(null, ''));
 
-        self::assertSame('test', $this->urlGenerator->relativeUrl('test', '/'));
+        self::assertSame('://test', $urlGenerator->relativeUrl('://test', ''));
 
-        self::assertSame('../../test', $this->urlGenerator->relativeUrl('/test', '/subdir1/subdir2'));
+        self::assertSame('test', $urlGenerator->relativeUrl('test', '/'));
 
-        self::assertSame('../../subdir1/subdir2/test', $this->urlGenerator->relativeUrl('/subdir1/subdir2/test', '/subdir1/subdir2'));
+        self::assertSame('../../test', $urlGenerator->relativeUrl('/test', '/subdir1/subdir2'));
+
+        self::assertSame('../../subdir1/subdir2/test', $urlGenerator->relativeUrl('/subdir1/subdir2/test', '/subdir1/subdir2'));
     }
 
     public function testCanonicalUrl() : void
     {
-        self::assertSame('dir/file', $this->urlGenerator->canonicalUrl('dir', 'file'));
+        $urlGenerator = new UrlGenerator('');
 
-        self::assertSame('file', $this->urlGenerator->canonicalUrl('dir', '../file'));
+        self::assertSame('dir/file', $urlGenerator->canonicalUrl('dir', 'file'));
 
-        self::assertSame('dir/file', $this->urlGenerator->canonicalUrl('dir/subdir', '../file'));
+        self::assertSame('file', $urlGenerator->canonicalUrl('dir', '../file'));
 
-        self::assertSame('file', $this->urlGenerator->canonicalUrl('dir/subdir', '../../file'));
-    }
+        self::assertSame('dir/file', $urlGenerator->canonicalUrl('dir/subdir', '../file'));
 
-    protected function setUp() : void
-    {
-        $this->urlGenerator = new UrlGenerator();
+        self::assertSame('file', $urlGenerator->canonicalUrl('dir/subdir', '../../file'));
     }
 }

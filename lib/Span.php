@@ -219,11 +219,7 @@ abstract class Span extends Node
                     break;
                 case 'link':
                     if ($value['url']) {
-                        if ($environment->useRelativeUrls()) {
-                            $url = $environment->relativeUrl($value['url']);
-                        } else {
-                            $url = $value['url'];
-                        }
+                        $url = $value['url'];
                     } elseif ($value['anchor']) {
                         $link = $environment->getLink($value['link']);
 

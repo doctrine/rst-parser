@@ -12,13 +12,13 @@ class ConfigurationTest extends TestCase
     /** @var Configuration */
     private $configuration;
 
-    public function testUseRelativeUrls() : void
+    public function testBaseUrl() : void
     {
-        self::assertTrue($this->configuration->useRelativeUrls());
+        self::assertSame('', $this->configuration->getBaseUrl());
 
-        $this->configuration->setUseRelativeUrls(false);
+        $this->configuration->setBaseUrl('https://www.domain.com/directory');
 
-        self::assertFalse($this->configuration->useRelativeUrls());
+        self::assertSame('https://www.domain.com/directory', $this->configuration->getBaseUrl());
     }
 
     public function testAbortOnError() : void
