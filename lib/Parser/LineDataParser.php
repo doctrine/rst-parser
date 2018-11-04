@@ -4,12 +4,25 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\Parser;
 
+use Doctrine\RST\Parser;
+use function array_map;
+use function count;
+use function explode;
 use function preg_match;
 use function strlen;
+use function substr;
 use function trim;
 
 class LineDataParser
 {
+    /** @var Parser */
+    private $parser;
+
+    public function __construct(Parser $parser)
+    {
+        $this->parser = $parser;
+    }
+
     public function parseLink(string $line) : ?Link
     {
         // Links
@@ -100,5 +113,73 @@ class LineDataParser
         }
 
         return null;
+    }
+
+    /**
+     * @param string[] $lines
+     */
+    public function parseDefinitionList(array $lines) : DefinitionList
+    {
+        $definitionList     = [];
+        $definitionListTerm = null;
+        $currentDefinition  = null;
+
+        foreach ($lines as $key => $line) {
+            // term definition line
+            if ($definitionListTerm !== null && substr($line, 0, 4) === '    ') {
+                $definition = trim($line);
+
+                $currentDefinition .= $definition . ' ';
+
+            // non empty string
+            } elseif (trim($line) !== '') {
+                // we are starting a new term so if we have an existing
+                // term with definitions, add it to the definition list
+                if ($definitionListTerm !== null) {
+                    $definitionList[] = new DefinitionListTerm(
+                        $definitionListTerm['term'],
+                        $definitionListTerm['classifiers'],
+                        $definitionListTerm['definitions']
+                    );
+                }
+
+                $parts = explode(':', trim($line));
+
+                $term = $parts[0];
+                unset($parts[0]);
+
+                $classifiers = array_map(function (string $classifier) {
+                    return $this->parser->createSpan($classifier);
+                }, array_map('trim', $parts));
+
+                $definitionListTerm = [
+                    'term' => $this->parser->createSpan($term),
+                    'classifiers' => $classifiers,
+                    'definitions' => [],
+                ];
+
+            // last line
+            } elseif ($definitionListTerm !== null && trim($line) === '' && count($lines) - 1 === $key) {
+                if ($currentDefinition !== null) {
+                    $definitionListTerm['definitions'][] = $this->parser->createSpan($currentDefinition);
+
+                    $currentDefinition = null;
+                }
+
+                $definitionList[] = new DefinitionListTerm(
+                    $definitionListTerm['term'],
+                    $definitionListTerm['classifiers'],
+                    $definitionListTerm['definitions']
+                );
+
+            // empty line, start of a new definition for the current term
+            } elseif ($currentDefinition !== null && $definitionListTerm !== null && trim($line) === '') {
+                $definitionListTerm['definitions'][] = $this->parser->createSpan($currentDefinition);
+
+                $currentDefinition = null;
+            }
+        }
+
+        return new DefinitionList($definitionList);
     }
 }

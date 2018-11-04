@@ -7,6 +7,7 @@ namespace Doctrine\RST\Parser;
 use function in_array;
 use function preg_match;
 use function strlen;
+use function strpos;
 use function trim;
 
 class LineChecker
@@ -70,5 +71,27 @@ class LineChecker
     public function isDirective(string $line) : bool
     {
         return preg_match('/^\.\. (\|(.+)\| |)([^\s]+)::(.*)$/mUsi', $line) > 0;
+    }
+
+    public function isDefinitionList(string $line) : bool
+    {
+        return strpos($line, '    ') === 0;
+    }
+
+    public function isDefinitionListEnded(string $line, string $nextLine) : bool
+    {
+        if (trim($line) === '') {
+            return false;
+        }
+
+        if ($this->isDefinitionList($line)) {
+            return false;
+        }
+
+        if ($this->isDefinitionList($nextLine)) {
+            return false;
+        }
+
+        return true;
     }
 }

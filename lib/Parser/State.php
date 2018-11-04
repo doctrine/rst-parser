@@ -6,14 +6,15 @@ namespace Doctrine\RST\Parser;
 
 class State
 {
-    public const BEGIN     = 0;
-    public const NORMAL    = 1;
-    public const DIRECTIVE = 2;
-    public const BLOCK     = 3;
-    public const TITLE     = 4;
-    public const LIST      = 5;
-    public const SEPARATOR = 6;
-    public const CODE      = 7;
-    public const TABLE     = 8;
-    public const COMMENT   = 9;
+    public const BEGIN           = 'begin';
+    public const NORMAL          = 'normal';
+    public const DIRECTIVE       = 'directive';
+    public const BLOCK           = 'block';
+    public const TITLE           = 'title';
+    public const LIST            = 'list';
+    public const SEPARATOR       = 'separator';
+    public const CODE            = 'code';
+    public const TABLE           = 'table';
+    public const COMMENT         = 'comment';
+    public const DEFINITION_LIST = 'definition_list';
 }

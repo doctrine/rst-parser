@@ -6,6 +6,7 @@ namespace Doctrine\RST;
 
 use Doctrine\RST\Nodes\AnchorNode;
 use Doctrine\RST\Nodes\CodeNode;
+use Doctrine\RST\Nodes\DefinitionListNode;
 use Doctrine\RST\Nodes\ListNode;
 use Doctrine\RST\Nodes\Node;
 use Doctrine\RST\Nodes\ParagraphNode;
@@ -14,6 +15,7 @@ use Doctrine\RST\Nodes\SeparatorNode;
 use Doctrine\RST\Nodes\TableNode;
 use Doctrine\RST\Nodes\TitleNode;
 use Doctrine\RST\Nodes\TocNode;
+use Doctrine\RST\Parser\DefinitionList;
 use Doctrine\RST\Parser\LineChecker;
 use InvalidArgumentException;
 use function sprintf;
@@ -141,6 +143,14 @@ class DefaultNodeFactory implements NodeFactory
         $span = $this->create(NodeTypes::SPAN, [$parser, $span]);
 
         return $span;
+    }
+
+    public function createDefinitionList(DefinitionList $definitionList) : DefinitionListNode
+    {
+        /** @var DefinitionListNode $definitionListNode */
+        $definitionListNode = $this->create(NodeTypes::DEFINITION_LIST, [$definitionList]);
+
+        return $definitionListNode;
     }
 
     /**

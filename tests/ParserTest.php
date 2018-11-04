@@ -27,6 +27,47 @@ use function trim;
  */
 class ParserTest extends TestCase
 {
+    public function testDefinitionList() : void
+    {
+        $document = $this->parse('definition-list.rst');
+
+        $rendered = $document->render();
+
+        self::assertContains(
+            '<dl><dt>term 1</dt><dd>Definition 1 </dd><dt>term 2</dt><dd><p class="first">Definition 1 </p><p>Definition 2 </p><p class="last">Definition 3 </p></dd><dt>term 3 <span class="classifier-delimiter">:</span> <span class="classifier">classifier</span> </dt><dd>Definition 1 </dd><dt>term 4 <span class="classifier-delimiter">:</span> <span class="classifier">classifier one</span> <span class="classifier-delimiter">:</span> <span class="classifier">classifier two</span> </dt><dd>Definition 1 </dd><dt>term with &amp; <span class="classifier-delimiter">:</span> <span class="classifier">classifier with &amp;</span> </dt><dd>Definition 1 with &amp; </dd><dt>term with &amp; <span class="classifier-delimiter">:</span> <span class="classifier">classifier with &amp;</span> <span class="classifier-delimiter">:</span> <span class="classifier">classifier with &amp;</span> </dt><dd><p class="first">Definition 1 with &amp; </p><p class="last">Definition 2 with &amp; </p></dd><dt><code>term 5</code> <span class="classifier-delimiter">:</span> <span class="classifier"><code>classifier</code></span> </dt><dd>Definition 1 </dd><dt>multi-line definition term</dt><dd><p class="first">Definition 1 line 1 Definition 1 line 2 </p><p class="last">Definition 2 line 1 Definition 2 line 2 </p></dd></dl>',
+            $rendered
+        );
+    }
+
+    public function testDefinitionListInDirective() : void
+    {
+        $document = $this->parse('definition-list.rst');
+
+        $rendered = $document->render();
+
+        self::assertContains(
+            '<div class="note"><p><strong>Definition list in a directive</strong></p>
+<dl><dt>term 1</dt><dd><p class="first">Definition 1 line 1 Definition 1 line 2 </p><p class="last">Definition 2 </p></dd><dt>term 2</dt><dd><p class="first">Definition 1 line 1 Definition 1 line 2 </p><p class="last">Definition 2 </p></dd></dl>
+</div>',
+            $rendered
+        );
+    }
+
+    public function testDefinitionListSurroundedByParagraphs() : void
+    {
+        $document = $this->parse('definition-list.rst');
+
+        $rendered = $document->render();
+
+        self::assertContains(
+            '<p>Paragraph 1</p>
+<dl><dt>term 1</dt><dd>definition 1 definition 2 </dd></dl>
+<p>Paragraph 2</p>
+<dl><dt>term 2</dt><dd>definition 1 definition 2 </dd></dl>',
+            $rendered
+        );
+    }
+
     public function testGetSubParserPassesConfiguration() : void
     {
         $parser = new Parser();
