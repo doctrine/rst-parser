@@ -13,6 +13,14 @@ use function substr_count;
  */
 class BuilderTest extends BaseBuilderTest
 {
+    public function testRecreate() : void
+    {
+        $builder = $this->builder->recreate();
+
+        self::assertSame($this->builder->getKernel(), $builder->getKernel());
+        self::assertSame($this->builder->getConfiguration(), $builder->getConfiguration());
+    }
+
     /**
      * Tests that the build produced the excepted documents
      */

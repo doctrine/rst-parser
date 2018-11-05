@@ -77,6 +77,21 @@ class Builder
         $this->kernel->initBuilder($this);
     }
 
+    public function recreate() : Builder
+    {
+        return new Builder($this->kernel, $this->configuration);
+    }
+
+    public function getKernel() : Kernel
+    {
+        return $this->kernel;
+    }
+
+    public function getConfiguration() : Configuration
+    {
+        return $this->configuration;
+    }
+
     public function getDocuments() : Documents
     {
         return $this->documents;
