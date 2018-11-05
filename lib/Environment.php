@@ -76,7 +76,7 @@ class Environment
         $this->configuration = $configuration ?? new Configuration();
         $this->errorManager  = new ErrorManager($this->configuration);
         $this->urlGenerator  = new UrlGenerator(
-            $this->configuration->getBaseUrl()
+            $this->configuration
         );
         $this->metas         = new Metas();
 
