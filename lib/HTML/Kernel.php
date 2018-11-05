@@ -55,7 +55,8 @@ class Kernel extends Base
             new NodeInstantiator(NodeTypes::ANCHOR, Nodes\AnchorNode::class),
             new NodeInstantiator(NodeTypes::LIST, Nodes\ListNode::class),
             new NodeInstantiator(NodeTypes::TABLE, Nodes\TableNode::class),
-            new NodeInstantiator(NodeTypes::SPAN, Span::class)
+            new NodeInstantiator(NodeTypes::SPAN, Span::class),
+            new NodeInstantiator(NodeTypes::DEFINITION_LIST, Nodes\DefinitionListNode::class)
         );
     }
 }
