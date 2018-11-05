@@ -17,23 +17,25 @@ use function substr;
 
 class UrlGenerator
 {
-    /** @var string */
-    private $baseUrl;
+    /** @var Configuration */
+    private $configuration;
 
-    public function __construct(string $baseUrl)
+    public function __construct(Configuration $configuration)
     {
-        $this->baseUrl = $baseUrl;
+        $this->configuration = $configuration;
     }
 
     public function generateUrl(string $path, string $currentFileName, string $dirName) : string
     {
-        if ($this->baseUrl === '') {
-            return (string) $this->relativeUrl($path, $currentFileName);
+        if ($this->configuration->isBaseUrlEnabled($currentFileName)) {
+            $baseUrl = $this->configuration->getBaseUrl();
+
+            $canonicalPath = (string) $this->canonicalUrl($dirName, $path);
+
+            return rtrim($baseUrl, '/') . '/' . ltrim($canonicalPath, '/');
         }
 
-        $canonicalPath = (string) $this->canonicalUrl($dirName, $path);
-
-        return rtrim($this->baseUrl, '/') . '/' . ltrim($canonicalPath, '/');
+        return (string) $this->relativeUrl($path, $currentFileName);
     }
 
     public function absoluteUrl(string $dirName, string $url) : string

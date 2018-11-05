@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\Tests\RST;
 
+use Doctrine\RST\Configuration;
 use Doctrine\RST\UrlGenerator;
 use PHPUnit\Framework\TestCase;
 
@@ -11,7 +12,9 @@ class UrlGeneratorTest extends TestCase
 {
     public function testGenerateUrlRelative() : void
     {
-        $urlGenerator = new UrlGenerator('');
+        $configuration = $this->createMock(Configuration::class);
+
+        $urlGenerator = new UrlGenerator($configuration);
 
         self::assertSame('../index', $urlGenerator->generateUrl('/index', 'subdir/index', ''));
         self::assertSame('index', $urlGenerator->generateUrl('/subdir/index', 'subdir/index', ''));
@@ -20,7 +23,18 @@ class UrlGeneratorTest extends TestCase
 
     public function testGenerateUrlAbsoluteBaseUrl() : void
     {
-        $urlGenerator = new UrlGenerator('https://www.domain.com/directory/');
+        $configuration = $this->createMock(Configuration::class);
+
+        $configuration->expects(self::once())
+            ->method('isBaseUrlEnabled')
+            ->with('path')
+            ->willReturn(true);
+
+        $configuration->expects(self::once())
+            ->method('getBaseUrl')
+            ->willReturn('https://www.domain.com/directory/');
+
+        $urlGenerator = new UrlGenerator($configuration);
 
         self::assertSame(
             'https://www.domain.com/directory/path',
@@ -30,7 +44,9 @@ class UrlGeneratorTest extends TestCase
 
     public function testAbsoluteUrl() : void
     {
-        $urlGenerator = new UrlGenerator('');
+        $configuration = $this->createMock(Configuration::class);
+
+        $urlGenerator = new UrlGenerator($configuration);
 
         self::assertSame('/test', $urlGenerator->absoluteUrl('/', '/test'));
 
@@ -43,7 +59,9 @@ class UrlGeneratorTest extends TestCase
 
     public function testRelativeUrl() : void
     {
-        $urlGenerator = new UrlGenerator('');
+        $configuration = $this->createMock(Configuration::class);
+
+        $urlGenerator = new UrlGenerator($configuration);
 
         self::assertNull($urlGenerator->relativeUrl(null, ''));
 
@@ -58,7 +76,9 @@ class UrlGeneratorTest extends TestCase
 
     public function testCanonicalUrl() : void
     {
-        $urlGenerator = new UrlGenerator('');
+        $configuration = $this->createMock(Configuration::class);
+
+        $urlGenerator = new UrlGenerator($configuration);
 
         self::assertSame('dir/file', $urlGenerator->canonicalUrl('dir', 'file'));
 
