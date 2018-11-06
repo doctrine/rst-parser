@@ -6,7 +6,6 @@ This list of URLs is adapted from
 https://daringfireball.net/misc/2010/07/url-matching-regex-test-data.text and
 https://mathiasbynens.be/demo/url-regex.
 
-
 Matches the right thing in the following lines:
 
     http://foo.com/blah_blah
@@ -64,7 +63,6 @@ Matches the right thing in the following lines:
     coaps+ws://foobar
     How about multiple http://example.com/uris on the mailto:same-line@example.com
 
-
 Should fail against:
     6:00p
     filename.txt
@@ -88,7 +86,6 @@ Should fail against:
     ✪df.ws/1234
     example.com
     example.com/
-
 
 These are currently problematic and fail, since the parser appears to see named
 links appearing within these URLs (i.e. "blah_") and attempts to replace these

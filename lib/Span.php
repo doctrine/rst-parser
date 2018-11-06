@@ -6,30 +6,20 @@ namespace Doctrine\RST;
 
 use Doctrine\RST\Nodes\Node;
 use Doctrine\RST\References\ResolvedReference;
+use Doctrine\RST\Span\SpanProcessor;
+use Doctrine\RST\Span\SpanRenderer;
 use function assert;
-use function htmlspecialchars;
 use function implode;
 use function is_array;
 use function is_string;
-use function mt_rand;
-use function preg_match;
-use function preg_match_all;
-use function preg_replace;
-use function preg_replace_callback;
-use function sha1;
-use function str_replace;
-use function time;
 
 abstract class Span extends Node
 {
     /** @var Parser */
     protected $parser;
 
-    /** @var string */
-    protected $span;
-
-    /** @var mixed[] */
-    protected $tokens;
+    /** @var SpanRenderer */
+    protected $spanRenderer;
 
     /** @var Environment */
     protected $environment;
@@ -41,6 +31,9 @@ abstract class Span extends Node
     {
         parent::__construct();
 
+        $this->parser      = $parser;
+        $this->environment = $parser->getEnvironment();
+
         if (is_array($span)) {
             $span = implode("\n", $span);
         }
@@ -49,242 +42,22 @@ abstract class Span extends Node
             $span = (string) $span;
         }
 
-        $tokenId   = 0;
-        $prefix    = mt_rand() . '|' . time();
-        $generator = static function () use ($prefix, &$tokenId) {
-            $tokenId++;
-            return sha1($prefix . '|' . $tokenId);
-        };
+        $spanProcessor = new SpanProcessor($this->environment, $span);
 
-        // Replacing literal with tokens
-        $tokens = [];
-        $span   = preg_replace_callback(
-            '/``(.+)``(?!`)/mUsi',
-            static function ($match) use (&$tokens, $generator) {
-                $id          = $generator();
-                $tokens[$id] = [
-                    'type' => 'literal',
-                    'text' => htmlspecialchars($match[1]),
-                ];
+        $processedSpan = $spanProcessor->process();
+        $tokens        = $spanProcessor->getTokens();
 
-                return $id;
-            },
-            $span
+        $this->spanRenderer = new SpanRenderer(
+            $this->environment,
+            $this,
+            $processedSpan,
+            $tokens
         );
-
-        $environment       = $parser->getEnvironment();
-        $this->environment = $environment;
-
-        // Replacing numbering
-        foreach ($environment->getTitleLetters() as $level => $letter) {
-            $span = preg_replace_callback('/\#\\' . $letter . '/mUsi', static function ($match) use ($environment, $level) {
-                return $environment->getNumber($level);
-            }, $span);
-        }
-
-        // Signaling anonymous names
-        $environment->resetAnonymousStack();
-
-        if (preg_match_all('/(([a-z0-9]+)|(`(.+)`))__/mUsi', $span, $matches) > 0) {
-            foreach ($matches[2] as $k => $y) {
-                $name = $matches[2][$k] ?: $matches[4][$k];
-                $environment->pushAnonymous($name);
-            }
-        }
-
-        // Looking for references to other documents
-        $span = preg_replace_callback('/:([a-z0-9]+):`(.+)`/mUsi', static function ($match) use (&$environment, $generator, &$tokens) {
-            $section = $match[1];
-            $url     = $match[2];
-            $id      = $generator();
-            $anchor  = null;
-
-            $text = null;
-            if (preg_match('/^(.+)<(.+)>$/mUsi', $url, $match) > 0) {
-                $text = $match[1];
-                $url  = $match[2];
-            }
-
-            if (preg_match('/^(.+)#(.+)$/mUsi', $url, $match) > 0) {
-                $url    = $match[1];
-                $anchor = $match[2];
-            }
-
-            $tokens[$id] = [
-                'type' => 'reference',
-                'section' => $section,
-                'url' => $url,
-                'text' => $text,
-                'anchor' => $anchor,
-            ];
-
-            $environment->found($section, $url);
-
-            return $id;
-        }, $span);
-
-        // Link callback
-        $linkCallback = static function ($match) use ($environment, $generator, &$tokens) {
-            $link = $match[2] ?: $match[4];
-            $id   = $generator();
-            $next = $match[5];
-            $url  = null;
-
-            if (preg_match('/^(.+) <(.+)>$/mUsi', $link, $m) > 0) {
-                $link = $m[1];
-                $environment->setLink($link, $m[2]);
-                $url = $m[2];
-            }
-
-            // anchors to current document
-            if ($url === null) {
-                $anchor = Environment::slugify($link);
-
-                $tokens[$id] = [
-                    'type' => 'link',
-                    'link' => $link,
-                    'anchor' => $anchor,
-                    'url' => '',
-                ];
-
-                return $id . $next;
-            }
-
-            $tokens[$id] = [
-                'type' => 'link',
-                'link' => $link,
-                'url' => $url,
-            ];
-
-            return $id . $next;
-        };
-
-        // Standalone hyperlink callback
-        $standaloneHyperlinkCallback = static function ($match, $scheme = '') use ($generator, &$tokens) {
-            $id  = $generator();
-            $url = $match[1];
-
-            $tokens[$id] = [
-                'type' => 'link',
-                'link' => $url,
-                'url' => $scheme . $url,
-            ];
-
-            return $id;
-        };
-
-        $standaloneEmailAddressCallback = static function ($match) use ($standaloneHyperlinkCallback) {
-            return $standaloneHyperlinkCallback($match, 'mailto:');
-        };
-
-        // Replacing anonymous links
-        $span = preg_replace_callback('/(([a-z0-9]+)|(`(.+)`))__([^a-z0-9]{1}|$)/mUsi', $linkCallback, $span);
-
-        // Replacing links
-        $span = preg_replace_callback('/(([a-z0-9]+)|(`(.+)`))_([^a-z0-9]{1}|$)/mUsi', $linkCallback, $span);
-
-        // Replace standalone hyperlinks using a modified version of @gruber's
-        // "Liberal Regex Pattern for all URLs", https://gist.github.com/gruber/249502
-        $absoluteUriPattern = '#(?i)\b((?:[a-z][\w-+.]+:(?:/{1,3}|[a-z0-9%]))('
-            . '?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>'
-            . ']+|(\([^\s()<>]+\)))*\)|[^\s\`!()\[\]{};:\'".,<>?«»“”‘’]))#';
-
-        $span = preg_replace_callback(
-            $absoluteUriPattern,
-            $standaloneHyperlinkCallback,
-            $span
-        );
-
-        // Replace standalone email addresses using a regex based on RFC 5322.
-        $emailAddressPattern = '/((?:[a-z0-9!#$%&\'*+\/=?^_`{|}~-]+(?:\.[a-z0-9'
-            . '!#$%&\'*+\/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x'
-            . '23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z'
-            . '0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|'
-            . '\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2'
-            . '[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0'
-            . 'b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f'
-            . '])+)\]))/msi';
-
-        $span = preg_replace_callback(
-            $emailAddressPattern,
-            $standaloneEmailAddressCallback,
-            $span
-        );
-
-        $this->tokens = $tokens;
-        $this->parser = $parser;
-        $this->span   = $span;
-    }
-
-    public function process(string $data) : string
-    {
-        $self        = $this;
-        $environment = $this->parser->getEnvironment();
-
-        $span = $this->escape($data);
-
-        // Emphasis
-        $span = preg_replace_callback('/\*\*(.+)\*\*/mUsi', static function ($matches) use ($self) {
-            return $self->strongEmphasis($matches[1]);
-        }, $span);
-        $span = preg_replace_callback('/\*(.+)\*/mUsi', static function ($matches) use ($self) {
-            return $self->emphasis($matches[1]);
-        }, $span);
-
-        // Nbsp
-        $span = preg_replace('/~/', $this->nbsp(), $span);
-
-        // Replacing variables
-        $span = preg_replace_callback('/\|(.+)\|/mUsi', static function ($match) use ($environment) {
-            return $environment->getVariable($match[1]);
-        }, $span);
-
-        // Adding brs when a space is at the end of a line
-        $span = preg_replace('/ \n/', $this->br(), $span);
-
-        return $span;
     }
 
     public function render() : string
     {
-        $environment = $this->parser->getEnvironment();
-        $span        = $this->process($this->span);
-
-        // Replacing tokens
-        foreach ($this->tokens as $id => $value) {
-            switch ($value['type']) {
-                case 'literal':
-                    $span = str_replace($id, $this->literal($value['text']), $span);
-                    break;
-                case 'reference':
-                    $reference = $environment->resolve($value['section'], $value['url']);
-
-                    $link = $this->reference($reference, $value);
-
-                    $span = str_replace($id, $link, $span);
-                    break;
-                case 'link':
-                    if ($value['url']) {
-                        $url = $value['url'];
-                    } elseif ($value['anchor']) {
-                        $link = $environment->getLink($value['link']);
-
-                        if ($link !== '') {
-                            $url = $link;
-                        } else {
-                            $url = '#' . $value['anchor'];
-                        }
-                    } else {
-                        $url = $environment->getLink($value['link']);
-                    }
-
-                    $link = $this->link($url, $this->process($value['link']));
-                    $span = str_replace($id, $link, $span);
-                    break;
-            }
-        }
-
-        return $span;
+        return $this->spanRenderer->render();
     }
 
     public function emphasis(string $text) : string
