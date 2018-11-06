@@ -104,30 +104,34 @@ You can use those methods on it to customize the build:
 Configuration
 =============
 
-Abort on error
---------------
+Base URL
+--------
 
-In some situation you want the build to continue even if there is some
-errors, like missing references:
-
-.. code-block:: php
-
-    <?php
-
-    $configuration->abortOnError(false);
-
-Relative URLs
--------------
-
-By default relative URLs are generated. If you want to disable relative
-URLs, use the ``setUseRelativeUrls()`` method on the ``Configuration``
-object:
+Normally, all URLs are generated relative, but if you want to generate absolute URLs
+with a base url, you can use the ``baseUrl`` option:
 
 .. code-block:: php
 
     <?php
 
-    $configuration->setUseRelativeUrls(false);
+    $configuration->setBaseUrl('https://www.doctrine-project.org');
+
+Base URL Enabled Callable
+-------------------------
+
+In some cases, you may want to control when the base url gets used. For this you can set
+a callable that will be invoked when generating URLs. The callable receives a string that
+contains the path to the current file being rendered. This means you could make the parser
+only use the base url on certain paths:
+
+.. code-block:: php
+
+    <?php
+
+    // only use the base url on paths that contain the string /use-base-url/
+    $configuration->setBaseUrlEnabledCallable(static function(string $path) : bool {
+        return strpos($path, '/use-base-url/') !== false;
+    });
 
 Custom Directives
 =================
