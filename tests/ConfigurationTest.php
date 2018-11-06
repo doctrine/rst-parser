@@ -61,6 +61,15 @@ class ConfigurationTest extends TestCase
         self::assertFalse($this->configuration->isAbortOnError());
     }
 
+    public function testIgnoreInvalidReferences() : void
+    {
+        self::assertFalse($this->configuration->getIgnoreInvalidReferences());
+
+        $this->configuration->setIgnoreInvalidReferences(true);
+
+        self::assertTrue($this->configuration->getIgnoreInvalidReferences());
+    }
+
     protected function setUp() : void
     {
         $this->configuration = new Configuration();

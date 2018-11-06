@@ -103,7 +103,7 @@ class ResolverTest extends TestCase
             ->willReturn(null);
 
         self::assertEquals(
-            new InvalidReference(InvalidReference::INVALID_REFERENCE, 'invalid-reference'),
+            new InvalidReference(InvalidReference::INVALID_REFERENCE, '#invalid-reference'),
             $this->resolver->resolve($this->environment, 'invalid-reference')
         );
     }
@@ -123,7 +123,7 @@ class ResolverTest extends TestCase
             ->willReturn(null);
 
         self::assertEquals(
-            new InvalidReference(InvalidReference::INVALID_REFERENCE, 'invalid-reference'),
+            new InvalidReference(InvalidReference::INVALID_REFERENCE, '#invalid-reference'),
             $this->resolver->resolve($this->environment, 'invalid-reference')
         );
     }
