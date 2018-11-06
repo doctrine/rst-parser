@@ -125,9 +125,10 @@ abstract class Span extends Node
 
         // Link callback
         $linkCallback = static function ($match) use ($environment, $generator, &$tokens) {
-            $link = $match[2] ?: $match[4];
+            $link = $match[3] ?: $match[5];
             $id   = $generator();
-            $next = $match[5];
+            $prev = $match[1];
+            $next = $match[6];
             $url  = null;
 
             if (preg_match('/^(.+) <(.+)>$/mUsi', $link, $m) > 0) {
@@ -156,7 +157,7 @@ abstract class Span extends Node
                 'url' => $url,
             ];
 
-            return $id . $next;
+            return $prev . $id . $next;
         };
 
         // Standalone hyperlink callback
@@ -178,10 +179,10 @@ abstract class Span extends Node
         };
 
         // Replacing anonymous links
-        $span = preg_replace_callback('/(([a-z0-9]+)|(`(.+)`))__([^a-z0-9]{1}|$)/mUsi', $linkCallback, $span);
+        $span = preg_replace_callback('/(^|[ ])(([a-z0-9_-]+)|(`(.+)`))__([^a-z0-9]{1}|$)/mUsi', $linkCallback, $span);
 
         // Replacing links
-        $span = preg_replace_callback('/(([a-z0-9]+)|(`(.+)`))_([^a-z0-9]{1}|$)/mUsi', $linkCallback, $span);
+        $span = preg_replace_callback('/(^|[ ])(([a-z0-9_-]+)|(`(.+)`))_([^a-z0-9]{1}|$)/mUsi', $linkCallback, $span);
 
         // Replace standalone hyperlinks using a modified version of @gruber's
         // "Liberal Regex Pattern for all URLs", https://gist.github.com/gruber/249502

@@ -125,8 +125,6 @@ class StandaloneLinksTest extends TestCase
      */
     public function testStandaloneHyperlinksWithUnderscores() : void
     {
-        self::markTestSkipped('Skipping due to broken parsing of standalone hyperlinks.');
-
         $document = $this->parseHTML('standalone-hyperlinks.rst');
 
         self::assertContains('<a href="http://foo.com/blah_blah_(wikipedia)">http://foo.com/blah_blah_(wikipedia)</a>', $document);
