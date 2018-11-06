@@ -31,7 +31,7 @@ class Resolver
 
         return new InvalidReference(
             InvalidReference::INVALID_REFERENCE,
-            $data,
+            '#' . $data,
             [],
             $attributes
         );

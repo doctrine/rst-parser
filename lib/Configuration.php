@@ -15,6 +15,9 @@ class Configuration
     /** @var bool */
     private $abortOnError = true;
 
+    /** @var bool */
+    private $ignoreInvalidReferences = false;
+
     public function getBaseUrl() : string
     {
         return $this->baseUrl;
@@ -61,5 +64,15 @@ class Configuration
     public function abortOnError(bool $abortOnError) : void
     {
         $this->abortOnError = $abortOnError;
+    }
+
+    public function getIgnoreInvalidReferences() : bool
+    {
+        return $this->ignoreInvalidReferences;
+    }
+
+    public function setIgnoreInvalidReferences(bool $ignoreInvalidReferences) : void
+    {
+        $this->ignoreInvalidReferences = $ignoreInvalidReferences;
     }
 }
