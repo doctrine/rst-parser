@@ -7,6 +7,7 @@ namespace Doctrine\RST;
 final class NodeTypes
 {
     public const DOCUMENT        = 'document';
+    public const DOCUMENT_NODE   = 'document_node';
     public const TOC             = 'toc';
     public const TITLE           = 'title';
     public const SEPARATOR       = 'separator';
@@ -18,9 +19,19 @@ final class NodeTypes
     public const TABLE           = 'table';
     public const SPAN            = 'span';
     public const DEFINITION_LIST = 'definition_list';
+    public const WRAPPER         = 'wrapper';
+    public const FIGURE          = 'figure';
+    public const IMAGE           = 'image';
+    public const META            = 'meta';
+    public const RAW             = 'raw';
+    public const DUMMY           = 'dummy';
+    public const MAIN            = 'main';
+    public const BLOCK           = 'block';
+    public const CALLABLE        = 'callable';
 
     public const NODES = [
         self::DOCUMENT,
+        self::DOCUMENT_NODE,
         self::TOC,
         self::TITLE,
         self::SEPARATOR,
@@ -32,6 +43,15 @@ final class NodeTypes
         self::TABLE,
         self::SPAN,
         self::DEFINITION_LIST,
+        self::WRAPPER,
+        self::FIGURE,
+        self::IMAGE,
+        self::META,
+        self::RAW,
+        self::DUMMY,
+        self::MAIN,
+        self::BLOCK,
+        self::CALLABLE,
     ];
 
     private function __construct()

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Doctrine\Tests\RST\Parser;
 
-use Doctrine\RST\Document;
 use Doctrine\RST\Nodes\CodeNode;
+use Doctrine\RST\Nodes\DocumentNode;
 use Doctrine\RST\Nodes\DummyNode;
 use Doctrine\RST\Nodes\ListNode;
 use Doctrine\RST\Nodes\Node;
@@ -133,7 +133,7 @@ class ParserTest extends TestCase
         });
 
         self::assertSame(1, count($nodes));
-        self::assertSame("A\nB\n C", trim((string) $nodes[0]->getValue()));
+        self::assertSame("A\nB\n C", trim($nodes[0]->getValueString()));
     }
 
     /**
@@ -440,7 +440,7 @@ class ParserTest extends TestCase
         self::assertSame('', $parser->getIncludeRoot());
 
         // Default policy:
-        $document = (string) $parser->parseFile($directory . 'inclusion-policy.rst');
+        $document = $parser->parseFile($directory . 'inclusion-policy.rst')->render();
         self::assertContains('SUBDIRECTORY OK', $document);
         self::assertContains('EXTERNAL FILE INCLUDED!', $document);
 
@@ -473,7 +473,7 @@ class ParserTest extends TestCase
      * Helper function, parses a file and returns the document
      * produced by the parser
      */
-    private function parse(string $file) : Document
+    private function parse(string $file) : DocumentNode
     {
         $directory   = __DIR__ . '/files/';
         $parser      = new Parser();
@@ -492,7 +492,7 @@ class ParserTest extends TestCase
     /**
      * Asserts that a document has nodes that satisfy the function
      */
-    private function assertHasNode(Document $document, callable $function, ?int $count = null) : void
+    private function assertHasNode(DocumentNode $document, callable $function, ?int $count = null) : void
     {
         $nodes = $document->getNodes($function);
         self::assertNotEmpty($nodes);

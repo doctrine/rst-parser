@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Doctrine\RST\LaTeX\Directives;
 
 use Doctrine\RST\Directive;
-use Doctrine\RST\LaTeX\Nodes\MetaNode;
 use Doctrine\RST\Nodes\Node;
 use Doctrine\RST\Parser;
 
@@ -34,8 +33,11 @@ class Meta extends Directive
     ) : void {
         $document = $parser->getDocument();
 
+        $nodeFactory = $parser->getNodeFactory();
+
         foreach ($options as $key => $value) {
-            $meta = new MetaNode($key, $value);
+            $meta = $nodeFactory->createMetaNode($key, $value);
+
             $document->addHeaderNode($meta);
         }
 

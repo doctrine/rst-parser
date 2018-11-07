@@ -4,30 +4,31 @@ declare(strict_types=1);
 
 namespace Doctrine\RST;
 
+use Doctrine\RST\Nodes\DocumentNode;
 use Doctrine\RST\References\Doc;
 use function array_merge;
 
-abstract class Kernel
+class Kernel
 {
-    /** @var NodeFactory */
-    protected $nodeFactory;
+    /** @var Configuration */
+    private $configuration;
 
     /** @var Directive[] */
-    protected $directives;
+    private $directives;
 
     /** @var Reference[] */
-    protected $references;
+    private $references;
 
     /**
      * @param Directive[] $directives
      * @param Reference[] $references
      */
     public function __construct(
-        ?NodeFactory $nodeFactory = null,
+        ?Configuration $configuration = null,
         array $directives = [],
         array $references = []
     ) {
-        $this->nodeFactory = $nodeFactory ?? $this->createNodeFactory();
+        $this->configuration = $configuration ?? new Configuration();
 
         $this->directives = array_merge([
             new Directives\Dummy(),
@@ -35,8 +36,7 @@ abstract class Kernel
             new Directives\Raw(),
             new Directives\Replace(),
             new Directives\Toctree(),
-            new Directives\Document(),
-        ], $this->createDirectives(), $directives);
+        ], $this->configuration->getFormat()->getDirectives(), $directives);
 
         $this->references = array_merge([
             new References\Doc(),
@@ -44,11 +44,9 @@ abstract class Kernel
         ], $this->createReferences(), $references);
     }
 
-    abstract public function createEnvironment(?Configuration $configuration = null) : Environment;
-
-    public function getNodeFactory() : NodeFactory
+    public function getConfiguration() : Configuration
     {
-        return $this->nodeFactory;
+        return $this->configuration;
     }
 
     /**
@@ -67,17 +65,12 @@ abstract class Kernel
         return $this->references;
     }
 
-    public function postParse(Document $document) : void
+    public function postParse(DocumentNode $document) : void
     {
     }
 
     public function initBuilder(Builder $builder) : void
     {
-    }
-
-    public function getFileExtension() : string
-    {
-        return 'txt';
     }
 
     /**
@@ -87,11 +80,4 @@ abstract class Kernel
     {
         return [];
     }
-
-    abstract protected function createNodeFactory() : NodeFactory;
-
-    /**
-     * @return Directive[]
-     */
-    abstract protected function createDirectives() : array;
 }

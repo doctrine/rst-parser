@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\Tests\RST\RefInsideDirective;
 
 use Doctrine\RST\Builder;
+use Doctrine\RST\Kernel;
 use PHPUnit\Framework\TestCase;
 use function file_get_contents;
 
@@ -12,7 +13,7 @@ class BuilderTest extends TestCase
 {
     public function testRefInsideDirective() : void
     {
-        $kernel  = new HtmlKernel();
+        $kernel  = new Kernel(null, [new VersionAddedDirective()]);
         $builder = new Builder($kernel);
 
         $builder->build(

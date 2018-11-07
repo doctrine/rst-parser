@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\Tests\RST\HTML;
 
-use Doctrine\RST\Document;
+use Doctrine\RST\Nodes\DocumentNode;
 use Doctrine\RST\Parser;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
@@ -560,7 +560,7 @@ class HTMLTest extends TestCase
      * Helper function, parses a file and returns the document
      * produced by the parser
      */
-    private function parse(string $file) : Document
+    private function parse(string $file) : DocumentNode
     {
         $directory   = __DIR__ . '/files/';
         $parser      = new Parser();

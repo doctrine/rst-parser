@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\Builder;
 
-use Doctrine\RST\Configuration;
-use Doctrine\RST\Document;
 use Doctrine\RST\ErrorManager;
 use Doctrine\RST\Kernel;
 use Doctrine\RST\Metas;
+use Doctrine\RST\Nodes\DocumentNode;
 use Doctrine\RST\Parser;
 use function array_filter;
 use function file_exists;
@@ -18,9 +17,6 @@ class ParseQueueProcessor
 {
     /** @var Kernel */
     private $kernel;
-
-    /** @var Configuration */
-    private $configuration;
 
     /** @var ErrorManager */
     private $errorManager;
@@ -51,7 +47,6 @@ class ParseQueueProcessor
 
     public function __construct(
         Kernel $kernel,
-        Configuration $configuration,
         ErrorManager $errorManager,
         ParseQueue $parseQueue,
         Metas $metas,
@@ -63,7 +58,6 @@ class ParseQueueProcessor
         string $fileExtension
     ) {
         $this->kernel          = $kernel;
-        $this->configuration   = $configuration;
         $this->errorManager    = $errorManager;
         $this->parseQueue      = $parseQueue;
         $this->metas           = $metas;
@@ -120,7 +114,7 @@ class ParseQueueProcessor
 
     private function createFileParser(string $file) : Parser
     {
-        $parser = new Parser(null, $this->kernel, $this->configuration);
+        $parser = new Parser($this->kernel);
 
         $environment = $parser->getEnvironment();
         $environment->setMetas($this->metas);
@@ -149,7 +143,7 @@ class ParseQueueProcessor
         return $this->directory . '/' . $file . '.rst';
     }
 
-    private function buildDocumentUrl(Document $document) : string
+    private function buildDocumentUrl(DocumentNode $document) : string
     {
         return $document->getEnvironment()->getUrl() . '.' . $this->fileExtension;
     }

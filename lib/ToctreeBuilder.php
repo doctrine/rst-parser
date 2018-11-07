@@ -64,9 +64,7 @@ class ToctreeBuilder
      */
     private function parseToctreeFiles(Node $node) : array
     {
-        $value = (string) $node->getValue();
-
-        return array_filter(array_map('trim', explode("\n", $value)), static function (string $file) {
+        return array_filter(array_map('trim', explode("\n", $node->getValueString())), static function (string $file) {
             return $file !== '';
         });
     }

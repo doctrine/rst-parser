@@ -32,7 +32,7 @@ test4
 EOF;
 
         $node->expects(self::once())
-            ->method('getValue')
+            ->method('getValueString')
             ->willReturn($toc);
 
         $environment->expects(self::at(0))

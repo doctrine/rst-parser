@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Doctrine\RST\LaTeX\Directives;
 
 use Doctrine\RST\Directive;
-use Doctrine\RST\LaTeX\Nodes\LaTeXMainNode;
 use Doctrine\RST\Nodes\Node;
 use Doctrine\RST\Parser;
 
@@ -28,6 +27,6 @@ class LaTeXMain extends Directive
         string $data,
         array $options
     ) : ?Node {
-        return new LaTeXMainNode();
+        return $parser->getNodeFactory()->createMainNode();
     }
 }

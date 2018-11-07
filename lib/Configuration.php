@@ -4,6 +4,14 @@ declare(strict_types=1);
 
 namespace Doctrine\RST;
 
+use Doctrine\RST\Formats\Format;
+use Doctrine\RST\Formats\InternalFormat;
+use Doctrine\RST\HTML\HTMLFormat;
+use Doctrine\RST\LaTeX\LaTeXFormat;
+use Doctrine\RST\Renderers\NodeRendererFactory;
+use RuntimeException;
+use function sprintf;
+
 class Configuration
 {
     /** @var string */
@@ -17,6 +25,23 @@ class Configuration
 
     /** @var bool */
     private $ignoreInvalidReferences = false;
+
+    /** @var string */
+    private $fileExtension = Format::HTML;
+
+    /** @var Format[] */
+    private $formats;
+
+    /** @var NodeFactory|null */
+    private $nodeFactory;
+
+    public function __construct()
+    {
+        $this->formats = [
+            Format::HTML => new InternalFormat(new HTMLFormat()),
+            Format::LATEX => new InternalFormat(new LaTeXFormat()),
+        ];
+    }
 
     public function getBaseUrl() : string
     {
@@ -74,5 +99,81 @@ class Configuration
     public function setIgnoreInvalidReferences(bool $ignoreInvalidReferences) : void
     {
         $this->ignoreInvalidReferences = $ignoreInvalidReferences;
+    }
+
+    public function getFileExtension() : string
+    {
+        return $this->fileExtension;
+    }
+
+    public function setFileExtension(string $fileExtension) : void
+    {
+        $this->fileExtension = $fileExtension;
+    }
+
+    public function getNodeFactory() : NodeFactory
+    {
+        if ($this->nodeFactory !== null) {
+            return $this->nodeFactory;
+        }
+
+        return new DefaultNodeFactory(
+            $this->createNodeInstantiator(NodeTypes::DOCUMENT, Nodes\DocumentNode::class),
+            $this->createNodeInstantiator(NodeTypes::SPAN, Nodes\SpanNode::class),
+            $this->createNodeInstantiator(NodeTypes::TOC, Nodes\TocNode::class),
+            $this->createNodeInstantiator(NodeTypes::TITLE, Nodes\TitleNode::class),
+            $this->createNodeInstantiator(NodeTypes::SEPARATOR, Nodes\SeparatorNode::class),
+            $this->createNodeInstantiator(NodeTypes::CODE, Nodes\CodeNode::class),
+            $this->createNodeInstantiator(NodeTypes::QUOTE, Nodes\QuoteNode::class),
+            $this->createNodeInstantiator(NodeTypes::PARAGRAPH, Nodes\ParagraphNode::class),
+            $this->createNodeInstantiator(NodeTypes::ANCHOR, Nodes\AnchorNode::class),
+            $this->createNodeInstantiator(NodeTypes::LIST, Nodes\ListNode::class),
+            $this->createNodeInstantiator(NodeTypes::TABLE, Nodes\TableNode::class),
+            $this->createNodeInstantiator(NodeTypes::DEFINITION_LIST, Nodes\DefinitionListNode::class),
+            $this->createNodeInstantiator(NodeTypes::WRAPPER, Nodes\WrapperNode::class),
+            $this->createNodeInstantiator(NodeTypes::FIGURE, Nodes\FigureNode::class),
+            $this->createNodeInstantiator(NodeTypes::IMAGE, Nodes\ImageNode::class),
+            $this->createNodeInstantiator(NodeTypes::META, Nodes\MetaNode::class),
+            $this->createNodeInstantiator(NodeTypes::RAW, Nodes\RawNode::class),
+            $this->createNodeInstantiator(NodeTypes::DUMMY, Nodes\DummyNode::class),
+            $this->createNodeInstantiator(NodeTypes::MAIN, Nodes\MainNode::class),
+            $this->createNodeInstantiator(NodeTypes::BLOCK, Nodes\BlockNode::class),
+            $this->createNodeInstantiator(NodeTypes::CALLABLE, Nodes\CallableNode::class)
+        );
+    }
+
+    public function setNodeFactory(NodeFactory $nodeFactory) : void
+    {
+        $this->nodeFactory = $nodeFactory;
+    }
+
+    public function addFormat(Format $format) : void
+    {
+        $this->formats[$format->getFileExtension()] = $format;
+    }
+
+    public function getFormat() : Format
+    {
+        if (! isset($this->formats[$this->fileExtension])) {
+            throw new RuntimeException(
+                sprintf('Format %s does not exist.', $this->fileExtension)
+            );
+        }
+
+        return $this->formats[$this->fileExtension];
+    }
+
+    private function createNodeInstantiator(string $type, string $nodeClassName) : NodeInstantiator
+    {
+        return new NodeInstantiator(
+            $type,
+            $nodeClassName,
+            $this->getNodeRendererFactory($nodeClassName)
+        );
+    }
+
+    private function getNodeRendererFactory(string $nodeClassName) : ?NodeRendererFactory
+    {
+        return $this->getFormat()->getNodeRendererFactories()[$nodeClassName] ?? null;
     }
 }

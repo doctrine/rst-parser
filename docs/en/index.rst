@@ -25,14 +25,12 @@ Usage
 
     use Doctrine\RST\Configuration;
     use Doctrine\RST\Parser;
-    use Doctrine\RST\HTML\Environment;
-    use Doctrine\RST\HTML\Kernel;
+    use Doctrine\RST\Kernel;
 
     $configuration = new Configuration();
-    $environment = new Environment($configuration);
-    $kernel = new Kernel();
+    $kernel = new Kernel($configuration);
 
-    $parser = new Parser($environment, $kernel, $configuration);
+    $parser = new Parser($kernel);
 
     // RST document
     $rst = '
@@ -52,13 +50,13 @@ Usage
     $document = $parser->parse($rst);
 
     // Render it
-    echo $document;
+    echo $document->render();
 
     /* Will output, in HTML mode:
-    <a id="title.1"></a><h1>Hello world</h1>
-    <a id="title.1.1"></a><h2>What is it?</h2>
-    <p>This is a <b>RST</b> document!</p>
-    <a id="title.1.2"></a><h2>Where can I get it?</h2>
+    <a id="hello-world"></a><h1>Hello world</h1>
+    <a id="what-is-it"></a><h2>What is it?</h2>
+    <p>This is a <strong>RST</strong> document!</p>
+    <a id="where-can-i-get-it"></a><h2>Where can I get it?</h2>
     <p>You can get it on the <a href="https://github.com/doctrine/rst-parser">GitHub page</a></p>
     */
 
@@ -78,15 +76,15 @@ You can simply use it with:
 
     use Doctrine\RST\Builder;
     use Doctrine\RST\Configuration;
-    use Doctrine\RST\HTML\Kernel;
+    use Doctrine\RST\Kernel;
 
-    $htmlKernel = new Kernel();
     $configuration = new Configuration();
+    $kernel = new Kernel($configuration);
 
-    $builder = new Builder($htmlKernel, $configuration);
+    $builder = new Builder($kernel);
     $builder->build('input', 'output');
 
-It will parses all the files in the ``input`` directory, starting with
+It will parse all the files in the ``input`` directory, starting with
 ``index.rst`` and scanning for dependencies references and generates you
 target files in the ``output`` directory. Default format is HTML.
 
@@ -174,11 +172,11 @@ Or you can pass an array of directives when constructing your Kernel:
 
     use App\RST\Directive\CautionDirective;
 
-    $htmlKernel = new Kernel([
+    $kernel = new Kernel($configuration, [
         new CautionDirective()
     ]);
 
-    $builder = new Builder($htmlKernel);
+    $builder = new Builder($kernel);
 
 The ``CautionDirective`` class would look like this:
 
@@ -212,7 +210,7 @@ The ``CautionDirective`` class would look like this:
             string $data,
             array $options
         ) : ?Node {
-            return new WrapperNode($document, '<div class="caution">', '</div>');
+            return $parser->getNodeFactory()->createWrapper($document, '<div class="caution">', '</div>');
         }
     }
 

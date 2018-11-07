@@ -6,7 +6,6 @@ namespace Doctrine\RST\Nodes;
 
 use Doctrine\RST\Parser;
 use Doctrine\RST\Parser\LineChecker;
-use Doctrine\RST\Span;
 use RuntimeException;
 use function array_fill_keys;
 use function array_keys;
@@ -21,7 +20,7 @@ use function trim;
 use function utf8_decode;
 use function utf8_encode;
 
-abstract class TableNode extends Node
+class TableNode extends Node
 {
     public const TYPE_SIMPLE = 'simple';
     public const TYPE_PRETTY = 'pretty';
@@ -29,7 +28,7 @@ abstract class TableNode extends Node
     /** @var mixed[] */
     protected $parts = [];
 
-    /** @var string[][]|Span[][] */
+    /** @var string[][]|SpanNode[][] */
     protected $data = [];
 
     /** @var bool[] */
@@ -62,6 +61,22 @@ abstract class TableNode extends Node
     public function getRows() : int
     {
         return count($this->data) - 1;
+    }
+
+    /**
+     * @return string[][]|SpanNode[][]
+     */
+    public function getData() : array
+    {
+        return $this->data;
+    }
+
+    /**
+     * @return bool[]
+     */
+    public function getHeaders() : array
+    {
+        return $this->headers;
     }
 
     /**
@@ -140,12 +155,18 @@ abstract class TableNode extends Node
             }
 
             foreach ($row as &$col) {
-                $lines = explode("\n", (string) $col);
+                $rendered = $col;
+
+                if ($rendered instanceof Node) {
+                    $rendered = $rendered->render();
+                }
+
+                $lines = explode("\n", $rendered);
 
                 if ($this->lineChecker->isListLine($lines[0], false)) {
-                    $col = $parser->parseFragment((string) $col)->getNodes()[0];
+                    $col = $parser->parseFragment($rendered)->getNodes()[0];
                 } else {
-                    $col = $parser->createSpan($col);
+                    $col = $parser->createSpanNode($col);
                 }
             }
         }

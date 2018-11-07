@@ -6,8 +6,10 @@ namespace Doctrine\RST\Nodes;
 
 use Doctrine\RST\Environment;
 
-abstract class TocNode extends Node
+class TocNode extends Node
 {
+    private const DEFAULT_DEPTH = 2;
+
     /** @var Environment */
     protected $environment;
 
@@ -30,11 +32,37 @@ abstract class TocNode extends Node
         $this->options     = $options;
     }
 
+    public function getEnvironment() : Environment
+    {
+        return $this->environment;
+    }
+
     /**
      * @return string[]
      */
     public function getFiles() : array
     {
         return $this->files;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getOptions() : array
+    {
+        return $this->options;
+    }
+
+    public function getDepth() : int
+    {
+        if (isset($this->options['depth'])) {
+            return (int) $this->options['depth'];
+        }
+
+        if (isset($this->options['maxdepth'])) {
+            return (int) $this->options['maxdepth'];
+        }
+
+        return self::DEFAULT_DEPTH;
     }
 }

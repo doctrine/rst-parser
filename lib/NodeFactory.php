@@ -5,67 +5,93 @@ declare(strict_types=1);
 namespace Doctrine\RST;
 
 use Doctrine\RST\Nodes\AnchorNode;
+use Doctrine\RST\Nodes\BlockNode;
+use Doctrine\RST\Nodes\CallableNode;
 use Doctrine\RST\Nodes\CodeNode;
 use Doctrine\RST\Nodes\DefinitionListNode;
+use Doctrine\RST\Nodes\DocumentNode;
+use Doctrine\RST\Nodes\DummyNode;
+use Doctrine\RST\Nodes\FigureNode;
+use Doctrine\RST\Nodes\ImageNode;
 use Doctrine\RST\Nodes\ListNode;
+use Doctrine\RST\Nodes\MainNode;
+use Doctrine\RST\Nodes\MetaNode;
 use Doctrine\RST\Nodes\Node;
 use Doctrine\RST\Nodes\ParagraphNode;
 use Doctrine\RST\Nodes\QuoteNode;
+use Doctrine\RST\Nodes\RawNode;
 use Doctrine\RST\Nodes\SeparatorNode;
+use Doctrine\RST\Nodes\SpanNode;
 use Doctrine\RST\Nodes\TableNode;
 use Doctrine\RST\Nodes\TitleNode;
 use Doctrine\RST\Nodes\TocNode;
+use Doctrine\RST\Nodes\WrapperNode;
 use Doctrine\RST\Parser\DefinitionList;
 use Doctrine\RST\Parser\LineChecker;
 
 interface NodeFactory
 {
-    public function createDocument(Environment $environment) : Document;
+    public function createDocumentNode(Environment $environment) : DocumentNode;
 
     /**
      * @param string[] $files
      * @param string[] $options
      */
-    public function createToc(Environment $environment, array $files, array $options) : TocNode;
+    public function createTocNode(Environment $environment, array $files, array $options) : TocNode;
 
-    public function createTitle(Node $value, int $level, string $token) : TitleNode;
+    public function createTitleNode(Node $value, int $level, string $token) : TitleNode;
 
-    public function createSeparator(int $level) : SeparatorNode;
-
-    /**
-     * @param string[] $lines
-     */
-    public function createCode(array $lines) : CodeNode;
+    public function createSeparatorNode(int $level) : SeparatorNode;
 
     /**
      * @param string[] $lines
      */
-    public function createQuote(array $lines) : QuoteNode;
+    public function createBlockNode(array $lines) : BlockNode;
 
     /**
-     * @param Node|string|null $value
+     * @param string[] $lines
      */
-    public function createParagraph($value = null) : ParagraphNode;
+    public function createCodeNode(array $lines) : CodeNode;
 
-    /**
-     * @param Node|string|null $value
-     */
-    public function createAnchor($value = null) : AnchorNode;
+    public function createQuoteNode(DocumentNode $documentNode) : QuoteNode;
 
-    /**
-     * @param Node|string|null $value
-     */
-    public function createList($value = null) : ListNode;
+    public function createParagraphNode(SpanNode $span) : ParagraphNode;
+
+    public function createAnchorNode(?string $value = null) : AnchorNode;
+
+    public function createListNode() : ListNode;
 
     /**
      * @param string[] $parts
      */
-    public function createTable(array $parts, string $type, LineChecker $lineChecker) : TableNode;
+    public function createTableNode(array $parts, string $type, LineChecker $lineChecker) : TableNode;
 
     /**
-     * @param string|string[]|Span $span
+     * @param string|string[]|SpanNode $span
      */
-    public function createSpan(Parser $parser, $span) : Span;
+    public function createSpanNode(Parser $parser, $span) : SpanNode;
 
-    public function createDefinitionList(DefinitionList $definitionList) : DefinitionListNode;
+    public function createDefinitionListNode(DefinitionList $definitionList) : DefinitionListNode;
+
+    public function createWrapperNode(?Node $node, string $before = '', string $after = '') : WrapperNode;
+
+    public function createFigureNode(ImageNode $image, ?Node $document = null) : FigureNode;
+
+    /**
+     * @param string[] $options
+     */
+    public function createImageNode(string $url, array $options = []) : ImageNode;
+
+    public function createMetaNode(string $key, string $value) : MetaNode;
+
+    public function createRawNode(string $value) : RawNode;
+
+    /**
+     * @param mixed[] $data
+     */
+    public function createDummyNode(array $data) : DummyNode;
+
+    public function createMainNode() : MainNode;
+
+    public function createCallableNode(callable $callable) : CallableNode;
 }

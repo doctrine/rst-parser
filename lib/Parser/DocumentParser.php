@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Doctrine\RST\Parser;
 
 use Doctrine\RST\Directive;
-use Doctrine\RST\Document;
 use Doctrine\RST\Environment;
 use Doctrine\RST\FileIncluder;
 use Doctrine\RST\NodeFactory;
+use Doctrine\RST\Nodes\DocumentNode;
 use Doctrine\RST\Nodes\ListNode;
 use Doctrine\RST\Nodes\Node;
 use Doctrine\RST\Nodes\TableNode;
@@ -41,7 +41,7 @@ class DocumentParser
     /** @var string */
     private $includeRoot = '';
 
-    /** @var Document */
+    /** @var DocumentNode */
     private $document;
 
     /** @var false|string|null */
@@ -103,14 +103,14 @@ class DocumentParser
         $this->buffer         = new Buffer();
     }
 
-    public function getDocument() : Document
+    public function getDocument() : DocumentNode
     {
         return $this->document;
     }
 
-    public function parse(string $contents) : Document
+    public function parse(string $contents) : DocumentNode
     {
-        $this->document = $this->nodeFactory->createDocument($this->environment);
+        $this->document = $this->nodeFactory->createDocumentNode($this->environment);
 
         $this->init();
 
@@ -172,7 +172,7 @@ class DocumentParser
             }
         }
 
-        // Document is flushed twice to trigger the directives
+        // DocumentNode is flushed twice to trigger the directives
         $this->flush();
         $this->flush();
     }
@@ -186,7 +186,7 @@ class DocumentParser
                         $this->setState(State::LIST);
 
                         /** @var ListNode $listNode */
-                        $listNode = $this->nodeFactory->createList();
+                        $listNode = $this->nodeFactory->createListNode();
 
                         $this->nodeBuffer = $listNode;
 
@@ -224,7 +224,7 @@ class DocumentParser
 
                         $this->setState(State::TABLE);
 
-                        $tableNode = $this->nodeFactory->createTable(
+                        $tableNode = $this->nodeFactory->createTableNode(
                             $tableParts,
                             $this->tableParser->guessTableType($line),
                             $this->lineChecker
@@ -366,8 +366,8 @@ class DocumentParser
 
                     $token = $this->environment->createTitle($level);
 
-                    $node = $this->nodeFactory->createTitle(
-                        $this->parser->createSpan($data),
+                    $node = $this->nodeFactory->createTitleNode(
+                        $this->parser->createSpanNode($data),
                         $level,
                         $token
                     );
@@ -377,7 +377,7 @@ class DocumentParser
                 case State::SEPARATOR:
                     $level = $this->environment->getLevel((string) $this->specialLetter);
 
-                    $node = $this->nodeFactory->createSeparator($level);
+                    $node = $this->nodeFactory->createSeparatorNode($level);
 
                     break;
 
@@ -385,22 +385,19 @@ class DocumentParser
                     /** @var string[] $buffer */
                     $buffer = $this->buffer->getLines();
 
-                    $node = $this->nodeFactory->createCode($buffer);
+                    $node = $this->nodeFactory->createCodeNode($buffer);
 
                     break;
 
                 case State::BLOCK:
-                    /** @var string[] $buffer */
-                    $buffer = $this->buffer->getLines();
+                    /** @var string[] $lines */
+                    $lines = $this->buffer->getLines();
 
-                    $node = $this->nodeFactory->createQuote($buffer);
+                    $blockNode = $this->nodeFactory->createBlockNode($lines);
 
-                    /** @var string $data */
-                    $data = $node->getValue();
+                    $document = $this->parser->getSubParser()->parseLocal($blockNode->getValue());
 
-                    $document = $this->parser->getSubParser()->parseLocal($data);
-
-                    $node->setValue($document);
+                    $node = $this->nodeFactory->createQuoteNode($document);
 
                     break;
 
@@ -417,7 +414,7 @@ class DocumentParser
                         $this->buffer->getLines()
                     );
 
-                    $node = $this->nodeFactory->createDefinitionList($definitionList);
+                    $node = $this->nodeFactory->createDefinitionListNode($definitionList);
 
                     break;
 
@@ -432,9 +429,9 @@ class DocumentParser
                 case State::NORMAL:
                     $this->isCode = $this->prepareCode();
 
-                    $buffer = $this->buffer->getLines();
+                    $buffer = $this->buffer->getLinesString();
 
-                    $node = $this->nodeFactory->createParagraph($this->parser->createSpan($buffer));
+                    $node = $this->nodeFactory->createParagraphNode($this->parser->createSpanNode($buffer));
 
                     break;
             }
@@ -554,7 +551,7 @@ class DocumentParser
 
         if ($link->getType() === Link::TYPE_ANCHOR) {
             $anchorNode = $this->nodeFactory
-                ->createAnchor($link->getName());
+                ->createAnchorNode($link->getName());
 
             $this->document->addNode($anchorNode);
         }
@@ -571,7 +568,7 @@ class DocumentParser
 
             if ($listLine !== null) {
                 if ($this->listLine instanceof ListLine) {
-                    $this->listLine->setText($this->parser->createSpan($this->listLine->getText()));
+                    $this->listLine->setText($this->parser->createSpanNode($this->listLine->getText()));
 
                     /** @var ListNode $listNode */
                     $listNode = $this->nodeBuffer;
@@ -593,7 +590,7 @@ class DocumentParser
 
         if ($flush) {
             if ($this->listLine instanceof ListLine) {
-                $this->listLine->setText($this->parser->createSpan($this->listLine->getText()));
+                $this->listLine->setText($this->parser->createSpanNode($this->listLine->getText()));
 
                 /** @var ListNode $listNode */
                 $listNode = $this->nodeBuffer;

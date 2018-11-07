@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\Tests\RST;
 
+use Doctrine\RST\Configuration;
 use Doctrine\RST\Environment;
 use PHPUnit\Framework\TestCase;
 
@@ -14,7 +15,7 @@ class EnvironmentTest extends TestCase
 {
     public function testRelativeUrl() : void
     {
-        $environment = new Environment();
+        $environment = new Environment(new Configuration());
         $environment->setCurrentFileName('path/to/something.rst');
         $environment->setCurrentDirectory('input/dir');
 
@@ -33,7 +34,7 @@ class EnvironmentTest extends TestCase
 
     public function testAbsoluteUrl() : void
     {
-        $environment = new Environment();
+        $environment = new Environment(new Configuration());
         $environment->setCurrentFileName('path/to/something.rst');
         $environment->setCurrentDirectory('input/dir');
 
@@ -43,7 +44,7 @@ class EnvironmentTest extends TestCase
 
     public function testCanonicalUrl() : void
     {
-        $environment = new Environment();
+        $environment = new Environment(new Configuration());
         $environment->setCurrentFileName('subdir1/subdir2/test.rst');
 
         self::assertSame($environment->canonicalUrl('subdir1/subdir2/test.rst'), 'subdir1/subdir2/test.rst');

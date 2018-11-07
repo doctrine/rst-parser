@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\Nodes;
 
-abstract class TitleNode extends Node
+class TitleNode extends Node
 {
+    /** @var Node */
+    protected $value;
+
     /** @var int */
     protected $level;
 
@@ -21,6 +24,11 @@ abstract class TitleNode extends Node
 
         $this->level = $level;
         $this->token = $token;
+    }
+
+    public function getValue() : Node
+    {
+        return $this->value;
     }
 
     public function getLevel() : int

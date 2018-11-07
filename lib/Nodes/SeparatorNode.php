@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\Nodes;
 
-abstract class SeparatorNode extends Node
+class SeparatorNode extends Node
 {
     /** @var int */
     protected $level;
@@ -14,5 +14,10 @@ abstract class SeparatorNode extends Node
         parent::__construct();
 
         $this->level = $level;
+    }
+
+    public function getLevel() : int
+    {
+        return $this->level;
     }
 }

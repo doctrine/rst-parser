@@ -6,6 +6,7 @@ namespace Doctrine\Tests\RST\BuilderInvalidReferences;
 
 use Doctrine\RST\Builder;
 use Doctrine\RST\Configuration;
+use Doctrine\RST\Kernel;
 use Doctrine\Tests\RST\BaseBuilderTest;
 use Throwable;
 
@@ -18,7 +19,7 @@ class BuilderInvalidReferencesTest extends BaseBuilderTest
     {
         $this->configuration = new Configuration();
 
-        $this->builder = new Builder(null, $this->configuration);
+        $this->builder = new Builder(new Kernel($this->configuration));
     }
 
     public function testInvalidReference() : void

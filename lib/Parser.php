@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Doctrine\RST;
 
-use Doctrine\RST\HTML\Kernel as HTMLKernel;
+use Doctrine\RST\Nodes\DocumentNode;
+use Doctrine\RST\Nodes\SpanNode;
 use Doctrine\RST\Parser\DocumentParser;
 use InvalidArgumentException;
 use RuntimeException;
@@ -20,8 +21,8 @@ class Parser
     /** @var Kernel */
     private $kernel;
 
-    /** @var NodeFactory */
-    private $nodeFactory;
+    /** @var Configuration */
+    private $configuration;
 
     /** @var Directive[] */
     private $directives = [];
@@ -39,17 +40,16 @@ class Parser
     private $documentParser;
 
     public function __construct(
-        ?Environment $environment = null,
         ?Kernel $kernel = null,
-        ?Configuration $configuration = null
+        ?Environment $environment = null
     ) {
         if ($kernel === null) {
-            $kernel = new HTMLKernel();
+            $kernel = new Kernel();
         }
 
-        $this->kernel      = $kernel;
-        $this->nodeFactory = $this->kernel->getNodeFactory();
-        $this->environment = $environment ?: $this->kernel->createEnvironment($configuration);
+        $this->configuration = $kernel->getConfiguration();
+        $this->kernel        = $kernel;
+        $this->environment   = $environment ?: new Environment($this->configuration);
 
         $this->initDirectives();
         $this->initReferences();
@@ -57,7 +57,12 @@ class Parser
 
     public function getSubParser() : Parser
     {
-        return new Parser($this->environment, $this->kernel);
+        return new Parser($this->kernel, $this->environment);
+    }
+
+    public function getNodeFactory() : NodeFactory
+    {
+        return $this->configuration->getNodeFactory();
     }
 
     public function initDirectives() : void
@@ -93,7 +98,7 @@ class Parser
         $this->directives[$directive->getName()] = $directive;
     }
 
-    public function getDocument() : Document
+    public function getDocument() : DocumentNode
     {
         if ($this->documentParser === null) {
             throw new RuntimeException('Nothing has been parsed yet.');
@@ -129,49 +134,33 @@ class Parser
     }
 
     /**
-     * @param string|string[]|Span $span
+     * @param string|string[]|SpanNode $span
      */
-    public function createSpan($span) : Span
+    public function createSpanNode($span) : SpanNode
     {
-        return $this->nodeFactory->createSpan($this, $span);
+        return $this->getNodeFactory()->createSpanNode($this, $span);
     }
 
-    public function parse(string $contents) : Document
+    public function parse(string $contents) : DocumentNode
     {
         $this->getEnvironment()->reset();
 
         return $this->parseLocal($contents);
     }
 
-    public function parseLocal(string $contents) : Document
+    public function parseLocal(string $contents) : DocumentNode
     {
-        $this->documentParser = new DocumentParser(
-            $this,
-            $this->environment,
-            $this->nodeFactory,
-            $this->directives,
-            $this->includeAllowed,
-            $this->includeRoot
-        );
+        $this->documentParser = $this->createDocumentParser();
 
         return $this->documentParser->parse($contents);
     }
 
-    public function parseFragment(string $contents) : Document
+    public function parseFragment(string $contents) : DocumentNode
     {
-        $documentParser = new DocumentParser(
-            $this,
-            $this->environment,
-            $this->nodeFactory,
-            $this->directives,
-            $this->includeAllowed,
-            $this->includeRoot
-        );
-
-        return $documentParser->parse($contents);
+        return $this->createDocumentParser()->parse($contents);
     }
 
-    public function parseFile(string $file) : Document
+    public function parseFile(string $file) : DocumentNode
     {
         if (! file_exists($file)) {
             throw new InvalidArgumentException(sprintf('File at path %s does not exist', $file));
@@ -186,5 +175,17 @@ class Parser
         }
 
         return $this->parse($contents);
+    }
+
+    private function createDocumentParser() : DocumentParser
+    {
+        return new DocumentParser(
+            $this,
+            $this->environment,
+            $this->getNodeFactory(),
+            $this->directives,
+            $this->includeAllowed,
+            $this->includeRoot
+        );
     }
 }
