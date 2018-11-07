@@ -55,7 +55,7 @@ abstract class Span extends Node
         );
     }
 
-    public function render() : string
+    public function doRender() : string
     {
         return $this->spanRenderer->render();
     }

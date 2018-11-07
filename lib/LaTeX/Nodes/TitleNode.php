@@ -8,7 +8,7 @@ use Doctrine\RST\Nodes\TitleNode as Base;
 
 class TitleNode extends Base
 {
-    public function render() : string
+    protected function doRender() : string
     {
         $type = 'chapter';
 

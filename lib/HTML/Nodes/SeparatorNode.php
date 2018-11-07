@@ -8,7 +8,7 @@ use Doctrine\RST\Nodes\SeparatorNode as Base;
 
 class SeparatorNode extends Base
 {
-    public function render() : string
+    protected function doRender() : string
     {
         return '<hr />';
     }

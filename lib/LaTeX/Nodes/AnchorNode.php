@@ -8,7 +8,7 @@ use Doctrine\RST\Nodes\AnchorNode as Base;
 
 class AnchorNode extends Base
 {
-    public function render() : string
+    protected function doRender() : string
     {
         return '\label{' . $this->value . '}';
     }

@@ -26,7 +26,7 @@ class Doc extends Reference
         return $this->name;
     }
 
-    public function resolve(Environment $environment, string $data) : ResolvedReference
+    public function resolve(Environment $environment, string $data) : ?ResolvedReference
     {
         return $this->resolver->resolve($environment, $data);
     }

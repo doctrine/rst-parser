@@ -7,7 +7,6 @@ namespace Doctrine\Tests\RST\References;
 use Doctrine\RST\Environment;
 use Doctrine\RST\MetaEntry;
 use Doctrine\RST\Metas;
-use Doctrine\RST\References\InvalidReference;
 use Doctrine\RST\References\ResolvedReference;
 use Doctrine\RST\References\Resolver;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -102,10 +101,7 @@ class ResolverTest extends TestCase
             ->method('findLinkMetaEntry')
             ->willReturn(null);
 
-        self::assertEquals(
-            new InvalidReference(InvalidReference::INVALID_REFERENCE, '#invalid-reference'),
-            $this->resolver->resolve($this->environment, 'invalid-reference')
-        );
+        self::assertNull($this->resolver->resolve($this->environment, 'invalid-reference'));
     }
 
     public function testUnResolvedReference2() : void
@@ -122,9 +118,6 @@ class ResolverTest extends TestCase
             ->method('findLinkMetaEntry')
             ->willReturn(null);
 
-        self::assertEquals(
-            new InvalidReference(InvalidReference::INVALID_REFERENCE, '#invalid-reference'),
-            $this->resolver->resolve($this->environment, 'invalid-reference')
-        );
+        self::assertNull($this->resolver->resolve($this->environment, 'invalid-reference'));
     }
 }

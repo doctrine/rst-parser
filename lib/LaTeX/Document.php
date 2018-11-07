@@ -10,7 +10,7 @@ use function count;
 
 class Document extends Base
 {
-    public function render() : string
+    protected function doRender() : string
     {
         $document = '';
         foreach ($this->nodes as $node) {
@@ -20,7 +20,7 @@ class Document extends Base
         return $document;
     }
 
-    public function renderDocument() : string
+    protected function doRenderDocument() : string
     {
         $isMain = count($this->getNodes(static function ($node) {
             return $node instanceof LaTeXMainNode;

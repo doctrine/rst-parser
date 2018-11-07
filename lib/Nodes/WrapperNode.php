@@ -24,7 +24,7 @@ class WrapperNode extends Node
         $this->after  = $after;
     }
 
-    public function render() : string
+    protected function doRender() : string
     {
         $contents = $this->node !== null ? $this->node->render() : '';
 

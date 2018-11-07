@@ -8,7 +8,7 @@ use Doctrine\RST\Nodes\CodeNode as Base;
 
 class CodeNode extends Base
 {
-    public function render() : string
+    protected function doRender() : string
     {
         $tex  = '\\lstset{language=' . $this->language . "}\n";
         $tex .= "\\begin{lstlisting}\n";

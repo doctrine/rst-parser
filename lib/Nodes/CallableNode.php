@@ -16,7 +16,7 @@ class CallableNode extends Node
         $this->callable = $callable;
     }
 
-    public function render() : string
+    protected function doRender() : string
     {
         /** @var callable $callable */
         $callable = $this->callable;

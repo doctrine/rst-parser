@@ -9,7 +9,7 @@ use function htmlspecialchars;
 
 class CodeNode extends Base
 {
-    public function render() : string
+    protected function doRender() : string
     {
         if ($this->raw) {
             return (string) $this->value;

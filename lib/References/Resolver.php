@@ -16,7 +16,7 @@ class Resolver
         Environment $environment,
         string $data,
         array $attributes = []
-    ) : ResolvedReference {
+    ) : ?ResolvedReference {
         $resolvedFileReference = $this->resolveFileReference($environment, $data, $attributes);
 
         if ($resolvedFileReference !== null) {
@@ -29,12 +29,7 @@ class Resolver
             return $resolvedAnchorReference;
         }
 
-        return new InvalidReference(
-            InvalidReference::INVALID_REFERENCE,
-            '#' . $data,
-            [],
-            $attributes
-        );
+        return null;
     }
 
     /**

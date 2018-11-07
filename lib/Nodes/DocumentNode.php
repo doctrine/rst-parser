@@ -8,7 +8,7 @@ use Doctrine\RST\Nodes\Node as Base;
 
 class DocumentNode extends Base
 {
-    public function render() : string
+    protected function doRender() : string
     {
         return '';
     }

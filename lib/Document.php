@@ -8,17 +8,21 @@ use Doctrine\RST\Nodes\Node;
 use Doctrine\RST\Nodes\RawNode;
 use Doctrine\RST\Nodes\TitleNode;
 use Doctrine\RST\Nodes\TocNode;
-use Doctrine\RST\References\InvalidReference;
-use Doctrine\RST\References\ResolvedReference;
-use function array_filter;
 use function array_unshift;
 use function count;
 use function is_string;
+use function sprintf;
 
 abstract class Document extends Node
 {
     /** @var Environment */
     protected $environment;
+
+    /** @var Configuration */
+    protected $configuration;
+
+    /** @var ErrorManager */
+    protected $errorManager;
 
     /** @var Node[] */
     protected $headerNodes = [];
@@ -30,20 +34,9 @@ abstract class Document extends Node
     {
         parent::__construct();
 
-        $this->environment = $environment;
-    }
-
-    /**
-     * @return InvalidReference[]
-     */
-    public function getInvalidReferences() : array
-    {
-        return array_filter(
-            $this->environment->getResolvedReferences(),
-            static function (ResolvedReference $resolvedReference) {
-                return $resolvedReference instanceof InvalidReference;
-            }
-        );
+        $this->environment   = $environment;
+        $this->configuration = $environment->getConfiguration();
+        $this->errorManager  = $environment->getErrorManager();
     }
 
     public function getEnvironment() : Environment
@@ -53,7 +46,11 @@ abstract class Document extends Node
 
     public function renderDocument() : string
     {
-        return $this->render();
+        $renderedDocument = $this->doRenderDocument();
+
+        $this->postRenderValidate();
+
+        return $renderedDocument;
     }
 
     /**
@@ -170,5 +167,27 @@ abstract class Document extends Node
     public function __toString() : string
     {
         return $this->render();
+    }
+
+    protected function doRenderDocument() : string
+    {
+        return $this->render();
+    }
+
+    private function postRenderValidate() : void
+    {
+        if ($this->configuration->getIgnoreInvalidReferences() !== false) {
+            return;
+        }
+
+        $currentFileName = $this->environment->getCurrentFileName();
+
+        foreach ($this->environment->getInvalidLinks() as $invalidLink) {
+            $this->errorManager->error(sprintf(
+                'Found invalid reference "%s"%s',
+                $invalidLink->getName(),
+                $currentFileName !== '' ? sprintf(' in file "%s"', $currentFileName) : ''
+            ));
+        }
     }
 }

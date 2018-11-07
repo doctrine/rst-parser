@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\RST\Span;
 
 use Doctrine\RST\Environment;
+use Doctrine\RST\InvalidLink;
 use Doctrine\RST\Span;
 use InvalidArgumentException;
 use function preg_replace;
@@ -137,6 +138,12 @@ class SpanRenderer
     {
         $reference = $this->environment->resolve($spanToken->get('section'), $spanToken->get('url'));
 
+        if ($reference === null) {
+            $this->environment->addInvalidLink(new InvalidLink($spanToken->get('url')));
+
+            return str_replace($spanToken->getId(), $spanToken->get('text'), $span);
+        }
+
         $link = $this->span->reference($reference, $spanToken->getTokenData());
 
         return str_replace($spanToken->getId(), $link, $span);
@@ -144,21 +151,20 @@ class SpanRenderer
 
     private function renderLink(SpanToken $spanToken, string $span) : string
     {
-        if ($spanToken->get('url') !== '') {
-            $url = $spanToken->get('url');
-        } elseif ($spanToken->get('anchor') !== '') {
-            $link = $this->environment->getLink($spanToken->get('link'));
+        $url  = $spanToken->get('url');
+        $link = $spanToken->get('link');
 
-            if ($link !== '') {
-                $url = $link;
-            } else {
-                $url = '#' . $spanToken->get('anchor');
+        if ($url === '') {
+            $url = $this->environment->getLink($link);
+
+            if ($url === '') {
+                $this->environment->addInvalidLink(new InvalidLink($link));
+
+                return str_replace($spanToken->getId(), $link, $span);
             }
-        } else {
-            $url = $this->environment->getLink($spanToken->get('link'));
         }
 
-        $link = $this->span->link($url, $this->renderSyntaxes($spanToken->get('link')));
+        $link = $this->span->link($url, $this->renderSyntaxes($link));
 
         return str_replace($spanToken->getId(), $link, $span);
     }

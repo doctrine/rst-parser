@@ -12,7 +12,7 @@ use function max;
 
 class TableNode extends Base
 {
-    public function render() : string
+    protected function doRender() : string
     {
         $cols = 0;
 

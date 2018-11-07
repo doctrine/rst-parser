@@ -8,7 +8,7 @@ use Doctrine\RST\Nodes\QuoteNode as Base;
 
 class QuoteNode extends Base
 {
-    public function render() : string
+    protected function doRender() : string
     {
         return '<blockquote>' . $this->value . '</blockquote>';
     }

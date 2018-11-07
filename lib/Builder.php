@@ -61,8 +61,6 @@ class Builder
         $this->metas = new Metas();
 
         $this->documents = new Builder\Documents(
-            $this->configuration,
-            $this->errorManager,
             $this->filesystem,
             $this->metas
         );

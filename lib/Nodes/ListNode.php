@@ -27,7 +27,7 @@ abstract class ListNode extends Node
         $this->lines[] = $line;
     }
 
-    public function render() : string
+    protected function doRender() : string
     {
         $depth = -1;
         $value = '';

@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\Builder;
 
-use Doctrine\RST\Configuration;
 use Doctrine\RST\Document;
-use Doctrine\RST\ErrorManager;
 use Doctrine\RST\Metas;
 use InvalidArgumentException;
 use Symfony\Component\Filesystem\Filesystem;
@@ -16,12 +14,6 @@ use function sprintf;
 
 class Documents
 {
-    /** @var Configuration */
-    private $configuration;
-
-    /** @var ErrorManager */
-    private $errorManager;
-
     /** @var Filesystem */
     private $filesystem;
 
@@ -32,15 +24,11 @@ class Documents
     private $documents = [];
 
     public function __construct(
-        Configuration $configuration,
-        ErrorManager $errorManager,
         Filesystem $filesystem,
         Metas $metas
     ) {
-        $this->configuration = $configuration;
-        $this->errorManager  = $errorManager;
-        $this->filesystem    = $filesystem;
-        $this->metas         = $metas;
+        $this->filesystem = $filesystem;
+        $this->metas      = $metas;
     }
 
     /**
@@ -72,19 +60,7 @@ class Documents
                 $this->filesystem->mkdir($directory, 0755);
             }
 
-            $renderedDocument = $document->renderDocument();
-
-            if ($this->configuration->getIgnoreInvalidReferences() === false) {
-                foreach ($document->getInvalidReferences() as $invalidReference) {
-                    $this->errorManager->error(sprintf(
-                        'Found invalid reference "%s" in file "%s"',
-                        $invalidReference->getUrl(),
-                        $file
-                    ));
-                }
-            }
-
-            $this->filesystem->dumpFile($target, $renderedDocument);
+            $this->filesystem->dumpFile($target, $document->renderDocument());
         }
     }
 

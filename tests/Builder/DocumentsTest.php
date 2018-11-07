@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\Tests\RST\Builder;
 
 use Doctrine\RST\Builder\Documents;
-use Doctrine\RST\Configuration;
 use Doctrine\RST\Document;
-use Doctrine\RST\ErrorManager;
 use Doctrine\RST\MetaEntry;
 use Doctrine\RST\Metas;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -16,12 +14,6 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class DocumentsTest extends TestCase
 {
-    /** @var Configuration|MockObject */
-    private $configuration;
-
-    /** @var ErrorManager|MockObject */
-    private $errorManager;
-
     /** @var Filesystem|MockObject */
     private $filesystem;
 
@@ -92,14 +84,10 @@ class DocumentsTest extends TestCase
 
     protected function setUp() : void
     {
-        $this->configuration = $this->createMock(Configuration::class);
-        $this->errorManager  = $this->createMock(ErrorManager::class);
-        $this->filesystem    = $this->createMock(Filesystem::class);
-        $this->metas         = $this->createMock(Metas::class);
+        $this->filesystem = $this->createMock(Filesystem::class);
+        $this->metas      = $this->createMock(Metas::class);
 
         $this->documents = new Documents(
-            $this->configuration,
-            $this->errorManager,
             $this->filesystem,
             $this->metas
         );

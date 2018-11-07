@@ -16,6 +16,7 @@ use Doctrine\RST\Nodes\TitleNode;
 use Doctrine\RST\Parser;
 use Exception;
 use PHPUnit\Framework\TestCase;
+use InvalidArgumentException;
 use RuntimeException;
 use function count;
 use function file_get_contents;
@@ -457,6 +458,15 @@ class ParserTest extends TestCase
         $parser->setIncludePolicy(true, $directory);
         $nodes = $parser->parseFile($directory . 'inclusion-policy.rst')->getNodes();
         self::assertCount(5, $nodes);
+    }
+
+    public function testParseFileThrowsInvalidArgumentExceptionForMissingFile() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('File at path does-not-exist.rst does not exist');
+
+        $parser = new Parser();
+        $parser->parseFile('does-not-exist.rst');
     }
 
     /**

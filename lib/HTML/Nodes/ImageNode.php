@@ -9,7 +9,7 @@ use function htmlspecialchars;
 
 class ImageNode extends Base
 {
-    public function render() : string
+    protected function doRender() : string
     {
         $attributes = '';
         foreach ($this->options as $key => $value) {

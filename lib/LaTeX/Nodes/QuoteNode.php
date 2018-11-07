@@ -8,7 +8,7 @@ use Doctrine\RST\Nodes\QuoteNode as Base;
 
 class QuoteNode extends Base
 {
-    public function render() : string
+    protected function doRender() : string
     {
         return "\\begin{quotation}\n" . $this->value . "\n\\end{quotation}\n";
     }
