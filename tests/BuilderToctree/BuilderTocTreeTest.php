@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Doctrine\Tests\RST;
+namespace Doctrine\Tests\RST\BuilderToctree;
 
+use Doctrine\Tests\RST\BaseBuilderTest;
 use function file_exists;
 
 class BuilderTocTreeTest extends BaseBuilderTest
@@ -33,6 +34,6 @@ class BuilderTocTreeTest extends BaseBuilderTest
 
     protected function getFixturesDirectory() : string
     {
-        return 'builder-toctree';
+        return 'BuilderToctree';
     }
 }

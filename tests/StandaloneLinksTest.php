@@ -196,7 +196,7 @@ class StandaloneLinksTest extends TestCase
      */
     private function parse(string $file) : Document
     {
-        $directory   = __DIR__ . '/html-fixtures/';
+        $directory   = __DIR__ . '/HTML/files/';
         $parser      = new Parser();
         $environment = $parser->getEnvironment();
         $environment->setCurrentDirectory($directory);

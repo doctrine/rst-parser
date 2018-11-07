@@ -16,7 +16,7 @@ class GlobSearcherTest extends TestCase
 
     public function testGlobSearch() : void
     {
-        $dir = __DIR__ . '/builder-toctree/input';
+        $dir = __DIR__ . '/BuilderToctree/input';
 
         $environment = $this->createMock(Environment::class);
 

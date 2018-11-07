@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Doctrine\Tests\RST;
+namespace Doctrine\Tests\RST\Builder;
 
+use Doctrine\Tests\RST\BaseBuilderTest;
 use function file_exists;
 use function is_dir;
 use function substr_count;
@@ -212,6 +213,6 @@ class BuilderTest extends BaseBuilderTest
 
     protected function getFixturesDirectory() : string
     {
-        return 'builder-fixtures';
+        return 'Builder';
     }
 }

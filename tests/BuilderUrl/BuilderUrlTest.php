@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Doctrine\Tests\RST;
+namespace Doctrine\Tests\RST\BuilderUrl;
 
 use Doctrine\RST\Builder;
 use Doctrine\RST\Configuration;
+use Doctrine\Tests\RST\BaseBuilderTest;
 use function strpos;
 
 class BuilderUrlTest extends BaseBuilderTest
@@ -130,6 +131,6 @@ class BuilderUrlTest extends BaseBuilderTest
 
     protected function getFixturesDirectory() : string
     {
-        return 'builder-url';
+        return 'BuilderUrl';
     }
 }
