@@ -9,7 +9,7 @@ use function trim;
 
 class ParagraphNode extends Base
 {
-    public function render() : string
+    protected function doRender() : string
     {
         $text = (string) $this->value;
 

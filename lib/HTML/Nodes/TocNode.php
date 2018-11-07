@@ -16,7 +16,7 @@ class TocNode extends Base
     /** @var int */
     private $depth;
 
-    public function render() : string
+    protected function doRender() : string
     {
         if (isset($this->options['hidden'])) {
             return '';
@@ -28,6 +28,10 @@ class TocNode extends Base
 
         foreach ($this->files as $file) {
             $reference = $this->environment->resolve('doc', $file);
+
+            if ($reference === null) {
+                continue;
+            }
 
             $url = $this->environment->relativeUrl($reference->getUrl());
 
@@ -94,9 +98,13 @@ class TocNode extends Base
         if (is_array($title)) {
             [$title, $target] = $title;
 
-            $info = $this->environment->resolve('doc', $target);
+            $reference = $this->environment->resolve('doc', $target);
 
-            $target = $this->environment->relativeUrl($info->getUrl());
+            if ($reference === null) {
+                return [$title, $target];
+            }
+
+            $target = $this->environment->relativeUrl($reference->getUrl());
         }
 
         return [$title, $target];

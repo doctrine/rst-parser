@@ -6,7 +6,7 @@ namespace Doctrine\RST\Nodes;
 
 class RawNode extends Node
 {
-    public function render() : string
+    protected function doRender() : string
     {
         return (string) $this->value;
     }

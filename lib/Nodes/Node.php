@@ -17,7 +17,12 @@ abstract class Node
         $this->value = $value;
     }
 
-    abstract public function render() : string;
+    public function render() : string
+    {
+        return $this->doRender();
+    }
+
+    abstract protected function doRender() : string;
 
     /**
      * @return Node|string|null

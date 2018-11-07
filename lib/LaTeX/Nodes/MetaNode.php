@@ -8,7 +8,7 @@ use Doctrine\RST\Nodes\MetaNode as Base;
 
 class MetaNode extends Base
 {
-    public function render() : string
+    protected function doRender() : string
     {
         return '';
     }

@@ -68,8 +68,8 @@ class Environment
     /** @var string[] */
     private $anonymous = [];
 
-    /** @var ResolvedReference[] */
-    private $resolvedReferences = [];
+    /** @var InvalidLink[] */
+    private $invalidLinks = [];
 
     public function __construct(?Configuration $configuration = null)
     {
@@ -121,7 +121,7 @@ class Environment
         $this->references[$reference->getName()] = $reference;
     }
 
-    public function resolve(string $section, string $data) : ResolvedReference
+    public function resolve(string $section, string $data) : ?ResolvedReference
     {
         if (! isset($this->references[$section])) {
             throw new InvalidArgumentException(sprintf('Unknown reference section %s', $section));
@@ -131,17 +131,24 @@ class Environment
 
         $resolvedReference = $reference->resolve($this, $data);
 
-        $this->resolvedReferences[] = $resolvedReference;
+        if ($resolvedReference === null) {
+            $this->addInvalidLink(new InvalidLink($data));
+        }
 
         return $resolvedReference;
     }
 
-    /**
-     * @return ResolvedReference[]
-     */
-    public function getResolvedReferences() : array
+    public function addInvalidLink(InvalidLink $invalidLink) : void
     {
-        return $this->resolvedReferences;
+        $this->invalidLinks[] = $invalidLink;
+    }
+
+    /**
+     * @return InvalidLink[]
+     */
+    public function getInvalidLinks() : array
+    {
+        return $this->invalidLinks;
     }
 
     /**

@@ -12,7 +12,7 @@ use function sprintf;
 
 class Document extends Base
 {
-    public function render() : string
+    public function doRender() : string
     {
         $document = '';
         foreach ($this->nodes as $node) {
@@ -22,7 +22,7 @@ class Document extends Base
         return $document;
     }
 
-    public function renderDocument() : string
+    public function doRenderDocument() : string
     {
         $document  = "<!DOCTYPE html>\n";
         $document .= "<html>\n";

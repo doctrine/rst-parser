@@ -8,12 +8,16 @@ use Doctrine\RST\Nodes\TocNode as Base;
 
 class TocNode extends Base
 {
-    public function render() : string
+    protected function doRender() : string
     {
         $tex = '\tableofcontents' . "\n";
 
         foreach ($this->files as $file) {
             $reference = $this->environment->resolve('doc', $file);
+
+            if ($reference === null) {
+                continue;
+            }
 
             $url = $this->environment->relativeUrl($reference->getUrl());
 

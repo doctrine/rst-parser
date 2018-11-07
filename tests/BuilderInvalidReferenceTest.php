@@ -23,7 +23,7 @@ class BuilderInvalidReferenceTest extends BaseBuilderTest
     public function testInvalidReference() : void
     {
         $this->expectException(Throwable::class);
-        $this->expectExceptionMessage('Found invalid reference "#does_not_exist" in file "index"');
+        $this->expectExceptionMessage('Found invalid reference "does_not_exist" in file "index"');
 
         $this->builder->build($this->sourceFile(), $this->targetFile());
     }
@@ -36,7 +36,7 @@ class BuilderInvalidReferenceTest extends BaseBuilderTest
 
         $contents = $this->getFileContents($this->targetFile('index.html'));
 
-        self::assertContains('<a href="#does_not_exist">unresolved reference</a>', $contents);
+        self::assertContains('<p>Test unresolved reference</p>', $contents);
     }
 
     protected function getFixturesDirectory() : string

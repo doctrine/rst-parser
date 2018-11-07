@@ -9,7 +9,7 @@ use function trim;
 
 class FigureNode extends Base
 {
-    public function render() : string
+    protected function doRender() : string
     {
         $html  = '<figure>';
         $html .= $this->image->render();

@@ -8,6 +8,7 @@ use Doctrine\RST\HTML\Kernel as HTMLKernel;
 use Doctrine\RST\Parser\DocumentParser;
 use InvalidArgumentException;
 use RuntimeException;
+use function file_exists;
 use function file_get_contents;
 use function sprintf;
 
@@ -172,6 +173,10 @@ class Parser
 
     public function parseFile(string $file) : Document
     {
+        if (! file_exists($file)) {
+            throw new InvalidArgumentException(sprintf('File at path %s does not exist', $file));
+        }
+
         $this->filename = $file;
 
         $contents = file_get_contents($file);

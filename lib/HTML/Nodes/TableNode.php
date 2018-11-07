@@ -11,7 +11,7 @@ use function sprintf;
 
 class TableNode extends Base
 {
-    public function render() : string
+    protected function doRender() : string
     {
         $html = '<table class="table table-bordered">';
 

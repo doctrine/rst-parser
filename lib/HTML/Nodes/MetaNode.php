@@ -9,7 +9,7 @@ use function htmlspecialchars;
 
 class MetaNode extends Base
 {
-    public function render() : string
+    protected function doRender() : string
     {
         return '<meta name="' . htmlspecialchars($this->key) . '" content="' . htmlspecialchars($this->value) . '" />';
     }

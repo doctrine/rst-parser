@@ -150,25 +150,13 @@ class SpanProcessor
             $id   = $this->generateId();
             $prev = $match[1];
             $next = $match[6];
-            $url  = null;
+            $url  = '';
 
             if (preg_match('/^(.+) <(.+)>$/mUsi', $link, $m) > 0) {
                 $link = $m[1];
-                $this->environment->setLink($link, $m[2]);
-                $url = $m[2];
-            }
+                $url  = $m[2];
 
-            // anchors to current document
-            if ($url === null) {
-                $anchor = Environment::slugify($link);
-
-                $this->addToken(SpanToken::TYPE_LINK, $id, [
-                    'link' => $link,
-                    'anchor' => $anchor,
-                    'url' => '',
-                ]);
-
-                return $id . $next;
+                $this->environment->setLink($link, $url);
             }
 
             $this->addToken(SpanToken::TYPE_LINK, $id, [

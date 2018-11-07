@@ -541,11 +541,19 @@ class HTMLTest extends TestCase
         $document = $this->parseHTML('anchor.rst');
 
         self::assertContains('<a id="anchors"></a><h1>Anchors</h1>', $document);
-        self::assertContains('<p><a href="#anchor-section">@Anchor Section</a></p>', $document);
-        self::assertContains('<a id="anchor-section"></a><h1>@Anchor Section</h1>', $document);
         self::assertContains('<a id="anchors"></a><h1>Anchors</h1>', $document);
         self::assertContains('<a id="lists"></a>', $document);
         self::assertContains('<p><a href="#lists">go to lists</a></p>', $document);
+    }
+
+    public function testInvalidAnchor() : void
+    {
+        $this->expectException(Throwable::class);
+        $this->expectExceptionMessage('Found invalid reference "@Anchor Section"');
+
+        $document = $this->parse('anchor-failure.rst');
+
+        $rendered = $document->renderDocument();
     }
 
     /**

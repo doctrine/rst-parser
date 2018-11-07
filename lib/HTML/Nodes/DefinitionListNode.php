@@ -23,7 +23,7 @@ class DefinitionListNode extends Base
         $this->definitionList = $definitionList;
     }
 
-    public function render() : string
+    protected function doRender() : string
     {
         $html = '';
 
