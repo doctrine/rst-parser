@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Doctrine\Tests\RST;
+namespace Doctrine\Tests\RST\Parser;
 
 use Doctrine\RST\Document;
 use Doctrine\RST\Nodes\CodeNode;
@@ -15,8 +15,8 @@ use Doctrine\RST\Nodes\TableNode;
 use Doctrine\RST\Nodes\TitleNode;
 use Doctrine\RST\Parser;
 use Exception;
-use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
+use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use function count;
 use function file_get_contents;

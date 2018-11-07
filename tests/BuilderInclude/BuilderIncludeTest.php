@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Doctrine\Tests\RST;
+namespace Doctrine\Tests\RST\BuilderInclude;
 
+use Doctrine\Tests\RST\BaseBuilderTest;
 use function file_exists;
 use function file_get_contents;
 
@@ -28,6 +29,6 @@ class BuilderIncludeTest extends BaseBuilderTest
 
     protected function getFixturesDirectory() : string
     {
-        return 'builder-include';
+        return 'BuilderInclude';
     }
 }

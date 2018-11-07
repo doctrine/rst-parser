@@ -2,13 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Doctrine\Tests\RST;
+namespace Doctrine\Tests\RST\BuilderInvalidReferences;
 
 use Doctrine\RST\Builder;
 use Doctrine\RST\Configuration;
+use Doctrine\Tests\RST\BaseBuilderTest;
 use Throwable;
 
-class BuilderInvalidReferenceTest extends BaseBuilderTest
+class BuilderInvalidReferencesTest extends BaseBuilderTest
 {
     /** @var Configuration */
     private $configuration;
@@ -41,6 +42,6 @@ class BuilderInvalidReferenceTest extends BaseBuilderTest
 
     protected function getFixturesDirectory() : string
     {
-        return 'builder-invalid-reference';
+        return 'BuilderInvalidReferences';
     }
 }

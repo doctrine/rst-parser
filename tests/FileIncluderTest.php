@@ -21,9 +21,9 @@ class FileIncluderTest extends TestCase
         $this->environment->expects(self::once())
             ->method('absoluteRelativePath')
             ->with('include.rst')
-            ->willReturn(__DIR__ . '/files/include.rst');
+            ->willReturn(__DIR__ . '/Parser/files/include.rst');
 
-        $fileIncluder = new FileIncluder($this->environment, true, __DIR__ . '/files');
+        $fileIncluder = new FileIncluder($this->environment, true, __DIR__ . '/Parser/files');
 
         $contents = $fileIncluder->includeFiles('.. include:: include.rst');
 
@@ -35,7 +35,7 @@ class FileIncluderTest extends TestCase
         $this->environment->expects(self::once())
             ->method('absoluteRelativePath')
             ->with('include.rst')
-            ->willReturn(__DIR__ . '/files/include.rst');
+            ->willReturn(__DIR__ . '/Parser/files/include.rst');
 
         $fileIncluder = new FileIncluder($this->environment, true, '');
 

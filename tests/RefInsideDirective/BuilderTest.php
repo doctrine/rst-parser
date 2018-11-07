@@ -16,7 +16,7 @@ class BuilderTest extends TestCase
         $builder = new Builder($kernel);
 
         $builder->build(
-            __DIR__ . '/rst',
+            __DIR__ . '/input',
             __DIR__ . '/output'
         );
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Doctrine\Tests\RST;
+namespace Doctrine\Tests\RST\HTML;
 
 use Doctrine\RST\Document;
 use Doctrine\RST\Parser;
@@ -562,7 +562,7 @@ class HTMLTest extends TestCase
      */
     private function parse(string $file) : Document
     {
-        $directory   = __DIR__ . '/html-fixtures/';
+        $directory   = __DIR__ . '/files/';
         $parser      = new Parser();
         $environment = $parser->getEnvironment();
         $environment->setCurrentDirectory($directory);
