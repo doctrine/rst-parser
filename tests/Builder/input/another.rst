@@ -6,6 +6,8 @@ Another page
 
 Hello!
 
+see `See also`_
+
 See also
 --------
 
