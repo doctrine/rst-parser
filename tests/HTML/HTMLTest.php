@@ -24,6 +24,7 @@ class HTMLTest extends TestCase
     {
         $document = $this->parseHTML('links.rst');
 
+        self::assertContains('<a href="http://docs.doctrine-project.org/en/latest/tutorials/embeddables.html">in the documentation</a>', $document);
         self::assertContains('<a href="http://www.google.com/">', $document);
         self::assertContains('<a href="http://xkcd.com/">', $document);
         self::assertContains('<a href="http://something.com/">', $document);

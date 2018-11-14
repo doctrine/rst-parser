@@ -10,6 +10,7 @@ use Doctrine\RST\Nodes\Node;
 use Doctrine\RST\Nodes\SpanNode;
 use Doctrine\RST\Span\SpanToken;
 use InvalidArgumentException;
+use function is_string;
 use function preg_replace;
 use function preg_replace_callback;
 use function sprintf;
@@ -83,11 +84,19 @@ abstract class SpanNodeRenderer implements NodeRenderer, SpanRenderer
         return preg_replace_callback('/\|(.+)\|/mUsi', function (array $match) : string {
             $variable = $this->environment->getVariable($match[1]);
 
+            if ($variable === null) {
+                return '';
+            }
+
             if ($variable instanceof Node) {
                 return $variable->render();
             }
 
-            return $variable;
+            if (is_string($variable)) {
+                return $variable;
+            }
+
+            return (string) $variable;
         }, $span);
     }
 
