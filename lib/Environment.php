@@ -384,6 +384,11 @@ class Environment
         return $this->metas;
     }
 
+    public function getMetaEntry() : ?MetaEntry
+    {
+        return $this->metas->get($this->currentFileName);
+    }
+
     public function getLevel(string $letter) : int
     {
         foreach ($this->titleLetters as $level => $titleLetter) {
