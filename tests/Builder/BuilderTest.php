@@ -211,6 +211,26 @@ class BuilderTest extends BaseBuilderTest
         );
     }
 
+    public function testTitleLinks() : void
+    {
+        $contents = $this->getFileContents($this->targetFile('magic-link.html'));
+
+        self::assertContains(
+            '<p>see <a href="magic-link.html#see-also">See also</a></p>',
+            $contents
+        );
+
+        self::assertContains(
+            '<p>see <a href="magic-link.html#another-page">Another page</a></p>',
+            $contents
+        );
+
+        self::assertContains(
+            '<p>see <a href="magic-link.html#test">test</a></p>',
+            $contents
+        );
+    }
+
     protected function getFixturesDirectory() : string
     {
         return 'Builder';

@@ -90,6 +90,8 @@ class MetaEntry
     {
         $titles = $this->getAllTitles();
 
+        $text = Environment::slugify($text);
+
         foreach ($titles as $title) {
             if ($text === Environment::slugify($title)) {
                 return true;
