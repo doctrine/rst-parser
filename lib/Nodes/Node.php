@@ -46,6 +46,14 @@ abstract class Node
         return $this->value;
     }
 
+    /**
+     * @param Node|string|null $value
+     */
+    public function setValue($value) : void
+    {
+        $this->value = $value;
+    }
+
     public function getValueString() : string
     {
         if ($this->value === null) {
