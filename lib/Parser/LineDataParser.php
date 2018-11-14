@@ -149,11 +149,11 @@ class LineDataParser
                 unset($parts[0]);
 
                 $classifiers = array_map(function (string $classifier) {
-                    return $this->parser->createSpan($classifier);
+                    return $this->parser->createSpanNode($classifier);
                 }, array_map('trim', $parts));
 
                 $definitionListTerm = [
-                    'term' => $this->parser->createSpan($term),
+                    'term' => $this->parser->createSpanNode($term),
                     'classifiers' => $classifiers,
                     'definitions' => [],
                 ];
@@ -161,7 +161,7 @@ class LineDataParser
             // last line
             } elseif ($definitionListTerm !== null && trim($line) === '' && count($lines) - 1 === $key) {
                 if ($currentDefinition !== null) {
-                    $definitionListTerm['definitions'][] = $this->parser->createSpan($currentDefinition);
+                    $definitionListTerm['definitions'][] = $this->parser->createSpanNode($currentDefinition);
 
                     $currentDefinition = null;
                 }
@@ -174,7 +174,7 @@ class LineDataParser
 
             // empty line, start of a new definition for the current term
             } elseif ($currentDefinition !== null && $definitionListTerm !== null && trim($line) === '') {
-                $definitionListTerm['definitions'][] = $this->parser->createSpan($currentDefinition);
+                $definitionListTerm['definitions'][] = $this->parser->createSpanNode($currentDefinition);
 
                 $currentDefinition = null;
             }

@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\HTML\Directives;
 
-use Doctrine\RST\HTML\Nodes\FigureNode;
-use Doctrine\RST\HTML\Nodes\ImageNode;
 use Doctrine\RST\Nodes\Node;
 use Doctrine\RST\Parser;
 use Doctrine\RST\SubDirective;
@@ -46,6 +44,11 @@ class Figure extends SubDirective
             throw new Exception(sprintf('Could not get relative url for %s', $data));
         }
 
-        return new FigureNode(new ImageNode($url, $options), $document);
+        $nodeFactory = $parser->getNodeFactory();
+
+        return $parser->getNodeFactory()->createFigureNode(
+            $nodeFactory->createImageNode($url, $options),
+            $document
+        );
     }
 }

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\Nodes;
 
-abstract class FigureNode extends Node
+class FigureNode extends Node
 {
     /** @var ImageNode */
     protected $image;
@@ -18,5 +18,15 @@ abstract class FigureNode extends Node
 
         $this->image    = $image;
         $this->document = $document;
+    }
+
+    public function getImage() : ImageNode
+    {
+        return $this->image;
+    }
+
+    public function getDocument() : ?Node
+    {
+        return $this->document;
     }
 }

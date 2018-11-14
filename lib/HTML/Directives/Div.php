@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Doctrine\RST\HTML\Directives;
 
 use Doctrine\RST\Nodes\Node;
-use Doctrine\RST\Nodes\WrapperNode;
 use Doctrine\RST\Parser;
 use Doctrine\RST\SubDirective;
 
@@ -29,6 +28,6 @@ class Div extends SubDirective
         string $data,
         array $options
     ) : ?Node {
-        return new WrapperNode($document, '<div class="' . $data . '">', '</div>');
+        return $parser->getNodeFactory()->createWrapperNode($document, '<div class="' . $data . '">', '</div>');
     }
 }

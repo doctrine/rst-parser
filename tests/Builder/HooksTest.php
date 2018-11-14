@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\Tests\RST\Builder;
 
 use Doctrine\RST\Builder\Hooks;
-use Doctrine\RST\Document;
+use Doctrine\RST\Nodes\DocumentNode;
 use Doctrine\RST\Parser;
 use PHPUnit\Framework\TestCase;
 
@@ -18,11 +18,11 @@ class HooksTest extends TestCase
     {
         $called = null;
 
-        $this->hooks->addHook(static function (Document $document) use (&$called) : void {
+        $this->hooks->addHook(static function (DocumentNode $document) use (&$called) : void {
             $called = $document;
         });
 
-        $document = $this->createMock(Document::class);
+        $document = $this->createMock(DocumentNode::class);
 
         $this->hooks->callHooks($document);
 

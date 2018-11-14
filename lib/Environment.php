@@ -71,9 +71,9 @@ class Environment
     /** @var InvalidLink[] */
     private $invalidLinks = [];
 
-    public function __construct(?Configuration $configuration = null)
+    public function __construct(Configuration $configuration)
     {
-        $this->configuration = $configuration ?? new Configuration();
+        $this->configuration = $configuration;
         $this->errorManager  = new ErrorManager($this->configuration);
         $this->urlGenerator  = new UrlGenerator(
             $this->configuration
@@ -114,6 +114,11 @@ class Environment
     public function setMetas(Metas $metas) : void
     {
         $this->metas = $metas;
+    }
+
+    public function getNodeFactory() : NodeFactory
+    {
+        return $this->configuration->getNodeFactory();
     }
 
     public function registerReference(Reference $reference) : void

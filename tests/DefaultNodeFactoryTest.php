@@ -6,19 +6,19 @@ namespace Doctrine\Tests\RST;
 
 use Doctrine\RST\DefaultNodeFactory;
 use Doctrine\RST\Environment;
-use Doctrine\RST\HTML\Document;
-use Doctrine\RST\HTML\Nodes\AnchorNode;
-use Doctrine\RST\HTML\Nodes\CodeNode;
-use Doctrine\RST\HTML\Nodes\ListNode;
-use Doctrine\RST\HTML\Nodes\ParagraphNode;
-use Doctrine\RST\HTML\Nodes\QuoteNode;
-use Doctrine\RST\HTML\Nodes\SeparatorNode;
-use Doctrine\RST\HTML\Nodes\TableNode;
-use Doctrine\RST\HTML\Nodes\TitleNode;
-use Doctrine\RST\HTML\Nodes\TocNode;
-use Doctrine\RST\HTML\Span;
 use Doctrine\RST\NodeInstantiator;
+use Doctrine\RST\Nodes\AnchorNode;
+use Doctrine\RST\Nodes\CodeNode;
+use Doctrine\RST\Nodes\DocumentNode;
+use Doctrine\RST\Nodes\ListNode;
 use Doctrine\RST\Nodes\Node;
+use Doctrine\RST\Nodes\ParagraphNode;
+use Doctrine\RST\Nodes\QuoteNode;
+use Doctrine\RST\Nodes\SeparatorNode;
+use Doctrine\RST\Nodes\SpanNode;
+use Doctrine\RST\Nodes\TableNode;
+use Doctrine\RST\Nodes\TitleNode;
+use Doctrine\RST\Nodes\TocNode;
 use Doctrine\RST\NodeTypes;
 use Doctrine\RST\Parser;
 use Doctrine\RST\Parser\LineChecker;
@@ -29,7 +29,7 @@ class DefaultNodeFactoryTest extends TestCase
 {
     public function testCreateDocument() : void
     {
-        $returnClass = Document::class;
+        $returnClass = DocumentNode::class;
         $type        = NodeTypes::DOCUMENT;
 
         $environment      = $this->createMock(Environment::class);
@@ -47,7 +47,7 @@ class DefaultNodeFactoryTest extends TestCase
 
         $defaultNodeFactory = new DefaultNodeFactory($nodeInstantiator);
 
-        self::assertSame($expectedReturn, $defaultNodeFactory->createDocument($environment));
+        self::assertSame($expectedReturn, $defaultNodeFactory->createDocumentNode($environment));
     }
 
     public function testCreateToc() : void
@@ -70,7 +70,7 @@ class DefaultNodeFactoryTest extends TestCase
 
         $defaultNodeFactory = new DefaultNodeFactory($nodeInstantiator);
 
-        self::assertSame($expectedReturn, $defaultNodeFactory->createToc($environment, [], []));
+        self::assertSame($expectedReturn, $defaultNodeFactory->createTocNode($environment, [], []));
     }
 
     public function testCreateTitle() : void
@@ -93,7 +93,7 @@ class DefaultNodeFactoryTest extends TestCase
 
         $defaultNodeFactory = new DefaultNodeFactory($nodeInstantiator);
 
-        self::assertSame($expectedReturn, $defaultNodeFactory->createTitle($node, 1, 'test'));
+        self::assertSame($expectedReturn, $defaultNodeFactory->createTitleNode($node, 1, 'test'));
     }
 
     public function testCreateSeparator() : void
@@ -115,7 +115,7 @@ class DefaultNodeFactoryTest extends TestCase
 
         $defaultNodeFactory = new DefaultNodeFactory($nodeInstantiator);
 
-        self::assertSame($expectedReturn, $defaultNodeFactory->createSeparator(1));
+        self::assertSame($expectedReturn, $defaultNodeFactory->createSeparatorNode(1));
     }
 
     public function testCreateCode() : void
@@ -137,7 +137,7 @@ class DefaultNodeFactoryTest extends TestCase
 
         $defaultNodeFactory = new DefaultNodeFactory($nodeInstantiator);
 
-        self::assertSame($expectedReturn, $defaultNodeFactory->createCode([]));
+        self::assertSame($expectedReturn, $defaultNodeFactory->createCodeNode([]));
     }
 
     public function testCreateQuote() : void
@@ -152,14 +152,16 @@ class DefaultNodeFactoryTest extends TestCase
             ->method('getType')
             ->willReturn($type);
 
+        $documentNode = $this->createMock(DocumentNode::class);
+
         $nodeInstantiator->expects(self::once())
             ->method('create')
-            ->with([[]])
+            ->with([$documentNode])
             ->willReturn($expectedReturn);
 
         $defaultNodeFactory = new DefaultNodeFactory($nodeInstantiator);
 
-        self::assertSame($expectedReturn, $defaultNodeFactory->createQuote([]));
+        self::assertSame($expectedReturn, $defaultNodeFactory->createQuoteNode($documentNode));
     }
 
     public function testCreateParagraph() : void
@@ -174,14 +176,18 @@ class DefaultNodeFactoryTest extends TestCase
             ->method('getType')
             ->willReturn($type);
 
+        $parser = $this->createMock(Parser::class);
+
+        $spanNode = new SpanNode($parser, 'test');
+
         $nodeInstantiator->expects(self::once())
             ->method('create')
-            ->with(['test'])
+            ->with([$spanNode])
             ->willReturn($expectedReturn);
 
         $defaultNodeFactory = new DefaultNodeFactory($nodeInstantiator);
 
-        self::assertSame($expectedReturn, $defaultNodeFactory->createParagraph('test'));
+        self::assertSame($expectedReturn, $defaultNodeFactory->createParagraphNode($spanNode));
     }
 
     public function testCreateAnchor() : void
@@ -203,7 +209,7 @@ class DefaultNodeFactoryTest extends TestCase
 
         $defaultNodeFactory = new DefaultNodeFactory($nodeInstantiator);
 
-        self::assertSame($expectedReturn, $defaultNodeFactory->createAnchor('test'));
+        self::assertSame($expectedReturn, $defaultNodeFactory->createAnchorNode('test'));
     }
 
     public function testCreateList() : void
@@ -220,12 +226,12 @@ class DefaultNodeFactoryTest extends TestCase
 
         $nodeInstantiator->expects(self::once())
             ->method('create')
-            ->with(['test'])
+            ->with([])
             ->willReturn($expectedReturn);
 
         $defaultNodeFactory = new DefaultNodeFactory($nodeInstantiator);
 
-        self::assertSame($expectedReturn, $defaultNodeFactory->createList('test'));
+        self::assertSame($expectedReturn, $defaultNodeFactory->createListNode());
     }
 
     public function testCreateTable() : void
@@ -248,12 +254,12 @@ class DefaultNodeFactoryTest extends TestCase
 
         $defaultNodeFactory = new DefaultNodeFactory($nodeInstantiator);
 
-        self::assertSame($expectedReturn, $defaultNodeFactory->createTable([], TableNode::TYPE_SIMPLE, $lineChecker));
+        self::assertSame($expectedReturn, $defaultNodeFactory->createTableNode([], TableNode::TYPE_SIMPLE, $lineChecker));
     }
 
     public function testCreateSpan() : void
     {
-        $returnClass = Span::class;
+        $returnClass = SpanNode::class;
         $type        = NodeTypes::SPAN;
 
         $parser           = $this->createMock(Parser::class);
@@ -271,7 +277,7 @@ class DefaultNodeFactoryTest extends TestCase
 
         $defaultNodeFactory = new DefaultNodeFactory($nodeInstantiator);
 
-        self::assertSame($expectedReturn, $defaultNodeFactory->createSpan($parser, 'test'));
+        self::assertSame($expectedReturn, $defaultNodeFactory->createSpanNode($parser, 'test'));
     }
 
     public function testGetNodeInstantiatorThrowsInvalidArgumentException() : void
@@ -287,6 +293,6 @@ class DefaultNodeFactoryTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Could not find node instantiator of type list');
 
-        $defaultNodeFactory->createList('test');
+        $defaultNodeFactory->createListNode();
     }
 }

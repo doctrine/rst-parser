@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Doctrine\RST\LaTeX\Directives;
 
 use Doctrine\RST\Directive;
-use Doctrine\RST\LaTeX\Nodes\ImageNode;
 use Doctrine\RST\Nodes\Node;
 use Doctrine\RST\Parser;
 use Exception;
@@ -42,6 +41,6 @@ class Image extends Directive
             throw new Exception(sprintf('Could not build relative url for %s', $data));
         }
 
-        return new ImageNode($url, $options);
+        return $parser->getNodeFactory()->createImageNode($url, $options);
     }
 }

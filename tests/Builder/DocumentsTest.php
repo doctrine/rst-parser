@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Doctrine\Tests\RST\Builder;
 
 use Doctrine\RST\Builder\Documents;
-use Doctrine\RST\Document;
 use Doctrine\RST\MetaEntry;
 use Doctrine\RST\Metas;
+use Doctrine\RST\Nodes\DocumentNode;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
@@ -25,8 +25,8 @@ class DocumentsTest extends TestCase
 
     public function testGetAll() : void
     {
-        $document1 = $this->createMock(Document::class);
-        $document2 = $this->createMock(Document::class);
+        $document1 = $this->createMock(DocumentNode::class);
+        $document2 = $this->createMock(DocumentNode::class);
 
         $this->documents->addDocument('document1', $document1);
         $this->documents->addDocument('document2', $document2);
@@ -43,7 +43,7 @@ class DocumentsTest extends TestCase
     {
         self::assertFalse($this->documents->hasDocument('document'));
 
-        $document = $this->createMock(Document::class);
+        $document = $this->createMock(DocumentNode::class);
 
         $this->documents->addDocument('document', $document);
 
@@ -52,7 +52,7 @@ class DocumentsTest extends TestCase
 
     public function testRender() : void
     {
-        $document = $this->createMock(Document::class);
+        $document = $this->createMock(DocumentNode::class);
 
         $this->documents->addDocument('document', $document);
 

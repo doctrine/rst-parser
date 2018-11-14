@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Doctrine\Tests\RST;
 
 use Doctrine\RST\Environment;
-use Doctrine\RST\HTML\Document;
 use Doctrine\RST\NodeInstantiator;
+use Doctrine\RST\Nodes\DocumentNode;
 use Doctrine\RST\NodeTypes;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
@@ -15,7 +15,7 @@ class NodeInstantiatorTest extends TestCase
 {
     public function testGetType() : void
     {
-        $nodeInstantiator = new NodeInstantiator(NodeTypes::DOCUMENT, Document::class);
+        $nodeInstantiator = new NodeInstantiator(NodeTypes::DOCUMENT, DocumentNode::class);
 
         self::assertSame(NodeTypes::DOCUMENT, $nodeInstantiator->getType());
     }
@@ -25,17 +25,17 @@ class NodeInstantiatorTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Node type invalid is not a valid node type.');
 
-        $nodeInstantiator = new NodeInstantiator('invalid', Document::class);
+        $nodeInstantiator = new NodeInstantiator('invalid', DocumentNode::class);
     }
 
     public function testCreate() : void
     {
-        $nodeInstantiator = new NodeInstantiator(NodeTypes::DOCUMENT, Document::class);
+        $nodeInstantiator = new NodeInstantiator(NodeTypes::DOCUMENT, DocumentNode::class);
 
         $environment = $this->createMock(Environment::class);
 
         $document = $nodeInstantiator->create([$environment]);
 
-        self::assertInstanceOf(Document::class, $document);
+        self::assertInstanceOf(DocumentNode::class, $document);
     }
 }

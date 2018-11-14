@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\Builder;
 
-use Doctrine\RST\Document;
 use Doctrine\RST\Metas;
+use Doctrine\RST\Nodes\DocumentNode;
 use InvalidArgumentException;
 use Symfony\Component\Filesystem\Filesystem;
 use function dirname;
@@ -20,7 +20,7 @@ class Documents
     /** @var Metas */
     private $metas;
 
-    /** @var Document[] */
+    /** @var DocumentNode[] */
     private $documents = [];
 
     public function __construct(
@@ -32,7 +32,7 @@ class Documents
     }
 
     /**
-     * @return Document[]
+     * @return DocumentNode[]
      */
     public function getAll() : array
     {
@@ -44,7 +44,7 @@ class Documents
         return isset($this->documents[$file]);
     }
 
-    public function addDocument(string $file, Document $document) : void
+    public function addDocument(string $file, DocumentNode $document) : void
     {
         $this->documents[$file] = $document;
     }

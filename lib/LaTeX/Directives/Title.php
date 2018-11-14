@@ -6,7 +6,6 @@ namespace Doctrine\RST\LaTeX\Directives;
 
 use Doctrine\RST\Directive;
 use Doctrine\RST\Nodes\Node;
-use Doctrine\RST\Nodes\RawNode;
 use Doctrine\RST\Parser;
 
 /**
@@ -33,7 +32,9 @@ class Title extends Directive
     ) : void {
         $document = $parser->getDocument();
 
-        $document->addHeaderNode(new RawNode('\title{' . $data . '}'));
+        $document->addHeaderNode(
+            $parser->getNodeFactory()->createRawNode('\title{' . $data . '}')
+        );
 
         if ($node === null) {
             return;

@@ -9,7 +9,6 @@ use Doctrine\RST\Builder\Hooks;
 use Doctrine\RST\Builder\ParseQueue;
 use Doctrine\RST\Builder\ParseQueueProcessor;
 use Doctrine\RST\Builder\Scanner;
-use Doctrine\RST\Configuration;
 use Doctrine\RST\ErrorManager;
 use Doctrine\RST\Kernel;
 use Doctrine\RST\Metas;
@@ -22,9 +21,6 @@ class ParseQueueProcessorTest extends TestCase
 {
     /** @var Kernel|MockObject */
     private $kernel;
-
-    /** @var Configuration|MockObject */
-    private $configuration;
 
     /** @var ErrorManager|MockObject */
     private $errorManager;
@@ -90,7 +86,6 @@ class ParseQueueProcessorTest extends TestCase
     protected function setUp() : void
     {
         $this->kernel          = $this->createMock(Kernel::class);
-        $this->configuration   = $this->createMock(Configuration::class);
         $this->errorManager    = $this->createMock(ErrorManager::class);
         $this->parseQueue      = $this->createMock(ParseQueue::class);
         $this->metas           = $this->createMock(Metas::class);
@@ -103,7 +98,6 @@ class ParseQueueProcessorTest extends TestCase
 
         $this->parseQueueProcessor = new ParseQueueProcessor(
             $this->kernel,
-            $this->configuration,
             $this->errorManager,
             $this->parseQueue,
             $this->metas,

@@ -48,11 +48,11 @@ class Builder
     /** @var string */
     private $indexName = 'index';
 
-    public function __construct(?Kernel $kernel = null, ?Configuration $configuration = null)
+    public function __construct(?Kernel $kernel = null)
     {
-        $this->kernel = $kernel ?? new HTML\Kernel();
+        $this->kernel = $kernel ?? new Kernel();
 
-        $this->configuration = $configuration ?? new Configuration();
+        $this->configuration = $this->kernel->getConfiguration();
 
         $this->errorManager = new ErrorManager($this->configuration);
 
@@ -78,7 +78,7 @@ class Builder
 
     public function recreate() : Builder
     {
-        return new Builder($this->kernel, $this->configuration);
+        return new Builder($this->kernel);
     }
 
     public function getKernel() : Kernel
@@ -168,7 +168,6 @@ class Builder
     {
         $parseQueueProcessor = new ParseQueueProcessor(
             $this->kernel,
-            $this->configuration,
             $this->errorManager,
             $this->parseQueue,
             $this->metas,
@@ -177,7 +176,7 @@ class Builder
             $this->scanner,
             $directory,
             $targetDirectory,
-            $this->kernel->getFileExtension()
+            $this->configuration->getFileExtension()
         );
 
         $parseQueueProcessor->process();

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Doctrine\RST\HTML\Directives;
 
 use Doctrine\RST\Nodes\Node;
-use Doctrine\RST\Nodes\WrapperNode;
 use Doctrine\RST\Parser;
 use Doctrine\RST\SubDirective;
 use function uniqid;
@@ -42,14 +41,16 @@ class Wrap extends SubDirective
         string $data,
         array $options
     ) : ?Node {
-        $class = $this->class;
-
         if ($this->uniqid) {
             $id = ' id="' . uniqid($this->class) . '"';
         } else {
             $id = '';
         }
 
-        return new WrapperNode($document, '<div class="' . $class . '"' . $id . '>', '</div>');
+        return $parser->getNodeFactory()->createWrapperNode(
+            $document,
+            '<div class="' . $this->class . '"' . $id . '>',
+            '</div>'
+        );
     }
 }

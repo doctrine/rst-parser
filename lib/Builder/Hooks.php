@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\Builder;
 
-use Doctrine\RST\Document;
+use Doctrine\RST\Nodes\DocumentNode;
 use Doctrine\RST\Parser;
 
 class Hooks
@@ -29,7 +29,7 @@ class Hooks
         return $this;
     }
 
-    public function callHooks(Document $document) : void
+    public function callHooks(DocumentNode $document) : void
     {
         foreach ($this->hooks as $hook) {
             $hook($document);

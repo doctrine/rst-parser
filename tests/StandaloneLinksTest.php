@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\Tests\RST;
 
-use Doctrine\RST\Document;
+use Doctrine\RST\Nodes\DocumentNode;
 use Doctrine\RST\Parser;
 use PHPUnit\Framework\TestCase;
 
@@ -194,7 +194,7 @@ class StandaloneLinksTest extends TestCase
      * Helper function, parses a file and returns the document
      * produced by the parser
      */
-    private function parse(string $file) : Document
+    private function parse(string $file) : DocumentNode
     {
         $directory   = __DIR__ . '/HTML/files/';
         $parser      = new Parser();

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\Tests\RST;
 
 use Doctrine\RST\Configuration;
+use Doctrine\RST\Kernel;
 use Doctrine\RST\Parser;
 use PHPUnit\Framework\TestCase;
 use function trim;
@@ -61,6 +62,6 @@ EOF;
     {
         $this->configuration = new Configuration();
 
-        $this->parser = new Parser(null, null, $this->configuration);
+        $this->parser = new Parser(new Kernel($this->configuration));
     }
 }

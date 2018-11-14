@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\Nodes;
 
-abstract class MetaNode extends Node
+class MetaNode extends Node
 {
     /** @var string */
     protected $key;
@@ -18,5 +18,15 @@ abstract class MetaNode extends Node
 
         $this->key   = $key;
         $this->value = $value;
+    }
+
+    public function getKey() : string
+    {
+        return $this->key;
+    }
+
+    public function getValue() : string
+    {
+        return $this->value;
     }
 }

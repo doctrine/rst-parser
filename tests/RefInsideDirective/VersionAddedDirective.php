@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Doctrine\Tests\RST\RefInsideDirective;
 
-use Doctrine\RST\Nodes\CallableNode;
 use Doctrine\RST\Nodes\Node;
 use Doctrine\RST\Parser;
 use Doctrine\RST\SubDirective;
@@ -28,12 +27,20 @@ class VersionAddedDirective extends SubDirective
         string $data,
         array $options
     ) : ?Node {
-        return new CallableNode(static function () use ($data, $document) {
-            return sprintf(
-                '<div class="versionadded"><p><span class="versionmodified">New in version %s: </span>%s</p></div>',
-                $data,
-                strip_tags((string) $document, '<a><code>')
-            );
-        });
+        return $parser->getNodeFactory()->createCallableNode(
+            static function () use ($data, $document) {
+                $nodeValue = '';
+
+                if ($document !== null) {
+                    $nodeValue = $document->render();
+                }
+
+                return sprintf(
+                    '<div class="versionadded"><p><span class="versionmodified">New in version %s: </span>%s</p></div>',
+                    $data,
+                    strip_tags($nodeValue, '<a><code>')
+                );
+            }
+        );
     }
 }

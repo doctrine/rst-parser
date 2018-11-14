@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\RST;
 
+use Doctrine\RST\Nodes\DocumentNode;
 use Doctrine\RST\Nodes\Node;
 
 /**
@@ -90,7 +91,7 @@ abstract class Directive
     /**
      * Called at the end of the parsing to finalize the document (add something or tweak nodes)
      */
-    public function finalize(Document &$document) : void
+    public function finalize(DocumentNode &$document) : void
     {
     }
 

@@ -6,6 +6,7 @@ namespace Doctrine\Tests\RST\BuilderUrl;
 
 use Doctrine\RST\Builder;
 use Doctrine\RST\Configuration;
+use Doctrine\RST\Kernel;
 use Doctrine\Tests\RST\BaseBuilderTest;
 use function strpos;
 
@@ -126,7 +127,7 @@ class BuilderUrlTest extends BaseBuilderTest
     protected function setUp() : void
     {
         $this->configuration = new Configuration();
-        $this->builder       = new Builder(null, $this->configuration);
+        $this->builder       = new Builder(new Kernel($this->configuration));
     }
 
     protected function getFixturesDirectory() : string

@@ -6,7 +6,6 @@ namespace Doctrine\RST\HTML\Directives;
 
 use Doctrine\RST\Directive;
 use Doctrine\RST\Nodes\Node;
-use Doctrine\RST\Nodes\RawNode;
 use Doctrine\RST\Parser;
 use function htmlspecialchars;
 
@@ -35,7 +34,7 @@ class Title extends Directive
         $document = $parser->getDocument();
 
         $document->addHeaderNode(
-            new RawNode('<title>' . htmlspecialchars($data) . '</title>')
+            $parser->getNodeFactory()->createRawNode('<title>' . htmlspecialchars($data) . '</title>')
         );
 
         if ($node === null) {
