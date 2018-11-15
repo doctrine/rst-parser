@@ -20,5 +20,8 @@ Yes, Jim, I found it under "http://www.w3.org/Addressing/", but you can probably
 pick it up from <ftp://foo.example.com/rfc/>.  Note the warning in
 <http://www.ics.uci.edu/pub/ietf/uri/historical.html#WARNING>.
 
+You can read more on the features of Embeddables objects `in the documentation
+<http://docs.doctrine-project.org/en/latest/tutorials/embeddables.html>`_.
+
 .. _`xkcd`: http://xkcd.com/
 .. _something: http://something.com/

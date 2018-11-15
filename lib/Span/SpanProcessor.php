@@ -152,7 +152,7 @@ class SpanProcessor
             $next = $match[6];
             $url  = '';
 
-            if (preg_match('/^(.+) <(.+)>$/mUsi', $link, $m) > 0) {
+            if (preg_match('/^(.+)[ \n]<(.+)>$/mUsi', $link, $m) > 0) {
                 $link = $m[1];
                 $url  = $m[2];
 
