@@ -6,25 +6,26 @@ namespace Doctrine\RST\LaTeX\Renderers;
 
 use Doctrine\RST\Nodes\ImageNode;
 use Doctrine\RST\Renderers\NodeRenderer;
+use Doctrine\RST\Templates\TemplateRenderer;
 
 class ImageNodeRenderer implements NodeRenderer
 {
     /** @var ImageNode */
     private $imageNode;
 
-    public function __construct(ImageNode $imageNode)
+    /** @var TemplateRenderer */
+    private $templateRenderer;
+
+    public function __construct(ImageNode $imageNode, TemplateRenderer $templateRenderer)
     {
-        $this->imageNode = $imageNode;
+        $this->imageNode        = $imageNode;
+        $this->templateRenderer = $templateRenderer;
     }
 
     public function render() : string
     {
-        $attributes = [];
-
-        foreach ($this->imageNode->getOptions() as $key => $value) {
-            $attributes[] = $key . '=' . $value;
-        }
-
-        return '\includegraphics{' . $this->imageNode->getUrl() . '}';
+        return $this->templateRenderer->render('image.tex.twig', [
+            'imageNode' => $this->imageNode,
+        ]);
     }
 }

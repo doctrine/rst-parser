@@ -11,9 +11,18 @@ use Doctrine\RST\Nodes;
 use Doctrine\RST\Renderers;
 use Doctrine\RST\Renderers\CallableNodeRendererFactory;
 use Doctrine\RST\Renderers\NodeRendererFactory;
+use Doctrine\RST\Templates\TemplateRenderer;
 
 class LaTeXFormat implements Format
 {
+    /** @var TemplateRenderer */
+    private $templateRenderer;
+
+    public function __construct(TemplateRenderer $templateRenderer)
+    {
+        $this->templateRenderer = $templateRenderer;
+    }
+
     public function getFileExtension() : string
     {
         return Format::LATEX;
@@ -42,73 +51,114 @@ class LaTeXFormat implements Format
     {
         return [
             Nodes\AnchorNode::class => new CallableNodeRendererFactory(
-                static function (Nodes\AnchorNode $node) {
-                    return new LaTeX\Renderers\AnchorNodeRenderer($node);
+                function (Nodes\AnchorNode $node) {
+                    return new LaTeX\Renderers\AnchorNodeRenderer(
+                        $node,
+                        $this->templateRenderer
+                    );
                 }
             ),
             Nodes\CodeNode::class => new CallableNodeRendererFactory(
-                static function (Nodes\CodeNode $node) {
-                    return new LaTeX\Renderers\CodeNodeRenderer($node);
+                function (Nodes\CodeNode $node) {
+                    return new LaTeX\Renderers\CodeNodeRenderer(
+                        $node,
+                        $this->templateRenderer
+                    );
                 }
             ),
             Nodes\ImageNode::class => new CallableNodeRendererFactory(
-                static function (Nodes\ImageNode $node) {
-                    return new LaTeX\Renderers\ImageNodeRenderer($node);
+                function (Nodes\ImageNode $node) {
+                    return new LaTeX\Renderers\ImageNodeRenderer(
+                        $node,
+                        $this->templateRenderer
+                    );
                 }
             ),
             Nodes\ListNode::class => new CallableNodeRendererFactory(
-                static function (Nodes\ListNode $node) {
-                    return new Renderers\ListNodeRenderer($node, new LaTeX\Renderers\ListRenderer());
+                function (Nodes\ListNode $node) {
+                    return new Renderers\ListNodeRenderer(
+                        $node,
+                        new LaTeX\Renderers\ListRenderer($this->templateRenderer)
+                    );
                 }
             ),
             Nodes\MetaNode::class => new CallableNodeRendererFactory(
-                static function (Nodes\MetaNode $node) {
-                    return new LaTeX\Renderers\MetaNodeRenderer();
+                function (Nodes\MetaNode $node) {
+                    return new LaTeX\Renderers\MetaNodeRenderer(
+                        $node,
+                        $this->templateRenderer
+                    );
                 }
             ),
             Nodes\ParagraphNode::class => new CallableNodeRendererFactory(
-                static function (Nodes\ParagraphNode $node) {
-                    return new LaTeX\Renderers\ParagraphNodeRenderer($node);
+                function (Nodes\ParagraphNode $node) {
+                    return new LaTeX\Renderers\ParagraphNodeRenderer(
+                        $node,
+                        $this->templateRenderer
+                    );
                 }
             ),
             Nodes\QuoteNode::class => new CallableNodeRendererFactory(
-                static function (Nodes\QuoteNode $node) {
-                    return new LaTeX\Renderers\QuoteNodeRenderer($node);
+                function (Nodes\QuoteNode $node) {
+                    return new LaTeX\Renderers\QuoteNodeRenderer(
+                        $node,
+                        $this->templateRenderer
+                    );
                 }
             ),
             Nodes\SeparatorNode::class => new CallableNodeRendererFactory(
-                static function (Nodes\SeparatorNode $node) {
-                    return new LaTeX\Renderers\SeparatorNodeRenderer();
+                function (Nodes\SeparatorNode $node) {
+                    return new LaTeX\Renderers\SeparatorNodeRenderer(
+                        $this->templateRenderer
+                    );
                 }
             ),
             Nodes\TableNode::class => new CallableNodeRendererFactory(
                 static function (Nodes\TableNode $node) {
-                    return new LaTeX\Renderers\TableNodeRenderer($node);
+                    return new LaTeX\Renderers\TableNodeRenderer(
+                        $node
+                    );
                 }
             ),
             Nodes\TitleNode::class => new CallableNodeRendererFactory(
-                static function (Nodes\TitleNode $node) {
-                    return new LaTeX\Renderers\TitleNodeRenderer($node);
+                function (Nodes\TitleNode $node) {
+                    return new LaTeX\Renderers\TitleNodeRenderer(
+                        $node,
+                        $this->templateRenderer
+                    );
                 }
             ),
             Nodes\TocNode::class => new CallableNodeRendererFactory(
-                static function (Nodes\TocNode $node) {
-                    return new LaTeX\Renderers\TocNodeRenderer($node->getEnvironment(), $node);
+                function (Nodes\TocNode $node) {
+                    return new LaTeX\Renderers\TocNodeRenderer(
+                        $node->getEnvironment(),
+                        $node,
+                        $this->templateRenderer
+                    );
                 }
             ),
             Nodes\DocumentNode::class => new CallableNodeRendererFactory(
-                static function (Nodes\DocumentNode $node) {
-                    return new LaTeX\Renderers\DocumentNodeRenderer($node);
+                function (Nodes\DocumentNode $node) {
+                    return new LaTeX\Renderers\DocumentNodeRenderer(
+                        $node,
+                        $this->templateRenderer
+                    );
                 }
             ),
             Nodes\SpanNode::class => new CallableNodeRendererFactory(
-                static function (Nodes\SpanNode $node) {
-                    return new LaTeX\Renderers\SpanNodeRenderer($node->getEnvironment(), $node);
+                function (Nodes\SpanNode $node) {
+                    return new LaTeX\Renderers\SpanNodeRenderer(
+                        $node->getEnvironment(),
+                        $node,
+                        $this->templateRenderer
+                    );
                 }
             ),
             Nodes\CallableNode::class => new CallableNodeRendererFactory(
                 static function (Nodes\CallableNode $node) {
-                    return new Renderers\CallableNodeRenderer($node);
+                    return new Renderers\CallableNodeRenderer(
+                        $node
+                    );
                 }
             ),
         ];

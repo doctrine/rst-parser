@@ -42,14 +42,19 @@ class Wrap extends SubDirective
         array $options
     ) : ?Node {
         if ($this->uniqid) {
-            $id = ' id="' . uniqid($this->class) . '"';
+            $id = uniqid($this->class);
         } else {
             $id = '';
         }
 
+        $divOpen = $parser->renderTemplate('div-open.html.twig', [
+            'id' => $id,
+            'class' => $this->class,
+        ]);
+
         return $parser->getNodeFactory()->createWrapperNode(
             $document,
-            '<div class="' . $this->class . '"' . $id . '>',
+            $divOpen,
             '</div>'
         );
     }

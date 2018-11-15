@@ -6,26 +6,26 @@ namespace Doctrine\RST\HTML\Renderers;
 
 use Doctrine\RST\Nodes\ImageNode;
 use Doctrine\RST\Renderers\NodeRenderer;
-use function htmlspecialchars;
+use Doctrine\RST\Templates\TemplateRenderer;
 
 class ImageNodeRenderer implements NodeRenderer
 {
     /** @var ImageNode */
     private $imageNode;
 
-    public function __construct(ImageNode $imageNode)
+    /** @var TemplateRenderer */
+    private $templateRenderer;
+
+    public function __construct(ImageNode $imageNode, TemplateRenderer $templateRenderer)
     {
-        $this->imageNode = $imageNode;
+        $this->imageNode        = $imageNode;
+        $this->templateRenderer = $templateRenderer;
     }
 
     public function render() : string
     {
-        $attributes = '';
-
-        foreach ($this->imageNode->getOptions() as $key => $value) {
-            $attributes .= ' ' . $key . '="' . htmlspecialchars($value) . '"';
-        }
-
-        return '<img src="' . $this->imageNode->getUrl() . '" ' . $attributes . ' />';
+        return $this->templateRenderer->render('image.html.twig', [
+            'imageNode' => $this->imageNode,
+        ]);
     }
 }

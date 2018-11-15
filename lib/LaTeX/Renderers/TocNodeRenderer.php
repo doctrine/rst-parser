@@ -7,6 +7,7 @@ namespace Doctrine\RST\LaTeX\Renderers;
 use Doctrine\RST\Environment;
 use Doctrine\RST\Nodes\TocNode;
 use Doctrine\RST\Renderers\NodeRenderer;
+use Doctrine\RST\Templates\TemplateRenderer;
 
 class TocNodeRenderer implements NodeRenderer
 {
@@ -16,15 +17,19 @@ class TocNodeRenderer implements NodeRenderer
     /** @var TocNode */
     private $tocNode;
 
-    public function __construct(Environment $environment, TocNode $tocNode)
+    /** @var TemplateRenderer */
+    private $templateRenderer;
+
+    public function __construct(Environment $environment, TocNode $tocNode, TemplateRenderer $templateRenderer)
     {
-        $this->environment = $environment;
-        $this->tocNode     = $tocNode;
+        $this->environment      = $environment;
+        $this->tocNode          = $tocNode;
+        $this->templateRenderer = $templateRenderer;
     }
 
     public function render() : string
     {
-        $tex = '\tableofcontents' . "\n";
+        $tocItems = [];
 
         foreach ($this->tocNode->getFiles() as $file) {
             $reference = $this->environment->resolve('doc', $file);
@@ -35,9 +40,12 @@ class TocNodeRenderer implements NodeRenderer
 
             $url = $this->environment->relativeUrl($reference->getUrl());
 
-            $tex .= '\\input{' . $url . "}\n";
+            $tocItems[] = ['url' => $url];
         }
 
-        return $tex;
+        return $this->templateRenderer->render('toc.tex.twig', [
+            'tocNode' => $this->tocNode,
+            'tocItems' => $tocItems,
+        ]);
     }
 }

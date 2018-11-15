@@ -6,26 +6,26 @@ namespace Doctrine\RST\HTML\Renderers;
 
 use Doctrine\RST\Nodes\ParagraphNode;
 use Doctrine\RST\Renderers\NodeRenderer;
-use function trim;
+use Doctrine\RST\Templates\TemplateRenderer;
 
 class ParagraphNodeRenderer implements NodeRenderer
 {
     /** @var ParagraphNode */
     private $paragraphNode;
 
-    public function __construct(ParagraphNode $paragraphNode)
+    /** @var TemplateRenderer */
+    private $templateRenderer;
+
+    public function __construct(ParagraphNode $paragraphNode, TemplateRenderer $templateRenderer)
     {
-        $this->paragraphNode = $paragraphNode;
+        $this->paragraphNode    = $paragraphNode;
+        $this->templateRenderer = $templateRenderer;
     }
 
     public function render() : string
     {
-        $text = trim($this->paragraphNode->getValue()->render());
-
-        if ($text !== '') {
-            return '<p>' . $text . '</p>';
-        }
-
-        return '';
+        return $this->templateRenderer->render('paragraph.html.twig', [
+            'paragraphNode' => $this->paragraphNode,
+        ]);
     }
 }

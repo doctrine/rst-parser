@@ -9,11 +9,25 @@ use Doctrine\RST\Formats\InternalFormat;
 use Doctrine\RST\HTML\HTMLFormat;
 use Doctrine\RST\LaTeX\LaTeXFormat;
 use Doctrine\RST\Renderers\NodeRendererFactory;
+use Doctrine\RST\Templates\TemplateRenderer;
+use Doctrine\RST\Templates\TwigTemplateRenderer;
 use RuntimeException;
 use function sprintf;
+use function sys_get_temp_dir;
 
 class Configuration
 {
+    public const THEME_DEFAULT = 'default';
+
+    /** @var string */
+    private $cacheDir;
+
+    /** @var string[] */
+    private $customTemplateDirs = [];
+
+    /** @var string */
+    private $theme = self::THEME_DEFAULT;
+
     /** @var string */
     private $baseUrl = '';
 
@@ -29,6 +43,9 @@ class Configuration
     /** @var string */
     private $fileExtension = Format::HTML;
 
+    /** @var TemplateRenderer */
+    private $templateRenderer;
+
     /** @var Format[] */
     private $formats;
 
@@ -37,10 +54,60 @@ class Configuration
 
     public function __construct()
     {
+        $this->cacheDir = sys_get_temp_dir() . '/doctrine-rst-parser';
+
+        $this->templateRenderer = new TwigTemplateRenderer($this);
+
         $this->formats = [
-            Format::HTML => new InternalFormat(new HTMLFormat()),
-            Format::LATEX => new InternalFormat(new LaTeXFormat()),
+            Format::HTML => new InternalFormat(new HTMLFormat($this->templateRenderer)),
+            Format::LATEX => new InternalFormat(new LaTeXFormat($this->templateRenderer)),
         ];
+    }
+
+    public function getCacheDir() : string
+    {
+        return $this->cacheDir;
+    }
+
+    public function setCacheDir(string $cacheDir) : void
+    {
+        $this->cacheDir = $cacheDir;
+    }
+
+    public function getTemplateRenderer() : TemplateRenderer
+    {
+        return $this->templateRenderer;
+    }
+
+    public function setTemplateRenderer(TemplateRenderer $templateRenderer) : void
+    {
+        $this->templateRenderer = $templateRenderer;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getCustomTemplateDirs() : array
+    {
+        return $this->customTemplateDirs;
+    }
+
+    /**
+     * @param string[] $customTemplateDirs
+     */
+    public function setCustomTemplateDirs(array $customTemplateDirs) : void
+    {
+        $this->customTemplateDirs = $customTemplateDirs;
+    }
+
+    public function addCustomTemplateDir(string $customTemplateDir) : void
+    {
+        $this->customTemplateDirs[] = $customTemplateDir;
+    }
+
+    public function getTheme() : string
+    {
+        return $this->theme;
     }
 
     public function getBaseUrl() : string

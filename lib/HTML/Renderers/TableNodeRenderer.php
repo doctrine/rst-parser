@@ -7,64 +7,64 @@ namespace Doctrine\RST\HTML\Renderers;
 use Doctrine\RST\Nodes\SpanNode;
 use Doctrine\RST\Nodes\TableNode;
 use Doctrine\RST\Renderers\NodeRenderer;
+use Doctrine\RST\Templates\TemplateRenderer;
 use function count;
-use function sprintf;
 
 class TableNodeRenderer implements NodeRenderer
 {
     /** @var TableNode */
     private $tableNode;
 
-    public function __construct(TableNode $tableNode)
+    /** @var TemplateRenderer */
+    private $templateRenderer;
+
+    public function __construct(TableNode $tableNode, TemplateRenderer $templateRenderer)
     {
-        $this->tableNode = $tableNode;
+        $this->tableNode        = $tableNode;
+        $this->templateRenderer = $templateRenderer;
     }
 
     public function render() : string
     {
-        $html = '<table class="table table-bordered">';
-
         $headers = $this->tableNode->getHeaders();
         $data    = $this->tableNode->getData();
 
-        if (count($headers) !== 0) {
-            $html .= '<thead><tr>';
+        $tableHeader = [];
+        $tableRows   = [];
 
+        if (count($headers) !== 0) {
             foreach ($headers as $k => $isHeader) {
                 if (! isset($data[$k])) {
                     continue;
                 }
 
                 /** @var SpanNode $col */
-                foreach ($data[$k] as &$col) {
-                    $html .= sprintf('<th>%s</th>', $col->render());
+                foreach ($data[$k] as $col) {
+                    $tableHeader[] = $col->render();
                 }
 
                 unset($data[$k]);
             }
-
-            $html .= '</tr></thead>';
         }
 
-        $html .= '<tbody>';
-
-        foreach ($data as $k => &$row) {
+        foreach ($data as $k => $row) {
             if ($row === []) {
                 continue;
             }
 
-            $html .= '<tr>';
+            $tableRow = [];
 
             /** @var SpanNode $col */
-            foreach ($row as &$col) {
-                $html .= sprintf('<td>%s</td>', $col->render());
+            foreach ($row as $col) {
+                $tableRow[] = $col->render();
             }
 
-            $html .= '</tr>';
+            $tableRows[] = $tableRow;
         }
 
-        $html .= '</tbody></table>';
-
-        return $html;
+        return $this->templateRenderer->render('table.html.twig', [
+            'tableHeader' => $tableHeader,
+            'tableRows' => $tableRows,
+        ]);
     }
 }

@@ -6,16 +6,20 @@ namespace Doctrine\RST\HTML\Renderers;
 
 use Doctrine\RST\Nodes\CodeNode;
 use Doctrine\RST\Renderers\NodeRenderer;
-use function htmlspecialchars;
+use Doctrine\RST\Templates\TemplateRenderer;
 
 class CodeNodeRenderer implements NodeRenderer
 {
     /** @var CodeNode */
     private $codeNode;
 
-    public function __construct(CodeNode $codeNode)
+    /** @var TemplateRenderer */
+    private $templateRenderer;
+
+    public function __construct(CodeNode $codeNode, TemplateRenderer $templateRenderer)
     {
-        $this->codeNode = $codeNode;
+        $this->codeNode         = $codeNode;
+        $this->templateRenderer = $templateRenderer;
     }
 
     public function render() : string
@@ -28,6 +32,9 @@ class CodeNodeRenderer implements NodeRenderer
 
         $language = $this->codeNode->getLanguage();
 
-        return '<pre><code class="' . $language . '">' . htmlspecialchars($value) . '</code></pre>';
+        return $this->templateRenderer->render('code.html.twig', [
+            'language' => $language,
+            'value' => $value,
+        ]);
     }
 }
