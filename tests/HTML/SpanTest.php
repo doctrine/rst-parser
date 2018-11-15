@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\Tests\RST\HTML;
 
+use Doctrine\RST\Configuration;
 use Doctrine\RST\Environment;
 use Doctrine\RST\HTML\Renderers\SpanNodeRenderer;
 use Doctrine\RST\Nodes\SpanNode;
@@ -35,8 +36,11 @@ class SpanTest extends TestCase
             ->with($url)
             ->willReturn($url);
 
+        $configuration    = new Configuration();
+        $templateRenderer = $configuration->getTemplateRenderer();
+
         $span         = new SpanNode($parser, 'span');
-        $spanRenderer = new SpanNodeRenderer($environment, $span);
+        $spanRenderer = new SpanNodeRenderer($environment, $span, $templateRenderer);
 
         self::assertSame(
             $expectedLink,

@@ -94,12 +94,9 @@ RST;
         $expected = <<<RST
 \\label{}
 This is a quote:
-
 \\begin{quotation}
 Quoting someone
-
 On some lines
-
 
 \\end{quotation}
 RST;
@@ -114,7 +111,6 @@ RST;
         $expected = <<<RST
 \\label{}
 Testing separator
-
 \ \
 Hey!
 RST;

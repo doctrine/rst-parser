@@ -7,7 +7,6 @@ namespace Doctrine\RST\HTML\Directives;
 use Doctrine\RST\Directive;
 use Doctrine\RST\Nodes\Node;
 use Doctrine\RST\Parser;
-use function htmlspecialchars;
 
 /**
  * Add a meta title to the document
@@ -33,8 +32,10 @@ class Title extends Directive
     ) : void {
         $document = $parser->getDocument();
 
+        $title = $parser->renderTemplate('title.html.twig', ['title' => $data]);
+
         $document->addHeaderNode(
-            $parser->getNodeFactory()->createRawNode('<title>' . htmlspecialchars($data) . '</title>')
+            $parser->getNodeFactory()->createRawNode($title)
         );
 
         if ($node === null) {

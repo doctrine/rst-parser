@@ -1,0 +1,7 @@
+{% spaceless %}
+    {% set text = paragraphNode.value.render()|trim %}
+
+    {% if text %}
+        <p>{{ text|raw }}</p>
+    {% endif %}
+{% endspaceless %}

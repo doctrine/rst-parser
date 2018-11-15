@@ -19,8 +19,6 @@ Usage
 
 .. code-block:: php
 
-    <?php
-
     require 'vendor/autoload.php';
 
     use Doctrine\RST\Configuration;
@@ -70,8 +68,6 @@ You can simply use it with:
 
 .. code-block:: php
 
-    <?php
-
     require 'vendor/autoload.php';
 
     use Doctrine\RST\Builder;
@@ -110,8 +106,6 @@ with a base url, you can use the ``baseUrl`` option:
 
 .. code-block:: php
 
-    <?php
-
     $configuration->setBaseUrl('https://www.doctrine-project.org');
 
 Base URL Enabled Callable
@@ -124,12 +118,179 @@ only use the base url on certain paths:
 
 .. code-block:: php
 
-    <?php
-
     // only use the base url on paths that contain the string /use-base-url/
     $configuration->setBaseUrlEnabledCallable(static function(string $path) : bool {
         return strpos($path, '/use-base-url/') !== false;
     });
+
+Customizing Rendering
+---------------------
+
+You can customize individual templates used during the rendering process by configuring
+the ``customTemplateDirs`` option using ``setCustomTemplateDirs()`` or ``addCustomTemplateDir()``:
+
+.. code-block:: php
+
+    use Doctrine\RST\Formats\Format;
+
+    $configuration->setFileExtension(Format::HTML); // default is html
+    $configuration->setCustomTemplateDirs([
+        '/path/to/custom/templates'
+    ]);
+
+The files that you can override can be found `here <https://github.com/doctrine/rst-parser/tree/master/lib/Templates>`_. For example, the file ``default/html/anchor.html.twig`` could be overwritten by creating the same file at
+``/path/to/custom/templates/default/html/anchor.html.twig``. All of the other templates will still use
+the core templates.
+
+If you wanted to customize the LaTeX output you can do so like this:
+
+.. code-block:: php
+
+    $configuration->setFileExtension(Format::LATEX);
+
+Now you can customize the LaTeX output by overriding files in ``/path/to/custom/templates/default/tex``.
+
+Themes
+------
+
+Similar to customizing individual parts of the rendering, you can have different themes that can be shared.
+
+.. code-block:: php
+
+    use Doctrine\RST\Formats\Format;
+
+    $configuration->setFileExtension(Format::HTML);
+    $configuration->setCustomTemplateDirs([
+        '/path/to/custom/templates'
+    ]);
+    $configuration->setTheme('my_theme');
+
+Now create a new directory for your theme at ``/path/to/custom/templates/my_theme/html``. Create a file
+named ``layout.html.twig`` and you can customize the layout that wraps all generated html files.
+
+.. code-block:: twig
+
+    <!DOCTYPE html>
+    <html>
+        <head>
+            <meta charset="utf-8" />
+
+            {% block head '' %}
+        </head>
+
+        <body>
+            {% block body '' %}
+        </body>
+    </html>
+
+Formats
+-------
+
+In addition to templates and themes, you can build formats which allow you to completely implement your
+own rendering. This library comes with two formats by default, HTML and LaTeX.
+
+To build your own format you need to implement the ``Doctrine\RST\Formats\Format`` interface:
+
+.. code-block:: php
+
+    namespace App\RST\MySpecial;
+
+    use App\MySpecial\MySpecialGenerator;
+    use Doctrine\RST\Directive;
+    use Doctrine\RST\Formats\Format;
+    use Doctrine\RST\Nodes;
+    use Doctrine\RST\Renderers\CallableNodeRendererFactory;
+    use Doctrine\RST\Renderers\NodeRendererFactory;
+
+    class MySpecialFormat implements Format
+    {
+        /** @var MySpecialGenerator */
+        private $mySpecialGenerator;
+
+        public function __construct(MySpecialGenerator $mySpecialGenerator)
+        {
+            $this->mySpecialGenerator = $mySpecialGenerator;
+        }
+
+        public function getFileExtension() : string
+        {
+            return 'myspecial';
+        }
+
+        /**
+         * @return Directive[]
+         */
+        public function getDirectives() : array
+        {
+            return [
+                // ...
+            ];
+        }
+
+        /**
+         * @return NodeRendererFactory[]
+         */
+        public function getNodeRendererFactories() : array
+        {
+            return [
+                Nodes\AnchorNode::class => new CallableNodeRendererFactory(
+                    function (Nodes\AnchorNode $node) {
+                        return new MySpecial\Renderers\AnchorNodeRenderer(
+                            $node,
+                            $this->mySpecialGenerator
+                        );
+                    }
+                ),
+
+                // implement the NodeRendererFactory interface for every node type
+            ];
+        }
+    }
+
+The ``App\RST\MySpecial\Renderers\AnchorNodeRenderer`` would look like this:
+
+.. code-block:: php
+
+    namespace App\RST\MySpecial\Renderers;
+
+    use App\MySpecial\MySpecialGenerator;
+    use Doctrine\RST\Nodes\AnchorNode;
+    use Doctrine\RST\Renderers\NodeRenderer;
+
+    class AnchorNodeRenderer implements NodeRenderer
+    {
+        /** @var AnchorNode */
+        private $anchorNode;
+
+        /** @var MySpecialGenerator */
+        private $mySpecialGenerator;
+
+        public function __construct(AnchorNode $anchorNode, MySpecialGenerator $mySpecialGenerator)
+        {
+            $this->anchorNode         = $anchorNode;
+            $this->mySpecialGenerator = $mySpecialGenerator;
+        }
+
+        public function render() : string
+        {
+            // render the node using the MySpecialGenerator instance
+        }
+    }
+
+Now add the format to the ``Configuration``:
+
+.. code-block:: php
+
+    use App\MySpecial\MySpecialGenerator;
+    use App\RST\MySpecial\MySpecialFormat;
+
+    $configuration->addFormat(new MySpecialFormat(new MySpecialGenerator()));
+
+Use the format:
+
+.. code-block:: php
+
+    $configuration->setFileExtension('myspecial');
 
 Custom Directives
 =================
@@ -158,8 +319,6 @@ You can register your directive by directly calling
 
 .. code-block:: php
 
-    <?php
-
     use App\RST\Directive\CautionDirective;
 
     $parser->registerDirective(new CautionDirective());
@@ -167,8 +326,6 @@ You can register your directive by directly calling
 Or you can pass an array of directives when constructing your Kernel:
 
 .. code-block:: php
-
-    <?php
 
     use App\RST\Directive\CautionDirective;
 
@@ -181,8 +338,6 @@ Or you can pass an array of directives when constructing your Kernel:
 The ``CautionDirective`` class would look like this:
 
 .. code-block:: php
-
-    <?php
 
     declare(strict_types=1);
 
@@ -210,7 +365,11 @@ The ``CautionDirective`` class would look like this:
             string $data,
             array $options
         ) : ?Node {
-            return $parser->getNodeFactory()->createWrapper($document, '<div class="caution">', '</div>');
+            $divOpen = $parser->renderTemplate('div-open.html.twig', [
+                'class' => 'caution',
+            ]);
+
+            return $parser->getNodeFactory()->createWrapper($document, $divOpen, '</div>');
         }
     }
 

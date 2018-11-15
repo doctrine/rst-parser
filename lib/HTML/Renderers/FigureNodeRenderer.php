@@ -6,33 +6,26 @@ namespace Doctrine\RST\HTML\Renderers;
 
 use Doctrine\RST\Nodes\FigureNode;
 use Doctrine\RST\Renderers\NodeRenderer;
-use function trim;
+use Doctrine\RST\Templates\TemplateRenderer;
 
 class FigureNodeRenderer implements NodeRenderer
 {
     /** @var FigureNode */
     private $figureNode;
 
-    public function __construct(FigureNode $figureNode)
+    /** @var TemplateRenderer */
+    private $templateRenderer;
+
+    public function __construct(FigureNode $figureNode, TemplateRenderer $templateRenderer)
     {
-        $this->figureNode = $figureNode;
+        $this->figureNode       = $figureNode;
+        $this->templateRenderer = $templateRenderer;
     }
 
     public function render() : string
     {
-        $html  = '<figure>';
-        $html .= $this->figureNode->getImage()->render();
-
-        $document = $this->figureNode->getDocument();
-
-        if ($document !== null) {
-            $caption = trim($document->render());
-
-            if ($caption !== '') {
-                $html .= '<figcaption>' . $caption . '</figcaption>';
-            }
-        }
-
-        return $html .= '</figure>';
+        return $this->templateRenderer->render('figure.html.twig', [
+            'figureNode' => $this->figureNode,
+        ]);
     }
 }

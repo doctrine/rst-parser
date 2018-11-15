@@ -6,19 +6,26 @@ namespace Doctrine\RST\HTML\Renderers;
 
 use Doctrine\RST\Nodes\AnchorNode;
 use Doctrine\RST\Renderers\NodeRenderer;
+use Doctrine\RST\Templates\TemplateRenderer;
 
 class AnchorNodeRenderer implements NodeRenderer
 {
     /** @var AnchorNode */
     private $anchorNode;
 
-    public function __construct(AnchorNode $anchorNode)
+    /** @var TemplateRenderer */
+    private $templateRenderer;
+
+    public function __construct(AnchorNode $anchorNode, TemplateRenderer $templateRenderer)
     {
-        $this->anchorNode = $anchorNode;
+        $this->anchorNode       = $anchorNode;
+        $this->templateRenderer = $templateRenderer;
     }
 
     public function render() : string
     {
-        return '<a id="' . $this->anchorNode->getValue() . '"></a>';
+        return $this->templateRenderer->render('anchor.html.twig', [
+            'anchorNode' => $this->anchorNode,
+        ]);
     }
 }

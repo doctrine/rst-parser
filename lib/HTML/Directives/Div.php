@@ -28,6 +28,8 @@ class Div extends SubDirective
         string $data,
         array $options
     ) : ?Node {
-        return $parser->getNodeFactory()->createWrapperNode($document, '<div class="' . $data . '">', '</div>');
+        $divOpen = $parser->renderTemplate('div-open.html.twig', ['class' => $data]);
+
+        return $parser->getNodeFactory()->createWrapperNode($document, $divOpen, '</div>');
     }
 }

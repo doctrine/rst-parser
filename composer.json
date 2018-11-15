@@ -18,7 +18,8 @@
     ],
     "require": {
         "php": "^7.1",
-        "symfony/filesystem": "^4.1"
+        "symfony/filesystem": "^4.1",
+        "twig/twig": "^2.5"
     },
     "require-dev": {
         "doctrine/coding-standard": "^5.0",

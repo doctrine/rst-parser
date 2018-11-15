@@ -7,6 +7,7 @@ namespace Doctrine\RST\HTML\Renderers;
 use Doctrine\RST\Environment;
 use Doctrine\RST\Nodes\TocNode;
 use Doctrine\RST\Renderers\NodeRenderer;
+use Doctrine\RST\Templates\TemplateRenderer;
 use function count;
 use function is_array;
 
@@ -18,14 +19,14 @@ class TocNodeRenderer implements NodeRenderer
     /** @var TocNode */
     private $tocNode;
 
-    /** @var int */
-    private $depth;
+    /** @var TemplateRenderer */
+    private $templateRenderer;
 
-    public function __construct(Environment $environment, TocNode $tocNode)
+    public function __construct(Environment $environment, TocNode $tocNode, TemplateRenderer $templateRenderer)
     {
-        $this->environment = $environment;
-        $this->tocNode     = $tocNode;
-        $this->depth       = $this->tocNode->getDepth();
+        $this->environment      = $environment;
+        $this->tocNode          = $tocNode;
+        $this->templateRenderer = $templateRenderer;
     }
 
     public function render() : string
@@ -36,7 +37,7 @@ class TocNodeRenderer implements NodeRenderer
             return '';
         }
 
-        $html = '<div class="toc"><ul>';
+        $tocItems = [];
 
         foreach ($this->tocNode->getFiles() as $file) {
             $reference = $this->environment->resolve('doc', $file);
@@ -47,48 +48,47 @@ class TocNodeRenderer implements NodeRenderer
 
             $url = $this->environment->relativeUrl($reference->getUrl());
 
-            $html .= $this->renderLevel($url, $reference->getTitles());
+            $this->buildLevel($url, $reference->getTitles(), 1, $tocItems);
         }
 
-        $html .= '</ul></div>';
-
-        return $html;
+        return $this->templateRenderer->render('toc.html.twig', [
+            'tocNode' => $this->tocNode,
+            'tocItems' => $tocItems,
+        ]);
     }
 
     /**
      * @param mixed[]|array $titles
-     * @param mixed[]       $path
+     * @param mixed[]       $tocItems
      */
-    private function renderLevel(
+    private function buildLevel(
         ?string $url,
         array $titles,
-        int $level = 1,
-        array $path = []
-    ) : string {
+        int $level,
+        array &$tocItems
+    ) : void {
         $html = '';
 
         foreach ($titles as $k => $entry) {
-            $path[$level - 1] = (int) $k + 1;
-
             [$title, $children] = $entry;
 
             [$title, $target] = $this->generateTarget($url, $title);
 
-            $html .= '<li id="' . $this->generateTargetId($target) . '" class="toc-item">';
-
-            $html .= '<a href="' . $this->environment->generateUrl($target) . '">' . $title . '</a>';
+            $tocItem = [
+                'targetId' => $this->generateTargetId($target),
+                'targetUrl' => $this->environment->generateUrl($target),
+                'title' => $title,
+                'level' => $level,
+                'children' => [],
+            ];
 
             // render children until we hit the configured maxdepth
-            if (count($children) > 0 && $level < $this->depth) {
-                $html .= '<ul>';
-                $html .= $this->renderLevel($url, $children, $level + 1, $path);
-                $html .= '</ul>';
+            if (count($children) > 0 && $level < $this->tocNode->getDepth()) {
+                $this->buildLevel($url, $children, $level + 1, $tocItem['children']);
             }
 
-            $html .= '</li>';
+            $tocItems[] = $tocItem;
         }
-
-        return $html;
     }
 
     private function generateTargetId(string $target) : string

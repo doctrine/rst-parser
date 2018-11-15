@@ -6,20 +6,26 @@ namespace Doctrine\RST\HTML\Renderers;
 
 use Doctrine\RST\Nodes\MetaNode;
 use Doctrine\RST\Renderers\NodeRenderer;
-use function htmlspecialchars;
+use Doctrine\RST\Templates\TemplateRenderer;
 
 class MetaNodeRenderer implements NodeRenderer
 {
     /** @var MetaNode */
     private $metaNode;
 
-    public function __construct(MetaNode $metaNode)
+    /** @var TemplateRenderer */
+    private $templateRenderer;
+
+    public function __construct(MetaNode $metaNode, TemplateRenderer $templateRenderer)
     {
-        $this->metaNode = $metaNode;
+        $this->metaNode         = $metaNode;
+        $this->templateRenderer = $templateRenderer;
     }
 
     public function render() : string
     {
-        return '<meta name="' . htmlspecialchars($this->metaNode->getKey()) . '" content="' . htmlspecialchars($this->metaNode->getValue()) . '" />';
+        return $this->templateRenderer->render('meta.html.twig', [
+            'metaNode' => $this->metaNode,
+        ]);
     }
 }

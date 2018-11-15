@@ -4,40 +4,52 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\HTML\Renderers;
 
+use Doctrine\RST\Environment;
+use Doctrine\RST\Nodes\SpanNode;
 use Doctrine\RST\References\ResolvedReference;
 use Doctrine\RST\Renderers\SpanNodeRenderer as BaseSpanNodeRenderer;
-use function array_keys;
-use function array_map;
+use Doctrine\RST\Templates\TemplateRenderer;
 use function htmlspecialchars;
-use function implode;
-use function sprintf;
 use function trim;
 
 class SpanNodeRenderer extends BaseSpanNodeRenderer
 {
+    /** @var TemplateRenderer */
+    private $templateRenderer;
+
+    public function __construct(
+        Environment $environment,
+        SpanNode $span,
+        TemplateRenderer $templateRenderer
+    ) {
+        parent::__construct($environment, $span);
+
+        $this->templateRenderer = $templateRenderer;
+    }
+
     public function emphasis(string $text) : string
     {
-        return '<em>' . $text . '</em>';
+        return $this->templateRenderer->render('emphasis.html.twig', ['text' => $text]);
     }
 
     public function strongEmphasis(string $text) : string
     {
-        return '<strong>' . $text . '</strong>';
+        return $this->templateRenderer->render('strong-emphasis.html.twig', ['text' => $text]);
     }
 
     public function nbsp() : string
     {
-        return '&nbsp;';
+        return $this->templateRenderer->render('nbsp.html.twig');
     }
 
     public function br() : string
     {
-        return '<br />';
+        return $this->templateRenderer->render('br.html.twig');
     }
 
     public function literal(string $text) : string
     {
-        return '<code>' . $text . '</code>';
+        return $this->templateRenderer->render('literal.html.twig', ['text' => $text]);
     }
 
     /**
@@ -45,20 +57,13 @@ class SpanNodeRenderer extends BaseSpanNodeRenderer
      */
     public function link(?string $url, string $title, array $attributes = []) : string
     {
-        $htmlAttributes = implode(
-            ' ',
-            array_map(
-                static function ($attribute, $value) {
-                    return sprintf('%s="%s"', $attribute, htmlspecialchars((string) $value));
-                },
-                array_keys($attributes),
-                $attributes
-            )
-        );
-
         $url = (string) $url;
 
-        return '<a href="' . $this->environment->generateUrl($url) . '"' . ( $htmlAttributes !== '' ? ' ' . $htmlAttributes : '') . '>' . $title . '</a>';
+        return $this->templateRenderer->render('link.html.twig', [
+            'url' => $this->environment->generateUrl($url),
+            'title' => $title,
+            'attributes' => $attributes,
+        ]);
     }
 
     public function escape(string $span) : string

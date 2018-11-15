@@ -65,6 +65,14 @@ class Parser
         return $this->configuration->getNodeFactory();
     }
 
+    /**
+     * @param mixed[] $parameters
+     */
+    public function renderTemplate(string $template, array $parameters = []) : string
+    {
+        return $this->configuration->getTemplateRenderer()->render($template, $parameters);
+    }
+
     public function initDirectives() : void
     {
         $directives = $this->kernel->getDirectives();

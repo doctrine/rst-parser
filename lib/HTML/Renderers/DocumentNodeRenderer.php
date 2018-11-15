@@ -8,15 +8,20 @@ use Doctrine\RST\Nodes\DocumentNode;
 use Doctrine\RST\Renderers\DocumentNodeRenderer as BaseDocumentRender;
 use Doctrine\RST\Renderers\FullDocumentNodeRenderer;
 use Doctrine\RST\Renderers\NodeRenderer;
+use Doctrine\RST\Templates\TemplateRenderer;
 
 class DocumentNodeRenderer implements NodeRenderer, FullDocumentNodeRenderer
 {
     /** @var DocumentNode */
     private $document;
 
-    public function __construct(DocumentNode $document)
+    /** @var TemplateRenderer */
+    private $templateRenderer;
+
+    public function __construct(DocumentNode $document, TemplateRenderer $templateRenderer)
     {
-        $this->document = $document;
+        $this->document         = $document;
+        $this->templateRenderer = $templateRenderer;
     }
 
     public function render() : string
@@ -26,26 +31,15 @@ class DocumentNodeRenderer implements NodeRenderer, FullDocumentNodeRenderer
 
     public function renderDocument() : string
     {
-        $document  = "<!DOCTYPE html>\n";
-        $document .= "<html>\n";
-
-        $document .= "<head>\n";
-        $document .= "<meta charset=\"utf-8\" />\n";
+        $headerNodes = '';
 
         foreach ($this->document->getHeaderNodes() as $node) {
-            $document .= $node->render() . "\n";
+            $headerNodes .= $node->render() . "\n";
         }
 
-        $document .= "</head>\n";
-
-        $document .= "<body>\n";
-
-        $document .= $this->render();
-
-        $document .= "</body>\n";
-
-        $document .= "</html>\n";
-
-        return $document;
+        return $this->templateRenderer->render('document.html.twig', [
+            'headerNodes' => $headerNodes,
+            'bodyNodes' => $this->render(),
+        ]);
     }
 }

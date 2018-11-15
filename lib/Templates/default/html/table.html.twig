@@ -1,0 +1,21 @@
+<table class="table table-bordered">
+    {% if tableHeader %}
+        <thead>
+            <tr>
+                {% for value in tableHeader %}
+                    <th>{{ value|raw }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+    {% endif %}
+
+    <tbody>
+        {% for tableRow in tableRows %}
+            <tr>
+                {% for value in tableRow %}
+                    <td>{{ value|raw }}</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

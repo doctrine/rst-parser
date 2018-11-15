@@ -6,19 +6,26 @@ namespace Doctrine\RST\HTML\Renderers;
 
 use Doctrine\RST\Nodes\QuoteNode;
 use Doctrine\RST\Renderers\NodeRenderer;
+use Doctrine\RST\Templates\TemplateRenderer;
 
 class QuoteNodeRenderer implements NodeRenderer
 {
     /** @var QuoteNode */
     private $quoteNode;
 
-    public function __construct(QuoteNode $quoteNode)
+    /** @var TemplateRenderer */
+    private $templateRenderer;
+
+    public function __construct(QuoteNode $quoteNode, TemplateRenderer $templateRenderer)
     {
-        $this->quoteNode = $quoteNode;
+        $this->quoteNode        = $quoteNode;
+        $this->templateRenderer = $templateRenderer;
     }
 
     public function render() : string
     {
-        return '<blockquote>' . $this->quoteNode->getValue()->render() . '</blockquote>';
+        return $this->templateRenderer->render('quote.html.twig', [
+            'quoteNode' => $this->quoteNode,
+        ]);
     }
 }
