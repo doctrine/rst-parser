@@ -6,10 +6,13 @@ namespace Doctrine\RST;
 
 use Doctrine\RST\Builder\Copier;
 use Doctrine\RST\Builder\Documents;
-use Doctrine\RST\Builder\Hooks;
 use Doctrine\RST\Builder\ParseQueue;
 use Doctrine\RST\Builder\ParseQueueProcessor;
 use Doctrine\RST\Builder\Scanner;
+use Doctrine\RST\Event\PostBuildRenderEvent;
+use Doctrine\RST\Event\PreBuildParseEvent;
+use Doctrine\RST\Event\PreBuildRenderEvent;
+use Doctrine\RST\Event\PreBuildScanEvent;
 use Doctrine\RST\Meta\Metas;
 use Symfony\Component\Filesystem\Filesystem;
 use function is_dir;
@@ -40,9 +43,6 @@ class Builder
     /** @var Scanner */
     private $scanner;
 
-    /** @var Hooks */
-    private $hooks;
-
     /** @var Copier */
     private $copier;
 
@@ -70,8 +70,6 @@ class Builder
 
         $this->scanner = new Builder\Scanner($this->parseQueue, $this->metas);
 
-        $this->hooks = new Builder\Hooks();
-
         $this->copier = new Builder\Copier($this->filesystem);
 
         $this->kernel->initBuilder($this);
@@ -97,23 +95,14 @@ class Builder
         return $this->documents;
     }
 
+    public function getParseQueue() : Builder\ParseQueue
+    {
+        return $this->parseQueue;
+    }
+
     public function getErrorManager() : ErrorManager
     {
         return $this->errorManager;
-    }
-
-    public function addHook(callable $function) : self
-    {
-        $this->hooks->addHook($function);
-
-        return $this;
-    }
-
-    public function addBeforeHook(callable $function) : self
-    {
-        $this->hooks->addBeforeHook($function);
-
-        return $this;
     }
 
     public function setIndexName(string $name) : self
@@ -137,7 +126,7 @@ class Builder
             $this->filesystem->mkdir($targetDirectory, 0755);
         }
 
-        $this->scan($directory);
+        $this->scan($directory, $targetDirectory);
 
         $this->parse($directory, $targetDirectory);
 
@@ -158,8 +147,13 @@ class Builder
         return $this;
     }
 
-    private function scan(string $directory) : void
+    private function scan(string $directory, string $targetDirectory) : void
     {
+        $this->configuration->dispatchEvent(
+            PreBuildScanEvent::PRE_BUILD_SCAN,
+            new PreBuildScanEvent($this, $directory, $targetDirectory)
+        );
+
         $this->scanner->scan($directory, $this->getIndexName());
 
         $this->scanner->scanMetas($directory);
@@ -167,12 +161,16 @@ class Builder
 
     private function parse(string $directory, string $targetDirectory) : void
     {
+        $this->configuration->dispatchEvent(
+            PreBuildParseEvent::PRE_BUILD_PARSE,
+            new PreBuildParseEvent($this, $directory, $targetDirectory)
+        );
+
         $parseQueueProcessor = new ParseQueueProcessor(
             $this->kernel,
             $this->errorManager,
             $this->parseQueue,
             $this->metas,
-            $this->hooks,
             $this->documents,
             $this->scanner,
             $directory,
@@ -185,9 +183,19 @@ class Builder
 
     private function render(string $directory, string $targetDirectory) : void
     {
+        $this->configuration->dispatchEvent(
+            PreBuildRenderEvent::PRE_BUILD_RENDER,
+            new PreBuildRenderEvent($this, $directory, $targetDirectory)
+        );
+
         $this->documents->render($targetDirectory);
 
         $this->copier->doMkdir($targetDirectory);
         $this->copier->doCopy($directory, $targetDirectory);
+
+        $this->configuration->dispatchEvent(
+            PostBuildRenderEvent::POST_BUILD_RENDER,
+            new PostBuildRenderEvent($this, $directory, $targetDirectory)
+        );
     }
 }

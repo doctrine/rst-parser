@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Doctrine\RST;
 
+use Doctrine\Common\EventArgs;
+use Doctrine\Common\EventManager;
 use Doctrine\RST\Formats\Format;
 use Doctrine\RST\Formats\InternalFormat;
 use Doctrine\RST\HTML\HTMLFormat;
@@ -56,11 +58,16 @@ class Configuration
     /** @var NodeFactory|null */
     private $nodeFactory;
 
+    /** @var EventManager */
+    private $eventManager;
+
     public function __construct()
     {
         $this->cacheDir = sys_get_temp_dir() . '/doctrine-rst-parser';
 
         $this->templateRenderer = new TwigTemplateRenderer($this);
+
+        $this->eventManager = new EventManager();
 
         $this->formats = [
             Format::HTML => new InternalFormat(new HTMLFormat($this->templateRenderer)),
@@ -189,6 +196,7 @@ class Configuration
         }
 
         return new DefaultNodeFactory(
+            $this->eventManager,
             $this->createNodeInstantiator(NodeTypes::DOCUMENT, Nodes\DocumentNode::class),
             $this->createNodeInstantiator(NodeTypes::SPAN, Nodes\SpanNode::class),
             $this->createNodeInstantiator(NodeTypes::TOC, Nodes\TocNode::class),
@@ -218,6 +226,21 @@ class Configuration
         $this->nodeFactory = $nodeFactory;
     }
 
+    public function setEventManager(EventManager $eventManager) : void
+    {
+        $this->eventManager = $eventManager;
+    }
+
+    public function getEventManager() : EventManager
+    {
+        return $this->eventManager;
+    }
+
+    public function dispatchEvent(string $eventName, ?EventArgs $eventArgs = null) : void
+    {
+        $this->eventManager->dispatchEvent($eventName, $eventArgs);
+    }
+
     public function addFormat(Format $format) : void
     {
         $this->formats[$format->getFileExtension()] = $format;
@@ -239,7 +262,8 @@ class Configuration
         return new NodeInstantiator(
             $type,
             $nodeClassName,
-            $this->getNodeRendererFactory($nodeClassName)
+            $this->getNodeRendererFactory($nodeClassName),
+            $this->eventManager
         );
     }
 

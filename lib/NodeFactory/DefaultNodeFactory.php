@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\NodeFactory;
 
+use Doctrine\Common\EventManager;
 use Doctrine\RST\Environment;
+use Doctrine\RST\Event\PostNodeCreateEvent;
 use Doctrine\RST\Nodes\AnchorNode;
 use Doctrine\RST\Nodes\BlockNode;
 use Doctrine\RST\Nodes\CallableNode;
@@ -36,11 +38,16 @@ use function sprintf;
 
 class DefaultNodeFactory implements NodeFactory
 {
+    /** @var EventManager */
+    private $eventManager;
+
     /** @var NodeInstantiator[] */
     private $nodeInstantiators = [];
 
-    public function __construct(NodeInstantiator ...$nodeInstantiators)
+    public function __construct(EventManager $eventManager, NodeInstantiator ...$nodeInstantiators)
     {
+        $this->eventManager = $eventManager;
+
         foreach ($nodeInstantiators as $nodeInstantiator) {
             $this->nodeInstantiators[$nodeInstantiator->getType()] = $nodeInstantiator;
         }
@@ -241,7 +248,14 @@ class DefaultNodeFactory implements NodeFactory
      */
     private function create(string $type, array $arguments) : Node
     {
-        return $this->getNodeInstantiator($type)->create($arguments);
+        $node = $this->getNodeInstantiator($type)->create($arguments);
+
+        $this->eventManager->dispatchEvent(
+            PostNodeCreateEvent::POST_NODE_CREATE,
+            new PostNodeCreateEvent($node)
+        );
+
+        return $node;
     }
 
     private function getNodeInstantiator(string $type) : NodeInstantiator

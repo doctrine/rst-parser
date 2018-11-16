@@ -27,9 +27,6 @@ class ParseQueueProcessor
     /** @var Metas */
     private $metas;
 
-    /** @var Hooks */
-    private $hooks;
-
     /** @var Documents */
     private $documents;
 
@@ -50,7 +47,6 @@ class ParseQueueProcessor
         ErrorManager $errorManager,
         ParseQueue $parseQueue,
         Metas $metas,
-        Hooks $hooks,
         Documents $documents,
         Scanner $scanner,
         string $directory,
@@ -61,7 +57,6 @@ class ParseQueueProcessor
         $this->errorManager    = $errorManager;
         $this->parseQueue      = $parseQueue;
         $this->metas           = $metas;
-        $this->hooks           = $hooks;
         $this->documents       = $documents;
         $this->scanner         = $scanner;
         $this->directory       = $directory;
@@ -84,13 +79,9 @@ class ParseQueueProcessor
 
         $environment = $parser->getEnvironment();
 
-        $this->hooks->callBeforeHooks($parser);
-
         $document = $parser->parseFile($fileAbsolutePath);
 
         $this->documents->addDocument($file, $document);
-
-        $this->hooks->callHooks($document);
 
         $this->kernel->postParse($document);
 

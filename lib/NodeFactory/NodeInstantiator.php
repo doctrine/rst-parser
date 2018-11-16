@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\NodeFactory;
 
+use Doctrine\Common\EventManager;
 use Doctrine\RST\Nodes\Node;
 use Doctrine\RST\Nodes\NodeTypes;
 use Doctrine\RST\Renderers\NodeRendererFactory;
@@ -23,10 +24,14 @@ class NodeInstantiator
     /** @var NodeRendererFactory|null */
     private $nodeRendererFactory;
 
+    /** @var EventManager|null */
+    private $eventManager;
+
     public function __construct(
         string $type,
         string $className,
-        ?NodeRendererFactory $nodeRendererFactory = null
+        ?NodeRendererFactory $nodeRendererFactory = null,
+        ?EventManager $eventManager = null
     ) {
         if (! in_array($type, NodeTypes::NODES, true)) {
             throw new InvalidArgumentException(
@@ -43,6 +48,7 @@ class NodeInstantiator
         $this->type                = $type;
         $this->className           = $className;
         $this->nodeRendererFactory = $nodeRendererFactory;
+        $this->eventManager        = $eventManager;
     }
 
     public function getType() : string
@@ -60,6 +66,10 @@ class NodeInstantiator
 
         if ($this->nodeRendererFactory !== null) {
             $node->setNodeRendererFactory($this->nodeRendererFactory);
+        }
+
+        if ($this->eventManager !== null) {
+            $node->setEventManager($this->eventManager);
         }
 
         return $node;
