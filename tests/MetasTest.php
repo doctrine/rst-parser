@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Doctrine\Tests\RST;
 
-use Doctrine\RST\MetaEntry;
-use Doctrine\RST\Metas;
+use Doctrine\RST\Meta\MetaEntry;
+use Doctrine\RST\Meta\Metas;
 use PHPUnit\Framework\TestCase;
 
 class MetasTest extends TestCase

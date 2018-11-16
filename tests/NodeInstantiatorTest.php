@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Doctrine\Tests\RST;
 
 use Doctrine\RST\Environment;
-use Doctrine\RST\NodeInstantiator;
+use Doctrine\RST\NodeFactory\NodeInstantiator;
 use Doctrine\RST\Nodes\DocumentNode;
-use Doctrine\RST\NodeTypes;
+use Doctrine\RST\Nodes\NodeTypes;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 

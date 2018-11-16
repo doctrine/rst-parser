@@ -10,6 +10,7 @@ use Doctrine\RST\Builder\Hooks;
 use Doctrine\RST\Builder\ParseQueue;
 use Doctrine\RST\Builder\ParseQueueProcessor;
 use Doctrine\RST\Builder\Scanner;
+use Doctrine\RST\Meta\Metas;
 use Symfony\Component\Filesystem\Filesystem;
 use function is_dir;
 

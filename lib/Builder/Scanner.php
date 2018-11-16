@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\Builder;
 
-use Doctrine\RST\MetaEntry;
-use Doctrine\RST\Metas;
+use Doctrine\RST\Meta\MetaEntry;
+use Doctrine\RST\Meta\Metas;
 use function file_exists;
 use function filectime;
 

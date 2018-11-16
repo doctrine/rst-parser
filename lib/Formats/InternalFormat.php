@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\Formats;
 
-use Doctrine\RST\Directive;
+use Doctrine\RST\Directives\Directive;
 use Doctrine\RST\Renderers\NodeRendererFactory;
 
 class InternalFormat implements Format

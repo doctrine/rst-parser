@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\HTML\Directives;
 
+use Doctrine\RST\Directives\SubDirective;
 use Doctrine\RST\Nodes\Node;
 use Doctrine\RST\Parser;
-use Doctrine\RST\SubDirective;
 
 /**
  * Divs a sub document in a div with a given class

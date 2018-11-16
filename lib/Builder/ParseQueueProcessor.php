@@ -6,7 +6,7 @@ namespace Doctrine\RST\Builder;
 
 use Doctrine\RST\ErrorManager;
 use Doctrine\RST\Kernel;
-use Doctrine\RST\Metas;
+use Doctrine\RST\Meta\Metas;
 use Doctrine\RST\Nodes\DocumentNode;
 use Doctrine\RST\Parser;
 use function array_filter;

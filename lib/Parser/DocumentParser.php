@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\Parser;
 
-use Doctrine\RST\Directive;
+use Doctrine\RST\Directives\Directive;
 use Doctrine\RST\Environment;
 use Doctrine\RST\FileIncluder;
-use Doctrine\RST\NodeFactory;
+use Doctrine\RST\NodeFactory\NodeFactory;
 use Doctrine\RST\Nodes\DocumentNode;
 use Doctrine\RST\Nodes\ListNode;
 use Doctrine\RST\Nodes\Node;

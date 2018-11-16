@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\Directives;
 
-use Doctrine\RST\Directive;
-use Doctrine\RST\GlobSearcher;
 use Doctrine\RST\Nodes\Node;
 use Doctrine\RST\Parser;
-use Doctrine\RST\ToctreeBuilder;
+use Doctrine\RST\Toc\GlobSearcher;
+use Doctrine\RST\Toc\ToctreeBuilder;
 
 class Toctree extends Directive
 {

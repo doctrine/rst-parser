@@ -7,8 +7,8 @@ namespace Doctrine\Tests\RST\Builder;
 use Doctrine\RST\Builder\ParseQueue;
 use Doctrine\RST\Builder\Scanner;
 use Doctrine\RST\Builder\State;
-use Doctrine\RST\MetaEntry;
-use Doctrine\RST\Metas;
+use Doctrine\RST\Meta\MetaEntry;
+use Doctrine\RST\Meta\Metas;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 

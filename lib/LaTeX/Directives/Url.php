@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\LaTeX\Directives;
 
-use Doctrine\RST\Directive;
+use Doctrine\RST\Directives\Directive;
 use Doctrine\RST\Parser;
 use function trim;
 

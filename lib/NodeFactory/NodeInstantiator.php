@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Doctrine\RST;
+namespace Doctrine\RST\NodeFactory;
 
 use Doctrine\RST\Nodes\Node;
+use Doctrine\RST\Nodes\NodeTypes;
 use Doctrine\RST\Renderers\NodeRendererFactory;
 use InvalidArgumentException;
 use function in_array;

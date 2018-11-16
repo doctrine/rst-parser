@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\HTML\Directives;
 
-use Doctrine\RST\Directive;
+use Doctrine\RST\Directives\Directive;
 use Doctrine\RST\Nodes\Node;
 use Doctrine\RST\Parser;
 

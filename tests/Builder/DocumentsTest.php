@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Doctrine\Tests\RST\Builder;
 
 use Doctrine\RST\Builder\Documents;
-use Doctrine\RST\MetaEntry;
-use Doctrine\RST\Metas;
+use Doctrine\RST\Meta\MetaEntry;
+use Doctrine\RST\Meta\Metas;
 use Doctrine\RST\Nodes\DocumentNode;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;

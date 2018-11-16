@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Doctrine\RST;
+namespace Doctrine\RST\NodeFactory;
 
+use Doctrine\RST\Environment;
 use Doctrine\RST\Nodes\AnchorNode;
 use Doctrine\RST\Nodes\BlockNode;
 use Doctrine\RST\Nodes\CallableNode;
@@ -26,6 +27,7 @@ use Doctrine\RST\Nodes\TableNode;
 use Doctrine\RST\Nodes\TitleNode;
 use Doctrine\RST\Nodes\TocNode;
 use Doctrine\RST\Nodes\WrapperNode;
+use Doctrine\RST\Parser;
 use Doctrine\RST\Parser\DefinitionList;
 use Doctrine\RST\Parser\LineChecker;
 

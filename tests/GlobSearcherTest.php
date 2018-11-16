@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\Tests\RST;
 
 use Doctrine\RST\Environment;
-use Doctrine\RST\GlobSearcher;
+use Doctrine\RST\Toc\GlobSearcher;
 use PHPUnit\Framework\TestCase;
 use function sort;
 

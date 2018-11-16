@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Doctrine\RST;
+namespace Doctrine\RST\Meta;
 
+use Doctrine\RST\Environment;
 use function strtolower;
 
 class Metas

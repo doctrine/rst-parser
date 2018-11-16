@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Doctrine\RST\References;
 
 use Doctrine\RST\Environment;
-use Doctrine\RST\Reference;
 
 class Doc extends Reference
 {

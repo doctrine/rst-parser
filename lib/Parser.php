@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Doctrine\RST;
 
+use Doctrine\RST\Directives\Directive;
+use Doctrine\RST\NodeFactory\NodeFactory;
 use Doctrine\RST\Nodes\DocumentNode;
 use Doctrine\RST\Nodes\SpanNode;
 use Doctrine\RST\Parser\DocumentParser;

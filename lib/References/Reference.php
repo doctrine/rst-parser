@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Doctrine\RST;
+namespace Doctrine\RST\References;
 
-use Doctrine\RST\References\ResolvedReference;
+use Doctrine\RST\Environment;
 
 /**
  * A reference is something that can be resolved in the document, for instance:
