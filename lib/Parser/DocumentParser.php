@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\Parser;
 
+use Doctrine\Common\EventManager;
 use Doctrine\RST\Directives\Directive;
 use Doctrine\RST\Environment;
+use Doctrine\RST\Event\PostParseDocumentEvent;
+use Doctrine\RST\Event\PreParseDocumentEvent;
 use Doctrine\RST\FileIncluder;
 use Doctrine\RST\NodeFactory\NodeFactory;
 use Doctrine\RST\Nodes\DocumentNode;
@@ -31,6 +34,9 @@ class DocumentParser
 
     /** @var NodeFactory */
     private $nodeFactory;
+
+    /** @var EventManager */
+    private $eventManager;
 
     /** @var Directive[] */
     private $directives = [];
@@ -87,6 +93,7 @@ class DocumentParser
         Parser $parser,
         Environment $environment,
         NodeFactory $nodeFactory,
+        EventManager $eventManager,
         array $directives,
         bool $includeAllowed,
         string $includeRoot
@@ -94,6 +101,7 @@ class DocumentParser
         $this->parser         = $parser;
         $this->environment    = $environment;
         $this->nodeFactory    = $nodeFactory;
+        $this->eventManager   = $eventManager;
         $this->directives     = $directives;
         $this->includeAllowed = $includeAllowed;
         $this->includeRoot    = $includeRoot;
@@ -110,15 +118,27 @@ class DocumentParser
 
     public function parse(string $contents) : DocumentNode
     {
+        $preParseDocumentEvent = new PreParseDocumentEvent($this->parser, $contents);
+
+        $this->eventManager->dispatchEvent(
+            PreParseDocumentEvent::PRE_PARSE_DOCUMENT,
+            $preParseDocumentEvent
+        );
+
         $this->document = $this->nodeFactory->createDocumentNode($this->environment);
 
         $this->init();
 
-        $this->parseLines(trim($contents));
+        $this->parseLines(trim($preParseDocumentEvent->getContents()));
 
         foreach ($this->directives as $name => $directive) {
             $directive->finalize($this->document);
         }
+
+        $this->eventManager->dispatchEvent(
+            PostParseDocumentEvent::POST_PARSE_DOCUMENT,
+            new PostParseDocumentEvent($this->document)
+        );
 
         return $this->document;
     }

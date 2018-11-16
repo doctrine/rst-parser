@@ -17,14 +17,14 @@ use function sprintf;
 
 class Parser
 {
-    /** @var Environment */
-    private $environment;
+    /** @var Configuration */
+    private $configuration;
 
     /** @var Kernel */
     private $kernel;
 
-    /** @var Configuration */
-    private $configuration;
+    /** @var Environment */
+    private $environment;
 
     /** @var Directive[] */
     private $directives = [];
@@ -193,6 +193,7 @@ class Parser
             $this,
             $this->environment,
             $this->getNodeFactory(),
+            $this->configuration->getEventManager(),
             $this->directives,
             $this->includeAllowed,
             $this->includeRoot

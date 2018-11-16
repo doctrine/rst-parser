@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Doctrine\Tests\RST\Builder;
 
 use Doctrine\RST\Builder\Documents;
-use Doctrine\RST\Builder\Hooks;
 use Doctrine\RST\Builder\ParseQueue;
 use Doctrine\RST\Builder\ParseQueueProcessor;
 use Doctrine\RST\Builder\Scanner;
@@ -30,9 +29,6 @@ class ParseQueueProcessorTest extends TestCase
 
     /** @var Metas|MockObject */
     private $metas;
-
-    /** @var Hooks|MockObject */
-    private $hooks;
 
     /** @var Documents|MockObject */
     private $documents;
@@ -64,15 +60,9 @@ class ParseQueueProcessorTest extends TestCase
             ->method('getFileToParse')
             ->willReturn(null);
 
-        $this->hooks->expects(self::once())
-            ->method('callBeforeHooks');
-
         $this->documents->expects(self::once())
             ->method('addDocument')
             ->with('file');
-
-        $this->hooks->expects(self::once())
-            ->method('callHooks');
 
         $this->kernel->expects(self::once())
             ->method('postParse');
@@ -89,7 +79,6 @@ class ParseQueueProcessorTest extends TestCase
         $this->errorManager    = $this->createMock(ErrorManager::class);
         $this->parseQueue      = $this->createMock(ParseQueue::class);
         $this->metas           = $this->createMock(Metas::class);
-        $this->hooks           = $this->createMock(Hooks::class);
         $this->documents       = $this->createMock(Documents::class);
         $this->scanner         = $this->createMock(Scanner::class);
         $this->directory       = sys_get_temp_dir();
@@ -101,7 +90,6 @@ class ParseQueueProcessorTest extends TestCase
             $this->errorManager,
             $this->parseQueue,
             $this->metas,
-            $this->hooks,
             $this->documents,
             $this->scanner,
             $this->directory,

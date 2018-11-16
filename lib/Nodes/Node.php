@@ -4,9 +4,14 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\Nodes;
 
+use Doctrine\Common\EventArgs;
+use Doctrine\Common\EventManager;
+use Doctrine\RST\Event\PostNodeRenderEvent;
+use Doctrine\RST\Event\PreNodeRenderEvent;
 use Doctrine\RST\Renderers\DefaultNodeRenderer;
 use Doctrine\RST\Renderers\NodeRenderer;
 use Doctrine\RST\Renderers\NodeRendererFactory;
+use Doctrine\RST\Renderers\RenderedNode;
 use function implode;
 use function strlen;
 use function substr;
@@ -16,6 +21,9 @@ abstract class Node
 {
     /** @var NodeRendererFactory|null */
     private $nodeRendererFactory;
+
+    /** @var EventManager|null */
+    private $eventManager;
 
     /** @var Node|string|null */
     protected $value;
@@ -33,9 +41,26 @@ abstract class Node
         $this->nodeRendererFactory = $nodeRendererFactory;
     }
 
+    public function setEventManager(EventManager $eventManager) : void
+    {
+        $this->eventManager = $eventManager;
+    }
+
     public function render() : string
     {
-        return $this->doRender();
+        $this->dispatchEvent(
+            PreNodeRenderEvent::PRE_NODE_RENDER,
+            new PreNodeRenderEvent($this)
+        );
+
+        $renderedNode = new RenderedNode($this, $this->doRender());
+
+        $this->dispatchEvent(
+            PostNodeRenderEvent::POST_NODE_RENDER,
+            new PostNodeRenderEvent($renderedNode)
+        );
+
+        return $renderedNode->getRendered();
     }
 
     /**
@@ -116,8 +141,17 @@ abstract class Node
         return null;
     }
 
-    protected function createDefaultRenderer() : NodeRenderer
+    private function createDefaultRenderer() : NodeRenderer
     {
         return new DefaultNodeRenderer($this);
+    }
+
+    public function dispatchEvent(string $eventName, ?EventArgs $eventArgs = null) : void
+    {
+        if ($this->eventManager === null) {
+            return;
+        }
+
+        $this->eventManager->dispatchEvent($eventName, $eventArgs);
     }
 }

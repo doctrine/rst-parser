@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\Tests\RST;
 
+use Doctrine\Common\EventManager;
 use Doctrine\RST\Environment;
 use Doctrine\RST\NodeFactory\DefaultNodeFactory;
 use Doctrine\RST\NodeFactory\NodeInstantiator;
@@ -27,6 +28,9 @@ use PHPUnit\Framework\TestCase;
 
 class DefaultNodeFactoryTest extends TestCase
 {
+    /** @var EventManager */
+    private $eventManager;
+
     public function testCreateDocument() : void
     {
         $returnClass = DocumentNode::class;
@@ -45,7 +49,7 @@ class DefaultNodeFactoryTest extends TestCase
             ->with([$environment])
             ->willReturn($expectedReturn);
 
-        $defaultNodeFactory = new DefaultNodeFactory($nodeInstantiator);
+        $defaultNodeFactory = $this->createDefaultNodeFactory($nodeInstantiator);
 
         self::assertSame($expectedReturn, $defaultNodeFactory->createDocumentNode($environment));
     }
@@ -68,7 +72,7 @@ class DefaultNodeFactoryTest extends TestCase
             ->with([$environment, [], []])
             ->willReturn($expectedReturn);
 
-        $defaultNodeFactory = new DefaultNodeFactory($nodeInstantiator);
+        $defaultNodeFactory = $this->createDefaultNodeFactory($nodeInstantiator);
 
         self::assertSame($expectedReturn, $defaultNodeFactory->createTocNode($environment, [], []));
     }
@@ -91,7 +95,7 @@ class DefaultNodeFactoryTest extends TestCase
             ->with([$node, 1, 'test'])
             ->willReturn($expectedReturn);
 
-        $defaultNodeFactory = new DefaultNodeFactory($nodeInstantiator);
+        $defaultNodeFactory = $this->createDefaultNodeFactory($nodeInstantiator);
 
         self::assertSame($expectedReturn, $defaultNodeFactory->createTitleNode($node, 1, 'test'));
     }
@@ -113,7 +117,7 @@ class DefaultNodeFactoryTest extends TestCase
             ->with([1])
             ->willReturn($expectedReturn);
 
-        $defaultNodeFactory = new DefaultNodeFactory($nodeInstantiator);
+        $defaultNodeFactory = $this->createDefaultNodeFactory($nodeInstantiator);
 
         self::assertSame($expectedReturn, $defaultNodeFactory->createSeparatorNode(1));
     }
@@ -135,7 +139,7 @@ class DefaultNodeFactoryTest extends TestCase
             ->with([[]])
             ->willReturn($expectedReturn);
 
-        $defaultNodeFactory = new DefaultNodeFactory($nodeInstantiator);
+        $defaultNodeFactory = $this->createDefaultNodeFactory($nodeInstantiator);
 
         self::assertSame($expectedReturn, $defaultNodeFactory->createCodeNode([]));
     }
@@ -159,7 +163,7 @@ class DefaultNodeFactoryTest extends TestCase
             ->with([$documentNode])
             ->willReturn($expectedReturn);
 
-        $defaultNodeFactory = new DefaultNodeFactory($nodeInstantiator);
+        $defaultNodeFactory = $this->createDefaultNodeFactory($nodeInstantiator);
 
         self::assertSame($expectedReturn, $defaultNodeFactory->createQuoteNode($documentNode));
     }
@@ -185,7 +189,7 @@ class DefaultNodeFactoryTest extends TestCase
             ->with([$spanNode])
             ->willReturn($expectedReturn);
 
-        $defaultNodeFactory = new DefaultNodeFactory($nodeInstantiator);
+        $defaultNodeFactory = $this->createDefaultNodeFactory($nodeInstantiator);
 
         self::assertSame($expectedReturn, $defaultNodeFactory->createParagraphNode($spanNode));
     }
@@ -207,7 +211,7 @@ class DefaultNodeFactoryTest extends TestCase
             ->with(['test'])
             ->willReturn($expectedReturn);
 
-        $defaultNodeFactory = new DefaultNodeFactory($nodeInstantiator);
+        $defaultNodeFactory = $this->createDefaultNodeFactory($nodeInstantiator);
 
         self::assertSame($expectedReturn, $defaultNodeFactory->createAnchorNode('test'));
     }
@@ -229,7 +233,7 @@ class DefaultNodeFactoryTest extends TestCase
             ->with([])
             ->willReturn($expectedReturn);
 
-        $defaultNodeFactory = new DefaultNodeFactory($nodeInstantiator);
+        $defaultNodeFactory = $this->createDefaultNodeFactory($nodeInstantiator);
 
         self::assertSame($expectedReturn, $defaultNodeFactory->createListNode());
     }
@@ -252,7 +256,7 @@ class DefaultNodeFactoryTest extends TestCase
             ->with([[], TableNode::TYPE_SIMPLE, $lineChecker])
             ->willReturn($expectedReturn);
 
-        $defaultNodeFactory = new DefaultNodeFactory($nodeInstantiator);
+        $defaultNodeFactory = $this->createDefaultNodeFactory($nodeInstantiator);
 
         self::assertSame($expectedReturn, $defaultNodeFactory->createTableNode([], TableNode::TYPE_SIMPLE, $lineChecker));
     }
@@ -275,7 +279,7 @@ class DefaultNodeFactoryTest extends TestCase
             ->with([$parser, 'test'])
             ->willReturn($expectedReturn);
 
-        $defaultNodeFactory = new DefaultNodeFactory($nodeInstantiator);
+        $defaultNodeFactory = $this->createDefaultNodeFactory($nodeInstantiator);
 
         self::assertSame($expectedReturn, $defaultNodeFactory->createSpanNode($parser, 'test'));
     }
@@ -288,11 +292,21 @@ class DefaultNodeFactoryTest extends TestCase
             ->method('getType')
             ->willReturn('invalid');
 
-        $defaultNodeFactory = new DefaultNodeFactory($nodeInstantiator);
+        $defaultNodeFactory = $this->createDefaultNodeFactory($nodeInstantiator);
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Could not find node instantiator of type list');
 
         $defaultNodeFactory->createListNode();
+    }
+
+    protected function setUp() : void
+    {
+        $this->eventManager = $this->createMock(EventManager::class);
+    }
+
+    private function createDefaultNodeFactory(NodeInstantiator $nodeInstantiator) : DefaultNodeFactory
+    {
+        return new DefaultNodeFactory($this->eventManager, $nodeInstantiator);
     }
 }
