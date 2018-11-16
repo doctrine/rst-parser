@@ -11,7 +11,6 @@ use Doctrine\RST\Renderers\FullDocumentNodeRenderer;
 use Exception;
 use function array_unshift;
 use function count;
-use function htmlspecialchars;
 use function is_string;
 use function sprintf;
 
@@ -183,7 +182,7 @@ class DocumentNode extends Node
         }
 
         $this->addHeaderNode($this->environment->getNodeFactory()->createRawNode(
-            '<link rel="stylesheet" type="text/css" href="' . htmlspecialchars($css) . '" />'
+            $this->environment->getTemplateRenderer()->render('stylesheet-link.html.twig', ['css' => $css])
         ));
     }
 
@@ -196,7 +195,7 @@ class DocumentNode extends Node
         }
 
         $this->addHeaderNode($this->environment->getNodeFactory()->createRawNode(
-            '<script type="text/javascript" src="' . htmlspecialchars($js) . '"></script>'
+            $this->environment->getTemplateRenderer()->render('javascript.html.twig', ['js' => $js])
         ));
     }
 
@@ -209,7 +208,7 @@ class DocumentNode extends Node
         }
 
         $this->addHeaderNode($this->environment->getNodeFactory()->createRawNode(
-            '<link rel="icon" type="image/x-icon" href="' . htmlspecialchars($url) . '" />'
+            $this->environment->getTemplateRenderer()->render('favicon.html.twig', ['url' => $url])
         ));
     }
 

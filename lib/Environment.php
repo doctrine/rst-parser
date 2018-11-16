@@ -9,6 +9,7 @@ use Doctrine\RST\Meta\Metas;
 use Doctrine\RST\NodeFactory\NodeFactory;
 use Doctrine\RST\References\Reference;
 use Doctrine\RST\References\ResolvedReference;
+use Doctrine\RST\Templates\TemplateRenderer;
 use InvalidArgumentException;
 use function array_shift;
 use function dirname;
@@ -123,6 +124,11 @@ class Environment
     public function getNodeFactory() : NodeFactory
     {
         return $this->configuration->getNodeFactory();
+    }
+
+    public function getTemplateRenderer() : TemplateRenderer
+    {
+        return $this->configuration->getTemplateRenderer();
     }
 
     public function registerReference(Reference $reference) : void
