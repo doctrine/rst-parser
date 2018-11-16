@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Doctrine\RST;
+namespace Doctrine\RST\Directives;
 
 use Doctrine\RST\Nodes\DocumentNode;
 use Doctrine\RST\Nodes\Node;
+use Doctrine\RST\Parser;
 
 /**
  * A directive is like a function you can call or apply to a block

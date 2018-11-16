@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Doctrine\RST;
+namespace Doctrine\RST\Toc;
 
+use Doctrine\RST\Environment;
 use Symfony\Component\Finder\Finder;
 use function array_merge;
 use function realpath;

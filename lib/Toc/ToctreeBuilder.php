@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Doctrine\RST;
+namespace Doctrine\RST\Toc;
 
+use Doctrine\RST\Environment;
 use Doctrine\RST\Nodes\Node;
 use function array_filter;
 use function array_map;

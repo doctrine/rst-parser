@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\LaTeX;
 
-use Doctrine\RST\Directive;
+use Doctrine\RST\Directives\Directive;
 use Doctrine\RST\Formats\Format;
 use Doctrine\RST\LaTeX;
 use Doctrine\RST\Nodes;

@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Doctrine\Tests\RST;
 
 use Doctrine\RST\Environment;
-use Doctrine\RST\GlobSearcher;
 use Doctrine\RST\Nodes\Node;
-use Doctrine\RST\ToctreeBuilder;
+use Doctrine\RST\Toc\GlobSearcher;
+use Doctrine\RST\Toc\ToctreeBuilder;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 

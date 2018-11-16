@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Doctrine\RST;
 
+use Doctrine\RST\Directives\Directive;
 use Doctrine\RST\Nodes\DocumentNode;
 use Doctrine\RST\References\Doc;
+use Doctrine\RST\References\Reference;
 use function array_merge;
 
 class Kernel

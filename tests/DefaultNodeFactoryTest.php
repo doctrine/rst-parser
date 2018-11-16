@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace Doctrine\Tests\RST;
 
-use Doctrine\RST\DefaultNodeFactory;
 use Doctrine\RST\Environment;
-use Doctrine\RST\NodeInstantiator;
+use Doctrine\RST\NodeFactory\DefaultNodeFactory;
+use Doctrine\RST\NodeFactory\NodeInstantiator;
 use Doctrine\RST\Nodes\AnchorNode;
 use Doctrine\RST\Nodes\CodeNode;
 use Doctrine\RST\Nodes\DocumentNode;
 use Doctrine\RST\Nodes\ListNode;
 use Doctrine\RST\Nodes\Node;
+use Doctrine\RST\Nodes\NodeTypes;
 use Doctrine\RST\Nodes\ParagraphNode;
 use Doctrine\RST\Nodes\QuoteNode;
 use Doctrine\RST\Nodes\SeparatorNode;
@@ -19,7 +20,6 @@ use Doctrine\RST\Nodes\SpanNode;
 use Doctrine\RST\Nodes\TableNode;
 use Doctrine\RST\Nodes\TitleNode;
 use Doctrine\RST\Nodes\TocNode;
-use Doctrine\RST\NodeTypes;
 use Doctrine\RST\Parser;
 use Doctrine\RST\Parser\LineChecker;
 use InvalidArgumentException;

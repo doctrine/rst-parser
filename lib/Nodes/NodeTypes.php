@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Doctrine\RST;
+namespace Doctrine\RST\Nodes;
 
 final class NodeTypes
 {

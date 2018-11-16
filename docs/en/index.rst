@@ -196,7 +196,7 @@ To build your own format you need to implement the ``Doctrine\RST\Formats\Format
     namespace App\RST\MySpecial;
 
     use App\MySpecial\MySpecialGenerator;
-    use Doctrine\RST\Directive;
+    use Doctrine\RST\Directives\Directive;
     use Doctrine\RST\Formats\Format;
     use Doctrine\RST\Nodes;
     use Doctrine\RST\Renderers\CallableNodeRendererFactory;
@@ -298,7 +298,7 @@ Custom Directives
 Step 1: Extends the Directive class
 -----------------------------------
 
-Write your own class that extends the ``Doctrine\RST\Directive`` class,
+Write your own class that extends the ``Doctrine\RST\Directives\Directive`` class,
 and define the method ``getName()`` that return the directive name.
 
 You can then redefine one of the following method:
@@ -346,7 +346,7 @@ The ``CautionDirective`` class would look like this:
     use Doctrine\RST\Nodes\Node;
     use Doctrine\RST\Nodes\WrapperNode;
     use Doctrine\RST\Parser;
-    use Doctrine\RST\SubDirective;
+    use Doctrine\RST\Directives\SubDirective;
 
     class CautionDirective extends SubDirective
     {

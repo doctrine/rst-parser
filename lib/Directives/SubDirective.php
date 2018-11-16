@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Doctrine\RST;
+namespace Doctrine\RST\Directives;
 
 use Doctrine\RST\Nodes\CodeNode;
 use Doctrine\RST\Nodes\Node;
+use Doctrine\RST\Parser;
 
 /**
  * A directive that parses the sub block and call the processSub that can

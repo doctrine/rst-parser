@@ -11,7 +11,7 @@ use Doctrine\RST\Builder\ParseQueueProcessor;
 use Doctrine\RST\Builder\Scanner;
 use Doctrine\RST\ErrorManager;
 use Doctrine\RST\Kernel;
-use Doctrine\RST\Metas;
+use Doctrine\RST\Meta\Metas;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use function sys_get_temp_dir;

@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace Doctrine\RST;
 
+use Doctrine\RST\Meta\MetaEntry;
+use Doctrine\RST\Meta\Metas;
+use Doctrine\RST\NodeFactory\NodeFactory;
+use Doctrine\RST\References\Reference;
 use Doctrine\RST\References\ResolvedReference;
 use InvalidArgumentException;
 use function array_shift;

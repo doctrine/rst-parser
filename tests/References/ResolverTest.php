@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Doctrine\Tests\RST\References;
 
 use Doctrine\RST\Environment;
-use Doctrine\RST\MetaEntry;
-use Doctrine\RST\Metas;
+use Doctrine\RST\Meta\MetaEntry;
+use Doctrine\RST\Meta\Metas;
 use Doctrine\RST\References\ResolvedReference;
 use Doctrine\RST\References\Resolver;
 use PHPUnit\Framework\MockObject\MockObject;

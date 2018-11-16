@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\Builder;
 
-use Doctrine\RST\Metas;
+use Doctrine\RST\Meta\Metas;
 use Doctrine\RST\Nodes\DocumentNode;
 use InvalidArgumentException;
 use Symfony\Component\Filesystem\Filesystem;
