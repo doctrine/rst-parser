@@ -12,7 +12,7 @@ use function trim;
 
 class LineChecker
 {
-    private const HEADER_LETTERS = ['=', '-', '~', '*', '+', '^', '"'];
+    private const HEADER_LETTERS = ['=', '-', '~', '*', '+', '^', '"', '.', '`', "'", '_', '#', ':'];
 
     /** @var LineDataParser */
     private $lineParser;
