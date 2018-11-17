@@ -9,6 +9,7 @@ use function htmlspecialchars;
 use function mt_rand;
 use function preg_match;
 use function preg_match_all;
+use function preg_replace;
 use function preg_replace_callback;
 use function sha1;
 use function str_replace;
@@ -147,11 +148,13 @@ class SpanProcessor
         }
 
         $linkCallback = function (array $match) : string {
+            /** @var string $link */
             $link = $match[3] ?: $match[5];
 
             // the link may have a new line in it so we need to strip it
             // before setting the link and adding a token to be replaced
             $link = str_replace("\n", ' ', $link);
+            $link = preg_replace('/\s+/', ' ', $link);
 
             // we need to maintain the characters before and after the link
             $prev = $match[1]; // previous character before the link
