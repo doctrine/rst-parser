@@ -7,6 +7,8 @@ namespace Doctrine\Tests\RST\Builder;
 use Doctrine\Tests\RST\BaseBuilderTest;
 use function file_exists;
 use function is_dir;
+use function range;
+use function sprintf;
 use function substr_count;
 
 /**
@@ -94,7 +96,7 @@ class BuilderTest extends BaseBuilderTest
         self::assertContains('introduction.html#introduction-page', $contents);
         self::assertContains('subdirective.html', $contents);
         self::assertContains('subdir/test.html#subdirectory', $contents);
-        self::assertContains('subdir/file.html#a-file', $contents);
+        self::assertContains('subdir/file.html#heading-1', $contents);
     }
 
     public function testToctreeGlobOrder() : void
@@ -119,7 +121,7 @@ class BuilderTest extends BaseBuilderTest
         self::assertContains('../subdirective.html#sub-directives', $contents);
         self::assertContains('../magic-link.html#another-page', $contents);
         self::assertContains('test.html#subdirectory', $contents);
-        self::assertContains('file.html#a-file', $contents);
+        self::assertContains('file.html#heading-1', $contents);
     }
 
     public function testAnchors() : void
@@ -229,6 +231,23 @@ class BuilderTest extends BaseBuilderTest
             '<p>see <a href="magic-link.html#test">test</a></p>',
             $contents
         );
+    }
+
+    public function testHeadings() : void
+    {
+        $contents = $this->getFileContents($this->targetFile('subdir/file.html'));
+
+        foreach (range(1, 6) as $index) {
+            self::assertContains(
+                sprintf(
+                    '<h%d>Heading %d</h%d>',
+                    $index,
+                    $index,
+                    $index
+                ),
+                $contents
+            );
+        }
     }
 
     protected function getFixturesDirectory() : string
