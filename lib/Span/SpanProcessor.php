@@ -167,6 +167,14 @@ class SpanProcessor
                 $this->environment->setLink($link, $url);
             }
 
+            // extract the url if the link was in this format: `<https://www.google.com>`_
+            if (preg_match('/^<(.+)>$/mUsi', $link, $m) > 0) {
+                $link = $m[1];
+                $url  = $m[1];
+
+                $this->environment->setLink($link, $url);
+            }
+
             $id = $this->generateId();
 
             $this->addToken(SpanToken::TYPE_LINK, $id, [

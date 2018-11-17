@@ -561,10 +561,22 @@ class HTMLTest extends TestCase
     {
         $document = $this->parse('link-with-new-line.rst');
 
-        $rendered = $document->render();
+        $rendered = $document->renderDocument();
 
         self::assertContains(
             '<a href="https://www.doctrine-project.org/projects/rst-parser.html">link to the doc</a>',
+            $rendered
+        );
+    }
+
+    public function testLinkWithNoName() : void
+    {
+        $document = $this->parse('link-with-no-name.rst');
+
+        $rendered = $document->renderDocument();
+
+        self::assertContains(
+            '<a href="https://github.com/symfony/form">https://github.com/symfony/form</a>',
             $rendered
         );
     }
