@@ -593,6 +593,18 @@ class HTMLTest extends TestCase
         );
     }
 
+    public function testLinkWithSpecialChar() : void
+    {
+        $document = $this->parse('link-with-special-char.rst');
+
+        $rendered = $document->renderDocument();
+
+        self::assertContains(
+            '<a href="https://php.net/manual/en/class.intldateformatter.php#intl.intldateformatter-constants">IntlDateFormatter::MEDIUM</a>',
+            $rendered
+        );
+    }
+
     /**
      * Helper function, parses a file and returns the document
      * produced by the parser
