@@ -152,6 +152,7 @@ class SpanProcessor
             // the link may have a new line in it so we need to strip it
             // before setting the link and adding a token to be replaced
             $link = str_replace("\n", ' ', $link);
+            $link = preg_replace('/\s+/', ' ', $link);
 
             // we need to maintain the characters before and after the link
             $prev = $match[1]; // previous character before the link
