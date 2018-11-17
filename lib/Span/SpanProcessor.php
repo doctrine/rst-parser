@@ -11,6 +11,7 @@ use function preg_match;
 use function preg_match_all;
 use function preg_replace_callback;
 use function sha1;
+use function str_replace;
 use function time;
 
 class SpanProcessor
@@ -145,19 +146,28 @@ class SpanProcessor
             }
         }
 
-        $linkCallback = function ($match) {
+        $linkCallback = function (array $match) : string {
             $link = $match[3] ?: $match[5];
-            $id   = $this->generateId();
-            $prev = $match[1];
-            $next = $match[6];
-            $url  = '';
 
+            // the link may have a new line in it so we need to strip it
+            // before setting the link and adding a token to be replaced
+            $link = str_replace("\n", ' ', $link);
+
+            // we need to maintain the characters before and after the link
+            $prev = $match[1]; // previous character before the link
+            $next = $match[6]; // next character after the link
+
+            $url = '';
+
+            // extract the url if the link was in this format: `test link <https://www.google.com>`_
             if (preg_match('/^(.+)[ \n]<(.+)>$/mUsi', $link, $m) > 0) {
                 $link = $m[1];
                 $url  = $m[2];
 
                 $this->environment->setLink($link, $url);
             }
+
+            $id = $this->generateId();
 
             $this->addToken(SpanToken::TYPE_LINK, $id, [
                 'link' => $link,
@@ -168,10 +178,18 @@ class SpanProcessor
         };
 
         // Replacing anonymous links
-        $span = preg_replace_callback('/(^|[ ])(([a-z0-9_-]+)|(`(.+)`))__([^a-z0-9]{1}|$)/mUsi', $linkCallback, $span);
+        $span = preg_replace_callback(
+            '/(^|[ ])(([a-z0-9_-]+)|(`(.+)`))__([^a-z0-9]{1}|$)/mUsi',
+            $linkCallback,
+            $span
+        );
 
         // Replacing links
-        $span = preg_replace_callback('/(^|[ ])(([a-z0-9_-]+)|(`(.+)`))_([^a-z0-9]{1}|$)/mUsi', $linkCallback, $span);
+        $span = preg_replace_callback(
+            '/(^|[ ])(([a-z0-9_-]+)|(`(.+)`))_([^a-z0-9]{1}|$)/mUsi',
+            $linkCallback,
+            $span
+        );
 
         return $span;
     }

@@ -557,6 +557,18 @@ class HTMLTest extends TestCase
         $rendered = $document->renderDocument();
     }
 
+    public function testLinkWithNewLine() : void
+    {
+        $document = $this->parse('link-with-new-line.rst');
+
+        $rendered = $document->render();
+
+        self::assertContains(
+            '<a href="https://www.doctrine-project.org/projects/rst-parser.html">link to the doc</a>',
+            $rendered
+        );
+    }
+
     /**
      * Helper function, parses a file and returns the document
      * produced by the parser
