@@ -24,7 +24,7 @@ class LineChecker
 
     public function isSpecialLine(string $line) : ?string
     {
-        if (strlen($line) < 3) {
+        if (strlen($line) < 2) {
             return null;
         }
 

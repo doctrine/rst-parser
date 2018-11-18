@@ -30,7 +30,8 @@ class LineCheckerTest extends TestCase
      */
     public function testIsSpecialLine(string $specialCharacter) : void
     {
-        self::assertNull($this->lineChecker->isSpecialLine(str_repeat($specialCharacter, 2)));
+        self::assertNull($this->lineChecker->isSpecialLine($specialCharacter));
+        self::assertSame($specialCharacter, $this->lineChecker->isSpecialLine(str_repeat($specialCharacter, 2)));
         self::assertSame($specialCharacter, $this->lineChecker->isSpecialLine(str_repeat($specialCharacter, 3)));
     }
 
@@ -39,7 +40,7 @@ class LineCheckerTest extends TestCase
      */
     public function getSpecialCharacters() : array
     {
-        return [['='], ['-'], ['~'], ['*'], ['+'], ['^'], ['"']];
+        return [['='], ['-'], ['~'], ['*'], ['+'], ['^'], ['"'], ['.'], ['`'], ["'"], ['_'], ['#'], [':']];
     }
 
     public function testIsListLine() : void

@@ -404,8 +404,8 @@ class HTMLTest extends TestCase
 
         self::assertSame(1, substr_count($document, '<h1>'));
         self::assertSame(1, substr_count($document, '<h1>'));
-        self::assertSame(2, substr_count($document, '<h2>'));
-        self::assertSame(2, substr_count($document, '</h2>'));
+        self::assertSame(3, substr_count($document, '<h2>'));
+        self::assertSame(3, substr_count($document, '</h2>'));
         self::assertSame(4, substr_count($document, '<h3>'));
         self::assertSame(4, substr_count($document, '</h3>'));
         self::assertContains('<a id="main-title"></a><h1>Main title</h1>', $document);
@@ -414,6 +414,7 @@ class HTMLTest extends TestCase
         self::assertContains('<a id="second-subsubtitle"></a><h3>Second subsubtitle</h3>', $document);
         self::assertContains('<a id="third-subsubtitle"></a><h3>Third subsubtitle</h3>', $document);
         self::assertContains('<a id="fourth-subsubtitle"></a><h3>Fourth subsubtitle</h3>', $document);
+        self::assertContains('<a id="em"></a><h2>em</h2>', $document);
         self::assertNotContains('==', $document);
         self::assertNotContains('--', $document);
         self::assertNotContains('~~', $document);
