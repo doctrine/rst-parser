@@ -570,6 +570,18 @@ class HTMLTest extends TestCase
         );
     }
 
+    public function testLinkWithNewLineInsideList() : void
+    {
+        $document = $this->parse('link-with-new-line-inside-list.rst');
+
+        $rendered = $document->renderDocument();
+
+        self::assertContains(
+            '<a href="https://www.doctrine-project.org/projects/rst-parser.html">link to the doc</a>',
+            $rendered
+        );
+    }
+
     public function testLinkWithNoName() : void
     {
         $document = $this->parse('link-with-no-name.rst');
