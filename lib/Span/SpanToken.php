@@ -24,6 +24,7 @@ class SpanToken
      */
     public function __construct(string $type, string $id, array $token)
     {
+        dump($type);
         $this->type          = $type;
         $this->id            = $id;
         $this->token         = $token;
