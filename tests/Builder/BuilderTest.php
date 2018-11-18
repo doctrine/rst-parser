@@ -250,6 +250,16 @@ class BuilderTest extends BaseBuilderTest
         }
     }
 
+    public function testReferenceToTitleWith2CharactersLong()
+    {
+        $contents = $this->getFileContents($this->targetFile('subdir/test.html'));
+
+        self::assertContains(
+            '<a href="subdir/test.html#em">em</a>',
+            $contents
+        );
+    }
+
     protected function getFixturesDirectory() : string
     {
         return 'Builder';
