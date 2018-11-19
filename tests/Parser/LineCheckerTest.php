@@ -69,6 +69,13 @@ class LineCheckerTest extends TestCase
     public function testIsDirective() : void
     {
         self::assertTrue($this->lineChecker->isDirective('.. code-block::'));
+        self::assertTrue($this->lineChecker->isDirective('.. code-block:: php'));
+        self::assertTrue($this->lineChecker->isDirective('.. code&block:: php'));
+        self::assertTrue($this->lineChecker->isDirective('.. `code-block`:: php'));
+        self::assertFalse($this->lineChecker->isDirective('.. code block:: php'));
+        self::assertFalse($this->lineChecker->isDirective('.. code block :: php'));
+        self::assertFalse($this->lineChecker->isDirective('..code block:: php'));
+        self::assertFalse($this->lineChecker->isDirective('.. code-block::php'));
         self::assertFalse($this->lineChecker->isDirective('Test'));
     }
 
