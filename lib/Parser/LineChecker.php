@@ -70,7 +70,7 @@ class LineChecker
 
     public function isDirective(string $line) : bool
     {
-        return preg_match('/^\.\. (\|(.+)\| |)([^\s]+)::(.*)$/mUsi', $line) > 0;
+        return preg_match('/^\.\. (\|(.+)\| |)([^\s]+)::( (.*)|)$/mUsi', $line) > 0;
     }
 
     public function isDefinitionList(string $line) : bool

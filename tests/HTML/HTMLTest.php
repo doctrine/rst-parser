@@ -591,6 +591,11 @@ class HTMLTest extends TestCase
             '<a href="https://php.net/manual/en/class.intldateformatter.php#intl.intldateformatter-constants">IntlDateFormatter::MEDIUM</a>',
             $rendered
         );
+
+        self::assertContains(
+            '<a href="https://php.net/manual/en/class.intldateformatter.php#intl.intldateformatter-constants">IntlDateFormatter:: MEDIUM</a>',
+            $rendered
+        );
     }
 
     /**

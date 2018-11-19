@@ -221,13 +221,13 @@ class DocumentParser
                             $this->setState(State::BLOCK);
                         }
                         return false;
+                    } elseif ($this->parseLink($line)) {
+                        return true;
                     } elseif ($this->lineChecker->isDirective($line)) {
                         $this->setState(State::DIRECTIVE);
                         $this->buffer = new Buffer();
                         $this->flush();
                         $this->initDirective($line);
-                    } elseif ($this->parseLink($line)) {
-                        return true;
                     } elseif ($this->lineChecker->isDefinitionList($this->lines->getNextLine())) {
                         $this->setState(State::DEFINITION_LIST);
                         $this->buffer->push($line);
