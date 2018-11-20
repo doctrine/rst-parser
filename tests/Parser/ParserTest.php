@@ -56,8 +56,7 @@ class ParserTest extends TestCase
         );
 
         self::assertContains(
-            '<span class="classifier-delimiter">:</span><span class="classifier">classifier with &amp;</span><span class="classifier-delimiter">:</span><span class="classifier">classifier with &amp;</span></dt><dd><p class="first">Definition 1 with &amp; </p><p class="last">Definition 2 with &amp; </p></dd><dt><code>term 5</code><span class="classifier-delimiter">:</span><span class="classifier"><code>classifier</code></span></dt><dd>Definition 1 </dd><dt>multi-line definition term</dt><dd><p class="first">Definition 1 line 1 Definition 1 line 2 </p><p class="last">Definition 2 line 1 Definition 2 line 2 </p></dd></dl>
-<a id="definition-list-in-a-directive"></a><h1>Definition List in a Directive</h1>',
+            '<span class="classifier-delimiter">:</span><span class="classifier">classifier with &amp;</span><span class="classifier-delimiter">:</span><span class="classifier">classifier with &amp;</span></dt><dd><p class="first">Definition 1 with &amp; </p><p class="last">Definition 2 with &amp; </p></dd><dt><code>term 5</code><span class="classifier-delimiter">:</span><span class="classifier"><code>classifier</code></span></dt><dd>Definition 1 </dd><dt>multi-line definition term</dt><dd><p class="first">Definition 1 line 1 Definition 1 line 2 </p><p class="last">Definition 2 line 1 Definition 2 line 2 </p></dd></dl>',
             $rendered
         );
     }
@@ -393,19 +392,19 @@ class ParserTest extends TestCase
         $nodes2 = $parser->parseFile(sprintf('%s/mixed-titles-2.rst', $directory))->getNodes();
 
         /** @var TitleNode $node */
-        $node = $nodes1[0];
+        $node = $nodes1[1];
         self::assertSame(1, $node->getLevel());
 
         /** @var TitleNode $node */
-        $node = $nodes1[1];
+        $node = $nodes1[4];
         self::assertSame(2, $node->getLevel());
 
         /** @var TitleNode $node */
-        $node = $nodes2[0];
+        $node = $nodes2[1];
         self::assertSame(1, $node->getLevel(), 'Title level in second parse is influenced by first parse');
 
         /** @var TitleNode $node */
-        $node = $nodes2[1];
+        $node = $nodes2[4];
         self::assertSame(2, $node->getLevel(), 'Title level in second parse is influenced by first parse');
     }
 
@@ -414,12 +413,13 @@ class ParserTest extends TestCase
         /** @var Node[] $nodes */
         $nodes = $this->parse('inclusion-newline.rst')->getNodes();
 
-        self::assertCount(3, $nodes);
-        self::assertInstanceOf('Doctrine\RST\Nodes\TitleNode', $nodes[0]);
-        self::assertInstanceOf('Doctrine\RST\Nodes\ParagraphNode', $nodes[1]);
+        self::assertCount(5, $nodes);
+        self::assertInstanceOf('Doctrine\RST\Nodes\SectionBeginNode', $nodes[0]);
+        self::assertInstanceOf('Doctrine\RST\Nodes\TitleNode', $nodes[1]);
         self::assertInstanceOf('Doctrine\RST\Nodes\ParagraphNode', $nodes[2]);
-        self::assertContains('<p>Test this paragraph is present.</p>', $nodes[1]->render());
-        self::assertContains('<p>And this one as well.</p>', $nodes[2]->render());
+        self::assertInstanceOf('Doctrine\RST\Nodes\ParagraphNode', $nodes[3]);
+        self::assertContains('<p>Test this paragraph is present.</p>', $nodes[2]->render());
+        self::assertContains('<p>And this one as well.</p>', $nodes[3]->render());
     }
 
     public function testIncludesKeepScope() : void

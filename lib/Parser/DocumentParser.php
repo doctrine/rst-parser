@@ -15,6 +15,7 @@ use Doctrine\RST\Nodes\DocumentNode;
 use Doctrine\RST\Nodes\ListNode;
 use Doctrine\RST\Nodes\Node;
 use Doctrine\RST\Nodes\TableNode;
+use Doctrine\RST\Nodes\TitleNode;
 use Doctrine\RST\Parser;
 use Doctrine\RST\Parser\Directive as ParserDirective;
 use function explode;
@@ -85,6 +86,9 @@ class DocumentParser
 
     /** @var bool */
     private $listFlow = false;
+
+    /** @var TitleNode */
+    private $lastTitleNode;
 
     /**
      * @param Directive[] $directives
@@ -195,6 +199,14 @@ class DocumentParser
         // DocumentNode is flushed twice to trigger the directives
         $this->flush();
         $this->flush();
+
+        if ($this->lastTitleNode === null) {
+            return;
+        }
+
+        $this->document->addNode(
+            $this->nodeFactory->createSectionEndNode($this->lastTitleNode)
+        );
     }
 
     private function parseLine(string $line) : bool
@@ -390,6 +402,18 @@ class DocumentParser
                         $this->parser->createSpanNode($data),
                         $level,
                         $token
+                    );
+
+                    if ($this->lastTitleNode !== null) {
+                        $this->document->addNode(
+                            $this->nodeFactory->createSectionEndNode($this->lastTitleNode)
+                        );
+                    }
+
+                    $this->lastTitleNode = $node;
+
+                    $this->document->addNode(
+                        $this->nodeFactory->createSectionBeginNode($this->lastTitleNode)
                     );
 
                     break;

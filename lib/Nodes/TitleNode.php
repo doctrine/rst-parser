@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\Nodes;
 
+use Doctrine\RST\Environment;
+
 class TitleNode extends Node
 {
-    /** @var Node */
+    /** @var SpanNode */
     protected $value;
 
     /** @var int */
@@ -14,6 +16,9 @@ class TitleNode extends Node
 
     /** @var string */
     protected $token;
+
+    /** @var string */
+    protected $id;
 
     /** @var string */
     protected $target = '';
@@ -24,9 +29,10 @@ class TitleNode extends Node
 
         $this->level = $level;
         $this->token = $token;
+        $this->id    = Environment::slugify($this->value->getValue());
     }
 
-    public function getValue() : Node
+    public function getValue() : SpanNode
     {
         return $this->value;
     }
@@ -44,5 +50,10 @@ class TitleNode extends Node
     public function getTarget() : string
     {
         return $this->target;
+    }
+
+    public function getId() : string
+    {
+        return $this->id;
     }
 }

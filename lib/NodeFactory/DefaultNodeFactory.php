@@ -24,6 +24,8 @@ use Doctrine\RST\Nodes\NodeTypes;
 use Doctrine\RST\Nodes\ParagraphNode;
 use Doctrine\RST\Nodes\QuoteNode;
 use Doctrine\RST\Nodes\RawNode;
+use Doctrine\RST\Nodes\SectionBeginNode;
+use Doctrine\RST\Nodes\SectionEndNode;
 use Doctrine\RST\Nodes\SeparatorNode;
 use Doctrine\RST\Nodes\SpanNode;
 use Doctrine\RST\Nodes\TableNode;
@@ -241,6 +243,22 @@ class DefaultNodeFactory implements NodeFactory
         $callableNode = $this->create(NodeTypes::CALLABLE, [$callable]);
 
         return $callableNode;
+    }
+
+    public function createSectionBeginNode(TitleNode $titleNode) : SectionBeginNode
+    {
+        /** @var SectionBeginNode $sectionBeginNode */
+        $sectionBeginNode = $this->create(NodeTypes::SECTION_BEGIN, [$titleNode]);
+
+        return $sectionBeginNode;
+    }
+
+    public function createSectionEndNode(TitleNode $titleNode) : SectionEndNode
+    {
+        /** @var SectionEndNode $sectionEndNode */
+        $sectionEndNode = $this->create(NodeTypes::SECTION_END, [$titleNode]);
+
+        return $sectionEndNode;
     }
 
     /**

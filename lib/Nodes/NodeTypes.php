@@ -28,6 +28,8 @@ final class NodeTypes
     public const MAIN            = 'main';
     public const BLOCK           = 'block';
     public const CALLABLE        = 'callable';
+    public const SECTION_BEGIN   = 'section_begin';
+    public const SECTION_END     = 'section_end';
 
     public const NODES = [
         self::DOCUMENT,
@@ -52,6 +54,8 @@ final class NodeTypes
         self::MAIN,
         self::BLOCK,
         self::CALLABLE,
+        self::SECTION_BEGIN,
+        self::SECTION_END,
     ];
 
     private function __construct()

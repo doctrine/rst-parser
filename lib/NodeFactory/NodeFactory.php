@@ -21,6 +21,8 @@ use Doctrine\RST\Nodes\Node;
 use Doctrine\RST\Nodes\ParagraphNode;
 use Doctrine\RST\Nodes\QuoteNode;
 use Doctrine\RST\Nodes\RawNode;
+use Doctrine\RST\Nodes\SectionBeginNode;
+use Doctrine\RST\Nodes\SectionEndNode;
 use Doctrine\RST\Nodes\SeparatorNode;
 use Doctrine\RST\Nodes\SpanNode;
 use Doctrine\RST\Nodes\TableNode;
@@ -96,4 +98,8 @@ interface NodeFactory
     public function createMainNode() : MainNode;
 
     public function createCallableNode(callable $callable) : CallableNode;
+
+    public function createSectionBeginNode(TitleNode $titleNode) : SectionBeginNode;
+
+    public function createSectionEndNode(TitleNode $titleNode) : SectionEndNode;
 }

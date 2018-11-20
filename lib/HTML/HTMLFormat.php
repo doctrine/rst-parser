@@ -179,6 +179,22 @@ class HTMLFormat implements Format
                     );
                 }
             ),
+            Nodes\SectionBeginNode::class => new CallableNodeRendererFactory(
+                function (Nodes\SectionBeginNode $node) {
+                    return new HTML\Renderers\SectionBeginNodeRenderer(
+                        $node,
+                        $this->templateRenderer
+                    );
+                }
+            ),
+            Nodes\SectionEndNode::class => new CallableNodeRendererFactory(
+                function (Nodes\SectionEndNode $node) {
+                    return new HTML\Renderers\SectionEndNodeRenderer(
+                        $node,
+                        $this->templateRenderer
+                    );
+                }
+            ),
         ];
     }
 }
