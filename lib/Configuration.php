@@ -121,6 +121,11 @@ class Configuration
         return $this->theme;
     }
 
+    public function setTheme(string $theme) : void
+    {
+        $this->theme = $theme;
+    }
+
     public function getBaseUrl() : string
     {
         return $this->baseUrl;
