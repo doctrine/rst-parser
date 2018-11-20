@@ -659,6 +659,49 @@ class HTMLTest extends TestCase
         self::assertContains('<table class="special-table">', $rendered);
     }
 
+    public function testSectionNesting() : void
+    {
+        $document = $this->parse('section-nesting.rst');
+
+        $rendered = $document->render();
+
+        $expected = <<<HTML
+<div class="section" id="level-1-test-1">
+<h1>Level 1 Test 1</h1>
+<div class="section" id="level-2-test-1">
+<h2>Level 2 Test 1</h2>
+</div>
+<div class="section" id="level-2-test-2">
+<h2>Level 2 Test 2</h2>
+</div>
+</div>
+<div class="section" id="level-1-test-2">
+<h1>Level 1 Test 2</h1>
+<div class="section" id="level-2-test-3">
+<h2>Level 2 Test 3</h2>
+</div>
+<div class="section" id="level-2-test-4">
+<h2>Level 2 Test 4</h2>
+</div>
+</div>
+<div class="section" id="level-1-test-3">
+<h1>Level 1 Test 3</h1>
+</div>
+<div class="section" id="level-1-test-4">
+<h1>Level 1 Test 4</h1>
+<div class="section" id="level-2-test-3">
+<h2>Level 2 Test 3</h2>
+<div class="section" id="level-3-test-1">
+<h3>Level 3 Test 1</h3>
+</div>
+</div>
+</div>
+
+HTML;
+
+        self::assertSame($expected, $rendered);
+    }
+
     /**
      * Helper function, parses a file and returns the document
      * produced by the parser

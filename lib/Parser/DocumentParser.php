@@ -18,6 +18,7 @@ use Doctrine\RST\Nodes\TableNode;
 use Doctrine\RST\Nodes\TitleNode;
 use Doctrine\RST\Parser;
 use Doctrine\RST\Parser\Directive as ParserDirective;
+use function array_search;
 use function chr;
 use function explode;
 use function sprintf;
@@ -90,6 +91,9 @@ class DocumentParser
 
     /** @var TitleNode */
     private $lastTitleNode;
+
+    /** @var TitleNode[] */
+    private $openTitleNodes = [];
 
     /**
      * @param Directive[] $directives
@@ -204,13 +208,9 @@ class DocumentParser
         $this->flush();
         $this->flush();
 
-        if ($this->lastTitleNode === null) {
-            return;
+        foreach ($this->openTitleNodes as $titleNode) {
+            $this->endOpenSection($titleNode);
         }
-
-        $this->document->addNode(
-            $this->nodeFactory->createSectionEndNode($this->lastTitleNode)
-        );
     }
 
     private function parseLine(string $line) : bool
@@ -409,16 +409,24 @@ class DocumentParser
                     );
 
                     if ($this->lastTitleNode !== null) {
-                        $this->document->addNode(
-                            $this->nodeFactory->createSectionEndNode($this->lastTitleNode)
-                        );
+                        // current level is less than previous so we need to end all open sections
+                        if ($node->getLevel() < $this->lastTitleNode->getLevel()) {
+                            foreach ($this->openTitleNodes as $titleNode) {
+                                $this->endOpenSection($titleNode);
+                            }
+                        // same level as the last so just close the last open section
+                        } elseif ($node->getLevel() === $this->lastTitleNode->getLevel()) {
+                            $this->endOpenSection($this->lastTitleNode);
+                        }
                     }
 
                     $this->lastTitleNode = $node;
 
                     $this->document->addNode(
-                        $this->nodeFactory->createSectionBeginNode($this->lastTitleNode)
+                        $this->nodeFactory->createSectionBeginNode($node)
                     );
+
+                    $this->openTitleNodes[] = $node;
 
                     break;
 
@@ -652,5 +660,20 @@ class DocumentParser
         }
 
         return true;
+    }
+
+    private function endOpenSection(TitleNode $titleNode) : void
+    {
+        $this->document->addNode(
+            $this->nodeFactory->createSectionEndNode($titleNode)
+        );
+
+        $key = array_search($titleNode, $this->openTitleNodes, true);
+
+        if ($key === false) {
+            return;
+        }
+
+        unset($this->openTitleNodes[$key]);
     }
 }
