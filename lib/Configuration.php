@@ -217,7 +217,9 @@ class Configuration
             $this->createNodeInstantiator(NodeTypes::DUMMY, Nodes\DummyNode::class),
             $this->createNodeInstantiator(NodeTypes::MAIN, Nodes\MainNode::class),
             $this->createNodeInstantiator(NodeTypes::BLOCK, Nodes\BlockNode::class),
-            $this->createNodeInstantiator(NodeTypes::CALLABLE, Nodes\CallableNode::class)
+            $this->createNodeInstantiator(NodeTypes::CALLABLE, Nodes\CallableNode::class),
+            $this->createNodeInstantiator(NodeTypes::SECTION_BEGIN, Nodes\SectionBeginNode::class),
+            $this->createNodeInstantiator(NodeTypes::SECTION_END, Nodes\SectionEndNode::class)
         );
     }
 

@@ -402,19 +402,37 @@ class HTMLTest extends TestCase
     {
         $document = $this->parseHTML('titles.rst');
 
-        self::assertSame(1, substr_count($document, '<h1>'));
-        self::assertSame(1, substr_count($document, '<h1>'));
+        self::assertSame(2, substr_count($document, '<h1>'));
+        self::assertSame(2, substr_count($document, '</h1>'));
         self::assertSame(3, substr_count($document, '<h2>'));
         self::assertSame(3, substr_count($document, '</h2>'));
         self::assertSame(4, substr_count($document, '<h3>'));
         self::assertSame(4, substr_count($document, '</h3>'));
-        self::assertContains('<a id="main-title"></a><h1>Main title</h1>', $document);
-        self::assertContains('<a id="first-subtitle"></a><h2>First subtitle</h2>', $document);
-        self::assertContains('<a id="first-subsubtitle"></a><h3>First subsubtitle</h3>', $document);
-        self::assertContains('<a id="second-subsubtitle"></a><h3>Second subsubtitle</h3>', $document);
-        self::assertContains('<a id="third-subsubtitle"></a><h3>Third subsubtitle</h3>', $document);
-        self::assertContains('<a id="fourth-subsubtitle"></a><h3>Fourth subsubtitle</h3>', $document);
-        self::assertContains('<a id="em"></a><h2>em</h2>', $document);
+
+        self::assertContains('<div class="section" id="main-title">', $document);
+        self::assertContains('<h1>Main title</h1>', $document);
+
+        self::assertContains('<div class="section" id="first-subtitle">', $document);
+        self::assertContains('<h2>First subtitle</h2>', $document);
+
+        self::assertContains('<div class="section" id="first-subsubtitle">', $document);
+        self::assertContains('<h3>First subsubtitle</h3>', $document);
+
+        self::assertContains('<div class="section" id="second-subsubtitle">', $document);
+        self::assertContains('<h3>Second subsubtitle</h3>', $document);
+
+        self::assertContains('<div class="section" id="third-subsubtitle">', $document);
+        self::assertContains('<h3>Third subsubtitle</h3>', $document);
+
+        self::assertContains('<div class="section" id="fourth-subsubtitle">', $document);
+        self::assertContains('<h3>Fourth subsubtitle</h3>', $document);
+
+        self::assertContains('<div class="section" id="em">', $document);
+        self::assertContains('<h2>em</h2>', $document);
+
+        self::assertContains('<div class="section" id="second-main-title">', $document);
+        self::assertContains('<h1>Second Main Title</h1>', $document);
+
         self::assertNotContains('==', $document);
         self::assertNotContains('--', $document);
         self::assertNotContains('~~', $document);
@@ -430,7 +448,7 @@ class HTMLTest extends TestCase
         self::assertSame(2, substr_count($document, '</h2>'));
         self::assertSame(4, substr_count($document, '<h3>'));
         self::assertSame(4, substr_count($document, '</h3>'));
-        self::assertContains('<a id="main-title"></a>', $document);
+        self::assertContains('<div class="section" id="main-title">', $document);
         self::assertNotContains('==', $document);
         self::assertNotContains('--', $document);
         self::assertNotContains('~~', $document);
@@ -542,8 +560,8 @@ class HTMLTest extends TestCase
     {
         $document = $this->parseHTML('anchor.rst');
 
-        self::assertContains('<a id="anchors"></a><h1>Anchors</h1>', $document);
-        self::assertContains('<a id="anchors"></a><h1>Anchors</h1>', $document);
+        self::assertContains('<div class="section" id="anchors">', $document);
+        self::assertContains('<h1>Anchors</h1>', $document);
         self::assertContains('<a id="lists"></a>', $document);
         self::assertContains('<p><a href="#lists">go to lists</a></p>', $document);
     }

@@ -145,6 +145,7 @@ RST;
 
         $expected = <<<RST
 \\label{}
+
 \\chapter{Test title}
 RST;
 
@@ -157,7 +158,10 @@ RST;
 
         $expected = <<<RST
 \\label{}
+
 \\chapter{Title 1}
+
+
 \\chapter{Title 2}
 \\tableofcontents
 RST;

@@ -71,6 +71,7 @@ class TwigTemplateRenderer implements TemplateRenderer
         return new TwigEnvironment($loader, [
             'strict_variables' => true,
             'cache' => sprintf('%s/twig', $this->configuration->getCacheDir()),
+            'auto_reload' => true,
         ]);
     }
 }
