@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\HTML\Renderers;
 
+use Doctrine\RST\Nodes\ListNode;
 use Doctrine\RST\Renderers\FormatListRenderer;
 use Doctrine\RST\Templates\TemplateRenderer;
 use RuntimeException;
@@ -15,17 +16,22 @@ use function explode;
 
 class ListRenderer implements FormatListRenderer
 {
+    /** @var ListNode */
+    private $listNode;
+
     /** @var TemplateRenderer */
     private $templateRenderer;
 
-    public function __construct(TemplateRenderer $templateRenderer)
+    public function __construct(ListNode $listNode, TemplateRenderer $templateRenderer)
     {
+        $this->listNode         = $listNode;
         $this->templateRenderer = $templateRenderer;
     }
 
     public function createElement(string $text, string $prefix) : string
     {
         return $this->templateRenderer->render('list-item.html.twig', [
+            'listNode' => $this->listNode,
             'text' => $text,
             'prefix' => $prefix,
         ]);
@@ -37,6 +43,7 @@ class ListRenderer implements FormatListRenderer
     public function createList(bool $ordered) : array
     {
         $lines = explode("\n", $this->templateRenderer->render('list.html.twig', [
+            'listNode' => $this->listNode,
             'keyword' => $ordered ? 'ol' : 'ul',
         ]));
 

@@ -24,17 +24,12 @@ class CodeNodeRenderer implements NodeRenderer
 
     public function render() : string
     {
-        $value = $this->codeNode->getValue();
-
         if ($this->codeNode->isRaw()) {
-            return $value;
+            return $this->codeNode->getValue();
         }
 
-        $language = $this->codeNode->getLanguage();
-
         return $this->templateRenderer->render('code.html.twig', [
-            'language' => $language,
-            'value' => $value,
+            'codeNode' => $this->codeNode,
         ]);
     }
 }

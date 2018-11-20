@@ -42,6 +42,7 @@ class HTMLFormat implements Format
             new HTML\Directives\Url(),
             new HTML\Directives\Div(),
             new HTML\Directives\Wrap('note'),
+            new HTML\Directives\ClassDirective(),
         ];
     }
 
@@ -95,7 +96,7 @@ class HTMLFormat implements Format
                 function (Nodes\ListNode $node) {
                     return new Renderers\ListNodeRenderer(
                         $node,
-                        new HTML\Renderers\ListRenderer($this->templateRenderer)
+                        new HTML\Renderers\ListRenderer($node, $this->templateRenderer)
                     );
                 }
             ),

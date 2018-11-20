@@ -25,8 +25,7 @@ class CodeNodeRenderer implements NodeRenderer
     public function render() : string
     {
         return $this->templateRenderer->render('code.tex.twig', [
-            'language' => $this->codeNode->getLanguage(),
-            'value' => $this->codeNode->getValue(),
+            'codeNode' => $this->codeNode,
         ]);
     }
 }
