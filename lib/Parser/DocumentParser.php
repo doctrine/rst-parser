@@ -17,6 +17,7 @@ use Doctrine\RST\Nodes\Node;
 use Doctrine\RST\Nodes\TableNode;
 use Doctrine\RST\Parser;
 use Doctrine\RST\Parser\Directive as ParserDirective;
+use function chr;
 use function explode;
 use function sprintf;
 use function str_replace;
@@ -168,6 +169,9 @@ class DocumentParser
 
         // Removing UTF-8 BOM
         $document = str_replace("\xef\xbb\xbf", '', $document);
+
+        // Replace \u00a0 with " "
+        $document = str_replace(chr(194) . chr(160), ' ', $document);
 
         return $document;
     }
