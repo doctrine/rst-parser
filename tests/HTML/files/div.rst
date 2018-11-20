@@ -1,3 +1,0 @@
-
-.. div:: testing
-    Hello!

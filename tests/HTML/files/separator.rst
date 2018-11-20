@@ -1,8 +1,0 @@
-
-Testing separator
-
--------
-
-Hey!
-
-
