@@ -28,6 +28,9 @@ abstract class Node
     /** @var Node|string|null */
     protected $value;
 
+    /** @var string[] */
+    protected $classes = [];
+
     /**
      * @param Node|string|null $value
      */
@@ -77,6 +80,27 @@ abstract class Node
     public function setValue($value) : void
     {
         $this->value = $value;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getClasses() : array
+    {
+        return $this->classes;
+    }
+
+    public function getClassesString() : string
+    {
+        return implode(' ', $this->classes);
+    }
+
+    /**
+     * @param string[] $classes
+     */
+    public function setClasses(array $classes) : void
+    {
+        $this->classes = $classes;
     }
 
     public function getValueString() : string

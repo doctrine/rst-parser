@@ -78,7 +78,7 @@ class LaTeXFormat implements Format
                 function (Nodes\ListNode $node) {
                     return new Renderers\ListNodeRenderer(
                         $node,
-                        new LaTeX\Renderers\ListRenderer($this->templateRenderer)
+                        new LaTeX\Renderers\ListRenderer($node, $this->templateRenderer)
                     );
                 }
             ),

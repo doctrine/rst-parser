@@ -63,6 +63,7 @@ class TableNodeRenderer implements NodeRenderer
         }
 
         return $this->templateRenderer->render('table.html.twig', [
+            'tableNode' => $this->tableNode,
             'tableHeader' => $tableHeader,
             'tableRows' => $tableRows,
         ]);

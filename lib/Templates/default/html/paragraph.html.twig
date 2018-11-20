@@ -2,6 +2,6 @@
     {% set text = paragraphNode.value.render()|trim %}
 
     {% if text %}
-        <p>{{ text|raw }}</p>
+        <p{% if paragraphNode.classes %} class="{{ paragraphNode.classesString }}"{% endif %}>{{ text|raw }}</p>
     {% endif %}
 {% endspaceless %}

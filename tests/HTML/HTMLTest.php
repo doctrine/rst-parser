@@ -79,7 +79,7 @@ class HTMLTest extends TestCase
     {
         $document = $this->parseHTML('simple-table.rst');
 
-        self::assertSame(1, substr_count($document, '<table class="table table-bordered">'));
+        self::assertSame(1, substr_count($document, '<table>'));
         self::assertSame(1, substr_count($document, '</table>'));
         self::assertSame(3, substr_count($document, '<tr>'));
         self::assertSame(3, substr_count($document, '</tr>'));
@@ -97,7 +97,7 @@ class HTMLTest extends TestCase
 
         $document = $this->parseHTML('pretty-table-no-header.rst');
 
-        self::assertSame(1, substr_count($document, '<table class="table table-bordered">'));
+        self::assertSame(1, substr_count($document, '<table>'));
         self::assertSame(1, substr_count($document, '</table>'));
         self::assertSame(2, substr_count($document, '<tr>'));
         self::assertSame(2, substr_count($document, '</tr>'));
@@ -609,6 +609,36 @@ class HTMLTest extends TestCase
             '<a href="https://php.net/manual/en/class.intldateformatter.php#intl.intldateformatter-constants">IntlDateFormatter:: MEDIUM</a>',
             $rendered
         );
+    }
+
+    public function testClassDirective() : void
+    {
+        $document = $this->parse('class-directive.rst');
+
+        $rendered = $document->renderDocument();
+
+        self::assertContains('<p class="special-paragraph1">Test special-paragraph1 1.</p>', $rendered);
+
+        self::assertContains('<p>Test special-paragraph1 2.</p>', $rendered);
+
+        self::assertContains('<p class="special-paragraph2">Test special-paragraph2 1.</p>', $rendered);
+        self::assertContains('<p class="special-paragraph2">Test special-paragraph2 2.</p>', $rendered);
+
+        self::assertContains('<div class="note"><p class="special-paragraph3">Test</p>', $rendered);
+
+        self::assertContains('<ul class="special-list"><li class="dash">Test list item 1.</li>', $rendered);
+
+        self::assertContains('<p class="rot-gelb-blau grun-2008">Weird class names.</p>', $rendered);
+
+        self::assertContains('<p class="level1">Level 1</p>', $rendered);
+
+        self::assertContains('<blockquote class="level1"><p class="level2">Level2 1</p>', $rendered);
+
+        self::assertContains('<p class="level2">Level2 2</p>', $rendered);
+
+        self::assertContains('<dl class="special-definition-list"><dt>term 1</dt><dd>Definition 1 </dd></dl>', $rendered);
+
+        self::assertContains('<table class="special-table">', $rendered);
     }
 
     /**

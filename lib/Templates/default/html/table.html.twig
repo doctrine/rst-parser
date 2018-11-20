@@ -1,4 +1,4 @@
-<table class="table table-bordered">
+<table{% if tableNode.classes %} class="{{ tableNode.classesString }}"{% endif %}>
     {% if tableHeader %}
         <thead>
             <tr>
