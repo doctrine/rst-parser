@@ -396,7 +396,7 @@ class ParserTest extends TestCase
         self::assertSame(1, $node->getLevel());
 
         /** @var TitleNode $node */
-        $node = $nodes1[4];
+        $node = $nodes1[3];
         self::assertSame(2, $node->getLevel());
 
         /** @var TitleNode $node */
@@ -404,7 +404,7 @@ class ParserTest extends TestCase
         self::assertSame(1, $node->getLevel(), 'Title level in second parse is influenced by first parse');
 
         /** @var TitleNode $node */
-        $node = $nodes2[4];
+        $node = $nodes2[3];
         self::assertSame(2, $node->getLevel(), 'Title level in second parse is influenced by first parse');
     }
 
