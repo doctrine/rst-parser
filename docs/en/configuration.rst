@@ -64,3 +64,19 @@ And you can configure the format to render like this:
     $configuration->setFileExtension(Format::LATEX);
 
 You can read more about formats in the :ref:`Formats <formats>` chapter.
+
+Indent HTML
+-----------
+
+By default, the outputted HTML is not indented consistently. If you would like the outputted HTML to be
+indented consistently, you can enable this feature using the ``setIndentHTML(bool $indentHTML)`` method:
+
+.. code-block:: php
+
+    $configuration->setIndentHTML(true);
+
+.. note::
+
+    This feature only works when rendering full HTML documents using the
+    ``Doctrine\RST\Nodes\DocumentNode::renderDocument()`` method. If you render
+    an individual node with the ``render()`` method, the outputted HTML will not be indented.
