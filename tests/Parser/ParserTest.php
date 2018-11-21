@@ -28,68 +28,6 @@ use function trim;
  */
 class ParserTest extends TestCase
 {
-    public function testDefinitionList() : void
-    {
-        $document = $this->parse('definition-list.rst');
-
-        $rendered = $document->render();
-
-        self::assertContains(
-            '<dl><dt>term 1</dt><dd>Definition 1 </dd><dt>term 2</dt><dd><p class="first">Definition 1 </p><p>Definition 2 </p><p class="last">Definition 3 </p></dd><dt>',
-            $rendered
-        );
-
-        self::assertContains(
-            '<span class="classifier-delimiter">:</span><span class="classifier">classifier</span></dt><dd>Definition 1 </dd><dt>',
-            $rendered
-        );
-
-        self::assertContains(
-            '<span class="classifier-delimiter">:</span><span class="classifier">classifier one</span><span class="classifier-delimiter">:</span><span class="classifier">classifier two</span></dt><dd>Definition 1 </dd><dt>',
-            $rendered
-        );
-
-        self::assertContains(
-            '<span class="classifier-delimiter">:</span><span class="classifier">classifier with &amp;</span></dt><dd>Definition 1 with &amp; </dd><dt>
-                term with &amp;',
-            $rendered
-        );
-
-        self::assertContains(
-            '<span class="classifier-delimiter">:</span><span class="classifier">classifier with &amp;</span><span class="classifier-delimiter">:</span><span class="classifier">classifier with &amp;</span></dt><dd><p class="first">Definition 1 with &amp; </p><p class="last">Definition 2 with &amp; </p></dd><dt><code>term 5</code><span class="classifier-delimiter">:</span><span class="classifier"><code>classifier</code></span></dt><dd>Definition 1 </dd><dt>multi-line definition term</dt><dd><p class="first">Definition 1 line 1 Definition 1 line 2 </p><p class="last">Definition 2 line 1 Definition 2 line 2 </p></dd></dl>',
-            $rendered
-        );
-    }
-
-    public function testDefinitionListInDirective() : void
-    {
-        $document = $this->parse('definition-list.rst');
-
-        $rendered = $document->render();
-
-        self::assertContains(
-            '<div class="note"><p><strong>Definition list in a directive</strong></p>
-<dl><dt>term 1</dt><dd><p class="first">Definition 1 line 1 Definition 1 line 2 </p><p class="last">Definition 2 </p></dd><dt>term 2</dt><dd><p class="first">Definition 1 line 1 Definition 1 line 2 </p><p class="last">Definition 2 </p></dd></dl>
-</div>',
-            $rendered
-        );
-    }
-
-    public function testDefinitionListSurroundedByParagraphs() : void
-    {
-        $document = $this->parse('definition-list.rst');
-
-        $rendered = $document->render();
-
-        self::assertContains(
-            '<p>Paragraph 1</p>
-<dl><dt>term 1</dt><dd>definition 1 definition 2 </dd></dl>
-<p>Paragraph 2</p>
-<dl><dt>term 2</dt><dd>definition 1 definition 2 </dd></dl>',
-            $rendered
-        );
-    }
-
     public function testGetSubParserPassesConfiguration() : void
     {
         $parser = new Parser();
@@ -99,47 +37,6 @@ class ParserTest extends TestCase
         $subParser = $parser->getSubParser();
 
         self::assertSame($configuration, $subParser->getEnvironment()->getConfiguration());
-    }
-
-    public function testCodeBlockWithWhiteSpace() : void
-    {
-        $document = $this->parse('code-with-whitespace.rst');
-
-        $render = $document->render();
-
-        self::assertContains('<pre><code class="">Test code block with whitespace.', $render);
-    }
-
-    /**
-     * Tests that comments are not present in the rendered document
-     */
-    public function testComments() : void
-    {
-        $document = $this->parse('comment.rst');
-
-        $render = $document->render();
-        self::assertNotContains('Testing comment', $render);
-        self::assertContains('Text before', $render);
-        self::assertContains('Text after', $render);
-
-        $document = $this->parse('multi-comment.rst');
-
-        $render = $document->render();
-        self::assertNotContains('multi-line', $render);
-        self::assertNotContains('Blha', $render);
-        self::assertContains('Text before', $render);
-        self::assertContains('Text after', $render);
-    }
-
-    /**
-     * Testing raw node
-     */
-    public function testRawNode() : void
-    {
-        $document = $this->parse('empty.rst');
-        $document->addNode('hello');
-
-        self::assertContains('hello', $document->render());
     }
 
     /**
