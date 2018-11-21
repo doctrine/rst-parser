@@ -46,6 +46,9 @@ class Configuration
     /** @var bool */
     private $ignoreInvalidReferences = false;
 
+    /** @var bool */
+    private $indentHTML = false;
+
     /** @var string */
     private $fileExtension = Format::HTML;
 
@@ -182,6 +185,16 @@ class Configuration
     public function setIgnoreInvalidReferences(bool $ignoreInvalidReferences) : void
     {
         $this->ignoreInvalidReferences = $ignoreInvalidReferences;
+    }
+
+    public function setIndentHTML(bool $indentHTML) : void
+    {
+        $this->indentHTML = $indentHTML;
+    }
+
+    public function getIndentHTML() : bool
+    {
+        return $this->indentHTML;
     }
 
     public function getFileExtension() : string

@@ -9,6 +9,7 @@ use Doctrine\RST\Renderers\DocumentNodeRenderer as BaseDocumentRender;
 use Doctrine\RST\Renderers\FullDocumentNodeRenderer;
 use Doctrine\RST\Renderers\NodeRenderer;
 use Doctrine\RST\Templates\TemplateRenderer;
+use Gajus\Dindent\Indenter;
 
 class DocumentNodeRenderer implements NodeRenderer, FullDocumentNodeRenderer
 {
@@ -37,9 +38,20 @@ class DocumentNodeRenderer implements NodeRenderer, FullDocumentNodeRenderer
             $headerNodes .= $node->render() . "\n";
         }
 
-        return $this->templateRenderer->render('document.html.twig', [
+        $html = $this->templateRenderer->render('document.html.twig', [
             'headerNodes' => $headerNodes,
             'bodyNodes' => $this->render(),
         ]);
+
+        if ($this->document->getConfiguration()->getIndentHTML()) {
+            return $this->indentHTML($html);
+        }
+
+        return $html;
+    }
+
+    private function indentHTML(string $html) : string
+    {
+        return (new Indenter())->indent($html);
     }
 }

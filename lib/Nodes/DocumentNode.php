@@ -45,6 +45,11 @@ class DocumentNode extends Node
         return $this->environment;
     }
 
+    public function getConfiguration() : Configuration
+    {
+        return $this->configuration;
+    }
+
     /**
      * @return Node[]
      */
