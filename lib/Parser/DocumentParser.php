@@ -531,14 +531,6 @@ class DocumentParser
 
         $name = $this->directive->getName();
 
-        if (! isset($this->directives[$name])) {
-            $message = 'Unknown directive: ' . $name;
-
-            $this->environment->getErrorManager()->error($message);
-
-            return null;
-        }
-
         return $this->directives[$name];
     }
 
@@ -563,13 +555,21 @@ class DocumentParser
     {
         $parserDirective = $this->lineDataParser->parseDirective($line);
 
-        if ($parserDirective !== null) {
-            $this->directive = $parserDirective;
-
-            return true;
+        if ($parserDirective === null) {
+            return false;
         }
 
-        return false;
+        if (! isset($this->directives[$parserDirective->getName()])) {
+            $message = sprintf('Unknown directive: "%s" in "%s" for line "%s"', $parserDirective->getName(), $this->environment->getCurrentFileName(), $line);
+
+            $this->environment->getErrorManager()->error($message);
+
+            return false;
+        }
+
+        $this->directive = $parserDirective;
+
+        return true;
     }
 
     private function prepareCode() : bool
