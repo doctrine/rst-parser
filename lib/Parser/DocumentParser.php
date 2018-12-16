@@ -560,7 +560,12 @@ class DocumentParser
         }
 
         if (! isset($this->directives[$parserDirective->getName()])) {
-            $message = sprintf('Unknown directive: "%s" in "%s" for line "%s"', $parserDirective->getName(), $this->environment->getCurrentFileName(), $line);
+            $message = sprintf(
+                'Unknown directive: "%s" %sfor line "%s"',
+                $parserDirective->getName(),
+                $this->environment->getCurrentFileName() ? sprintf('in "%s" ', $this->environment->getCurrentFileName()) : '',
+                $line
+            );
 
             $this->environment->getErrorManager()->error($message);
 
