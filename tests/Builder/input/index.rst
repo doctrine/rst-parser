@@ -19,6 +19,10 @@ Link to :ref:`the same doc reference <same_doc_reference>`
 
 .. _same_doc_reference:
 
+Link to :ref:`the same doc reference with ticks <same_doc_reference_ticks>`
+
+.. _`same_doc_reference_ticks`:
+
 Link to :ref:`Subdirectory <subdirectory>`
 
 Link to :ref:`Subdirectory Test <subdirectory>`
