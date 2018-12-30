@@ -14,6 +14,8 @@ class TwigTemplateRenderer implements TemplateRenderer
 {
     /** @var Configuration */
     private $configuration;
+    /** @var TwigEnvironment */
+    private $twigEnvironment;
 
     public function __construct(Configuration $configuration)
     {
@@ -64,11 +66,15 @@ class TwigTemplateRenderer implements TemplateRenderer
         return $themeDirs;
     }
 
-    private function getTwigEnvironment() : TwigEnvironment
+    public function getTwigEnvironment() : TwigEnvironment
     {
+        if (null !== $this->twigEnvironment) {
+            return $this->twigEnvironment;
+        }
+
         $loader = new FilesystemLoader($this->getTemplatesDirs());
 
-        return new TwigEnvironment($loader, [
+        return $this->twigEnvironment = new TwigEnvironment($loader, [
             'strict_variables' => true,
             'cache' => sprintf('%s/twig', $this->configuration->getCacheDir()),
             'auto_reload' => true,
