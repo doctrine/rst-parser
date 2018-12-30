@@ -389,6 +389,16 @@ class ParserTest extends TestCase
     }
 
     /**
+     * Assert that a raw url is not transformed into an anchor node
+     */
+    public function testRawUrl() : void
+    {
+        $document = $this->parse('url-raw.rst');
+
+        self::assertNotContains('<a', $document->renderDocument());
+    }
+
+    /**
      * Helper function, parses a file and returns the document
      * produced by the parser
      */
