@@ -15,9 +15,12 @@ use Doctrine\RST\NodeFactory\NodeFactory;
 use Doctrine\RST\NodeFactory\NodeInstantiator;
 use Doctrine\RST\Nodes\NodeTypes;
 use Doctrine\RST\Renderers\NodeRendererFactory;
+use Doctrine\RST\Templates\TemplateEngineAdapter;
 use Doctrine\RST\Templates\TemplateRenderer;
+use Doctrine\RST\Templates\TwigAdapter;
 use Doctrine\RST\Templates\TwigTemplateRenderer;
 use RuntimeException;
+use Twig\Environment as TwigEnvironment;
 use function sprintf;
 use function sys_get_temp_dir;
 
@@ -70,13 +73,17 @@ class Configuration
     /** @var EventManager */
     private $eventManager;
 
+    /** @var TemplateEngineAdapter */
+    private $templateEngineAdapter;
+
     public function __construct()
     {
         $this->cacheDir = sys_get_temp_dir() . '/doctrine-rst-parser';
 
-        $this->templateRenderer = new TwigTemplateRenderer($this);
-
         $this->eventManager = new EventManager();
+
+        $this->templateEngineAdapter = new TwigAdapter($this);
+        $this->templateRenderer      = new TwigTemplateRenderer($this);
 
         $this->formats = [
             Format::HTML => new InternalFormat(new HTMLFormat($this->templateRenderer)),
@@ -102,6 +109,14 @@ class Configuration
     public function setTemplateRenderer(TemplateRenderer $templateRenderer) : void
     {
         $this->templateRenderer = $templateRenderer;
+    }
+
+    /**
+     * @return mixed|TwigEnvironment
+     */
+    public function getTemplateEngine()
+    {
+        return $this->templateEngineAdapter->getTemplateEngine();
     }
 
     /**

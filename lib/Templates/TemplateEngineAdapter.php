@@ -4,8 +4,13 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\Templates;
 
-interface TemplateRenderer
+interface TemplateEngineAdapter
 {
+    /**
+     * @return mixed
+     */
+    public function getTemplateEngine();
+
     /**
      * @param mixed[] $parameters
      */
