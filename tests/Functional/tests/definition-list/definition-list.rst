@@ -73,3 +73,11 @@ Paragraph 2
 term 2
     definition 1
     definition 2
+
+Directive in definition list
+============================
+
+term 1
+    .. note::
+
+        directive in definition list
