@@ -55,7 +55,7 @@ class BuilderUrlTest extends BaseBuilderTest
     {
         $this->configuration->setBaseUrl('https://www.domain.com/directory');
         $this->configuration->setBaseUrlEnabledCallable(static function (string $path) : bool {
-            return strpos($path, 'subdir/index') !== false;
+            return strpos($path, 'subdir/') !== 0;
         });
 
         $this->builder->build($this->sourceFile(), $this->targetFile());
@@ -63,12 +63,12 @@ class BuilderUrlTest extends BaseBuilderTest
         $contents = $this->getFileContents($this->targetFile('index.html'));
 
         self::assertContains(
-            '<a href="index.html">Test reference url</a>',
+            '<a href="https://www.domain.com/directory/index.html">Test reference url</a>',
             $contents
         );
 
         self::assertContains(
-            '<li id="index-html-base-url" class="toc-item"><a href="index.html#base-url">Base URL</a></li>',
+            '<li id="index-html-base-url" class="toc-item"><a href="https://www.domain.com/directory/index.html#base-url">Base URL</a></li>',
             $contents
         );
 
@@ -80,12 +80,22 @@ class BuilderUrlTest extends BaseBuilderTest
         );
 
         self::assertContains(
+            '<a href="file.html">Test subdir file reference path</a>',
+            $contents
+        );
+
+        self::assertContains(
+            '<a href="index.html#subdirectory-index">Subdirectory Index</a>',
+            $contents
+        );
+
+        self::assertContains(
             '<li id="index-html-base-url" class="toc-item"><a href="https://www.domain.com/directory/index.html#base-url">Base URL</a></li>',
             $contents
         );
 
         self::assertContains(
-            '<li id="file-html-subdirectory-file" class="toc-item"><a href="https://www.domain.com/directory/subdir/file.html#subdirectory-file">Subdirectory File</a></li>',
+            '<li id="file-html-subdirectory-file" class="toc-item"><a href="file.html#subdirectory-file">Subdirectory File</a></li>',
             $contents
         );
     }
