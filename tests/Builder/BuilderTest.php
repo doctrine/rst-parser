@@ -159,6 +159,9 @@ class BuilderTest extends BaseBuilderTest
 
         $contents = $this->getFileContents($this->targetFile('index.html'));
 
+        self::assertContains('Link to <a href="index.html#same_doc_reference">the same doc reference</a>', $contents);
+        self::assertContains('Link to <a href="index.html#same_doc_reference_ticks">the same doc reference with ticks</a>', $contents);
+
         self::assertContains('Link to <a href="subdir/test.html#subdirectory">Subdirectory</a>', $contents);
         self::assertContains('Link to <a href="subdir/test.html#subdirectory">Subdirectory Test</a>', $contents);
 
