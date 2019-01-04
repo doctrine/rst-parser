@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\Tests\RST;
 
+use InvalidArgumentException;
 use Doctrine\RST\Configuration;
 use Doctrine\RST\Environment;
 use PHPUnit\Framework\TestCase;
@@ -51,5 +52,32 @@ class EnvironmentTest extends TestCase
         self::assertSame($environment->canonicalUrl('test.rst'), 'subdir1/subdir2/test.rst');
         self::assertSame($environment->canonicalUrl('../index.rst'), 'subdir1/index.rst');
         self::assertSame($environment->canonicalUrl('../../index.rst'), 'index.rst');
+    }
+
+    /**
+     * @dataProvider getMissingSectionTests
+     */
+    public function testResolveForMissingSection(string $expectedMessage, ?string $currentFilename)
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage($expectedMessage);
+        $environment = new Environment(new Configuration());
+        if (null !== $currentFilename) {
+            $environment->setCurrentFileName($currentFilename);
+        }
+        $environment->resolve('doc', '/path/to/unknown/doc');
+    }
+
+    public function getMissingSectionTests()
+    {
+        yield 'no_current_filename' => [
+            'Unknown reference section "doc"',
+            null
+        ];
+
+        yield 'with_current_filename' => [
+            'Unknown reference section "doc" in "current_doc_filename"',
+            'current_doc_filename'
+        ];
     }
 }
