@@ -143,7 +143,9 @@ class Environment
     public function resolve(string $section, string $data) : ?ResolvedReference
     {
         if (! isset($this->references[$section])) {
-            throw new InvalidArgumentException($this->getMissingReferenceSectionError($section));
+            $this->addMissingReferenceSectionError($section);
+
+            return null;
         }
 
         $reference = $this->references[$section];
@@ -200,7 +202,7 @@ class Environment
             return null;
         }
 
-        $this->errorManager->error($this->getMissingReferenceSectionError($section));
+        $this->addMissingReferenceSectionError($section);
 
         return null;
     }
@@ -486,12 +488,12 @@ class Environment
         return $text;
     }
 
-    private function getMissingReferenceSectionError(string $section): string
+    private function addMissingReferenceSectionError(string $section) : void
     {
-        return sprintf(
+        $this->errorManager->error(sprintf(
             'Unknown reference section "%s"%s',
             $section,
-            $this->getCurrentFileName() ? sprintf(' in "%s" ', $this->getCurrentFileName()) : ''
-        );
+            $this->getCurrentFileName() !== '' ? sprintf(' in "%s" ', $this->getCurrentFileName()) : ''
+        ));
     }
 }

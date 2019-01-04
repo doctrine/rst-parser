@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Doctrine\Tests\RST;
 
-use InvalidArgumentException;
 use Doctrine\RST\Configuration;
 use Doctrine\RST\Environment;
 use PHPUnit\Framework\TestCase;
+use Throwable;
 
 /**
  * Unit testing for RST
@@ -57,27 +57,30 @@ class EnvironmentTest extends TestCase
     /**
      * @dataProvider getMissingSectionTests
      */
-    public function testResolveForMissingSection(string $expectedMessage, ?string $currentFilename)
+    public function testResolveForMissingSection(string $expectedMessage, ?string $currentFilename) : void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(Throwable::class);
         $this->expectExceptionMessage($expectedMessage);
         $environment = new Environment(new Configuration());
-        if (null !== $currentFilename) {
+        if ($currentFilename !== null) {
             $environment->setCurrentFileName($currentFilename);
         }
         $environment->resolve('doc', '/path/to/unknown/doc');
     }
 
-    public function getMissingSectionTests()
+    /**
+     * @return mixed[]
+     */
+    public function getMissingSectionTests() : iterable
     {
         yield 'no_current_filename' => [
             'Unknown reference section "doc"',
-            null
+            null,
         ];
 
         yield 'with_current_filename' => [
             'Unknown reference section "doc" in "current_doc_filename"',
-            'current_doc_filename'
+            'current_doc_filename',
         ];
     }
 }
