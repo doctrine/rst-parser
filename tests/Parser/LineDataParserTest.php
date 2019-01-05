@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Doctrine\Tests\RST\Parser;
 
+use Doctrine\Common\EventManager;
 use Doctrine\RST\Parser;
 use Doctrine\RST\Parser\LineDataParser;
 use Doctrine\RST\Parser\Link;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class LineDataParserTest extends TestCase
@@ -17,6 +19,9 @@ class LineDataParserTest extends TestCase
     /** @var LineDataParser */
     private $lineDataParser;
 
+    /** @var EventManager|MockObject $eventManager */
+    private $eventManager;
+
     /**
      * @param mixed $expected
      *
@@ -24,6 +29,9 @@ class LineDataParserTest extends TestCase
      */
     public function testParseLink(string $line, $expected) : void
     {
+        $this->eventManager->expects(self::exactly($expected instanceof Link ? 1 : 0))
+            ->method('dispatchEvent');
+
         self::assertEquals($expected, $this->lineDataParser->parseLink($line));
     }
 
@@ -48,6 +56,8 @@ class LineDataParserTest extends TestCase
     {
         $this->parser = $this->createMock(Parser::class);
 
-        $this->lineDataParser = new LineDataParser($this->parser);
+        $this->eventManager = $this->createMock(EventManager::class);
+
+        $this->lineDataParser = new LineDataParser($this->parser, $this->eventManager);
     }
 }

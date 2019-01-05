@@ -114,7 +114,7 @@ class DocumentParser
         $this->directives     = $directives;
         $this->includeAllowed = $includeAllowed;
         $this->includeRoot    = $includeRoot;
-        $this->lineDataParser = new LineDataParser($this->parser);
+        $this->lineDataParser = new LineDataParser($this->parser, $eventManager);
         $this->lineChecker    = new LineChecker($this->lineDataParser);
         $this->tableParser    = new TableParser();
         $this->buffer         = new Buffer();
