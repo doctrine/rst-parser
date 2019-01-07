@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\Parser;
 
+use Doctrine\Common\EventManager;
+use Doctrine\RST\Event\OnLinkParsedEvent;
 use Doctrine\RST\Parser;
 use function array_map;
 use function count;
@@ -18,37 +20,51 @@ class LineDataParser
     /** @var Parser */
     private $parser;
 
-    public function __construct(Parser $parser)
+    /** @var EventManager */
+    private $eventManager;
+
+    public function __construct(Parser $parser, EventManager $eventManager)
     {
-        $this->parser = $parser;
+        $this->parser       = $parser;
+        $this->eventManager = $eventManager;
     }
 
     public function parseLink(string $line) : ?Link
     {
         // Links
         if (preg_match('/^\.\. _`(.+)`: (.+)$/mUsi', $line, $match) > 0) {
-            return new Link($match[1], $match[2], Link::TYPE_LINK);
+            return $this->createLink($match[1], $match[2], Link::TYPE_LINK);
         }
 
         if (preg_match('/^\.\. _(.+): (.+)$/mUsi', $line, $match) > 0) {
-            return new Link($match[1], $match[2], Link::TYPE_LINK);
+            return $this->createLink($match[1], $match[2], Link::TYPE_LINK);
         }
 
         // Short anonymous links
         if (preg_match('/^__ (.+)$/mUsi', trim($line), $match) > 0) {
             $url = $match[1];
 
-            return new Link('_', $url, Link::TYPE_LINK);
+            return $this->createLink('_', $url, Link::TYPE_LINK);
         }
 
         // Anchor link
         if (preg_match('/^\.\. _(.+):$/mUsi', trim($line), $match) > 0) {
             $anchor = $match[1];
 
-            return new Link($anchor, '#' . $anchor, Link::TYPE_ANCHOR);
+            return $this->createLink($anchor, '#' . $anchor, Link::TYPE_ANCHOR);
         }
 
         return null;
+    }
+
+    private function createLink(string $name, string $url, string $type) : Link
+    {
+        $this->eventManager->dispatchEvent(
+            OnLinkParsedEvent::ON_LINK_PARSED,
+            new OnLinkParsedEvent($url, $type, $this->parser->getEnvironment()->getCurrentFileName())
+        );
+
+        return new Link($name, $url, $type);
     }
 
     public function parseDirectiveOption(string $line) : ?DirectiveOption

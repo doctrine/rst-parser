@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Doctrine\Tests\RST\Parser;
 
+use Doctrine\Common\EventManager;
 use Doctrine\RST\Parser;
 use Doctrine\RST\Parser\LineChecker;
 use Doctrine\RST\Parser\LineDataParser;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use function str_repeat;
 
@@ -22,7 +24,10 @@ class LineCheckerTest extends TestCase
     {
         $this->parser = $this->createMock(Parser::class);
 
-        $this->lineChecker = new LineChecker(new LineDataParser($this->parser));
+        /** @var EventManager|MockObject $eventManager */
+        $eventManager = $this->createMock(EventManager::class);
+
+        $this->lineChecker = new LineChecker(new LineDataParser($this->parser, $eventManager));
     }
 
     /**
