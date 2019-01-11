@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\Tests\RST\Builder;
 
+use Doctrine\RST\Builder;
 use Doctrine\Tests\RST\BaseBuilderTest;
 use function file_exists;
 use function is_dir;
@@ -36,6 +37,28 @@ class BuilderTest extends BaseBuilderTest
         self::assertTrue(file_exists($this->targetFile('magic-link.html')));
         self::assertTrue(file_exists($this->targetFile('subdir/test.html')));
         self::assertTrue(file_exists($this->targetFile('subdir/file.html')));
+    }
+
+    public function testCachedMetas() : void
+    {
+        // check that metas were cached
+        self::assertTrue(file_exists($this->targetFile('metas.php')));
+        $cachedContents = file_get_contents($this->targetFile('metas.php'));
+        $metaEntries = unserialize($cachedContents);
+        self::assertArrayHasKey('index', $metaEntries);
+        self::assertSame('Summary', $metaEntries['index']->getTitle());
+
+        // update meta cache to see that it was used
+        file_put_contents(
+            $this->targetFile('metas.php'),
+            str_replace('Summary', 'Sumario', $cachedContents)
+        );
+
+        $builder = new Builder();
+        $builder->build($this->sourceFile(), $this->targetFile());
+
+        $contents = $this->getFileContents($this->targetFile('index.html'));
+        self::assertContains('Sumario', $contents);
     }
 
     /**

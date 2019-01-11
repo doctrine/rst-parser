@@ -33,7 +33,7 @@ class Scanner
 
         $entry = $this->metas->get($file);
 
-        $rst = $directory . '/' . $file;
+        $rst = $directory . '/' . $file . '.rst';
 
         if ($entry === null || ! file_exists($rst) || $entry->getCtime() < filectime($rst)) {
             // File was never seen or changed and thus need to be parsed

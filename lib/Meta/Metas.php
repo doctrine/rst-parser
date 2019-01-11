@@ -98,6 +98,14 @@ class Metas
     }
 
     /**
+     * @param MetaEntry[] $metaEntries
+     */
+    public function setMetaEntries(array $metaEntries)
+    {
+        $this->entries = $metaEntries;
+    }
+
+    /**
      * @param string[] $links
      */
     private function doesLinkExist(array $links, string $link) : bool
