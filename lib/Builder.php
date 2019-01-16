@@ -96,11 +96,6 @@ class Builder
         return $this->documents;
     }
 
-    public function getParseQueue() : Builder\ParseQueue
-    {
-        return $this->parseQueue;
-    }
-
     public function getErrorManager() : ErrorManager
     {
         return $this->errorManager;
