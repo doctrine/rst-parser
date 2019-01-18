@@ -52,6 +52,9 @@ class Configuration
     /** @var string */
     private $fileExtension = Format::HTML;
 
+    /** @var string */
+    private $sourceFileExtension = 'rst';
+
     /** @var TemplateRenderer */
     private $templateRenderer;
 
@@ -275,6 +278,11 @@ class Configuration
         }
 
         return $this->formats[$this->fileExtension];
+    }
+
+    public function getSourceFileExtension() : string
+    {
+        return $this->sourceFileExtension;
     }
 
     private function createNodeInstantiator(Environment $environment, string $type, string $nodeClassName) : NodeInstantiator

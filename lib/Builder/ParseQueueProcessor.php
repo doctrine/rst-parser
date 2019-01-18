@@ -7,6 +7,7 @@ namespace Doctrine\RST\Builder;
 use Doctrine\RST\Environment;
 use Doctrine\RST\ErrorManager;
 use Doctrine\RST\Kernel;
+use Doctrine\RST\Meta\DocumentDependency;
 use Doctrine\RST\Meta\Metas;
 use Doctrine\RST\Nodes\DocumentNode;
 use Doctrine\RST\Parser;
@@ -22,17 +23,11 @@ class ParseQueueProcessor
     /** @var ErrorManager */
     private $errorManager;
 
-    /** @var ParseQueue */
-    private $parseQueue;
-
     /** @var Metas */
     private $metas;
 
     /** @var Documents */
     private $documents;
-
-    /** @var Scanner */
-    private $scanner;
 
     /** @var string */
     private $directory;
@@ -46,28 +41,24 @@ class ParseQueueProcessor
     public function __construct(
         Kernel $kernel,
         ErrorManager $errorManager,
-        ParseQueue $parseQueue,
         Metas $metas,
         Documents $documents,
-        Scanner $scanner,
         string $directory,
         string $targetDirectory,
         string $fileExtension
     ) {
         $this->kernel          = $kernel;
         $this->errorManager    = $errorManager;
-        $this->parseQueue      = $parseQueue;
         $this->metas           = $metas;
         $this->documents       = $documents;
-        $this->scanner         = $scanner;
         $this->directory       = $directory;
         $this->targetDirectory = $targetDirectory;
         $this->fileExtension   = $fileExtension;
     }
 
-    public function process() : void
+    public function process(ParseQueue $parseQueue) : void
     {
-        while ($file = $this->parseQueue->getFileToParse()) {
+        foreach ($parseQueue->getAllFilesThatRequireParsing() as $file) {
             $this->processFile($file);
         }
     }
@@ -86,12 +77,6 @@ class ParseQueueProcessor
 
         $this->kernel->postParse($document);
 
-        $dependencies = $environment->getDependencies();
-
-        foreach ($this->buildDependenciesToScan($dependencies) as $dependency) {
-            $this->scanner->scan($this->directory, $dependency);
-        }
-
         $this->metas->set(
             $file,
             $this->buildDocumentUrl($document),
@@ -99,7 +84,7 @@ class ParseQueueProcessor
             $document->getTitles(),
             $document->getTocs(),
             (int) filectime($fileAbsolutePath),
-            $dependencies,
+            $environment->getDependencies(),
             $environment->getLinks()
         );
     }
@@ -117,18 +102,6 @@ class ParseQueueProcessor
         $parser = new Parser($this->kernel, $environment);
 
         return $parser;
-    }
-
-    /**
-     * @param string[] $dependencies
-     *
-     * @return string[]
-     */
-    private function buildDependenciesToScan(array $dependencies) : array
-    {
-        return array_filter($dependencies, function (string $dependency) : bool {
-            return file_exists($this->buildFileAbsolutePath($dependency));
-        });
     }
 
     private function buildFileAbsolutePath(string $file) : string

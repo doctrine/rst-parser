@@ -12,49 +12,19 @@ use PHPUnit\Framework\TestCase;
 
 class ParseQueueTest extends TestCase
 {
-    /** @var Documents|MockObject */
-    private $documents;
-
-    /** @var ParseQueue */
-    private $parseQueue;
-
-    public function testGetSetState() : void
+    public function testAddingFiles()
     {
-        self::assertNull($this->parseQueue->getState('file'));
+        $parseQueue = new ParseQueue();
+        $parseQueue->addFile('file_needs_parsing1', true);
+        $parseQueue->addFile('file_no_parsing1', false);
+        
+        $this->assertTrue($parseQueue->isFileKnownToParseQueue('file_needs_parsing1'));
+        $this->assertTrue($parseQueue->isFileKnownToParseQueue('file_no_parsing1'));
+        $this->assertFalse($parseQueue->isFileKnownToParseQueue('other_file'));
 
-        $this->parseQueue->setState('file', State::NO_PARSE);
+        $this->assertTrue($parseQueue->doesFileRequireParsing('file_needs_parsing1'));
+        $this->assertFalse($parseQueue->doesFileRequireParsing('file_no_parsing1'));
 
-        self::assertSame(State::NO_PARSE, $this->parseQueue->getState('file'));
-    }
-
-    public function testGetFileToParse() : void
-    {
-        self::assertNull($this->parseQueue->getFileToParse());
-
-        $this->parseQueue->addToParseQueue('file1');
-        $this->parseQueue->addToParseQueue('file2');
-
-        self::assertSame('file1', $this->parseQueue->getFileToParse());
-        self::assertSame('file2', $this->parseQueue->getFileToParse());
-        self::assertNull($this->parseQueue->getFileToParse());
-    }
-
-    public function testAddToParseQueue() : void
-    {
-        $this->documents->expects(self::once())
-            ->method('hasDocument')
-            ->with('file')
-            ->willReturn(true);
-
-        $this->parseQueue->addToParseQueue('file');
-
-        self::assertNull($this->parseQueue->getFileToParse());
-    }
-
-    protected function setUp() : void
-    {
-        $this->documents = $this->createMock(Documents::class);
-
-        $this->parseQueue = new ParseQueue($this->documents);
+        $this->assertSame(['file_needs_parsing1'], $parseQueue->getAllFilesThatRequireParsing());
     }
 }
