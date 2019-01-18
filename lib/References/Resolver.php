@@ -52,7 +52,7 @@ class Resolver
             return null;
         }
 
-        return $this->createResolvedReference($environment, $entry, $attributes);
+        return $this->createResolvedReference($file, $environment, $entry, $attributes);
     }
 
     /**
@@ -66,7 +66,7 @@ class Resolver
         $entry = $environment->getMetas()->findLinkMetaEntry($data);
 
         if ($entry !== null) {
-            return $this->createResolvedReference($environment, $entry, $attributes, $data);
+            return $this->createResolvedReference($entry->getFile(), $environment, $entry, $attributes, $data);
         }
 
         return null;
@@ -76,6 +76,7 @@ class Resolver
      * @param string[] $attributes
      */
     private function createResolvedReference(
+        string $file,
         Environment $environment,
         MetaEntry $entry,
         array $attributes = [],
@@ -88,6 +89,7 @@ class Resolver
         }
 
         return new ResolvedReference(
+            $file,
             $entry->getTitle(),
             $url,
             $entry->getTitles(),

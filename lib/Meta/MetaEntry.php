@@ -33,6 +33,9 @@ class MetaEntry
     private $depends;
 
     /** @var string[] */
+    private $resolvedDependencies = [];
+
+    /** @var string[] */
     private $links;
 
     /** @var string|null */
@@ -115,7 +118,38 @@ class MetaEntry
      */
     public function getDepends() : array
     {
-        return $this->depends;
+        return array_values(array_unique($this->depends));
+    }
+
+    /**
+     * Call to replace a dependency with the resolved, real filename.
+     */
+    public function resolveDependency(string $originalDependency, string $newDependency) : void
+    {
+        // we only need to resolve a dependency one time
+        if (in_array($originalDependency, $this->resolvedDependencies)) {
+            return;
+        }
+
+        $key = array_search($originalDependency, $this->depends);
+
+        if (false === $key) {
+            throw new \LogicException(sprintf('Could not found dependency "%s" in MetaEntry for "%s"', $originalDependency, $this->file));
+        }
+
+        $this->depends[$key] = $newDependency;
+        $this->resolvedDependencies[] = $originalDependency;
+    }
+
+    public function removeDependency(string $dependency) : void
+    {
+        $key = array_search($dependency, $this->depends);
+
+        if (false === $key) {
+            throw new \LogicException(sprintf('Could not found dependency "%s" in MetaEntry for "%s"', $dependency, $this->file));
+        }
+
+        unset($this->depends[$key]);
     }
 
     /**

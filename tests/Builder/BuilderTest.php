@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\Tests\RST\Builder;
 
 use Doctrine\RST\Builder;
+use Doctrine\RST\Meta\MetaEntry;
 use Doctrine\Tests\RST\BaseBuilderTest;
 use function file_exists;
 use function is_dir;
@@ -44,20 +45,41 @@ class BuilderTest extends BaseBuilderTest
         // check that metas were cached
         self::assertTrue(file_exists($this->targetFile('metas.php')));
         $cachedContents = file_get_contents($this->targetFile('metas.php'));
+        /** @var MetaEntry[] $metaEntries */
         $metaEntries = unserialize($cachedContents);
         self::assertArrayHasKey('index', $metaEntries);
         self::assertSame('Summary', $metaEntries['index']->getTitle());
 
+        // look at all the other documents this document depends
+        // on, like :doc: and :ref:
+        $this->assertSame([
+            'index',
+            'toc-glob',
+            'subdir/index'
+        ], $metaEntries['introduction']->getDepends());
+
         // update meta cache to see that it was used
+        // Summary is the main header in "index.rst"
+        // we reference it in introduction.rst
+        // it should cause introduction.rst to re-render with the new
+        // title as the link
         file_put_contents(
             $this->targetFile('metas.php'),
             str_replace('Summary', 'Sumario', $cachedContents)
         );
 
+        // also we need to trigger the introduction.rst as looking updated
+        sleep(1);
+        file_put_contents(
+            __DIR__.'/input/introduction.rst',
+            file_get_contents(__DIR__.'/input/introduction.rst') . ' '
+        );
+
         $builder = new Builder();
+        $builder->pleaseLog = true;
         $builder->build($this->sourceFile(), $this->targetFile());
 
-        $contents = $this->getFileContents($this->targetFile('index.html'));
+        $contents = $this->getFileContents($this->targetFile('introduction.html'));
         self::assertContains('Sumario', $contents);
     }
 

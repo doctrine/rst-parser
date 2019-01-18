@@ -59,6 +59,9 @@ class Environment
     private $dependencies = [];
 
     /** @var string[] */
+    private $unresolvedDependencies = [];
+
+    /** @var string[] */
     private $variables = [];
 
     /** @var string[] */
@@ -148,6 +151,16 @@ class Environment
 
         if ($resolvedReference === null) {
             $this->addInvalidLink(new InvalidLink($data));
+            $this->getMetaEntry()->removeDependency($data);
+
+            return null;
+        }
+
+        if (in_array($data, $this->unresolvedDependencies, true)) {
+            $this->getMetaEntry()->resolveDependency(
+                $data,
+                $resolvedReference->getFile()
+            );
         }
 
         return $resolvedReference;
@@ -279,7 +292,7 @@ class Environment
         return '';
     }
 
-    public function addDependency(string $dependency) : void
+    public function addDependency(string $dependency, bool $requiresResolving = false) : void
     {
         $dependency = $this->canonicalUrl($dependency);
 
@@ -291,6 +304,9 @@ class Environment
         }
 
         $this->dependencies[] = $dependency;
+        if ($requiresResolving) {
+            $this->unresolvedDependencies[] = $dependency;
+        }
     }
 
     /**

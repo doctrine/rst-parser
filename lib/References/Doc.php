@@ -14,10 +14,20 @@ class Doc extends Reference
     /** @var Resolver */
     private $resolver;
 
-    public function __construct(string $name = 'doc')
+    /**
+     * Used with "ref" - it means the dependencies added in found()
+     * must be resolved to their final path later (they are not
+     * already document names).
+     *
+     * @var bool
+     */
+    private $dependenciesMustBeResolved;
+
+    public function __construct(string $name = 'doc', $dependenciesMustBeResolved = false)
     {
         $this->name     = $name;
         $this->resolver = new Resolver();
+        $this->dependenciesMustBeResolved = $dependenciesMustBeResolved;
     }
 
     public function getName() : string
@@ -32,6 +42,6 @@ class Doc extends Reference
 
     public function found(Environment $environment, string $data) : void
     {
-        $environment->addDependency($data);
+        $environment->addDependency($data, $this->dependenciesMustBeResolved);
     }
 }
