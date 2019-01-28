@@ -111,7 +111,9 @@ class Builder
             $this->filesystem->mkdir($targetDirectory, 0755);
         }
 
-        $this->loadCachedMetas($targetDirectory);
+        if ($this->configuration->getUseCachedMetas()) {
+            $this->loadCachedMetas($targetDirectory);
+        }
 
         $parseQueue = $this->scan($directory, $targetDirectory);
 

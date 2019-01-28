@@ -49,6 +49,9 @@ class Configuration
     /** @var bool */
     private $indentHTML = false;
 
+    /** @var bool */
+    private $useCachedMetas = true;
+
     /** @var string */
     private $fileExtension = Format::HTML;
 
@@ -198,6 +201,16 @@ class Configuration
     public function getIndentHTML() : bool
     {
         return $this->indentHTML;
+    }
+
+    public function setUseCachedMetas(bool $useCachedMetas) : void
+    {
+        $this->useCachedMetas = $useCachedMetas;
+    }
+
+    public function getUseCachedMetas() : bool
+    {
+        return $this->useCachedMetas;
     }
 
     public function getFileExtension() : string
