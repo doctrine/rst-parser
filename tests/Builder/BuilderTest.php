@@ -58,28 +58,41 @@ class BuilderTest extends BaseBuilderTest
             'subdir/index'
         ], $metaEntries['introduction']->getDepends());
 
+        // assert the self-refs don't mess up dependencies
+        $this->assertSame([
+            'subdir/index',
+            'index',
+            'subdir/file'
+        ], $metaEntries['subdir/index']->getDepends());
+
         // update meta cache to see that it was used
         // Summary is the main header in "index.rst"
-        // we reference it in introduction.rst
-        // it should cause introduction.rst to re-render with the new
+        // we reference it in link-to-index.rst
+        // it should cause link-to-index.rst to re-render with the new
         // title as the link
         file_put_contents(
             $this->targetFile('metas.php'),
             str_replace('Summary', 'Sumario', $cachedContents)
         );
 
-        // also we need to trigger the introduction.rst as looking updated
+        // also we need to trigger the link-to-index.rst as looking updated
         sleep(1);
+        $contents = file_get_contents(__DIR__.'/input/link-to-index.rst');
         file_put_contents(
-            __DIR__.'/input/introduction.rst',
-            file_get_contents(__DIR__.'/input/introduction.rst') . ' '
+            __DIR__.'/input/link-to-index.rst',
+             $contents. ' '
+        );
+        // change it back
+        file_put_contents(
+            __DIR__.'/input/link-to-index.rst',
+            $contents
         );
 
         $builder = new Builder();
         $builder->pleaseLog = true;
         $builder->build($this->sourceFile(), $this->targetFile());
 
-        $contents = $this->getFileContents($this->targetFile('introduction.html'));
+        $contents = $this->getFileContents($this->targetFile('link-to-index.html'));
         self::assertContains('Sumario', $contents);
     }
 
