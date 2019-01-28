@@ -38,7 +38,7 @@ class Scanner
      *
      * This takes into account the presence of cached & fresh MetaEntry
      * objects, and avoids adding files to the parse queue that have
-     * not changed and whose dependencies have not changed.
+     * not changed and whose direct dependencies have not changed.
      */
     public function scan() : ParseQueue
     {
@@ -61,46 +61,9 @@ class Scanner
         }
 
         return $parseQueue;
-
-        /*
-         * 1) See if meta exists. If it does not, add it to ParseQueue
-         *      as needing to PARSE_NEEDED
-         * 2) If meta DOES exist
-         *      a) if stale, PARSE_NEEDED
-         *      b) if not stale, loop over each dependency and
-         *          do the exact same check
-         *          -> how can we avoid circular issues?
-         *              -> basically, each iteration of the loop
-         *                  going deeper just needs to know that
-         *                  if it hits its parent caller/file, it
-         *                  should take no information from this,
-         *                  but not try to follow its dependencies.
-         *              -> could possibly do this with a flag called
-         *                  PARSE_PROCESSING, which is released after
-         *                  you follow all of your dependencies. If
-         *                  you hit a PARSE_PROCESSING on one of your
-         *                  dependencies, you just exist and re-set
-         *                  your status back to some unknown. If you
-         *                  ARE able to determine from your dependencies
-         *                  if you need to be parsed, then you set to whatever
-         *                  that status is.
-         *              -> this probably means adding everything to the
-         *                  ParseQueue in the beginning. And maybe this
-         *                  just becomes a utility class of the Scanner,
-         *                  and an array of filenames or array of SourceDocument
-         *                  objects is returned. Maybe Scanner can be more
-         *                  stateless, and a lot of the recursive logic is
-         *                  moved into this temporary, stateful ParseQueue.
-         *          i) if no dependencies need to be re-parsed, don't parse
-         *          ii) if any need re-parsing, re-parse
-         *
-         * We will use ParseQueue in an intelligent way - actually asking
-         * it if it is aware of a file yet, instead of using all this getState()
-         * garbage
-         */
     }
 
-    private function doesFileRequireParsing(string $filename, ParseQueue $parseQueue, array $filesAlreadyBeingChecked = []) : bool
+    private function doesFileRequireParsing(string $filename, ParseQueue $parseQueue) : bool
     {
         if (!isset($this->fileInfos[$filename])) {
             throw new \InvalidArgumentException(sprintf('No file info found for "%s" - file does not exist.', $filename));
@@ -111,7 +74,7 @@ class Scanner
         $documentFilename = $this->getFilenameFromFile($file);
         $entry = $this->metas->get($documentFilename);
 
-        if ($entry === null || $entry->getCtime() < $file->getCTime()) {
+        if ($this->hasFileBeenUpdated($filename)) {
             // File is new or changed and thus need to be parsed
             return true;
         }
@@ -127,34 +90,20 @@ class Scanner
         $filesAlreadyBeingChecked[] = $documentFilename;
 
         foreach ($dependencies as $dependency) {
-            if (in_array($dependency, $filesAlreadyBeingChecked, true)) {
-                /*
-                 * File is already being checked. For example, consider
-                 * this dependency tree:
-                 *
-                 *      DocA (depends on)->
-                 *          DocB (depends on)->
-                 *              DocC (depends on)-> DocB & DocD
-                 *
-                 * And assume only DocD has changed.
-                 * The method will be called recursively for DocB, then DocC.
-                 * When that happens, it needs to realize that we're already
-                 * checking to see if DocB has changed. And so, we should not
-                 * recursively check DocB again. It's a no-op: we don't know
-                 * if DocB has changed yet or not. So, we skip, and check DocD.
-                 */
-
-                continue;
-            }
-
-            // if the parseQueue already knows about this file, just ask it
-            if ($parseQueue->isFileKnownToParseQueue($dependency)) {
-                if ($parseQueue->doesFileRequireParsing($dependency)) {
-                    return true;
-                }
-
-                continue;
-            }
+            /*
+             * The dependency check is NOT recursive on purpose.
+             * If fileA has a link to fileB that uses its "headline",
+             * for example, then fileA is "dependent" on fileB. If
+             * fileB changes, it means that its MetaEntry needs to
+             * be updated. And because fileA gets the headline from
+             * the MetaEntry, it means that fileA must also be re-parsed.
+             * However, if fileB depends on fileC and file C only is
+             * updated, fileB *does* need to be re-parsed, but fileA
+             * does not, because the MetaEntry for fileB IS still
+             * "fresh" - fileB did not actually change, so any metadata
+             * about headlines, etc, is still fresh. Therefore, fileA
+             * does not need to be parsed.
+             */
 
             // dependency no longer exists? We should re-parse this file
             if (!isset($this->fileInfos[$dependency])) {
@@ -162,13 +111,24 @@ class Scanner
             }
 
             // finally, we need to recursively ask if this file needs parsing
-            if ($this->doesFileRequireParsing($dependency, $parseQueue, $filesAlreadyBeingChecked)) {
+            if ($this->hasFileBeenUpdated($dependency)) {
                 return true;
             }
         }
 
         // Meta is fresh and no dependencies need parsing
         return false;
+    }
+
+    private function hasFileBeenUpdated(string $filename): bool
+    {
+        $file = $this->fileInfos[$filename];
+
+        $documentFilename = $this->getFilenameFromFile($file);
+        $entry = $this->metas->get($documentFilename);
+
+        // File is new or changed
+        return ($entry === null || $entry->getCtime() < $file->getCTime());
     }
 
     /**

@@ -98,7 +98,11 @@ class ScannerTest extends TestCase
          *      * file6 (unmodified)
          *          depends on: file4
          *
-         * Result is that only file4 and file 6 are fresh
+         * Result is that the following files are fresh:
+         *      * file1
+         *      * file2
+         *      * file4
+         *      * file6
          */
 
         $metaCTime = time() - 50;
@@ -148,8 +152,6 @@ class ScannerTest extends TestCase
 
         $parseQueue = $this->scanner->scan();
         $this->assertSame([
-            'file1',
-            'file2',
             'file3',
             'file5',
         ], $parseQueue->getAllFilesThatRequireParsing());
