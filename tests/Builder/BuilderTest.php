@@ -88,6 +88,7 @@ class BuilderTest extends BaseBuilderTest
             $contents
         );
 
+        // new builder, which will use cached metas
         $builder = new Builder();
         $builder->pleaseLog = true;
         $builder->build($this->sourceFile(), $this->targetFile());

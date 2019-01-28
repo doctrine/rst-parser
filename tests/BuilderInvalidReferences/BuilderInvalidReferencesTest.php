@@ -18,6 +18,7 @@ class BuilderInvalidReferencesTest extends BaseBuilderTest
     protected function setUp() : void
     {
         $this->configuration = new Configuration();
+        $this->configuration->setUseCachedMetas(false);
 
         $this->builder = new Builder(new Kernel($this->configuration));
     }

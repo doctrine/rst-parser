@@ -25,6 +25,7 @@ class BuilderTest extends BaseBuilderTest
         );
 
         $this->builder = new Builder($kernel);
+        $this->builder->getConfiguration()->setUseCachedMetas(false);
 
         $this->builder->build($this->sourceFile(), $this->targetFile());
     }

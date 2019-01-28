@@ -15,6 +15,7 @@ class BuilderTest extends TestCase
     {
         $kernel  = new Kernel(null, [new VersionAddedDirective()]);
         $builder = new Builder($kernel);
+        $builder->getConfiguration()->setUseCachedMetas(false);
 
         $builder->build(
             __DIR__ . '/input',
