@@ -156,9 +156,9 @@ class Environment
             return null;
         }
 
-        if (in_array($data, $this->unresolvedDependencies, true)) {
+        if (isset($this->unresolvedDependencies[$data])) {
             $this->getMetaEntry()->resolveDependency(
-                $data,
+                $this->unresolvedDependencies[$data],
                 $resolvedReference->getFile()
             );
         }
@@ -303,9 +303,16 @@ class Environment
             ));
         }
 
-        $this->dependencies[] = $dependency;
         if ($requiresResolving) {
-            $this->unresolvedDependencies[] = $dependency;
+            // a hack to avoid collisions between resolved and unresolved dependencies
+            $dependencyName = 'UNRESOLVED__'.$dependency;
+            $this->unresolvedDependencies[$dependency] = $dependencyName;
+        } else {
+            $dependencyName = $dependency;
+        }
+
+        if (!in_array($dependencyName, $this->dependencies)) {
+            $this->dependencies[] = $dependencyName;
         }
     }
 
