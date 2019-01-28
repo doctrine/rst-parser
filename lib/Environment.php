@@ -294,7 +294,11 @@ class Environment
 
     public function addDependency(string $dependency, bool $requiresResolving = false) : void
     {
-        $dependency = $this->canonicalUrl($dependency);
+        if (!$requiresResolving) {
+            // the dependency is already a filename, probably a :doc:
+            // or from a toc-tree - change it to the canonical URL
+            $dependency = $this->canonicalUrl($dependency);
+        }
 
         if ($dependency === null) {
             throw new InvalidArgumentException(sprintf(
