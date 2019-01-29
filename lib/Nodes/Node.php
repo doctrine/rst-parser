@@ -6,6 +6,7 @@ namespace Doctrine\RST\Nodes;
 
 use Doctrine\Common\EventArgs;
 use Doctrine\Common\EventManager;
+use Doctrine\RST\Environment;
 use Doctrine\RST\Event\PostNodeRenderEvent;
 use Doctrine\RST\Event\PreNodeRenderEvent;
 use Doctrine\RST\Renderers\DefaultNodeRenderer;
@@ -24,6 +25,9 @@ abstract class Node
 
     /** @var EventManager|null */
     private $eventManager;
+
+    /** @var Environment */
+    protected $environment;
 
     /** @var Node|string|null */
     protected $value;
@@ -47,6 +51,16 @@ abstract class Node
     public function setEventManager(EventManager $eventManager) : void
     {
         $this->eventManager = $eventManager;
+    }
+
+    public function setEnvironment(Environment $environment) : void
+    {
+        $this->environment = $environment;
+    }
+
+    public function getEnvironment() : Environment
+    {
+        return $this->environment;
     }
 
     public function render() : string

@@ -64,7 +64,7 @@ class Parser
 
     public function getNodeFactory() : NodeFactory
     {
-        return $this->configuration->getNodeFactory();
+        return $this->configuration->getNodeFactory($this->environment);
     }
 
     /**

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\RST\NodeFactory;
 
 use Doctrine\Common\EventManager;
+use Doctrine\RST\Environment;
 use Doctrine\RST\Nodes\Node;
 use Doctrine\RST\Nodes\NodeTypes;
 use Doctrine\RST\Renderers\NodeRendererFactory;
@@ -26,10 +27,13 @@ class NodeInstantiator
 
     /** @var EventManager|null */
     private $eventManager;
+    /** @var Environment */
+    private $environment;
 
     public function __construct(
         string $type,
         string $className,
+        Environment $environment,
         ?NodeRendererFactory $nodeRendererFactory = null,
         ?EventManager $eventManager = null
     ) {
@@ -49,6 +53,7 @@ class NodeInstantiator
         $this->className           = $className;
         $this->nodeRendererFactory = $nodeRendererFactory;
         $this->eventManager        = $eventManager;
+        $this->environment         = $environment;
     }
 
     public function getType() : string
@@ -71,6 +76,8 @@ class NodeInstantiator
         if ($this->eventManager !== null) {
             $node->setEventManager($this->eventManager);
         }
+
+        $node->setEnvironment($this->environment);
 
         return $node;
     }
