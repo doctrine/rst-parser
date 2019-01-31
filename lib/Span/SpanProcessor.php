@@ -209,7 +209,7 @@ class SpanProcessor
     {
         // Replace standalone hyperlinks using a modified version of @gruber's
         // "Liberal Regex Pattern for all URLs", https://gist.github.com/gruber/249502
-        $absoluteUriPattern = '#(?i)\b((?:[a-z][\w-+.]+:(?:/{1,3}|[a-z0-9%]))('
+        $absoluteUriPattern = '#(?i)\b((?:[a-z][\w\-+.]+:(?:/{1,3}|[a-z0-9%]))('
             . '?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>'
             . ']+|(\([^\s()<>]+\)))*\)|[^\s\`!()\[\]{};:\'".,<>?«»“”‘’]))#';
 
