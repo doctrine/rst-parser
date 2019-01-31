@@ -123,7 +123,7 @@ class Environment
 
     public function getNodeFactory() : NodeFactory
     {
-        return $this->configuration->getNodeFactory();
+        return $this->configuration->getNodeFactory($this);
     }
 
     public function getTemplateRenderer() : TemplateRenderer

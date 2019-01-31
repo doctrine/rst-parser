@@ -15,7 +15,9 @@ class NodeInstantiatorTest extends TestCase
 {
     public function testGetType() : void
     {
-        $nodeInstantiator = new NodeInstantiator(NodeTypes::DOCUMENT, DocumentNode::class);
+        $environment = $this->createMock(Environment::class);
+
+        $nodeInstantiator = new NodeInstantiator(NodeTypes::DOCUMENT, DocumentNode::class, $environment);
 
         self::assertSame(NodeTypes::DOCUMENT, $nodeInstantiator->getType());
     }
@@ -25,14 +27,16 @@ class NodeInstantiatorTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Node type invalid is not a valid node type.');
 
-        $nodeInstantiator = new NodeInstantiator('invalid', DocumentNode::class);
+        $environment = $this->createMock(Environment::class);
+
+        $nodeInstantiator = new NodeInstantiator('invalid', DocumentNode::class, $environment);
     }
 
     public function testCreate() : void
     {
-        $nodeInstantiator = new NodeInstantiator(NodeTypes::DOCUMENT, DocumentNode::class);
-
         $environment = $this->createMock(Environment::class);
+
+        $nodeInstantiator = new NodeInstantiator(NodeTypes::DOCUMENT, DocumentNode::class, $environment);
 
         $document = $nodeInstantiator->create([$environment]);
 

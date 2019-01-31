@@ -207,7 +207,7 @@ class Configuration
         $this->fileExtension = $fileExtension;
     }
 
-    public function getNodeFactory() : NodeFactory
+    public function getNodeFactory(Environment $environment) : NodeFactory
     {
         if ($this->nodeFactory !== null) {
             return $this->nodeFactory;
@@ -215,29 +215,29 @@ class Configuration
 
         return new DefaultNodeFactory(
             $this->eventManager,
-            $this->createNodeInstantiator(NodeTypes::DOCUMENT, Nodes\DocumentNode::class),
-            $this->createNodeInstantiator(NodeTypes::SPAN, Nodes\SpanNode::class),
-            $this->createNodeInstantiator(NodeTypes::TOC, Nodes\TocNode::class),
-            $this->createNodeInstantiator(NodeTypes::TITLE, Nodes\TitleNode::class),
-            $this->createNodeInstantiator(NodeTypes::SEPARATOR, Nodes\SeparatorNode::class),
-            $this->createNodeInstantiator(NodeTypes::CODE, Nodes\CodeNode::class),
-            $this->createNodeInstantiator(NodeTypes::QUOTE, Nodes\QuoteNode::class),
-            $this->createNodeInstantiator(NodeTypes::PARAGRAPH, Nodes\ParagraphNode::class),
-            $this->createNodeInstantiator(NodeTypes::ANCHOR, Nodes\AnchorNode::class),
-            $this->createNodeInstantiator(NodeTypes::LIST, Nodes\ListNode::class),
-            $this->createNodeInstantiator(NodeTypes::TABLE, Nodes\TableNode::class),
-            $this->createNodeInstantiator(NodeTypes::DEFINITION_LIST, Nodes\DefinitionListNode::class),
-            $this->createNodeInstantiator(NodeTypes::WRAPPER, Nodes\WrapperNode::class),
-            $this->createNodeInstantiator(NodeTypes::FIGURE, Nodes\FigureNode::class),
-            $this->createNodeInstantiator(NodeTypes::IMAGE, Nodes\ImageNode::class),
-            $this->createNodeInstantiator(NodeTypes::META, Nodes\MetaNode::class),
-            $this->createNodeInstantiator(NodeTypes::RAW, Nodes\RawNode::class),
-            $this->createNodeInstantiator(NodeTypes::DUMMY, Nodes\DummyNode::class),
-            $this->createNodeInstantiator(NodeTypes::MAIN, Nodes\MainNode::class),
-            $this->createNodeInstantiator(NodeTypes::BLOCK, Nodes\BlockNode::class),
-            $this->createNodeInstantiator(NodeTypes::CALLABLE, Nodes\CallableNode::class),
-            $this->createNodeInstantiator(NodeTypes::SECTION_BEGIN, Nodes\SectionBeginNode::class),
-            $this->createNodeInstantiator(NodeTypes::SECTION_END, Nodes\SectionEndNode::class)
+            $this->createNodeInstantiator($environment, NodeTypes::DOCUMENT, Nodes\DocumentNode::class),
+            $this->createNodeInstantiator($environment, NodeTypes::SPAN, Nodes\SpanNode::class),
+            $this->createNodeInstantiator($environment, NodeTypes::TOC, Nodes\TocNode::class),
+            $this->createNodeInstantiator($environment, NodeTypes::TITLE, Nodes\TitleNode::class),
+            $this->createNodeInstantiator($environment, NodeTypes::SEPARATOR, Nodes\SeparatorNode::class),
+            $this->createNodeInstantiator($environment, NodeTypes::CODE, Nodes\CodeNode::class),
+            $this->createNodeInstantiator($environment, NodeTypes::QUOTE, Nodes\QuoteNode::class),
+            $this->createNodeInstantiator($environment, NodeTypes::PARAGRAPH, Nodes\ParagraphNode::class),
+            $this->createNodeInstantiator($environment, NodeTypes::ANCHOR, Nodes\AnchorNode::class),
+            $this->createNodeInstantiator($environment, NodeTypes::LIST, Nodes\ListNode::class),
+            $this->createNodeInstantiator($environment, NodeTypes::TABLE, Nodes\TableNode::class),
+            $this->createNodeInstantiator($environment, NodeTypes::DEFINITION_LIST, Nodes\DefinitionListNode::class),
+            $this->createNodeInstantiator($environment, NodeTypes::WRAPPER, Nodes\WrapperNode::class),
+            $this->createNodeInstantiator($environment, NodeTypes::FIGURE, Nodes\FigureNode::class),
+            $this->createNodeInstantiator($environment, NodeTypes::IMAGE, Nodes\ImageNode::class),
+            $this->createNodeInstantiator($environment, NodeTypes::META, Nodes\MetaNode::class),
+            $this->createNodeInstantiator($environment, NodeTypes::RAW, Nodes\RawNode::class),
+            $this->createNodeInstantiator($environment, NodeTypes::DUMMY, Nodes\DummyNode::class),
+            $this->createNodeInstantiator($environment, NodeTypes::MAIN, Nodes\MainNode::class),
+            $this->createNodeInstantiator($environment, NodeTypes::BLOCK, Nodes\BlockNode::class),
+            $this->createNodeInstantiator($environment, NodeTypes::CALLABLE, Nodes\CallableNode::class),
+            $this->createNodeInstantiator($environment, NodeTypes::SECTION_BEGIN, Nodes\SectionBeginNode::class),
+            $this->createNodeInstantiator($environment, NodeTypes::SECTION_END, Nodes\SectionEndNode::class)
         );
     }
 
@@ -277,11 +277,12 @@ class Configuration
         return $this->formats[$this->fileExtension];
     }
 
-    private function createNodeInstantiator(string $type, string $nodeClassName) : NodeInstantiator
+    private function createNodeInstantiator(Environment $environment, string $type, string $nodeClassName) : NodeInstantiator
     {
         return new NodeInstantiator(
             $type,
             $nodeClassName,
+            $environment,
             $this->getNodeRendererFactory($nodeClassName),
             $this->eventManager
         );
