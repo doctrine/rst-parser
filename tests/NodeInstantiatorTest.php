@@ -41,6 +41,5 @@ class NodeInstantiatorTest extends TestCase
         $document = $nodeInstantiator->create([$environment]);
 
         self::assertInstanceOf(DocumentNode::class, $document);
-        self::assertInstanceOf(Environment::class, $document->getEnvironment());
     }
 }

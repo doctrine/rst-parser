@@ -26,7 +26,7 @@ abstract class Node
     /** @var EventManager|null */
     private $eventManager;
 
-    /** @var Environment */
+    /** @var Environment|null */
     protected $environment;
 
     /** @var Node|string|null */
@@ -58,7 +58,7 @@ abstract class Node
         $this->environment = $environment;
     }
 
-    public function getEnvironment() : Environment
+    public function getEnvironment() : ?Environment
     {
         return $this->environment;
     }
