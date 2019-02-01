@@ -151,20 +151,25 @@ class Environment
 
         if ($resolvedReference === null) {
             $this->addInvalidLink(new InvalidLink($data));
-            $this->getMetaEntry()->removeDependency(
-                // use the unique, unresolved name
-                $this->unresolvedDependencies[$data] ?? $data
-            );
+
+            if ($this->getMetaEntry()) {
+                $this->getMetaEntry()->removeDependency(
+                    // use the unique, unresolved name
+                    $this->unresolvedDependencies[$data] ?? $data
+                );
+            }
 
             return null;
         }
 
         if (isset($this->unresolvedDependencies[$data])) {
-            $this->getMetaEntry()->resolveDependency(
-                // use the unique, unresolved name
-                $this->unresolvedDependencies[$data],
-                $resolvedReference->getFile()
-            );
+            if ($this->getMetaEntry()) {
+                $this->getMetaEntry()->resolveDependency(
+                    // use the unique, unresolved name
+                    $this->unresolvedDependencies[$data],
+                    $resolvedReference->getFile()
+                );
+            }
         }
 
         return $resolvedReference;
