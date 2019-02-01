@@ -34,7 +34,7 @@ class GlobSearcherTest extends TestCase
         self::assertCount(3, $files);
 
         $expected = [
-            '/not-parsed/file',
+            '/orphaned/file',
             '/index',
             '/subdir/toctree',
         ];

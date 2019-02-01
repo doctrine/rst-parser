@@ -66,7 +66,7 @@ class ResolverTest extends TestCase
             ->willReturn('/url');
 
         self::assertEquals(
-            new ResolvedReference('title', '/url', [], ['attr' => 'value']),
+            new ResolvedReference('file', 'title', '/url', [], ['attr' => 'value']),
             $this->resolver->resolve($this->environment, 'url', ['attr' => 'value'])
         );
     }
@@ -86,7 +86,7 @@ class ResolverTest extends TestCase
             ->willReturn('/url');
 
         self::assertEquals(
-            new ResolvedReference('title', '/url#anchor', [], ['attr' => 'value']),
+            new ResolvedReference('', 'title', '/url#anchor', [], ['attr' => 'value']),
             $this->resolver->resolve($this->environment, 'anchor', ['attr' => 'value'])
         );
     }
