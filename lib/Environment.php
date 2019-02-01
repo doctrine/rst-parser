@@ -151,13 +151,17 @@ class Environment
 
         if ($resolvedReference === null) {
             $this->addInvalidLink(new InvalidLink($data));
-            $this->getMetaEntry()->removeDependency($data);
+            $this->getMetaEntry()->removeDependency(
+                // use the unique, unresolved name
+                $this->unresolvedDependencies[$data] ?? $data
+            );
 
             return null;
         }
 
         if (isset($this->unresolvedDependencies[$data])) {
             $this->getMetaEntry()->resolveDependency(
+                // use the unique, unresolved name
                 $this->unresolvedDependencies[$data],
                 $resolvedReference->getFile()
             );

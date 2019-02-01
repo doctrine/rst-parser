@@ -134,7 +134,7 @@ class MetaEntry
         $key = array_search($originalDependency, $this->depends);
 
         if (false === $key) {
-            throw new \LogicException(sprintf('Could not found dependency "%s" in MetaEntry for "%s"', $originalDependency, $this->file));
+            throw new \LogicException(sprintf('Could not find dependency "%s" in MetaEntry for "%s"', $originalDependency, $this->file));
         }
 
         $this->depends[$key] = $newDependency;
@@ -146,7 +146,7 @@ class MetaEntry
         $key = array_search($dependency, $this->depends);
 
         if (false === $key) {
-            throw new \LogicException(sprintf('Could not found dependency "%s" in MetaEntry for "%s"', $dependency, $this->file));
+            throw new \LogicException(sprintf('Could not find dependency "%s" in MetaEntry for "%s"', $dependency, $this->file));
         }
 
         unset($this->depends[$key]);
