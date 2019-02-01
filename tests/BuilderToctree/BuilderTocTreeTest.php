@@ -12,7 +12,7 @@ class BuilderTocTreeTest extends BaseBuilderTest
     public function testTocTreeGlob() : void
     {
         self::assertTrue(file_exists($this->targetFile('subdir/toctree.html')));
-        self::assertFalse(file_exists($this->targetFile('not-parsed/file.html')));
+        self::assertTrue(file_exists($this->targetFile('orphaned/file.html')));
     }
 
     public function testMaxDepth() : void
