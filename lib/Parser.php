@@ -43,7 +43,7 @@ class Parser
 
     public function __construct(
         ?Kernel $kernel = null,
-        Environment $environment
+        ?Environment $environment = null
     ) {
         if ($kernel === null) {
             $kernel = new Kernel();
@@ -51,7 +51,7 @@ class Parser
 
         $this->configuration = $kernel->getConfiguration();
         $this->kernel        = $kernel;
-        $this->environment   = $environment;
+        $this->environment   = $environment ?: new Environment($this->configuration);
 
         $this->initDirectives();
         $this->initReferences();

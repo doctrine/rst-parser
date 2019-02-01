@@ -91,15 +91,14 @@ class ParseQueueProcessor
 
     private function createFileParser(string $file) : Parser
     {
-        $environment = new Environment(
-            $this->kernel->getConfiguration(),
-            $file,
-            $this->metas,
-            $this->directory,
-            $this->targetDirectory,
-            $this->errorManager
-        );
-        $parser = new Parser($this->kernel, $environment);
+        $parser = new Parser($this->kernel);
+
+        $environment = $parser->getEnvironment();
+        $environment->setMetas($this->metas);
+        $environment->setCurrentFileName($file);
+        $environment->setCurrentDirectory($this->directory);
+        $environment->setTargetDirectory($this->targetDirectory);
+        $environment->setErrorManager($this->errorManager);
 
         return $parser;
     }

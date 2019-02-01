@@ -79,24 +79,14 @@ class Environment
     /** @var InvalidLink[] */
     private $invalidLinks = [];
 
-    public function __construct(
-        Configuration $configuration,
-        string $currentFileName,
-        Metas $metas,
-        string $currentDirectory,
-        string $targetDirectory,
-        ErrorManager $errorManager
-    )
+    public function __construct(Configuration $configuration)
     {
         $this->configuration = $configuration;
-        $this->currentFileName = $currentFileName;
-        $this->metas = $metas;
-        $this->currentDirectory = $currentDirectory;
-        $this->targetDirectory = $targetDirectory;
-        $this->errorManager  = $errorManager;
+        $this->errorManager  = new ErrorManager($this->configuration);
         $this->urlGenerator  = new UrlGenerator(
             $this->configuration
         );
+        $this->metas         = new Metas();
 
         $this->reset();
     }
@@ -122,6 +112,16 @@ class Environment
     public function getErrorManager() : ErrorManager
     {
         return $this->errorManager;
+    }
+
+    public function setErrorManager(ErrorManager $errorManager) : void
+    {
+        $this->errorManager = $errorManager;
+    }
+
+    public function setMetas(Metas $metas) : void
+    {
+        $this->metas = $metas;
     }
 
     public function getNodeFactory() : NodeFactory
@@ -367,9 +367,19 @@ class Environment
         return $dirname;
     }
 
+    public function setCurrentFileName(string $filename) : void
+    {
+        $this->currentFileName = $filename;
+    }
+
     public function getCurrentFileName() : string
     {
         return $this->currentFileName;
+    }
+
+    public function setCurrentDirectory(string $directory) : void
+    {
+        $this->currentDirectory = $directory;
     }
 
     public function getCurrentDirectory() : string
@@ -380,6 +390,11 @@ class Environment
     public function absoluteRelativePath(string $url) : string
     {
         return $this->currentDirectory . '/' . $this->getDirName() . '/' . $this->relativeUrl($url);
+    }
+
+    public function setTargetDirectory(string $directory) : void
+    {
+        $this->targetDirectory = $directory;
     }
 
     public function getTargetDirectory() : string
