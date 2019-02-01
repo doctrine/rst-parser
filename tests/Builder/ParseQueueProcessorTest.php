@@ -7,7 +7,6 @@ namespace Doctrine\Tests\RST\Builder;
 use Doctrine\RST\Builder\Documents;
 use Doctrine\RST\Builder\ParseQueue;
 use Doctrine\RST\Builder\ParseQueueProcessor;
-use Doctrine\RST\Builder\Scanner;
 use Doctrine\RST\ErrorManager;
 use Doctrine\RST\Kernel;
 use Doctrine\RST\Meta\Metas;

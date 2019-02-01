@@ -8,10 +8,15 @@ use Doctrine\RST\Builder;
 use Doctrine\RST\Meta\MetaEntry;
 use Doctrine\Tests\RST\BaseBuilderTest;
 use function file_exists;
+use function file_get_contents;
+use function file_put_contents;
 use function is_dir;
 use function range;
+use function sleep;
 use function sprintf;
+use function str_replace;
 use function substr_count;
+use function unserialize;
 
 /**
  * Unit testing for RST
@@ -44,7 +49,7 @@ class BuilderTest extends BaseBuilderTest
     {
         // check that metas were cached
         self::assertTrue(file_exists($this->targetFile('metas.php')));
-        $cachedContents = file_get_contents($this->targetFile('metas.php'));
+        $cachedContents = (string) file_get_contents($this->targetFile('metas.php'));
         /** @var MetaEntry[] $metaEntries */
         $metaEntries = unserialize($cachedContents);
         self::assertArrayHasKey('index', $metaEntries);
@@ -52,17 +57,17 @@ class BuilderTest extends BaseBuilderTest
 
         // look at all the other documents this document depends
         // on, like :doc: and :ref:
-        $this->assertSame([
+        self::assertSame([
             'index',
             'toc-glob',
-            'subdir/index'
+            'subdir/index',
         ], $metaEntries['introduction']->getDepends());
 
         // assert the self-refs don't mess up dependencies
-        $this->assertSame([
+        self::assertSame([
             'subdir/index',
             'index',
-            'subdir/file'
+            'subdir/file',
         ], $metaEntries['subdir/index']->getDepends());
 
         // update meta cache to see that it was used
@@ -77,20 +82,19 @@ class BuilderTest extends BaseBuilderTest
 
         // also we need to trigger the link-to-index.rst as looking updated
         sleep(1);
-        $contents = file_get_contents(__DIR__.'/input/link-to-index.rst');
+        $contents = file_get_contents(__DIR__ . '/input/link-to-index.rst');
         file_put_contents(
-            __DIR__.'/input/link-to-index.rst',
-             $contents. ' '
+            __DIR__ . '/input/link-to-index.rst',
+            $contents . ' '
         );
         // change it back
         file_put_contents(
-            __DIR__.'/input/link-to-index.rst',
+            __DIR__ . '/input/link-to-index.rst',
             $contents
         );
 
         // new builder, which will use cached metas
         $builder = new Builder();
-        $builder->pleaseLog = true;
         $builder->build($this->sourceFile(), $this->targetFile());
 
         $contents = $this->getFileContents($this->targetFile('link-to-index.html'));

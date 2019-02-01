@@ -12,6 +12,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
+use function time;
 
 class ScannerTest extends TestCase
 {
@@ -25,13 +26,14 @@ class ScannerTest extends TestCase
     private $scanner;
 
     /** @var SplFileInfo[]|MockObject[]|ArrayIterator */
-    private $fileMocks = [];
+    private $fileMocks;
 
+    /** @var MetaEntry[]|MockObject[] */
     private $metaEntryMocks = [];
 
     public function testScanWithNoMetas() : void
     {
-        $this->metas->expects($this->any())
+        $this->metas->expects(self::any())
             ->method('get')
             ->willReturn(null);
 
@@ -42,16 +44,16 @@ class ScannerTest extends TestCase
         $this->addFileMockToFinder('subdir/file5.rst');
 
         $parseQueue = $this->scanner->scan();
-        $this->assertSame([
+        self::assertSame([
             'file1',
             'file2',
             'file3',
             'subdir/file4',
-            'subdir/file5'
+            'subdir/file5',
         ], $parseQueue->getAllFilesThatRequireParsing());
     }
 
-    public function testScanWithNonFreshMetas()
+    public function testScanWithNonFreshMetas() : void
     {
         $file1InfoMock = $this->addFileMockToFinder('file1.rst');
         $file1MetaMock = $this->createMetaEntryMock('file1');
@@ -61,7 +63,7 @@ class ScannerTest extends TestCase
         // but file1 MetaEntry was modified 100 seconds ago (is out of date)
         $file1MetaMock->method('getCTime')->willReturn(time() - 100);
         // should never be called because the meta is definitely not fresh
-        $file1MetaMock->expects($this->never())->method('getDepends');
+        $file1MetaMock->expects(self::never())->method('getDepends');
 
         $file2InfoMock = $this->addFileMockToFinder('file2.rst');
         $file2MetaMock = $this->createMetaEntryMock('file2');
@@ -72,16 +74,16 @@ class ScannerTest extends TestCase
         // and file2 MetaEntry was also 50 seconds ago, fresh
         $file2MetaMock->method('getCTime')->willReturn($lastModifiedTime);
         // ignore dependencies for this test
-        $file2MetaMock->expects($this->once())
+        $file2MetaMock->expects(self::once())
             ->method('getDepends')
             ->willReturn([]);
 
         $parseQueue = $this->scanner->scan();
-        $this->assertSame(['file1'], $parseQueue->getAllFilesThatRequireParsing());
-        $this->assertFalse($parseQueue->doesFileRequireParsing('file2'));
+        self::assertSame(['file1'], $parseQueue->getAllFilesThatRequireParsing());
+        self::assertFalse($parseQueue->doesFileRequireParsing('file2'));
     }
 
-    public function testScanWithDependencies()
+    public function testScanWithDependencies() : void
     {
         /*
          * Here is the dependency tree and results:
@@ -151,13 +153,13 @@ class ScannerTest extends TestCase
         $file6MetaMock->method('getCTime')->willReturn($metaCTime);
 
         $parseQueue = $this->scanner->scan();
-        $this->assertSame([
+        self::assertSame([
             'file3',
             'file5',
         ], $parseQueue->getAllFilesThatRequireParsing());
     }
 
-    public function testScanWithNonExistentDependency()
+    public function testScanWithNonExistentDependency() : void
     {
         /*
          *      * file1 (unmodified)
@@ -180,35 +182,33 @@ class ScannerTest extends TestCase
         // no file info made for file2
 
         $parseQueue = $this->scanner->scan();
-        $this->assertSame(['file1'], $parseQueue->getAllFilesThatRequireParsing());
+        self::assertSame(['file1'], $parseQueue->getAllFilesThatRequireParsing());
     }
-
-    // test dependency does not exist anymore
 
     protected function setUp() : void
     {
-        $this->fileMocks = new \ArrayIterator();
-        $this->finder = $this->createMock(Finder::class);
-        $this->finder->expects($this->any())
+        $this->fileMocks = new ArrayIterator();
+        $this->finder    = $this->createMock(Finder::class);
+        $this->finder->expects(self::any())
             ->method('getIterator')
             ->willReturn($this->fileMocks);
-        $this->finder->expects($this->once())
+        $this->finder->expects(self::once())
             ->method('in')
             ->with('/directory')
             ->willReturnSelf();
-        $this->finder->expects($this->once())
+        $this->finder->expects(self::once())
             ->method('files')
             ->with()
             ->willReturnSelf();
-        $this->finder->expects($this->once())
+        $this->finder->expects(self::once())
             ->method('name')
             ->with('*.rst')
             ->willReturnSelf();
 
         $this->metas = $this->createMock(Metas::class);
-        $this->metas->expects($this->any())
+        $this->metas->expects(self::any())
             ->method('get')
-            ->willReturnCallback(function($filename) {
+            ->willReturnCallback(function ($filename) {
                 return $this->metaEntryMocks[$filename] ?? null;
             });
 
@@ -221,7 +221,7 @@ class ScannerTest extends TestCase
     private function addFileMockToFinder(string $relativePath)
     {
         $fileInfo = $this->createMock(SplFileInfo::class);
-        $fileInfo->expects($this->any())
+        $fileInfo->expects(self::any())
             ->method('getRelativePathname')
             ->willReturn($relativePath);
 

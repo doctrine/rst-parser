@@ -76,7 +76,7 @@ class Resolver
      * @param string[] $attributes
      */
     private function createResolvedReference(
-        string $file,
+        ?string $file,
         Environment $environment,
         MetaEntry $entry,
         array $attributes = [],

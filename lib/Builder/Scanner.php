@@ -5,32 +5,40 @@ declare(strict_types=1);
 namespace Doctrine\RST\Builder;
 
 use Doctrine\RST\Meta\Metas;
+use InvalidArgumentException;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
+use function sprintf;
+use function strlen;
+use function substr;
 
 class Scanner
 {
+    /** @var string */
     private $fileExtension;
 
+    /** @var string */
     private $directory;
 
+    /** @var Metas */
     private $metas;
 
+    /** @var Finder */
     private $finder;
 
     /** @var SplFileInfo[] */
     private $fileInfos = [];
 
-    public function __construct(string $fileExtension, string $directory, Metas $metas, Finder $finder = null)
+    public function __construct(string $fileExtension, string $directory, Metas $metas, ?Finder $finder = null)
     {
         $this->fileExtension = $fileExtension;
-        $this->directory = $directory;
-        $this->metas = $metas;
+        $this->directory     = $directory;
+        $this->metas         = $metas;
 
         $this->finder = $finder ?: new Finder();
         $this->finder->in($this->directory)
             ->files()
-            ->name('*.'.$this->fileExtension);
+            ->name('*.' . $this->fileExtension);
     }
 
     /**
@@ -65,14 +73,14 @@ class Scanner
 
     private function doesFileRequireParsing(string $filename, ParseQueue $parseQueue) : bool
     {
-        if (!isset($this->fileInfos[$filename])) {
-            throw new \InvalidArgumentException(sprintf('No file info found for "%s" - file does not exist.', $filename));
+        if (! isset($this->fileInfos[$filename])) {
+            throw new InvalidArgumentException(sprintf('No file info found for "%s" - file does not exist.', $filename));
         }
 
         $file = $this->fileInfos[$filename];
 
         $documentFilename = $this->getFilenameFromFile($file);
-        $entry = $this->metas->get($documentFilename);
+        $entry            = $this->metas->get($documentFilename);
 
         if ($this->hasFileBeenUpdated($filename)) {
             // File is new or changed and thus need to be parsed
@@ -80,14 +88,11 @@ class Scanner
         }
 
         // Look to the file's dependencies to know if you need to parse it or not
-        $dependencies = $entry->getDepends();
+        $dependencies = $entry !== null ? $entry->getDepends() : [];
 
-        $parent = $entry->getParent();
-        if ($parent !== null) {
-            $dependencies[] = $parent;
+        if ($entry !== null && $entry->getParent() !== null) {
+            $dependencies[] = $entry->getParent();
         }
-
-        $filesAlreadyBeingChecked[] = $documentFilename;
 
         foreach ($dependencies as $dependency) {
             /*
@@ -106,7 +111,7 @@ class Scanner
              */
 
             // dependency no longer exists? We should re-parse this file
-            if (!isset($this->fileInfos[$dependency])) {
+            if (! isset($this->fileInfos[$dependency])) {
                 return true;
             }
 
@@ -120,15 +125,15 @@ class Scanner
         return false;
     }
 
-    private function hasFileBeenUpdated(string $filename): bool
+    private function hasFileBeenUpdated(string $filename) : bool
     {
         $file = $this->fileInfos[$filename];
 
         $documentFilename = $this->getFilenameFromFile($file);
-        $entry = $this->metas->get($documentFilename);
+        $entry            = $this->metas->get($documentFilename);
 
         // File is new or changed
-        return ($entry === null || $entry->getCtime() < $file->getCTime());
+        return $entry === null || $entry->getCtime() < $file->getCTime();
     }
 
     /**

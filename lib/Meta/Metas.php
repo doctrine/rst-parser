@@ -100,7 +100,7 @@ class Metas
     /**
      * @param MetaEntry[] $metaEntries
      */
-    public function setMetaEntries(array $metaEntries)
+    public function setMetaEntries(array $metaEntries) : void
     {
         $this->entries = $metaEntries;
     }

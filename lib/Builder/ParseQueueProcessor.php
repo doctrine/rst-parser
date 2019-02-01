@@ -4,15 +4,11 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\Builder;
 
-use Doctrine\RST\Environment;
 use Doctrine\RST\ErrorManager;
 use Doctrine\RST\Kernel;
-use Doctrine\RST\Meta\DocumentDependency;
 use Doctrine\RST\Meta\Metas;
 use Doctrine\RST\Nodes\DocumentNode;
 use Doctrine\RST\Parser;
-use function array_filter;
-use function file_exists;
 use function filectime;
 
 class ParseQueueProcessor

@@ -128,7 +128,7 @@ class BuilderUrlTest extends BaseBuilderTest
     {
         $this->configuration = new Configuration();
         $this->configuration->setUseCachedMetas(false);
-        $this->builder       = new Builder(new Kernel($this->configuration));
+        $this->builder = new Builder(new Kernel($this->configuration));
     }
 
     protected function getFixturesDirectory() : string

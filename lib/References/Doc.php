@@ -23,10 +23,10 @@ class Doc extends Reference
      */
     private $dependenciesMustBeResolved;
 
-    public function __construct(string $name = 'doc', $dependenciesMustBeResolved = false)
+    public function __construct(string $name = 'doc', bool $dependenciesMustBeResolved = false)
     {
-        $this->name     = $name;
-        $this->resolver = new Resolver();
+        $this->name                       = $name;
+        $this->resolver                   = new Resolver();
         $this->dependenciesMustBeResolved = $dependenciesMustBeResolved;
     }
 

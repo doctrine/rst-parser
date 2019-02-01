@@ -15,7 +15,12 @@ use Doctrine\RST\Event\PreBuildRenderEvent;
 use Doctrine\RST\Event\PreBuildScanEvent;
 use Doctrine\RST\Meta\Metas;
 use Symfony\Component\Filesystem\Filesystem;
+use function file_exists;
+use function file_get_contents;
+use function file_put_contents;
 use function is_dir;
+use function serialize;
+use function unserialize;
 
 class Builder
 {
@@ -151,7 +156,7 @@ class Builder
             $this->metas
         );
 
-        return $scanner->scan($directory, $this->metas);
+        return $scanner->scan();
     }
 
     private function parse(string $directory, string $targetDirectory, ParseQueue $parseQueue) : void
@@ -195,11 +200,17 @@ class Builder
     private function loadCachedMetas(string $targetDirectory) : void
     {
         $metaCachePath = $this->getMetaCachePath($targetDirectory);
-        if (!file_exists($metaCachePath)) {
+        if (! file_exists($metaCachePath)) {
             return;
         }
 
-        $this->metas->setMetaEntries(unserialize(file_get_contents($metaCachePath)));
+        $contents = file_get_contents($metaCachePath);
+
+        if ($contents === false) {
+            return;
+        }
+
+        $this->metas->setMetaEntries(unserialize($contents));
     }
 
     private function saveMetas(string $targetDirectory) : void
@@ -209,6 +220,6 @@ class Builder
 
     private function getMetaCachePath(string $targetDirectory) : string
     {
-        return $targetDirectory.'/metas.php';
+        return $targetDirectory . '/metas.php';
     }
 }
