@@ -47,7 +47,13 @@ class LineDataParser
             return $this->createLink('_', $url, Link::TYPE_LINK);
         }
 
-        // Anchor link
+        // Anchor links - ".. _`anchor-link`:"
+        if (preg_match('/^\.\. _`(.+)`:$/mUsi', trim($line), $match) > 0) {
+            $anchor = $match[1];
+
+            return new Link($anchor, '#' . $anchor, Link::TYPE_ANCHOR);
+        }
+
         if (preg_match('/^\.\. _(.+):$/mUsi', trim($line), $match) > 0) {
             $anchor = $match[1];
 
