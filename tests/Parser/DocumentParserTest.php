@@ -33,14 +33,14 @@ class DocumentParserTest extends TestCase
             __DIR__
         );
 
-        $codeBlockDirective->expects($this->once())
+        $codeBlockDirective->expects(self::once())
             ->method('process')
             ->willThrowException(new Exception('Invalid something something!'));
-        $codeBlockDirective->expects($this->once())
+        $codeBlockDirective->expects(self::once())
             ->method('getName')
             ->willReturn('code-block-name');
 
-        $environment->expects($this->once())
+        $environment->expects(self::once())
             ->method('addError')
             ->with('Error while processing "code-block-name" directive: Invalid something something!');
 

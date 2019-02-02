@@ -510,7 +510,7 @@ class DocumentParser
                     $message = sprintf(
                         'Error while processing "%s" directive%s: %s',
                         $currentDirective->getName(),
-                        $this->environment->getCurrentFileName() ? sprintf(' in "%s"', $this->environment->getCurrentFileName()) : '',
+                        $this->environment->getCurrentFileName() !== '' ? sprintf(' in "%s"', $this->environment->getCurrentFileName()) : '',
                         $e->getMessage()
                     );
 
