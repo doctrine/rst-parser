@@ -13,6 +13,7 @@ use function preg_replace;
 use function preg_replace_callback;
 use function sha1;
 use function str_replace;
+use function substr;
 use function time;
 
 class SpanProcessor
@@ -139,9 +140,14 @@ class SpanProcessor
         // Signaling anonymous names
         $this->environment->resetAnonymousStack();
 
-        if (preg_match_all('/(([a-z0-9]+)|(`(.+)`))__/mUsi', $span, $matches) > 0) {
-            foreach ($matches[2] as $k => $y) {
-                $name = $matches[2][$k] ?: $matches[4][$k];
+        if (preg_match_all('/(_*)(([a-z0-9]+)|(`(.+)`))__/mUsi', $span, $matches) > 0) {
+            foreach ($matches[3] as $k => $y) {
+                $name = $matches[3][$k] ?: $matches[5][$k];
+
+                // string prefixed with _ is not an anonymous link
+                if ($matches[1][$k]) {
+                    continue;
+                }
 
                 $this->environment->pushAnonymous($name);
             }
@@ -150,6 +156,11 @@ class SpanProcessor
         $linkCallback = function (array $match) : string {
             /** @var string $link */
             $link = $match[3] ?: $match[5];
+
+            // a link starting with _ is not a link - return original string
+            if (substr($link, 0, 1) === '_') {
+                return $match[0];
+            }
 
             // the link may have a new line in it so we need to strip it
             // before setting the link and adding a token to be replaced

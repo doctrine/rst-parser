@@ -36,6 +36,7 @@ class LineDataParser
             return $this->createLink($match[1], $match[2], Link::TYPE_LINK);
         }
 
+        // anonymous links
         if (preg_match('/^\.\. _(.+): (.+)$/mUsi', $line, $match) > 0) {
             return $this->createLink($match[1], $match[2], Link::TYPE_LINK);
         }
