@@ -12,7 +12,7 @@
     <file>lib</file>
     <file>tests</file>
 
-    <exclude-pattern>tests/builder/output/meta.php</exclude-pattern>
+    <exclude-pattern>tests/*/output/metas.php</exclude-pattern>
 
     <rule ref="Doctrine" />
 </ruleset>
