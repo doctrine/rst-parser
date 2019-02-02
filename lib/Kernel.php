@@ -42,7 +42,7 @@ class Kernel
 
         $this->references = array_merge([
             new References\Doc(),
-            new References\Doc('ref'),
+            new References\Doc('ref', true),
         ], $this->createReferences(), $references);
     }
 

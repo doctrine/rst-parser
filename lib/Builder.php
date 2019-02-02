@@ -13,6 +13,7 @@ use Doctrine\RST\Event\PostBuildRenderEvent;
 use Doctrine\RST\Event\PreBuildParseEvent;
 use Doctrine\RST\Event\PreBuildRenderEvent;
 use Doctrine\RST\Event\PreBuildScanEvent;
+use Doctrine\RST\Meta\CachedMetasLoader;
 use Doctrine\RST\Meta\Metas;
 use Symfony\Component\Filesystem\Filesystem;
 use function is_dir;
@@ -34,14 +35,11 @@ class Builder
     /** @var Metas */
     private $metas;
 
+    /** @var CachedMetasLoader */
+    private $cachedMetasLoader;
+
     /** @var Documents */
     private $documents;
-
-    /** @var ParseQueue */
-    private $parseQueue;
-
-    /** @var Scanner */
-    private $scanner;
 
     /** @var Copier */
     private $copier;
@@ -61,14 +59,12 @@ class Builder
 
         $this->metas = new Metas();
 
+        $this->cachedMetasLoader = new CachedMetasLoader();
+
         $this->documents = new Builder\Documents(
             $this->filesystem,
             $this->metas
         );
-
-        $this->parseQueue = new Builder\ParseQueue($this->documents);
-
-        $this->scanner = new Builder\Scanner($this->parseQueue, $this->metas);
 
         $this->copier = new Builder\Copier($this->filesystem);
 
@@ -93,11 +89,6 @@ class Builder
     public function getDocuments() : Documents
     {
         return $this->documents;
-    }
-
-    public function getParseQueue() : Builder\ParseQueue
-    {
-        return $this->parseQueue;
     }
 
     public function getErrorManager() : ErrorManager
@@ -126,11 +117,17 @@ class Builder
             $this->filesystem->mkdir($targetDirectory, 0755);
         }
 
-        $this->scan($directory, $targetDirectory);
+        if ($this->configuration->getUseCachedMetas()) {
+            $this->cachedMetasLoader->loadCachedMetaEntries($targetDirectory, $this->metas);
+        }
 
-        $this->parse($directory, $targetDirectory);
+        $parseQueue = $this->scan($directory, $targetDirectory);
+
+        $this->parse($directory, $targetDirectory, $parseQueue);
 
         $this->render($directory, $targetDirectory);
+
+        $this->cachedMetasLoader->cacheMetaEntries($targetDirectory, $this->metas);
     }
 
     public function copy(string $source, ?string $destination = null) : self
@@ -147,19 +144,23 @@ class Builder
         return $this;
     }
 
-    private function scan(string $directory, string $targetDirectory) : void
+    private function scan(string $directory, string $targetDirectory) : ParseQueue
     {
         $this->configuration->dispatchEvent(
             PreBuildScanEvent::PRE_BUILD_SCAN,
             new PreBuildScanEvent($this, $directory, $targetDirectory)
         );
 
-        $this->scanner->scan($directory, $this->getIndexName());
+        $scanner = new Scanner(
+            $this->configuration->getSourceFileExtension(),
+            $directory,
+            $this->metas
+        );
 
-        $this->scanner->scanMetas($directory);
+        return $scanner->scan();
     }
 
-    private function parse(string $directory, string $targetDirectory) : void
+    private function parse(string $directory, string $targetDirectory, ParseQueue $parseQueue) : void
     {
         $this->configuration->dispatchEvent(
             PreBuildParseEvent::PRE_BUILD_PARSE,
@@ -169,16 +170,14 @@ class Builder
         $parseQueueProcessor = new ParseQueueProcessor(
             $this->kernel,
             $this->errorManager,
-            $this->parseQueue,
             $this->metas,
             $this->documents,
-            $this->scanner,
             $directory,
             $targetDirectory,
             $this->configuration->getFileExtension()
         );
 
-        $parseQueueProcessor->process();
+        $parseQueueProcessor->process($parseQueue);
     }
 
     private function render(string $directory, string $targetDirectory) : void

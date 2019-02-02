@@ -19,7 +19,7 @@ class ResolvedReferenceTest extends TestCase
      */
     public function testCreateResolvedReference(array $attributes) : void
     {
-        $resolvedReference = new ResolvedReference('title', 'url', [['title' => 'title']], $attributes);
+        $resolvedReference = new ResolvedReference('file', 'title', 'url', [['title' => 'title']], $attributes);
 
         self::assertSame('title', $resolvedReference->getTitle());
         self::assertSame('url', $resolvedReference->getUrl());
@@ -67,7 +67,7 @@ class ResolvedReferenceTest extends TestCase
         self::expectException(RuntimeException::class);
         self::expectExceptionMessage(sprintf('Attribute with name "%s" is not allowed', key($attributes)));
 
-        new ResolvedReference('title', 'url', [], $attributes);
+        new ResolvedReference('file', 'title', 'url', [], $attributes);
     }
 
     /**

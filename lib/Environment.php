@@ -15,6 +15,7 @@ use function array_shift;
 use function dirname;
 use function iconv;
 use function implode;
+use function in_array;
 use function preg_replace;
 use function sprintf;
 use function strtolower;
@@ -57,6 +58,9 @@ class Environment
 
     /** @var string[] */
     private $dependencies = [];
+
+    /** @var string[] */
+    private $unresolvedDependencies = [];
 
     /** @var string[] */
     private $variables = [];
@@ -148,6 +152,23 @@ class Environment
 
         if ($resolvedReference === null) {
             $this->addInvalidLink(new InvalidLink($data));
+
+            if ($this->getMetaEntry() !== null) {
+                $this->getMetaEntry()->removeDependency(
+                    // use the unique, unresolved name
+                    $this->unresolvedDependencies[$data] ?? $data
+                );
+            }
+
+            return null;
+        }
+
+        if (isset($this->unresolvedDependencies[$data]) && $this->getMetaEntry() !== null) {
+            $this->getMetaEntry()->resolveDependency(
+                // use the unique, unresolved name
+                $this->unresolvedDependencies[$data],
+                $resolvedReference->getFile()
+            );
         }
 
         return $resolvedReference;
@@ -279,9 +300,13 @@ class Environment
         return '';
     }
 
-    public function addDependency(string $dependency) : void
+    public function addDependency(string $dependency, bool $requiresResolving = false) : void
     {
-        $dependency = $this->canonicalUrl($dependency);
+        if (! $requiresResolving) {
+            // the dependency is already a filename, probably a :doc:
+            // or from a toc-tree - change it to the canonical URL
+            $dependency = $this->canonicalUrl($dependency);
+        }
 
         if ($dependency === null) {
             throw new InvalidArgumentException(sprintf(
@@ -290,7 +315,19 @@ class Environment
             ));
         }
 
-        $this->dependencies[] = $dependency;
+        if ($requiresResolving) {
+            // a hack to avoid collisions between resolved and unresolved dependencies
+            $dependencyName                            = 'UNRESOLVED__' . $dependency;
+            $this->unresolvedDependencies[$dependency] = $dependencyName;
+        } else {
+            $dependencyName = $dependency;
+        }
+
+        if (in_array($dependencyName, $this->dependencies, true)) {
+            return;
+        }
+
+        $this->dependencies[] = $dependencyName;
     }
 
     /**

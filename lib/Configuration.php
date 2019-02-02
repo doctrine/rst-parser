@@ -49,8 +49,14 @@ class Configuration
     /** @var bool */
     private $indentHTML = false;
 
+    /** @var bool */
+    private $useCachedMetas = true;
+
     /** @var string */
     private $fileExtension = Format::HTML;
+
+    /** @var string */
+    private $sourceFileExtension = 'rst';
 
     /** @var TemplateRenderer */
     private $templateRenderer;
@@ -197,6 +203,16 @@ class Configuration
         return $this->indentHTML;
     }
 
+    public function setUseCachedMetas(bool $useCachedMetas) : void
+    {
+        $this->useCachedMetas = $useCachedMetas;
+    }
+
+    public function getUseCachedMetas() : bool
+    {
+        return $this->useCachedMetas;
+    }
+
     public function getFileExtension() : string
     {
         return $this->fileExtension;
@@ -275,6 +291,11 @@ class Configuration
         }
 
         return $this->formats[$this->fileExtension];
+    }
+
+    public function getSourceFileExtension() : string
+    {
+        return $this->sourceFileExtension;
     }
 
     private function createNodeInstantiator(Environment $environment, string $type, string $nodeClassName) : NodeInstantiator

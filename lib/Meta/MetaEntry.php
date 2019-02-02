@@ -5,9 +5,13 @@ declare(strict_types=1);
 namespace Doctrine\RST\Meta;
 
 use Doctrine\RST\Environment;
+use LogicException;
 use function array_merge;
+use function array_search;
+use function in_array;
 use function is_array;
 use function is_string;
+use function sprintf;
 
 class MetaEntry
 {
@@ -31,6 +35,9 @@ class MetaEntry
 
     /** @var string[] */
     private $depends;
+
+    /** @var string[] */
+    private $resolvedDependencies = [];
 
     /** @var string[] */
     private $links;
@@ -116,6 +123,41 @@ class MetaEntry
     public function getDepends() : array
     {
         return $this->depends;
+    }
+
+    /**
+     * Call to replace a dependency with the resolved, real filename.
+     */
+    public function resolveDependency(string $originalDependency, ?string $newDependency) : void
+    {
+        if ($newDependency === null) {
+            return;
+        }
+
+        // we only need to resolve a dependency one time
+        if (in_array($originalDependency, $this->resolvedDependencies, true)) {
+            return;
+        }
+
+        $key = array_search($originalDependency, $this->depends, true);
+
+        if ($key === false) {
+            throw new LogicException(sprintf('Could not find dependency "%s" in MetaEntry for "%s"', $originalDependency, $this->file));
+        }
+
+        $this->depends[$key]          = $newDependency;
+        $this->resolvedDependencies[] = $originalDependency;
+    }
+
+    public function removeDependency(string $dependency) : void
+    {
+        $key = array_search($dependency, $this->depends, true);
+
+        if ($key === false) {
+            throw new LogicException(sprintf('Could not find dependency "%s" in MetaEntry for "%s"', $dependency, $this->file));
+        }
+
+        unset($this->depends[$key]);
     }
 
     /**

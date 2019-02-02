@@ -4,12 +4,21 @@ declare(strict_types=1);
 
 namespace Doctrine\Tests\RST\Builder;
 
+use Doctrine\RST\Builder;
+use Doctrine\RST\Meta\MetaEntry;
 use Doctrine\Tests\RST\BaseBuilderTest;
+use function array_unique;
+use function array_values;
 use function file_exists;
+use function file_get_contents;
+use function file_put_contents;
 use function is_dir;
 use function range;
+use function sleep;
 use function sprintf;
+use function str_replace;
 use function substr_count;
+use function unserialize;
 
 /**
  * Unit testing for RST
@@ -36,6 +45,62 @@ class BuilderTest extends BaseBuilderTest
         self::assertTrue(file_exists($this->targetFile('magic-link.html')));
         self::assertTrue(file_exists($this->targetFile('subdir/test.html')));
         self::assertTrue(file_exists($this->targetFile('subdir/file.html')));
+    }
+
+    public function testCachedMetas() : void
+    {
+        // check that metas were cached
+        self::assertTrue(file_exists($this->targetFile('metas.php')));
+        $cachedContents = (string) file_get_contents($this->targetFile('metas.php'));
+        /** @var MetaEntry[] $metaEntries */
+        $metaEntries = unserialize($cachedContents);
+        self::assertArrayHasKey('index', $metaEntries);
+        self::assertSame('Summary', $metaEntries['index']->getTitle());
+
+        // look at all the other documents this document depends
+        // on, like :doc: and :ref:
+        self::assertSame([
+            'index',
+            'toc-glob',
+            'subdir/index',
+        ], array_values(array_unique($metaEntries['introduction']->getDepends())));
+
+        // assert the self-refs don't mess up dependencies
+        self::assertSame([
+            'subdir/index',
+            'index',
+            'subdir/file',
+        ], array_values(array_unique($metaEntries['subdir/index']->getDepends())));
+
+        // update meta cache to see that it was used
+        // Summary is the main header in "index.rst"
+        // we reference it in link-to-index.rst
+        // it should cause link-to-index.rst to re-render with the new
+        // title as the link
+        file_put_contents(
+            $this->targetFile('metas.php'),
+            str_replace('Summary', 'Sumario', $cachedContents)
+        );
+
+        // also we need to trigger the link-to-index.rst as looking updated
+        sleep(1);
+        $contents = file_get_contents(__DIR__ . '/input/link-to-index.rst');
+        file_put_contents(
+            __DIR__ . '/input/link-to-index.rst',
+            $contents . ' '
+        );
+        // change it back
+        file_put_contents(
+            __DIR__ . '/input/link-to-index.rst',
+            $contents
+        );
+
+        // new builder, which will use cached metas
+        $builder = new Builder();
+        $builder->build($this->sourceFile(), $this->targetFile());
+
+        $contents = $this->getFileContents($this->targetFile('link-to-index.html'));
+        self::assertContains('Sumario', $contents);
     }
 
     /**

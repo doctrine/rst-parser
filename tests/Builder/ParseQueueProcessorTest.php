@@ -7,7 +7,6 @@ namespace Doctrine\Tests\RST\Builder;
 use Doctrine\RST\Builder\Documents;
 use Doctrine\RST\Builder\ParseQueue;
 use Doctrine\RST\Builder\ParseQueueProcessor;
-use Doctrine\RST\Builder\Scanner;
 use Doctrine\RST\ErrorManager;
 use Doctrine\RST\Kernel;
 use Doctrine\RST\Meta\Metas;
@@ -24,17 +23,11 @@ class ParseQueueProcessorTest extends TestCase
     /** @var ErrorManager|MockObject */
     private $errorManager;
 
-    /** @var ParseQueue|MockObject */
-    private $parseQueue;
-
     /** @var Metas|MockObject */
     private $metas;
 
     /** @var Documents|MockObject */
     private $documents;
-
-    /** @var Scanner|MockObject */
-    private $scanner;
 
     /** @var string */
     private $directory;
@@ -52,13 +45,8 @@ class ParseQueueProcessorTest extends TestCase
     {
         touch($this->directory . '/file.rst');
 
-        $this->parseQueue->expects(self::at(0))
-            ->method('getFileToParse')
-            ->willReturn('file');
-
-        $this->parseQueue->expects(self::at(1))
-            ->method('getFileToParse')
-            ->willReturn(null);
+        $parseQueue = new ParseQueue();
+        $parseQueue->addFile('file', true);
 
         $this->documents->expects(self::once())
             ->method('addDocument')
@@ -70,17 +58,15 @@ class ParseQueueProcessorTest extends TestCase
         $this->metas->expects(self::once())
             ->method('set');
 
-        $this->parseQueueProcessor->process();
+        $this->parseQueueProcessor->process($parseQueue);
     }
 
     protected function setUp() : void
     {
         $this->kernel          = $this->createMock(Kernel::class);
         $this->errorManager    = $this->createMock(ErrorManager::class);
-        $this->parseQueue      = $this->createMock(ParseQueue::class);
         $this->metas           = $this->createMock(Metas::class);
         $this->documents       = $this->createMock(Documents::class);
-        $this->scanner         = $this->createMock(Scanner::class);
         $this->directory       = sys_get_temp_dir();
         $this->targetDirectory = '/target';
         $this->fileExtension   = 'rst';
@@ -88,10 +74,8 @@ class ParseQueueProcessorTest extends TestCase
         $this->parseQueueProcessor = new ParseQueueProcessor(
             $this->kernel,
             $this->errorManager,
-            $this->parseQueue,
             $this->metas,
             $this->documents,
-            $this->scanner,
             $this->directory,
             $this->targetDirectory,
             $this->fileExtension

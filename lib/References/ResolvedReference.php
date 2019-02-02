@@ -11,6 +11,9 @@ use function sprintf;
 
 class ResolvedReference
 {
+    /** @var ?string */
+    private $file;
+
     /** @var string|null */
     private $title;
 
@@ -27,14 +30,20 @@ class ResolvedReference
      * @param string[][]|string[][][] $titles
      * @param string[]                $attributes
      */
-    public function __construct(?string $title, ?string $url, array $titles = [], array $attributes = [])
+    public function __construct(?string $file, ?string $title, ?string $url, array $titles = [], array $attributes = [])
     {
+        $this->file   = $file;
         $this->title  = $title;
         $this->url    = $url;
         $this->titles = $titles;
 
         $this->validateAttributes($attributes);
         $this->attributes = $attributes;
+    }
+
+    public function getFile() : ?string
+    {
+        return $this->file;
     }
 
     public function getTitle() : ?string

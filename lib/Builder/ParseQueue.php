@@ -4,51 +4,52 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\Builder;
 
-use function array_shift;
+use InvalidArgumentException;
+use function array_filter;
+use function array_key_exists;
+use function array_keys;
+use function sprintf;
 
-class ParseQueue
+final class ParseQueue
 {
-    /** @var Documents */
-    private $documents;
+    /**
+     * An array where each key is the filename and the value is a
+     * boolean indicating if the file needs to be parsed or not.
+     *
+     * @var bool[]
+     */
+    private $fileStatuses = [];
 
-    /** @var string[] */
-    private $parseQueue = [];
-
-    /** @var int[] */
-    private $states = [];
-
-    public function __construct(Documents $documents)
+    public function addFile(string $filename, bool $parseNeeded) : void
     {
-        $this->documents = $documents;
-    }
-
-    public function getState(string $file) : ?int
-    {
-        return $this->states[$file] ?? null;
-    }
-
-    public function setState(string $file, int $state) : void
-    {
-        $this->states[$file] = $state;
-    }
-
-    public function getFileToParse() : ?string
-    {
-        if ($this->parseQueue !== []) {
-            return array_shift($this->parseQueue);
+        if (isset($this->fileStatuses[$filename])) {
+            throw new InvalidArgumentException(sprintf('File "%s" is already in the parse queue', $filename));
         }
 
-        return null;
+        $this->fileStatuses[$filename] = $parseNeeded;
     }
 
-    public function addToParseQueue(string $file) : void
+    public function isFileKnownToParseQueue(string $filename) : bool
     {
-        $this->states[$file] = State::PARSE;
+        return array_key_exists($filename, $this->fileStatuses);
+    }
 
-        if ($this->documents->hasDocument($file)) {
-            return;
+    public function doesFileRequireParsing(string $filename) : bool
+    {
+        if (! $this->isFileKnownToParseQueue($filename)) {
+            throw new InvalidArgumentException(sprintf('File "%s" is not known to the parse queue', $filename));
         }
 
-        $this->parseQueue[$file] = $file;
+        return $this->fileStatuses[$filename];
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getAllFilesThatRequireParsing() : array
+    {
+        return array_keys(array_filter($this->fileStatuses, static function (bool $parseNeeded) {
+            return $parseNeeded;
+        }));
     }
 }
