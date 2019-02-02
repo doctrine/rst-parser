@@ -18,6 +18,7 @@ use Doctrine\RST\Nodes\TableNode;
 use Doctrine\RST\Nodes\TitleNode;
 use Doctrine\RST\Parser;
 use Doctrine\RST\Parser\Directive as ParserDirective;
+use Throwable;
 use function array_search;
 use function chr;
 use function explode;
@@ -381,7 +382,7 @@ class DocumentParser
                 break;
 
             default:
-                $this->environment->getErrorManager()->error('Parser ended in an unexcepted state');
+                $this->environment->addError('Parser ended in an unexcepted state');
         }
 
         return true;
@@ -497,13 +498,24 @@ class DocumentParser
             $currentDirective = $this->getCurrentDirective();
 
             if ($currentDirective !== null) {
-                $currentDirective->process(
-                    $this->parser,
-                    $node,
-                    $this->directive->getVariable(),
-                    $this->directive->getData(),
-                    $this->directive->getOptions()
-                );
+                try {
+                    $currentDirective->process(
+                        $this->parser,
+                        $node,
+                        $this->directive->getVariable(),
+                        $this->directive->getData(),
+                        $this->directive->getOptions()
+                    );
+                } catch (Throwable $e) {
+                    $message = sprintf(
+                        'Error while processing "%s" directive%s: %s',
+                        $currentDirective->getName(),
+                        $this->environment->getCurrentFileName() !== '' ? sprintf(' in "%s"', $this->environment->getCurrentFileName()) : '',
+                        $e->getMessage()
+                    );
+
+                    $this->environment->addError($message);
+                }
             }
 
             $node = null;
@@ -567,7 +579,7 @@ class DocumentParser
                 $line
             );
 
-            $this->environment->getErrorManager()->error($message);
+            $this->environment->addError($message);
 
             return false;
         }

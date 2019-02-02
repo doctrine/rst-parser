@@ -458,6 +458,11 @@ class Environment
         return $this->titleLetters;
     }
 
+    public function addError(string $message) : void
+    {
+        $this->errorManager->error($message);
+    }
+
     public static function slugify(string $text) : string
     {
         // replace non letter or digits by -
