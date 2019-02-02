@@ -7,6 +7,8 @@ namespace Doctrine\Tests\RST\Builder;
 use Doctrine\RST\Builder;
 use Doctrine\RST\Meta\MetaEntry;
 use Doctrine\Tests\RST\BaseBuilderTest;
+use function array_unique;
+use function array_values;
 use function file_exists;
 use function file_get_contents;
 use function file_put_contents;
@@ -61,14 +63,14 @@ class BuilderTest extends BaseBuilderTest
             'index',
             'toc-glob',
             'subdir/index',
-        ], $metaEntries['introduction']->getDepends());
+        ], array_values(array_unique($metaEntries['introduction']->getDepends())));
 
         // assert the self-refs don't mess up dependencies
         self::assertSame([
             'subdir/index',
             'index',
             'subdir/file',
-        ], $metaEntries['subdir/index']->getDepends());
+        ], array_values(array_unique($metaEntries['subdir/index']->getDepends())));
 
         // update meta cache to see that it was used
         // Summary is the main header in "index.rst"

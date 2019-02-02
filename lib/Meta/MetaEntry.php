@@ -8,8 +8,6 @@ use Doctrine\RST\Environment;
 use LogicException;
 use function array_merge;
 use function array_search;
-use function array_unique;
-use function array_values;
 use function in_array;
 use function is_array;
 use function is_string;
@@ -124,7 +122,7 @@ class MetaEntry
      */
     public function getDepends() : array
     {
-        return array_values(array_unique($this->depends));
+        return $this->depends;
     }
 
     /**
