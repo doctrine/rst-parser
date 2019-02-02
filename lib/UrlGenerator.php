@@ -27,10 +27,10 @@ class UrlGenerator
 
     public function generateUrl(string $path, string $currentFileName, string $dirName) : string
     {
-        if ($this->configuration->isBaseUrlEnabled($currentFileName)) {
-            $baseUrl = $this->configuration->getBaseUrl();
+        $canonicalPath = (string) $this->canonicalUrl($dirName, $path);
 
-            $canonicalPath = (string) $this->canonicalUrl($dirName, $path);
+        if ($this->configuration->isBaseUrlEnabled($canonicalPath)) {
+            $baseUrl = $this->configuration->getBaseUrl();
 
             return rtrim($baseUrl, '/') . '/' . ltrim($canonicalPath, '/');
         }
