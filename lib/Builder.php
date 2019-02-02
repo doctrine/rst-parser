@@ -13,14 +13,10 @@ use Doctrine\RST\Event\PostBuildRenderEvent;
 use Doctrine\RST\Event\PreBuildParseEvent;
 use Doctrine\RST\Event\PreBuildRenderEvent;
 use Doctrine\RST\Event\PreBuildScanEvent;
+use Doctrine\RST\Meta\CachedMetasLoader;
 use Doctrine\RST\Meta\Metas;
 use Symfony\Component\Filesystem\Filesystem;
-use function file_exists;
-use function file_get_contents;
-use function file_put_contents;
 use function is_dir;
-use function serialize;
-use function unserialize;
 
 class Builder
 {
@@ -38,6 +34,9 @@ class Builder
 
     /** @var Metas */
     private $metas;
+
+    /** @var CachedMetasLoader */
+    private $cachedMetasLoader;
 
     /** @var Documents */
     private $documents;
@@ -59,6 +58,8 @@ class Builder
         $this->filesystem = new Filesystem();
 
         $this->metas = new Metas();
+
+        $this->cachedMetasLoader = new CachedMetasLoader();
 
         $this->documents = new Builder\Documents(
             $this->filesystem,
@@ -117,7 +118,7 @@ class Builder
         }
 
         if ($this->configuration->getUseCachedMetas()) {
-            $this->loadCachedMetas($targetDirectory);
+            $this->cachedMetasLoader->loadCachedMetaEntries($targetDirectory, $this->metas);
         }
 
         $parseQueue = $this->scan($directory, $targetDirectory);
@@ -126,7 +127,7 @@ class Builder
 
         $this->render($directory, $targetDirectory);
 
-        $this->saveMetas($targetDirectory);
+        $this->cachedMetasLoader->cacheMetaEntries($targetDirectory, $this->metas);
     }
 
     public function copy(string $source, ?string $destination = null) : self
@@ -195,31 +196,5 @@ class Builder
             PostBuildRenderEvent::POST_BUILD_RENDER,
             new PostBuildRenderEvent($this, $directory, $targetDirectory)
         );
-    }
-
-    private function loadCachedMetas(string $targetDirectory) : void
-    {
-        $metaCachePath = $this->getMetaCachePath($targetDirectory);
-        if (! file_exists($metaCachePath)) {
-            return;
-        }
-
-        $contents = file_get_contents($metaCachePath);
-
-        if ($contents === false) {
-            return;
-        }
-
-        $this->metas->setMetaEntries(unserialize($contents));
-    }
-
-    private function saveMetas(string $targetDirectory) : void
-    {
-        file_put_contents($this->getMetaCachePath($targetDirectory), serialize($this->metas->getAll()));
-    }
-
-    private function getMetaCachePath(string $targetDirectory) : string
-    {
-        return $targetDirectory . '/metas.php';
     }
 }
