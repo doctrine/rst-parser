@@ -299,6 +299,11 @@ class BuilderTest extends BaseBuilderTest
             '<p>see <a href="magic-link.html#test">test</a></p>',
             $contents
         );
+
+        self::assertContains(
+            '<p>see <a href="magic-link.html#title-with-ampersand">title with ampersand &amp;</a></p>',
+            $contents
+        );
     }
 
     public function testHeadings() : void
