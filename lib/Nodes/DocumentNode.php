@@ -139,7 +139,7 @@ class DocumentNode extends Node
             }
 
             $level       = $node->getLevel();
-            $text        = $node->getValue()->render();
+            $text        = $node->getValue()->getValue();
             $redirection = $node->getTarget();
             $value       = $redirection !== '' ? [$text, $redirection] : $text;
 
