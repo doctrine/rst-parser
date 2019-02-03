@@ -15,6 +15,7 @@ use Doctrine\RST\Event\PreBuildRenderEvent;
 use Doctrine\RST\Event\PreBuildScanEvent;
 use Doctrine\RST\Meta\CachedMetasLoader;
 use Doctrine\RST\Meta\Metas;
+use LogicException;
 use Symfony\Component\Filesystem\Filesystem;
 use function is_dir;
 
@@ -40,6 +41,9 @@ class Builder
 
     /** @var Documents */
     private $documents;
+
+    /** @var ParseQueue|null */
+    private $parseQueue;
 
     /** @var Copier */
     private $copier;
@@ -108,6 +112,20 @@ class Builder
         return $this->indexName;
     }
 
+    public function getMetas() : Metas
+    {
+        return $this->metas;
+    }
+
+    public function getParseQueue() : ParseQueue
+    {
+        if ($this->parseQueue === null) {
+            throw new LogicException('The ParseQueue is not set until after the build is complete');
+        }
+
+        return $this->parseQueue;
+    }
+
     public function build(
         string $directory,
         string $targetDirectory = 'output'
@@ -164,7 +182,7 @@ class Builder
     {
         $this->configuration->dispatchEvent(
             PreBuildParseEvent::PRE_BUILD_PARSE,
-            new PreBuildParseEvent($this, $directory, $targetDirectory)
+            new PreBuildParseEvent($this, $directory, $targetDirectory, $parseQueue)
         );
 
         $parseQueueProcessor = new ParseQueueProcessor(
