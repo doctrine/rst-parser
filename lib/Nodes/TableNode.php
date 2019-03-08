@@ -6,7 +6,6 @@ namespace Doctrine\RST\Nodes;
 
 use Doctrine\RST\Parser;
 use Doctrine\RST\Parser\LineChecker;
-use RuntimeException;
 use function array_fill_keys;
 use function array_keys;
 use function array_map;
@@ -146,7 +145,14 @@ class TableNode extends Node
                 return implode(' | ', $item);
             }, $this->data);
 
-            throw new RuntimeException(sprintf("Malformed table:\n%s\n\nin file: \"%s\"", implode("\n", $data), $parser->getFilename()));
+            $parser->getEnvironment()
+                ->getErrorManager()
+                ->error(sprintf("Malformed table:\n%s\n\nin file: \"%s\"", implode("\n", $data), $parser->getFilename()));
+
+            // empty the table if it's malformed
+            $this->data = [];
+
+            return;
         }
 
         foreach ($this->data as &$row) {
