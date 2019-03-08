@@ -153,8 +153,9 @@ class MetaEntry
     {
         $key = array_search($dependency, $this->depends, true);
 
+        // it's possible a dependency is removed multiple times
         if ($key === false) {
-            throw new LogicException(sprintf('Could not find dependency "%s" in MetaEntry for "%s"', $dependency, $this->file));
+            return;
         }
 
         unset($this->depends[$key]);

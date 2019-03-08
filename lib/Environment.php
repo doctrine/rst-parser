@@ -157,8 +157,10 @@ class Environment
 
             if ($this->getMetaEntry() !== null) {
                 $this->getMetaEntry()->removeDependency(
-                    // use the unique, unresolved name
-                    $this->unresolvedDependencies[$data] ?? $data
+                    // for references, use the original, unresolved name
+                    // for doc links, use the canonical URL
+                    // see addDependency()
+                    $this->unresolvedDependencies[$data] ?? (string) $this->canonicalUrl($data)
                 );
             }
 
