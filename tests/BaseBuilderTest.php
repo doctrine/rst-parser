@@ -23,7 +23,12 @@ abstract class BaseBuilderTest extends TestCase
 
         $this->builder = new Builder();
         $this->builder->getConfiguration()->setUseCachedMetas(false);
+        $this->configureBuilder($this->builder);
         $this->builder->build($this->sourceFile(), $this->targetFile());
+    }
+
+    protected function configureBuilder(Builder $builder) : void
+    {
     }
 
     protected function sourceFile(string $file = '') : string
