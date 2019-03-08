@@ -145,13 +145,10 @@ class DefaultNodeFactory implements NodeFactory
         return $listNode;
     }
 
-    /**
-     * @param string[] $parts
-     */
-    public function createTableNode(array $parts, string $type, LineChecker $lineChecker) : TableNode
+    public function createTableNode(Parser\TableSeparatorLineConfig $separatorLineConfig, string $type, LineChecker $lineChecker) : TableNode
     {
         /** @var TableNode $tableNode */
-        $tableNode = $this->create(NodeTypes::TABLE, [$parts, $type, $lineChecker]);
+        $tableNode = $this->create(NodeTypes::TABLE, [$separatorLineConfig, $type, $lineChecker]);
 
         return $tableNode;
     }
