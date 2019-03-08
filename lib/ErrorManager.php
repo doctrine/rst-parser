@@ -11,6 +11,9 @@ class ErrorManager
     /** @var Configuration */
     private $configuration;
 
+    /** @var string[] */
+    private $errors = [];
+
     public function __construct(Configuration $configuration)
     {
         $this->configuration = $configuration;
@@ -18,10 +21,20 @@ class ErrorManager
 
     public function error(string $message) : void
     {
+        $this->errors[] = $message;
+
         if ($this->configuration->isAbortOnError()) {
             throw new Exception($message);
         }
 
         echo '/!\\ ' . $message . "\n";
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getErrors() : array
+    {
+        return $this->errors;
     }
 }
