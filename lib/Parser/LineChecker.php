@@ -88,10 +88,6 @@ class LineChecker
             return false;
         }
 
-        if ($this->isDefinitionList($nextLine)) {
-            return false;
-        }
-
-        return true;
+        return ! $this->isDefinitionList($nextLine);
     }
 }

@@ -67,7 +67,7 @@ class NodeInstantiator
     public function create(array $arguments) : Node
     {
         /** @var Node $node */
-        $node = new $this->className(... $arguments);
+        $node = new $this->className(...$arguments);
 
         if ($this->nodeRendererFactory !== null) {
             $node->setNodeRendererFactory($this->nodeRendererFactory);
