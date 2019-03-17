@@ -231,16 +231,23 @@ class DocumentParser
                         $this->listFlow = true;
 
                         return false;
-                    } elseif ($this->lineChecker->isBlockLine($line)) {
+                    }
+
+                    if ($this->lineChecker->isBlockLine($line)) {
                         if ($this->isCode) {
                             $this->setState(State::CODE);
                         } else {
                             $this->setState(State::BLOCK);
                         }
+
                         return false;
-                    } elseif ($this->parseLink($line)) {
+                    }
+
+                    if ($this->parseLink($line)) {
                         return true;
-                    } elseif ($this->lineChecker->isDirective($line)) {
+                    }
+
+                    if ($this->lineChecker->isDirective($line)) {
                         $this->setState(State::DIRECTIVE);
                         $this->buffer = new Buffer();
                         $this->flush();
@@ -351,6 +358,7 @@ class DocumentParser
 
                 if (! $this->lineChecker->isComment($line) && (trim($line) === '' || $line[0] !== ' ')) {
                     $this->setState(State::BEGIN);
+
                     return false;
                 }
                 break;
@@ -360,6 +368,7 @@ class DocumentParser
                 if (! $this->lineChecker->isBlockLine($line)) {
                     $this->flush();
                     $this->setState(State::BEGIN);
+
                     return false;
                 } else {
                     $this->buffer->push($line);

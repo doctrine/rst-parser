@@ -107,9 +107,10 @@ class SpanProcessor
     {
         return preg_replace_callback('/:([a-z0-9]+):`(.+)`/mUsi', function ($match) {
             $section = $match[1];
-            $url     = $match[2];
-            $id      = $this->generateId();
-            $anchor  = null;
+
+            $url    = $match[2];
+            $id     = $this->generateId();
+            $anchor = null;
 
             $text = null;
             if (preg_match('/^(.+)<(.+)>$/mUsi', $url, $match) > 0) {
