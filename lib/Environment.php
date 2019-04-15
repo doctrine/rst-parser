@@ -63,6 +63,9 @@ class Environment
     private $unresolvedDependencies = [];
 
     /** @var string[] */
+    private $originalDependencyNames = [];
+
+    /** @var string[] */
     private $variables = [];
 
     /** @var string[] */
@@ -157,8 +160,8 @@ class Environment
 
             if ($this->getMetaEntry() !== null) {
                 $this->getMetaEntry()->removeDependency(
-                    // use the unique, unresolved name
-                    $this->unresolvedDependencies[$data] ?? $data
+                    // use the original name
+                    $this->originalDependencyNames[$data] ?? $data
                 );
             }
 
@@ -304,25 +307,27 @@ class Environment
 
     public function addDependency(string $dependency, bool $requiresResolving = false) : void
     {
-        if (! $requiresResolving) {
-            // the dependency is already a filename, probably a :doc:
-            // or from a toc-tree - change it to the canonical URL
-            $dependency = $this->canonicalUrl($dependency);
-        }
-
-        if ($dependency === null) {
-            throw new InvalidArgumentException(sprintf(
-                'Could not get canonical url for dependency %s',
-                $dependency
-            ));
-        }
-
         if ($requiresResolving) {
             // a hack to avoid collisions between resolved and unresolved dependencies
             $dependencyName                            = 'UNRESOLVED__' . $dependency;
             $this->unresolvedDependencies[$dependency] = $dependencyName;
+            // map the original dependency name to the one that will be stored
+            $this->originalDependencyNames[$dependency] = $dependencyName;
         } else {
-            $dependencyName = $dependency;
+            // the dependency is already a filename, probably a :doc:
+            // or from a toc-tree - change it to the canonical URL
+            $canonicalDependency = $this->canonicalUrl($dependency);
+
+            if ($canonicalDependency === null) {
+                throw new InvalidArgumentException(sprintf(
+                    'Could not get canonical url for dependency %s',
+                    $dependency
+                ));
+            }
+
+            $dependencyName = $canonicalDependency;
+            // map the original dependency name to the one that will be stored
+            $this->originalDependencyNames[$dependency] = $canonicalDependency;
         }
 
         if (in_array($dependencyName, $this->dependencies, true)) {
