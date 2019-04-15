@@ -2,13 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Doctrine\Tests\RST\BuilderInvalidReferences;
+namespace Doctrine\Tests\RST\BuilderMalformedReference;
 
 use Doctrine\RST\Builder;
 use Doctrine\RST\Configuration;
 use Doctrine\RST\Kernel;
 use Doctrine\Tests\RST\BaseBuilderTest;
-use Throwable;
 
 class BuilderMalformedReferenceTest extends BaseBuilderTest
 {
