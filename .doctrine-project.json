@@ -5,13 +5,16 @@
     "docsSlug": "doctrine-rst-parser",
     "versions": [
         {
-            "name": "master",
+            "name": "1.0",
             "branchName": "master",
             "slug": "latest",
-            "aliases": [
-                "current",
-                "stable"
-            ]
+            "upcoming": true
+        },
+        {
+            "name": "0.1",
+            "branchName": "0.1",
+            "slug": "0.1",
+            "current": true
         }
     ]
 }
