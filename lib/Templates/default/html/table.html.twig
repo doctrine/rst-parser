@@ -1,19 +1,21 @@
 <table{% if tableNode.classes %} class="{{ tableNode.classesString }}"{% endif %}>
-    {% if tableHeader %}
+    {% if tableHeaderRows is not empty %}
         <thead>
-            <tr>
-                {% for value in tableHeader %}
-                    <th>{{ value|raw }}</th>
-                {% endfor %}
-            </tr>
+            {% for tableHeaderRow in tableHeaderRows %}
+                <tr>
+                    {% for column in tableHeaderRow.columns %}
+                        <th{% if column.colspan > 1 %} colspan="{{ column.colspan }}"{% endif %}>{{ column.render|raw }}</th>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
         </thead>
     {% endif %}
 
     <tbody>
         {% for tableRow in tableRows %}
             <tr>
-                {% for value in tableRow %}
-                    <td>{{ value|raw }}</td>
+                {% for column in tableRow.columns %}
+                    <td{% if column.colspan > 1 %} colspan="{{ column.colspan }}"{% endif %}>{{ column.render|raw }}</td>
                 {% endfor %}
             </tr>
         {% endfor %}

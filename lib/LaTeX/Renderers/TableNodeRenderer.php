@@ -26,19 +26,15 @@ class TableNodeRenderer implements NodeRenderer
         $cols = 0;
 
         $rows = [];
-        foreach ($this->tableNode->getData() as &$row) {
-            if ($row === []) {
-                continue;
-            }
-
+        foreach ($this->tableNode->getData() as $row) {
             $rowTex = '';
-            $cols   = max($cols, count($row));
+            $cols   = max($cols, count($row->getColumns()));
 
             /** @var SpanNode $col */
-            foreach ($row as $n => &$col) {
+            foreach ($row->getColumns() as $n => $col) {
                 $rowTex .= $col->render();
 
-                if ((int) $n + 1 >= count($row)) {
+                if ((int) $n + 1 >= count($row->getColumns())) {
                     continue;
                 }
 

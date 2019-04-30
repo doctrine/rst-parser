@@ -8,17 +8,18 @@ use Doctrine\RST\Configuration;
 use Doctrine\RST\Formats\Format;
 use Doctrine\RST\Kernel;
 use Doctrine\RST\Parser;
+use Exception;
 use Gajus\Dindent\Indenter;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Finder\Finder;
 use function array_map;
-use function basename;
 use function explode;
 use function file_exists;
 use function file_get_contents;
 use function implode;
 use function in_array;
 use function rtrim;
+use function sprintf;
 use function str_replace;
 use function strpos;
 use function trim;
@@ -74,33 +75,38 @@ class FunctionalTest extends TestCase
     {
         $finder = new Finder();
         $finder
-            ->files()
-            ->in(__DIR__ . '/tests')
-            ->name('*.rst');
+            ->directories()
+            ->in(__DIR__ . '/tests');
 
         $tests = [];
 
-        foreach ($finder as $file) {
-            $rst      = $file->getContents();
-            $filename = $file->getFilename();
-            $basename = basename($filename, '.rst');
+        foreach ($finder as $dir) {
+            $rstFilename = $dir->getPathname() . '/' . $dir->getFilename() . '.rst';
+            if (! file_exists($rstFilename)) {
+                throw new Exception(sprintf('Could not find functional test file "%s"', $rstFilename));
+            }
 
-            $dir = $file->getPathInfo();
+            $rst      = file_get_contents($rstFilename);
+            $basename = $dir->getFilename();
 
             $formats = [Format::HTML, Format::LATEX];
 
-            foreach ($formats as $format) {
-                $formatPath = $dir . '/' . $basename . '.' . $format;
-
-                if (! file_exists($formatPath)) {
-                    continue;
+            $fileFinder = new Finder();
+            $fileFinder
+                ->files()
+                ->in($dir->getPathname())
+                ->notName('*.rst');
+            foreach ($fileFinder as $file) {
+                $format = $file->getExtension();
+                if (! in_array($format, $formats, true)) {
+                    throw new Exception(sprintf('Unexpected file extension in "%s"', $file->getPathname()));
                 }
 
-                $expected = file_get_contents($formatPath);
-
-                if ($expected === false) {
-                    continue;
+                if (strpos($file->getFilename(), $dir->getFilename()) !== 0) {
+                    throw new Exception(sprintf('Test filename "%s" does not match directory name', $file->getPathname()));
                 }
+
+                $expected = $file->getContents();
 
                 $configuration = new Configuration();
                 $configuration->setFileExtension($format);
@@ -115,7 +121,7 @@ class FunctionalTest extends TestCase
                     ? 'renderDocument'
                     : 'render';
 
-                $tests[] = [$basename, $parser, $renderMethod, $format, $rst, trim($expected)];
+                $tests[$basename . '_' . $format] = [$basename, $parser, $renderMethod, $format, $rst, trim($expected)];
             }
         }
 

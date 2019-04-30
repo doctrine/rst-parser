@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\HTML\Renderers;
 
-use Doctrine\RST\Nodes\SpanNode;
 use Doctrine\RST\Nodes\TableNode;
 use Doctrine\RST\Renderers\NodeRenderer;
 use Doctrine\RST\Templates\TemplateRenderer;
-use function count;
+use LogicException;
+use function sprintf;
 
 class TableNodeRenderer implements NodeRenderer
 {
@@ -27,45 +27,27 @@ class TableNodeRenderer implements NodeRenderer
     public function render() : string
     {
         $headers = $this->tableNode->getHeaders();
-        $data    = $this->tableNode->getData();
+        $rows    = $this->tableNode->getData();
 
-        $tableHeader = [];
-        $tableRows   = [];
+        $tableHeaderRows = [];
 
-        if (count($headers) !== 0) {
-            foreach ($headers as $k => $isHeader) {
-                if (! isset($data[$k])) {
-                    continue;
-                }
-
-                /** @var SpanNode $col */
-                foreach ($data[$k] as $col) {
-                    $tableHeader[] = $col->render();
-                }
-
-                unset($data[$k]);
-            }
-        }
-
-        foreach ($data as $k => $row) {
-            if ($row === []) {
+        foreach ($headers as $k => $isHeader) {
+            if ($isHeader === false) {
                 continue;
             }
 
-            $tableRow = [];
-
-            /** @var SpanNode $col */
-            foreach ($row as $col) {
-                $tableRow[] = $col->render();
+            if (! isset($rows[$k])) {
+                throw new LogicException(sprintf('Row "%d" should be a header, but that row does not exist.', $k));
             }
 
-            $tableRows[] = $tableRow;
+            $tableHeaderRows[] = $rows[$k];
+            unset($rows[$k]);
         }
 
         return $this->templateRenderer->render('table.html.twig', [
             'tableNode' => $this->tableNode,
-            'tableHeader' => $tableHeader,
-            'tableRows' => $tableRows,
+            'tableHeaderRows' => $tableHeaderRows,
+            'tableRows' => $rows,
         ]);
     }
 }
