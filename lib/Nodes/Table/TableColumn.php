@@ -64,10 +64,19 @@ final class TableColumn
 
     public function render() : string
     {
-        return $this->getNode()->render();
+        $rendered = $this->getNode()->render();
+
+        if ($rendered === '' && $this->content !== '\\') {
+            $rendered = '&nbsp;';
+        }
+
+        return $rendered;
     }
 
-    public function isEmpty() : bool
+    /**
+     * Indicates that a column is empty, and could be skipped entirely.
+     */
+    public function isCompletelyEmpty() : bool
     {
         return strlen($this->content) === 0;
     }
