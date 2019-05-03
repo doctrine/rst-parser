@@ -220,28 +220,36 @@ class TableNode extends Node
 
             $previousColumnEnd = null;
             foreach ($columnRanges as $columnRange) {
+                $isRangeBeyondText = $columnRange[0] >= strlen($line);
                 // check for content in the "gap"
-                if ($previousColumnEnd !== null) {
+                if ($previousColumnEnd !== null && ! $isRangeBeyondText) {
                     $gapText = substr($line, $previousColumnEnd, $columnRange[0] - $previousColumnEnd);
                     if (strlen(trim($gapText)) !== 0) {
                         $this->errors[] = sprintf('Malformed table: content "%s" appears in the "gap" on row "%s"', $gapText, $line);
                     }
                 }
 
-                if ($lastColumnRangeEnd === $columnRange[1]) {
+                if ($isRangeBeyondText) {
+                    // the text for this line ended earlier. This column should be blank
+
+                    $content = '';
+                } elseif ($lastColumnRangeEnd === $columnRange[1]) {
                     // this is the last column, so get the rest of the line
                     // this is because content can go *beyond* the table legally
-                    $row->addColumn(substr(
+                    $content = substr(
                         $line,
                         $columnRange[0]
-                    ), 1);
+                    );
                 } else {
-                    $row->addColumn(substr(
+                    $content = substr(
                         $line,
                         $columnRange[0],
                         $columnRange[1] - $columnRange[0]
-                    ), 1);
+                    );
                 }
+
+                $content = trim($content);
+                $row->addColumn($content, 1);
 
                 $previousColumnEnd = $columnRange[1];
             }
@@ -259,7 +267,7 @@ class TableNode extends Node
         // check for empty first columns, which means this is
         // not a new row, but the continuation of the previous row
         foreach ($this->data as $i => $row) {
-            if ($row->getFirstColumn()->isEmpty() && $previousRow !== null) {
+            if ($row->getFirstColumn()->isCompletelyEmpty() && $previousRow !== null) {
                 try {
                     $previousRow->absorbRowContent($row);
                 } catch (InvalidTableStructure $e) {
