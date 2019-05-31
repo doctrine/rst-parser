@@ -52,6 +52,9 @@ class Configuration
     /** @var bool */
     private $indentHTML = false;
 
+    /** @var int */
+    private $initialHeaderLevel = 1;
+
     /** @var bool */
     private $useCachedMetas = true;
 
@@ -216,6 +219,16 @@ class Configuration
     public function getIndentHTML() : bool
     {
         return $this->indentHTML;
+    }
+
+    public function setInitialHeaderLevel(int $initialHeaderLevel) : void
+    {
+        $this->initialHeaderLevel = $initialHeaderLevel;
+    }
+
+    public function getInitialHeaderLevel() : int
+    {
+        return $this->initialHeaderLevel;
     }
 
     public function setUseCachedMetas(bool $useCachedMetas) : void

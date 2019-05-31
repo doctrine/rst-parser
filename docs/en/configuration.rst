@@ -80,3 +80,14 @@ indented consistently, you can enable this feature using the ``setIndentHTML(boo
     This feature only works when rendering full HTML documents using the
     ``Doctrine\RST\Nodes\DocumentNode::renderDocument()`` method. If you render
     an individual node with the ``render()`` method, the outputted HTML will not be indented.
+
+Initial Header Level
+--------------------
+
+Normally, document headings start at ``h1``. You can override this by setting the ``initialHeaderLevel`` configuration
+option:
+
+.. code-block:: php
+
+    // Set the top-most document header to <h2>
+    $configuration->setInitialHeaderLevel(2);
