@@ -31,13 +31,15 @@ class ParserTest extends TestCase
     /** @var Parser $parser */
     protected $parser;
 
-    protected function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
 
         $directory = __DIR__ . '/files/';
-        $parser = new Parser();
+        $parser    = new Parser();
+
         $parser->getEnvironment()->setCurrentDirectory($directory);
+
         $this->parser = $parser;
     }
 
@@ -422,7 +424,7 @@ class ParserTest extends TestCase
     private function parse(string $file) : DocumentNode
     {
         $directory = $this->parser->getEnvironment()->getCurrentDirectory();
-        $data = file_get_contents($directory . $file);
+        $data      = file_get_contents($directory . $file);
 
         if ($data === false) {
             throw new Exception('Could not open file.');

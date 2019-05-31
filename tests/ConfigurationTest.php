@@ -70,7 +70,7 @@ class ConfigurationTest extends TestCase
         self::assertTrue($this->configuration->getIgnoreInvalidReferences());
     }
 
-    public function testInitialHeaderLevel(): void
+    public function testInitialHeaderLevel() : void
     {
         self::assertSame(1, $this->configuration->getInitialHeaderLevel());
 
