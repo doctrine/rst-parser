@@ -5,19 +5,24 @@ declare(strict_types=1);
 namespace Doctrine\RST\Nodes;
 
 use Doctrine\RST\Exception\InvalidTableStructure;
+use Doctrine\RST\Nodes\Table\TableColumn;
 use Doctrine\RST\Nodes\Table\TableRow;
 use Doctrine\RST\Parser;
 use Doctrine\RST\Parser\LineChecker;
 use Doctrine\RST\Parser\TableSeparatorLineConfig;
+use Exception;
 use LogicException;
 use function array_keys;
+use function array_reverse;
 use function array_values;
 use function count;
 use function explode;
 use function implode;
 use function ksort;
 use function max;
+use function preg_match;
 use function sprintf;
+use function str_repeat;
 use function strlen;
 use function strpos;
 use function substr;
@@ -288,14 +293,14 @@ class TableNode extends Node
         // loop over ALL separator lines to find ALL of the column ranges
         $columnRanges    = [];
         $finalHeadersRow = 0;
-        foreach ($this->separatorLineConfigs as $i => $separatorLine) {
+        foreach ($this->separatorLineConfigs as $rowIndex => $separatorLine) {
             if ($separatorLine->isHeader()) {
                 if ($finalHeadersRow !== 0) {
-                    $this->addError(sprintf('Malformed table: multiple "header rows" using "===" were found. See table lines "%d" and "%d"', $finalHeadersRow + 1, $i));
+                    $this->addError(sprintf('Malformed table: multiple "header rows" using "===" were found. See table lines "%d" and "%d"', $finalHeadersRow + 1, $rowIndex));
                 }
 
                 // indicates that "=" was used
-                $finalHeadersRow = $i - 1;
+                $finalHeadersRow = $rowIndex - 1;
             }
 
             foreach ($separatorLine->getPartRanges() as $columnRange) {
@@ -334,9 +339,18 @@ class TableNode extends Node
         }
 
         /** @var TableRow[] $rows */
-        $rows = [];
-        foreach ($this->rawDataLines as $i => $line) {
+        $rows                 = [];
+        $partialSeparatorRows = [];
+        foreach ($this->rawDataLines as $rowIndex => $line) {
             $row = new TableRow();
+
+            // if the row is part separator row, part content, this
+            // is a rowspan situation - e.g.
+            // |           +----------------+----------------------------+
+            // look for +-----+ pattern
+            if (preg_match('/\+[-]+\+/', $this->rawDataLines[$rowIndex]) === 1) {
+                $partialSeparatorRows[$rowIndex] = true;
+            }
 
             $currentColumnStart = null;
             $currentSpan        = 1;
@@ -348,8 +362,10 @@ class TableNode extends Node
                     }
 
                     $gapText = substr($line, $previousColumnEnd, $start - $previousColumnEnd);
-                    if (strpos($gapText, '|') === false) {
+                    if (strpos($gapText, '|') === false && strpos($gapText, '+') === false) {
                         // text continued through the "gap". This is a colspan
+                        // "+" is an odd character - it's usually "|", but "+" can
+                        // happen in row-span situations
                         $currentSpan++;
                     } else {
                         // we just hit a proper "gap" record the line up until now
@@ -383,19 +399,66 @@ class TableNode extends Node
                 );
             }
 
-            $rows[$i] = $row;
+            $rows[$rowIndex] = $row;
         }
 
-        // some rows may not be real rows: they may just be
-        // multiline content on a single row
-        foreach ($rows as $i => $row) {
+        $columnIndexesCurrentlyInRowspan = [];
+        foreach ($rows as $rowIndex => $row) {
+            if (isset($partialSeparatorRows[$rowIndex])) {
+                // this row is part content, part separator due to a rowspan
+                // for each column that contains content, we need to
+                // push it onto the last real row's content and record
+                // that this column in the next row should also be
+                // included in that previous row's content
+                foreach ($row->getColumns() as $columnIndex => $column) {
+                    if (! $column->isCompletelyEmpty() && str_repeat('-', strlen($column->getContent())) === $column->getContent()) {
+                        // only a line separator in this column - not content!
+                        continue;
+                    }
+
+                    $prevTargetColumn = $this->findColumnInPreviousRows((int) $columnIndex, $rows, (int) $rowIndex);
+                    $prevTargetColumn->addContent("\n" . $column->getContent());
+                    $prevTargetColumn->incrementRowSpan();
+                    // mark that this column on the next row should also be added
+                    // to the previous row
+                    $columnIndexesCurrentlyInRowspan[] = $columnIndex;
+                }
+
+                // remove the row - it's not real
+                unset($rows[$rowIndex]);
+
+                continue;
+            }
+
+            // check if the previous row was a partial separator row, and
+            // we need to take some columns and add them to a previous row's content
+            foreach ($columnIndexesCurrentlyInRowspan as $columnIndex) {
+                $prevTargetColumn = $this->findColumnInPreviousRows($columnIndex, $rows, (int) $rowIndex);
+                $columnInRowspan  = $row->getColumn($columnIndex);
+                if ($columnInRowspan === null) {
+                    throw new LogicException('Cannot find column for index "%s"', $columnIndex);
+                }
+                $prevTargetColumn->addContent("\n" . $columnInRowspan->getContent());
+
+                // now this column actually needs to be removed from this row,
+                // as it's not a real column that needs to be printed
+                $row->removeColumn($columnIndex);
+            }
+            $columnIndexesCurrentlyInRowspan = [];
+
             // if the next row is just $i+1, it means there
             // was no "separator" and this is really just a
             // continuation of this row.
             $nextRowCounter = 1;
-            while (isset($rows[(int) $i + $nextRowCounter])) {
-                $targetRow = $rows[(int) $i + $nextRowCounter];
-                unset($rows[(int) $i + $nextRowCounter]);
+            while (isset($rows[(int) $rowIndex + $nextRowCounter])) {
+                // but if the next line is actually a partial separator, then
+                // it is not a continuation of the content - quit now
+                if (isset($partialSeparatorRows[(int) $rowIndex + $nextRowCounter])) {
+                    break;
+                }
+
+                $targetRow = $rows[(int) $rowIndex + $nextRowCounter];
+                unset($rows[(int) $rowIndex + $nextRowCounter]);
 
                 try {
                     $row->absorbRowContent($targetRow);
@@ -408,12 +471,12 @@ class TableNode extends Node
         }
 
         // one more loop to set headers
-        foreach ($rows as $i => $row) {
-            if ($i > $finalHeadersRow) {
+        foreach ($rows as $rowIndex => $row) {
+            if ($rowIndex > $finalHeadersRow) {
                 continue;
             }
 
-            $this->headers[$i] = true;
+            $this->headers[$rowIndex] = true;
         }
 
         $this->data = $rows;
@@ -439,5 +502,30 @@ class TableNode extends Node
     private function addError(string $message) : void
     {
         $this->errors[] = $message;
+    }
+
+    /**
+     * @param TableRow[] $rows
+     */
+    private function findColumnInPreviousRows(int $columnIndex, array $rows, int $currentRowIndex) : TableColumn
+    {
+        /** @var TableRow[] $reversedRows */
+        $reversedRows = array_reverse($rows, true);
+
+        // go through the rows backwards to find the last/previous
+        // row that actually had a real column at this position
+        foreach ($reversedRows as $k => $row) {
+            // start by skipping any future rows, as we go backward
+            if ($k >= $currentRowIndex) {
+                continue;
+            }
+
+            $prevTargetColumn = $row->getColumn($columnIndex);
+            if ($prevTargetColumn !== null) {
+                return $prevTargetColumn;
+            }
+        }
+
+        throw new Exception('Could not find column in any previous rows');
     }
 }

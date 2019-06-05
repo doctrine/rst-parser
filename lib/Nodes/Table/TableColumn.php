@@ -18,6 +18,9 @@ final class TableColumn
     /** @var int */
     private $colSpan;
 
+    /** @var int */
+    private $rowSpan = 1;
+
     /** @var Node|null */
     private $node;
 
@@ -43,9 +46,19 @@ final class TableColumn
         return $this->colSpan;
     }
 
+    public function getRowSpan() : int
+    {
+        return $this->rowSpan;
+    }
+
     public function addContent(string $content) : void
     {
         $this->content = trim($this->content . utf8_encode($content));
+    }
+
+    public function incrementRowSpan() : void
+    {
+        $this->rowSpan++;
     }
 
     public function getNode() : Node

@@ -15,7 +15,7 @@
         {% for tableRow in tableRows %}
             <tr>
                 {% for column in tableRow.columns %}
-                    <td{% if column.colspan > 1 %} colspan="{{ column.colspan }}"{% endif %}>{{ column.render|raw }}</td>
+                    <td{% if column.colSpan > 1 %} colspan="{{ column.colSpan }}"{% endif %}{% if column.rowSpan > 1 %} rowspan="{{ column.rowSpan }}"{% endif %}>{{ column.render|raw }}</td>
                 {% endfor %}
             </tr>
         {% endfor %}
