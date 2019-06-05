@@ -225,7 +225,7 @@ class TableNode extends Node
                 if ($previousColumnEnd !== null && ! $isRangeBeyondText) {
                     $gapText = substr($line, $previousColumnEnd, $columnRange[0] - $previousColumnEnd);
                     if (strlen(trim($gapText)) !== 0) {
-                        $this->errors[] = sprintf('Malformed table: content "%s" appears in the "gap" on row "%s"', $gapText, $line);
+                        $this->addError(sprintf('Malformed table: content "%s" appears in the "gap" on row "%s"', $gapText, $line));
                     }
                 }
 
@@ -271,7 +271,7 @@ class TableNode extends Node
                 try {
                     $previousRow->absorbRowContent($row);
                 } catch (InvalidTableStructure $e) {
-                    $this->errors[] = $e->getMessage();
+                    $this->addError($e->getMessage());
                 }
 
                 unset($this->data[$i]);
@@ -291,7 +291,7 @@ class TableNode extends Node
         foreach ($this->separatorLineConfigs as $i => $separatorLine) {
             if ($separatorLine->isHeader()) {
                 if ($finalHeadersRow !== 0) {
-                    $this->errors[] = sprintf('Malformed table: multiple "header rows" using "===" were found. See table lines "%d" and "%d"', $finalHeadersRow + 1, $i);
+                    $this->addError(sprintf('Malformed table: multiple "header rows" using "===" were found. See table lines "%d" and "%d"', $finalHeadersRow + 1, $i));
                 }
 
                 // indicates that "=" was used
@@ -400,7 +400,7 @@ class TableNode extends Node
                 try {
                     $row->absorbRowContent($targetRow);
                 } catch (InvalidTableStructure $e) {
-                    $this->errors[] = $e->getMessage();
+                    $this->addError($e->getMessage());
                 }
 
                 $nextRowCounter++;
@@ -434,5 +434,10 @@ class TableNode extends Node
         }
 
         return implode("\n", $lines);
+    }
+
+    private function addError(string $message) : void
+    {
+        $this->errors[] = $message;
     }
 }
