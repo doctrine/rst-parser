@@ -11,5 +11,7 @@
 |           +----------------+----------------------------+
 |           | catalogue      | Translation catalogue.     |
 +-----------+----------------+----------------------------+
-| currency  | currency (m)   | A currency string          |
+| currency  | currency (m)   | - currency                 |
++-----------+ spans rows     | - contains                 |
+| another   |                | - body elements            |
 +-----------+----------------+----------------------------+
