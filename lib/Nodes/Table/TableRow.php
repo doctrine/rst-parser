@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\RST\Nodes\Table;
 
 use Doctrine\RST\Exception\InvalidTableStructure;
+use InvalidArgumentException;
 use LogicException;
 use function array_map;
 use function implode;
@@ -71,5 +72,14 @@ final class TableRow
         return implode(' | ', array_map(static function (TableColumn $column) {
             return $column->getContent();
         }, $this->columns));
+    }
+
+    public function removeColumn(int $columnIndex) : void
+    {
+        if ($this->getColumn($columnIndex) === null) {
+            throw new InvalidArgumentException(sprintf('Bad column index "%d"', $columnIndex));
+        }
+
+        unset($this->columns[$columnIndex]);
     }
 }
