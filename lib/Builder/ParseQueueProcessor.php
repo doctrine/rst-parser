@@ -9,7 +9,7 @@ use Doctrine\RST\Kernel;
 use Doctrine\RST\Meta\Metas;
 use Doctrine\RST\Nodes\DocumentNode;
 use Doctrine\RST\Parser;
-use function filectime;
+use function filemtime;
 
 class ParseQueueProcessor
 {
@@ -79,7 +79,7 @@ class ParseQueueProcessor
             (string) $document->getTitle(),
             $document->getTitles(),
             $document->getTocs(),
-            (int) filectime($fileAbsolutePath),
+            (int) filemtime($fileAbsolutePath),
             $environment->getDependencies(),
             $environment->getLinks()
         );

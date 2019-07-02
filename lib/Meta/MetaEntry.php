@@ -31,7 +31,7 @@ class MetaEntry
     private $tocs;
 
     /** @var int */
-    private $ctime;
+    private $mtime;
 
     /** @var string[] */
     private $depends;
@@ -59,7 +59,7 @@ class MetaEntry
         array $tocs,
         array $depends,
         array $links,
-        int $ctime
+        int $mtime
     ) {
         $this->file    = $file;
         $this->url     = $url;
@@ -68,7 +68,7 @@ class MetaEntry
         $this->tocs    = $tocs;
         $this->depends = $depends;
         $this->links   = $links;
-        $this->ctime   = $ctime;
+        $this->mtime   = $mtime;
     }
 
     public function getFile() : string
@@ -168,9 +168,9 @@ class MetaEntry
         return $this->links;
     }
 
-    public function getCtime() : int
+    public function getMtime() : int
     {
-        return $this->ctime;
+        return $this->mtime;
     }
 
     public function setParent(string $parent) : void

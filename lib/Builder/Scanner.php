@@ -133,7 +133,7 @@ class Scanner
         $entry            = $this->metas->get($documentFilename);
 
         // File is new or changed
-        return $entry === null || $entry->getCtime() < $file->getCTime();
+        return $entry === null || $entry->getMtime() < $file->getMTime();
     }
 
     /**
