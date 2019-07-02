@@ -15,9 +15,12 @@ use Doctrine\RST\Event\PreBuildRenderEvent;
 use Doctrine\RST\Event\PreBuildScanEvent;
 use Doctrine\RST\Meta\CachedMetasLoader;
 use Doctrine\RST\Meta\Metas;
+use InvalidArgumentException;
 use LogicException;
 use Symfony\Component\Filesystem\Filesystem;
+use function file_exists;
 use function is_dir;
+use function sprintf;
 
 class Builder
 {
@@ -133,6 +136,11 @@ class Builder
         // Creating output directory if doesn't exists
         if (! is_dir($targetDirectory)) {
             $this->filesystem->mkdir($targetDirectory, 0755);
+        }
+
+        $indexFilename = sprintf('%s.%s', $this->indexName, $this->configuration->getSourceFileExtension());
+        if (! file_exists($directory . '/' . $indexFilename)) {
+            throw new InvalidArgumentException(sprintf('Could not find index file "%s" in "%s"', $indexFilename, $directory));
         }
 
         if ($this->configuration->getUseCachedMetas()) {
