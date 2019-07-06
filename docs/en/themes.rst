@@ -30,3 +30,7 @@ named ``layout.html.twig`` and you can customize the layout that wraps all gener
             {% block body '' %}
         </body>
     </html>
+
+Even with a theme, the rendering engine will continue to
+use a ``default`` directory (e.g. ``/path/to/custom/templates/default/html``
+as a fallback for any templates (see :doc:`/customizing-rendering`).
