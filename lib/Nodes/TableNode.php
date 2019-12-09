@@ -356,6 +356,13 @@ class TableNode extends Node
             $currentSpan        = 1;
             $previousColumnEnd  = null;
             foreach ($columnRanges as $start => $end) {
+                // a content line that ends before it should
+                if ($end >= strlen($line)) {
+                    $this->errors[] = sprintf("Malformed table: Line\n\n%s\n\ndoes not appear to be a complete table row", $line);
+
+                    break;
+                }
+
                 if ($currentColumnStart !== null) {
                     if ($previousColumnEnd === null) {
                         throw new LogicException('The previous column end is not set yet');
