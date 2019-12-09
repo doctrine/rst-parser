@@ -154,7 +154,8 @@ class TableNode extends Node
                 ->getErrorManager()
                 ->error(sprintf("%s\nin file %s\n\n%s", $this->errors[0], $parser->getFilename(), $tableAsString));
 
-            $this->data = [];
+            $this->data    = [];
+            $this->headers = [];
 
             return;
         }
