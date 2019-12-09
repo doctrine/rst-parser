@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f32d3cfc9c5945c035317bff7e2ddb87",
+    "content-hash": "7d34c4ab1ff2029b284199517884572c",
     "packages": [
         {
             "name": "doctrine/event-manager",
