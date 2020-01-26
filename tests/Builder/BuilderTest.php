@@ -7,6 +7,7 @@ namespace Doctrine\Tests\RST\Builder;
 use Doctrine\RST\Builder;
 use Doctrine\RST\Meta\MetaEntry;
 use Doctrine\Tests\RST\BaseBuilderTest;
+use InvalidArgumentException;
 
 use function array_unique;
 use function array_values;
@@ -337,6 +338,14 @@ class BuilderTest extends BaseBuilderTest
             '<a href="subdir/test.html#em">em</a>',
             $contents
         );
+    }
+
+    public function testItThrowsWhenIndexFileCannotBeFound(): void
+    {
+        $builder = new Builder();
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Could not find index file "index.rst" in "/tmp"');
+        $builder->parse('/tmp', '/tmp/test');
     }
 
     protected function getFixturesDirectory(): string

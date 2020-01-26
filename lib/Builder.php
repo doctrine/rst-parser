@@ -181,7 +181,7 @@ class Builder
         return $scanner->scan();
     }
 
-    public function parse(string $directory, string $targetDirectory) : void
+    public function parse(string $directory, string $targetDirectory): void
     {
         $this->ensureDirectoryExists($targetDirectory);
 
@@ -197,12 +197,6 @@ class Builder
         $parseQueue = $this->scan($directory, $targetDirectory);
 
         $this->doParse($directory, $targetDirectory, $parseQueue);
-
-        if (! $this->configuration->getUseCachedMetas()) {
-            return;
-        }
-
-        $this->cachedMetasLoader->cacheMetaEntries($targetDirectory, $this->metas);
     }
 
     private function doParse(string $directory, string $targetDirectory, ParseQueue $parseQueue): void
@@ -243,6 +237,8 @@ class Builder
             PostBuildRenderEvent::POST_BUILD_RENDER,
             new PostBuildRenderEvent($this, $directory, $targetDirectory)
         );
+
+        $this->storeCache($targetDirectory);
     }
 
     private function ensureDirectoryExists(string $targetDirectory): void
@@ -252,5 +248,25 @@ class Builder
         }
 
         $this->filesystem->mkdir($targetDirectory, 0755);
+    }
+
+    /**
+     * Persist the cache to disk.
+     *
+     * The meta's are cached after we finished rendering as the renderer resolves the filenames of the dependencies in
+     * these meta's.
+     */
+    private function storeCache(string $targetDirectory): void
+    {
+        $this->cachedMetasLoader->cacheMetaEntries($targetDirectory, $this->metas);
+    }
+
+    private function getScannerFinder(): Finder
+    {
+        if ($this->scannerFinder === null) {
+            $this->scannerFinder = new Finder();
+        }
+
+        return $this->scannerFinder;
     }
 }
