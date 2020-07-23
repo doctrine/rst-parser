@@ -202,14 +202,14 @@ class SpanProcessor
 
         // Replacing anonymous links
         $span = (string) preg_replace_callback(
-            '/(^|[ ])(([a-z0-9_-]+)|(`(.+)`))__([^a-z0-9]{1}|$)/mUsi',
+            '/(^|[ \(])(([a-z0-9_-]+)|(`(.+)`))__([^a-z0-9]{1}|$)/mUsi',
             $linkCallback,
             $span
         );
 
         // Replacing links
         $span = (string) preg_replace_callback(
-            '/(^|[ ])(([a-z0-9_-]+)|(`(.+)`))_([^a-z0-9]{1}|$)/mUsi',
+            '/(^|[ \(])(([a-z0-9_-]+)|(`(.+)`))_([^a-z0-9]{1}|$)/mUsi',
             $linkCallback,
             $span
         );
