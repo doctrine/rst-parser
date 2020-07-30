@@ -15,6 +15,9 @@ class CodeNode extends Node
     /** @var string|null */
     protected $language = null;
 
+    /** @var string[] */
+    protected $options;
+
     /**
      * @param string[] $lines
      */
@@ -46,5 +49,21 @@ class CodeNode extends Node
     public function isRaw() : bool
     {
         return $this->raw;
+    }
+
+    /**
+     * @param string[] $options
+     */
+    public function setOptions(array $options = []) : void
+    {
+        $this->options = $options;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getOptions() : array
+    {
+        return $this->options;
     }
 }
