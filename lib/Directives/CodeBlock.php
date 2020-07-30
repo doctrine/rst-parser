@@ -44,6 +44,7 @@ class CodeBlock extends Directive
 
         if ($node instanceof CodeNode) {
             $node->setLanguage(trim($data));
+            $node->setOptions($options);
         }
 
         if ($variable !== '') {
