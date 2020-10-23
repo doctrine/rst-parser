@@ -18,6 +18,7 @@ use Doctrine\RST\Meta\Metas;
 use InvalidArgumentException;
 use LogicException;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Finder\Finder;
 use function file_exists;
 use function is_dir;
 use function sprintf;
@@ -50,6 +51,9 @@ class Builder
 
     /** @var Copier */
     private $copier;
+
+    /** @var Finder|null */
+    private $scannerFinder;
 
     /** @var string */
     private $indexName = 'index';
@@ -170,6 +174,14 @@ class Builder
         return $this;
     }
 
+    /**
+     * Set the Finder that will be used for scanning files.
+     */
+    public function setScannerFinder(Finder $finder) : void
+    {
+        $this->scannerFinder = $finder;
+    }
+
     private function scan(string $directory, string $targetDirectory) : ParseQueue
     {
         $this->configuration->dispatchEvent(
@@ -180,7 +192,8 @@ class Builder
         $scanner = new Scanner(
             $this->configuration->getSourceFileExtension(),
             $directory,
-            $this->metas
+            $this->metas,
+            $this->getScannerFinder()
         );
 
         return $scanner->scan();
@@ -222,5 +235,14 @@ class Builder
             PostBuildRenderEvent::POST_BUILD_RENDER,
             new PostBuildRenderEvent($this, $directory, $targetDirectory)
         );
+    }
+
+    private function getScannerFinder() : Finder
+    {
+        if ($this->scannerFinder === null) {
+            $this->scannerFinder = new Finder();
+        }
+
+        return $this->scannerFinder;
     }
 }
