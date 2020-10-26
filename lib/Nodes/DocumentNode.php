@@ -11,8 +11,11 @@ use Doctrine\RST\Renderers\FullDocumentNodeRenderer;
 use Exception;
 use function array_unshift;
 use function count;
+use function explode;
+use function implode;
 use function is_string;
 use function sprintf;
+use function strlen;
 
 class DocumentNode extends Node
 {
@@ -139,7 +142,7 @@ class DocumentNode extends Node
             }
 
             $level       = $node->getLevel();
-            $text        = $node->getValue()->getValue();
+            $text        = $this->getTextFromNode($node);
             $redirection = $node->getTarget();
             $value       = $redirection !== '' ? [$text, $redirection] : $text;
 
@@ -240,5 +243,38 @@ class DocumentNode extends Node
                 $currentFileName !== '' ? sprintf(' in file "%s"', $currentFileName) : ''
             ));
         }
+    }
+
+    /**
+     * Fetches the actual "title" text from a TitleNode
+     *
+     * When SpanNode (parent class of TitleNode) sets it
+     * value property, it uses the SpanProcessor. For
+     * some reason, when that class sees literals, it
+     * replaces those with a 40 character sha. See
+     * SpanProcessor::replaceLiterals().
+     *
+     * I'm sure there is a good reason for this. But, when
+     * it comes to getting the "titles" for a Document,
+     * this results in some titles containing these 40 characters
+     * sha's - e.g. "All about abc123abc123abc123abc123...".
+     *
+     * This corrects that by looking back into the Node to
+     * get the original text.
+     */
+    private function getTextFromNode(TitleNode $node) : ?string
+    {
+        $text = $node->getValue()->getValue();
+
+        $words = explode(' ', $text);
+        foreach ($words as $key => $word) {
+            if (strlen($word) !== 40 || ! isset($node->getValue()->getTokens()[$word])) {
+                continue;
+            }
+
+            $words[$key] = $node->getValue()->getTokens()[$word]->get('text');
+        }
+
+        return implode(' ', $words);
     }
 }

@@ -15,6 +15,9 @@ test
 title with ampersand &
 ----------------------
 
+A ``title with ticks``
+----------------------
+
 This same title named test exists in other documents. Make sure the link below goes to the one
 in this doc and not the one in the other docs.
 
@@ -27,3 +30,5 @@ see `Another page`_
 see `test`_
 
 see `title with ampersand &`_
+
+see `A title with ticks`_
