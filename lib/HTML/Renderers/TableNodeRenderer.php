@@ -57,7 +57,6 @@ class TableNodeRenderer implements NodeRenderer
             $tableRow = [];
 
             foreach ($row as $col) {
-                assert($col instanceof SpanNode);
                 $tableRow[] = $col->render();
             }
 

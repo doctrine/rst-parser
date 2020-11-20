@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\LaTeX\Renderers;
 
-use Doctrine\RST\Nodes\SpanNode;
 use Doctrine\RST\Nodes\TableNode;
 use Doctrine\RST\Renderers\NodeRenderer;
 
-use function assert;
 use function count;
 use function implode;
 use function max;
@@ -37,7 +35,6 @@ class TableNodeRenderer implements NodeRenderer
             $cols   = max($cols, count($row));
 
             foreach ($row as $n => &$col) {
-                assert($col instanceof SpanNode);
                 $rowTex .= $col->render();
 
                 if ((int) $n + 1 >= count($row)) {
