@@ -16,7 +16,7 @@ class DocumentNodeRenderer implements NodeRenderer
         $this->document = $document;
     }
 
-    public function render() : string
+    public function render(): string
     {
         $document = '';
         foreach ($this->document->getNodes() as $node) {

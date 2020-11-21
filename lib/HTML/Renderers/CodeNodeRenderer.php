@@ -22,7 +22,7 @@ class CodeNodeRenderer implements NodeRenderer
         $this->templateRenderer = $templateRenderer;
     }
 
-    public function render() : string
+    public function render(): string
     {
         if ($this->codeNode->isRaw()) {
             return $this->codeNode->getValue();

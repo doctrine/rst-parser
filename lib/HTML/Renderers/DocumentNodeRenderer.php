@@ -25,12 +25,12 @@ class DocumentNodeRenderer implements NodeRenderer, FullDocumentNodeRenderer
         $this->templateRenderer = $templateRenderer;
     }
 
-    public function render() : string
+    public function render(): string
     {
         return (new BaseDocumentRender($this->document))->render();
     }
 
-    public function renderDocument() : string
+    public function renderDocument(): string
     {
         $headerNodes = '';
 
@@ -50,7 +50,7 @@ class DocumentNodeRenderer implements NodeRenderer, FullDocumentNodeRenderer
         return $html;
     }
 
-    private function indentHTML(string $html) : string
+    private function indentHTML(string $html): string
     {
         return (new Indenter())->indent($html);
     }

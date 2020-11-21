@@ -22,7 +22,7 @@ class MetaNodeRenderer implements NodeRenderer
         $this->templateRenderer = $templateRenderer;
     }
 
-    public function render() : string
+    public function render(): string
     {
         return $this->templateRenderer->render('meta.html.twig', [
             'metaNode' => $this->metaNode,

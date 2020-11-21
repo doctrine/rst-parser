@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 
 class ErrorManagerTest extends TestCase
 {
-    public function testGetErrors() : void
+    public function testGetErrors(): void
     {
         $configuration = $this->createMock(Configuration::class);
         $configuration->expects(self::atLeastOnce())

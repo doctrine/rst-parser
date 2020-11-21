@@ -27,7 +27,7 @@ class LineDataParserTest extends TestCase
      *
      * @dataProvider getTestLinks
      */
-    public function testParseLink(string $line, $expected) : void
+    public function testParseLink(string $line, $expected): void
     {
         $this->eventManager->expects(self::exactly($expected instanceof Link ? 1 : 0))
             ->method('dispatchEvent');
@@ -38,7 +38,7 @@ class LineDataParserTest extends TestCase
     /**
      * @return mixed[]
      */
-    public function getTestLinks() : array
+    public function getTestLinks(): array
     {
         return [
             ['', null],
@@ -52,7 +52,7 @@ class LineDataParserTest extends TestCase
         ];
     }
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         $this->parser = $this->createMock(Parser::class);
 

@@ -6,12 +6,15 @@ namespace Doctrine\RST\Nodes;
 
 use Doctrine\RST\Parser;
 use Doctrine\RST\Parser\LineChecker;
+
 use function array_fill_keys;
 use function array_keys;
 use function array_map;
+use function assert;
 use function count;
 use function explode;
 use function implode;
+use function is_bool;
 use function sprintf;
 use function strlen;
 use function substr;
@@ -52,20 +55,20 @@ class TableNode extends Node
         $this->lineChecker = $lineChecker;
     }
 
-    public function getCols() : int
+    public function getCols(): int
     {
         return count($this->parts[2]);
     }
 
-    public function getRows() : int
+    public function getRows(): int
     {
         return count($this->data) - 1;
     }
 
     /**
-     * @return string[][]|SpanNode[][]
+     * @return string[][]|SpanNode[][]|ListNode[][]
      */
-    public function getData() : array
+    public function getData(): array
     {
         return $this->data;
     }
@@ -73,7 +76,7 @@ class TableNode extends Node
     /**
      * @return bool[]
      */
-    public function getHeaders() : array
+    public function getHeaders(): array
     {
         return $this->headers;
     }
@@ -81,7 +84,7 @@ class TableNode extends Node
     /**
      * @param mixed[]|null $parts
      */
-    public function push(?array $parts, string $line) : bool
+    public function push(?array $parts, string $line): bool
     {
         $line = utf8_decode($line);
 
@@ -95,6 +98,7 @@ class TableNode extends Node
                 if ($parts[0] === true) {
                     $this->headers[count($this->data) - 1] = true;
                 }
+
                 $this->data[] = [];
             } elseif (count($this->headers) === 0) {
                 $this->headers = array_fill_keys(array_keys($this->data), true);
@@ -117,6 +121,7 @@ class TableNode extends Node
                         $data = substr($line, $parts[$k - 1], $parts[$k] - $parts[$k - 1]);
                     }
 
+                    assert(is_bool($pretty));
                     if ($pretty) {
                         $data = substr($data, 0, -1);
                     }
@@ -131,6 +136,7 @@ class TableNode extends Node
                 } else {
                     $row[$k - 1] = $data;
                 }
+
                 $row[$k - 1] = trim((string) $row[$k - 1]);
             }
         }
@@ -138,10 +144,10 @@ class TableNode extends Node
         return true;
     }
 
-    public function finalize(Parser $parser) : void
+    public function finalize(Parser $parser): void
     {
         if (count($this->headers) === count($this->data)) {
-            $data = array_map(static function ($item) {
+            $data = array_map(static function ($item): string {
                 return implode(' | ', $item);
             }, $this->data);
 

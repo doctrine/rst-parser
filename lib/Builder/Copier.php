@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\RST\Builder;
 
 use Symfony\Component\Filesystem\Filesystem;
+
 use function basename;
 use function dirname;
 use function is_dir;
@@ -25,7 +26,7 @@ class Copier
         $this->filesystem = $filesystem;
     }
 
-    public function doCopy(string $sourceDirectory, string $targetDirectory) : void
+    public function doCopy(string $sourceDirectory, string $targetDirectory): void
     {
         foreach ($this->toCopy as $copy) {
             [$source, $destination] = $copy;
@@ -50,7 +51,7 @@ class Copier
         $this->toCopy = [];
     }
 
-    public function doMkdir(string $targetDirectory) : void
+    public function doMkdir(string $targetDirectory): void
     {
         foreach ($this->toMkdir as $mkdir) {
             $dir = $targetDirectory . '/' . $mkdir;
@@ -65,7 +66,7 @@ class Copier
         $this->toMkdir = [];
     }
 
-    public function copy(string $source, ?string $destination = null) : void
+    public function copy(string $source, ?string $destination = null): void
     {
         if ($destination === null) {
             $destination = basename($source);
@@ -74,7 +75,7 @@ class Copier
         $this->toCopy[] = [$source, $destination];
     }
 
-    public function mkdir(string $directory) : void
+    public function mkdir(string $directory): void
     {
         $this->toMkdir[] = $directory;
     }

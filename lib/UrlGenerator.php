@@ -25,7 +25,7 @@ class UrlGenerator
         $this->configuration = $configuration;
     }
 
-    public function generateUrl(string $path, string $currentFileName, string $dirName) : string
+    public function generateUrl(string $path, string $currentFileName, string $dirName): string
     {
         $canonicalPath = (string) $this->canonicalUrl($dirName, $path);
 
@@ -38,7 +38,7 @@ class UrlGenerator
         return (string) $this->relativeUrl($path, $currentFileName);
     }
 
-    public function absoluteUrl(string $dirName, string $url) : string
+    public function absoluteUrl(string $dirName, string $url): string
     {
         // if $url is already an absolute path, just return it
         if ($url[0] === '/') {
@@ -56,7 +56,7 @@ class UrlGenerator
      * relative URL to "path/to/something/else.html", the result will
      * be else.html. Else, "../" will be added to go to the upper directory
      */
-    public function relativeUrl(?string $url, string $currentFileName) : ?string
+    public function relativeUrl(?string $url, string $currentFileName): ?string
     {
         if ($url === null) {
             return null;
@@ -94,7 +94,7 @@ class UrlGenerator
         return $relative;
     }
 
-    public function canonicalUrl(string $dirName, string $url) : ?string
+    public function canonicalUrl(string $dirName, string $url): ?string
     {
         if ($url !== '') {
             if ($url[0] === '/') {
@@ -121,7 +121,7 @@ class UrlGenerator
         return null;
     }
 
-    private function canonicalize(string $url) : string
+    private function canonicalize(string $url): string
     {
         $parts = explode('/', $url);
         $stack = [];
@@ -137,7 +137,7 @@ class UrlGenerator
         return implode('/', $stack);
     }
 
-    private function samePrefix(string $url, string $currentFileName) : bool
+    private function samePrefix(string $url, string $currentFileName): bool
     {
         $partsA = explode('/', $url);
         $partsB = explode('/', $currentFileName);

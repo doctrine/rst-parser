@@ -36,6 +36,8 @@ use Doctrine\RST\Parser;
 use Doctrine\RST\Parser\DefinitionList;
 use Doctrine\RST\Parser\LineChecker;
 use InvalidArgumentException;
+
+use function assert;
 use function sprintf;
 
 class DefaultNodeFactory implements NodeFactory
@@ -55,10 +57,10 @@ class DefaultNodeFactory implements NodeFactory
         }
     }
 
-    public function createDocumentNode(Environment $environment) : DocumentNode
+    public function createDocumentNode(Environment $environment): DocumentNode
     {
-        /** @var DocumentNode $document */
         $document = $this->create(NodeTypes::DOCUMENT, [$environment]);
+        assert($document instanceof DocumentNode);
 
         return $document;
     }
@@ -67,26 +69,26 @@ class DefaultNodeFactory implements NodeFactory
      * @param string[] $files
      * @param string[] $options
      */
-    public function createTocNode(Environment $environment, array $files, array $options) : TocNode
+    public function createTocNode(Environment $environment, array $files, array $options): TocNode
     {
-        /** @var TocNode $tocNode */
         $tocNode = $this->create(NodeTypes::TOC, [$environment, $files, $options]);
+        assert($tocNode instanceof TocNode);
 
         return $tocNode;
     }
 
-    public function createTitleNode(Node $value, int $level, string $token) : TitleNode
+    public function createTitleNode(Node $value, int $level, string $token): TitleNode
     {
-        /** @var TitleNode $titleNode */
         $titleNode = $this->create(NodeTypes::TITLE, [$value, $level, $token]);
+        assert($titleNode instanceof TitleNode);
 
         return $titleNode;
     }
 
-    public function createSeparatorNode(int $level) : SeparatorNode
+    public function createSeparatorNode(int $level): SeparatorNode
     {
-        /** @var SeparatorNode $separatorNode */
         $separatorNode = $this->create(NodeTypes::SEPARATOR, [$level]);
+        assert($separatorNode instanceof SeparatorNode);
 
         return $separatorNode;
     }
@@ -94,10 +96,10 @@ class DefaultNodeFactory implements NodeFactory
     /**
      * @param string[] $lines
      */
-    public function createBlockNode(array $lines) : BlockNode
+    public function createBlockNode(array $lines): BlockNode
     {
-        /** @var BlockNode $blockNode */
         $blockNode = $this->create(NodeTypes::BLOCK, [$lines]);
+        assert($blockNode instanceof BlockNode);
 
         return $blockNode;
     }
@@ -105,42 +107,42 @@ class DefaultNodeFactory implements NodeFactory
     /**
      * @param string[] $lines
      */
-    public function createCodeNode(array $lines) : CodeNode
+    public function createCodeNode(array $lines): CodeNode
     {
-        /** @var CodeNode $codeNode */
         $codeNode = $this->create(NodeTypes::CODE, [$lines]);
+        assert($codeNode instanceof CodeNode);
 
         return $codeNode;
     }
 
-    public function createQuoteNode(DocumentNode $documentNode) : QuoteNode
+    public function createQuoteNode(DocumentNode $documentNode): QuoteNode
     {
-        /** @var QuoteNode $quoteNode */
         $quoteNode = $this->create(NodeTypes::QUOTE, [$documentNode]);
+        assert($quoteNode instanceof QuoteNode);
 
         return $quoteNode;
     }
 
-    public function createParagraphNode(SpanNode $span) : ParagraphNode
+    public function createParagraphNode(SpanNode $span): ParagraphNode
     {
-        /** @var ParagraphNode $paragraphNode */
         $paragraphNode = $this->create(NodeTypes::PARAGRAPH, [$span]);
+        assert($paragraphNode instanceof ParagraphNode);
 
         return $paragraphNode;
     }
 
-    public function createAnchorNode(?string $value = null) : AnchorNode
+    public function createAnchorNode(?string $value = null): AnchorNode
     {
-        /** @var AnchorNode $anchorNode */
         $anchorNode = $this->create(NodeTypes::ANCHOR, [$value]);
+        assert($anchorNode instanceof AnchorNode);
 
         return $anchorNode;
     }
 
-    public function createListNode() : ListNode
+    public function createListNode(): ListNode
     {
-        /** @var ListNode $listNode */
         $listNode = $this->create(NodeTypes::LIST, []);
+        assert($listNode instanceof ListNode);
 
         return $listNode;
     }
@@ -148,10 +150,10 @@ class DefaultNodeFactory implements NodeFactory
     /**
      * @param string[] $parts
      */
-    public function createTableNode(array $parts, string $type, LineChecker $lineChecker) : TableNode
+    public function createTableNode(array $parts, string $type, LineChecker $lineChecker): TableNode
     {
-        /** @var TableNode $tableNode */
         $tableNode = $this->create(NodeTypes::TABLE, [$parts, $type, $lineChecker]);
+        assert($tableNode instanceof TableNode);
 
         return $tableNode;
     }
@@ -159,34 +161,34 @@ class DefaultNodeFactory implements NodeFactory
     /**
      * @param string|string[]|SpanNode $span
      */
-    public function createSpanNode(Parser $parser, $span) : SpanNode
+    public function createSpanNode(Parser $parser, $span): SpanNode
     {
-        /** @var SpanNode $span */
         $span = $this->create(NodeTypes::SPAN, [$parser, $span]);
+        assert($span instanceof SpanNode);
 
         return $span;
     }
 
-    public function createDefinitionListNode(DefinitionList $definitionList) : DefinitionListNode
+    public function createDefinitionListNode(DefinitionList $definitionList): DefinitionListNode
     {
-        /** @var DefinitionListNode $definitionListNode */
         $definitionListNode = $this->create(NodeTypes::DEFINITION_LIST, [$definitionList]);
+        assert($definitionListNode instanceof DefinitionListNode);
 
         return $definitionListNode;
     }
 
-    public function createWrapperNode(?Node $node, string $before = '', string $after = '') : WrapperNode
+    public function createWrapperNode(?Node $node, string $before = '', string $after = ''): WrapperNode
     {
-        /** @var WrapperNode $wrapperNode */
         $wrapperNode = $this->create(NodeTypes::WRAPPER, [$node, $before, $after]);
+        assert($wrapperNode instanceof WrapperNode);
 
         return $wrapperNode;
     }
 
-    public function createFigureNode(ImageNode $image, ?Node $document = null) : FigureNode
+    public function createFigureNode(ImageNode $image, ?Node $document = null): FigureNode
     {
-        /** @var FigureNode $figureNode */
         $figureNode = $this->create(NodeTypes::FIGURE, [$image, $document]);
+        assert($figureNode instanceof FigureNode);
 
         return $figureNode;
     }
@@ -194,26 +196,26 @@ class DefaultNodeFactory implements NodeFactory
     /**
      * @param string[] $options
      */
-    public function createImageNode(string $url, array $options = []) : ImageNode
+    public function createImageNode(string $url, array $options = []): ImageNode
     {
-        /** @var ImageNode $imageNode */
         $imageNode = $this->create(NodeTypes::IMAGE, [$url, $options]);
+        assert($imageNode instanceof ImageNode);
 
         return $imageNode;
     }
 
-    public function createMetaNode(string $key, string $value) : MetaNode
+    public function createMetaNode(string $key, string $value): MetaNode
     {
-        /** @var MetaNode $metaNode */
         $metaNode = $this->create(NodeTypes::META, [$key, $value]);
+        assert($metaNode instanceof MetaNode);
 
         return $metaNode;
     }
 
-    public function createRawNode(string $value) : RawNode
+    public function createRawNode(string $value): RawNode
     {
-        /** @var RawNode $rawNode */
         $rawNode = $this->create(NodeTypes::RAW, [$value]);
+        assert($rawNode instanceof RawNode);
 
         return $rawNode;
     }
@@ -221,42 +223,42 @@ class DefaultNodeFactory implements NodeFactory
     /**
      * @param mixed[] $data
      */
-    public function createDummyNode(array $data) : DummyNode
+    public function createDummyNode(array $data): DummyNode
     {
-        /** @var DummyNode $dummyNode */
         $dummyNode = $this->create(NodeTypes::DUMMY, [$data]);
+        assert($dummyNode instanceof DummyNode);
 
         return $dummyNode;
     }
 
-    public function createMainNode() : MainNode
+    public function createMainNode(): MainNode
     {
-        /** @var MainNode $mainNode */
         $mainNode = $this->create(NodeTypes::MAIN, []);
+        assert($mainNode instanceof MainNode);
 
         return $mainNode;
     }
 
-    public function createCallableNode(callable $callable) : CallableNode
+    public function createCallableNode(callable $callable): CallableNode
     {
-        /** @var CallableNode $callableNode */
         $callableNode = $this->create(NodeTypes::CALLABLE, [$callable]);
+        assert($callableNode instanceof CallableNode);
 
         return $callableNode;
     }
 
-    public function createSectionBeginNode(TitleNode $titleNode) : SectionBeginNode
+    public function createSectionBeginNode(TitleNode $titleNode): SectionBeginNode
     {
-        /** @var SectionBeginNode $sectionBeginNode */
         $sectionBeginNode = $this->create(NodeTypes::SECTION_BEGIN, [$titleNode]);
+        assert($sectionBeginNode instanceof SectionBeginNode);
 
         return $sectionBeginNode;
     }
 
-    public function createSectionEndNode(TitleNode $titleNode) : SectionEndNode
+    public function createSectionEndNode(TitleNode $titleNode): SectionEndNode
     {
-        /** @var SectionEndNode $sectionEndNode */
         $sectionEndNode = $this->create(NodeTypes::SECTION_END, [$titleNode]);
+        assert($sectionEndNode instanceof SectionEndNode);
 
         return $sectionEndNode;
     }
@@ -264,7 +266,7 @@ class DefaultNodeFactory implements NodeFactory
     /**
      * @param mixed[] $arguments
      */
-    private function create(string $type, array $arguments) : Node
+    private function create(string $type, array $arguments): Node
     {
         $node = $this->getNodeInstantiator($type)->create($arguments);
 
@@ -276,7 +278,7 @@ class DefaultNodeFactory implements NodeFactory
         return $node;
     }
 
-    private function getNodeInstantiator(string $type) : NodeInstantiator
+    private function getNodeInstantiator(string $type): NodeInstantiator
     {
         if (! isset($this->nodeInstantiators[$type])) {
             throw new InvalidArgumentException(sprintf('Could not find node instantiator of type %s', $type));

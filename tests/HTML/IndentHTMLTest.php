@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
 
 class IndentHTMLTest extends TestCase
 {
-    public function testIndentHTML() : void
+    public function testIndentHTML(): void
     {
         $configuration = new Configuration();
         $configuration->setIndentHTML(true);

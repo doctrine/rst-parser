@@ -19,7 +19,7 @@ class ErrorManager
         $this->configuration = $configuration;
     }
 
-    public function error(string $message) : void
+    public function error(string $message): void
     {
         $this->errors[] = $message;
 
@@ -33,7 +33,7 @@ class ErrorManager
     /**
      * @return string[]
      */
-    public function getErrors() : array
+    public function getErrors(): array
     {
         return $this->errors;
     }

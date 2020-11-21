@@ -15,7 +15,7 @@ class BuilderInvalidReferencesTest extends BaseBuilderTest
     /** @var Configuration */
     private $configuration;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         $this->configuration = new Configuration();
         $this->configuration->setUseCachedMetas(false);
@@ -23,7 +23,7 @@ class BuilderInvalidReferencesTest extends BaseBuilderTest
         $this->builder = new Builder(new Kernel($this->configuration));
     }
 
-    public function testInvalidReference() : void
+    public function testInvalidReference(): void
     {
         $this->expectException(Throwable::class);
         $this->expectExceptionMessage('Found invalid reference "does_not_exist" in file "index"');
@@ -31,7 +31,7 @@ class BuilderInvalidReferencesTest extends BaseBuilderTest
         $this->builder->build($this->sourceFile(), $this->targetFile());
     }
 
-    public function testInvalidReferenceIgnored() : void
+    public function testInvalidReferenceIgnored(): void
     {
         $this->configuration->setIgnoreInvalidReferences(true);
 
@@ -39,10 +39,10 @@ class BuilderInvalidReferencesTest extends BaseBuilderTest
 
         $contents = $this->getFileContents($this->targetFile('index.html'));
 
-        self::assertContains('<p>Test unresolved reference</p>', $contents);
+        self::assertStringContainsString('<p>Test unresolved reference</p>', $contents);
     }
 
-    protected function getFixturesDirectory() : string
+    protected function getFixturesDirectory(): string
     {
         return 'BuilderInvalidReferences';
     }

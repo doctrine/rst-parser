@@ -32,7 +32,7 @@ class TocNode extends Node
         $this->options     = $options;
     }
 
-    public function getEnvironment() : Environment
+    public function getEnvironment(): Environment
     {
         return $this->environment;
     }
@@ -40,7 +40,7 @@ class TocNode extends Node
     /**
      * @return string[]
      */
-    public function getFiles() : array
+    public function getFiles(): array
     {
         return $this->files;
     }
@@ -48,12 +48,12 @@ class TocNode extends Node
     /**
      * @return string[]
      */
-    public function getOptions() : array
+    public function getOptions(): array
     {
         return $this->options;
     }
 
-    public function getDepth() : int
+    public function getDepth(): int
     {
         if (isset($this->options['depth'])) {
             return (int) $this->options['depth'];

@@ -14,7 +14,7 @@ class QuoteNode extends Node
         parent::__construct($documentNode);
     }
 
-    public function getValue() : DocumentNode
+    public function getValue(): DocumentNode
     {
         return $this->value;
     }

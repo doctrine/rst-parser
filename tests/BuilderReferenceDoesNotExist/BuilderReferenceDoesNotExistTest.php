@@ -14,7 +14,7 @@ class BuilderReferenceDoesNotExistTest extends BaseBuilderTest
     /** @var Configuration */
     private $configuration;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         $this->configuration = new Configuration();
         $this->configuration->setUseCachedMetas(false);
@@ -24,17 +24,17 @@ class BuilderReferenceDoesNotExistTest extends BaseBuilderTest
         $this->builder = new Builder(new Kernel($this->configuration));
     }
 
-    public function testReferenceDoesNotExist() : void
+    public function testReferenceDoesNotExist(): void
     {
         $this->builder->build($this->sourceFile(), $this->targetFile());
 
         $contents = $this->getFileContents($this->targetFile('subdir/index.html'));
 
-        self::assertContains('<p>Test link 1 to</p>', $contents);
-        self::assertContains('<p>Test link 2 to</p>', $contents);
+        self::assertStringContainsString('<p>Test link 1 to</p>', $contents);
+        self::assertStringContainsString('<p>Test link 2 to</p>', $contents);
     }
 
-    protected function getFixturesDirectory() : string
+    protected function getFixturesDirectory(): string
     {
         return 'BuilderReferenceDoesNotExist';
     }

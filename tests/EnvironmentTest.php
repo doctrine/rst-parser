@@ -14,7 +14,7 @@ use Throwable;
  */
 class EnvironmentTest extends TestCase
 {
-    public function testRelativeUrl() : void
+    public function testRelativeUrl(): void
     {
         $environment = new Environment(new Configuration());
         $environment->setCurrentFileName('path/to/something.rst');
@@ -33,7 +33,7 @@ class EnvironmentTest extends TestCase
         self::assertSame($environment->relativeUrl('/imgs/test.jpg'), '../../imgs/test.jpg');
     }
 
-    public function testAbsoluteUrl() : void
+    public function testAbsoluteUrl(): void
     {
         $environment = new Environment(new Configuration());
         $environment->setCurrentFileName('path/to/something.rst');
@@ -43,7 +43,7 @@ class EnvironmentTest extends TestCase
         self::assertSame('path/to/test', $environment->absoluteUrl('test'));
     }
 
-    public function testCanonicalUrl() : void
+    public function testCanonicalUrl(): void
     {
         $environment = new Environment(new Configuration());
         $environment->setCurrentFileName('subdir1/subdir2/test.rst');
@@ -57,7 +57,7 @@ class EnvironmentTest extends TestCase
     /**
      * @dataProvider getMissingSectionTests
      */
-    public function testResolveForMissingSection(string $expectedMessage, ?string $currentFilename) : void
+    public function testResolveForMissingSection(string $expectedMessage, ?string $currentFilename): void
     {
         $this->expectException(Throwable::class);
         $this->expectExceptionMessage($expectedMessage);
@@ -65,13 +65,14 @@ class EnvironmentTest extends TestCase
         if ($currentFilename !== null) {
             $environment->setCurrentFileName($currentFilename);
         }
+
         $environment->resolve('doc', '/path/to/unknown/doc');
     }
 
     /**
      * @return mixed[]
      */
-    public function getMissingSectionTests() : iterable
+    public function getMissingSectionTests(): iterable
     {
         yield 'no_current_filename' => [
             'Unknown reference section "doc"',

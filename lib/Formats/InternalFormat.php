@@ -23,7 +23,7 @@ class InternalFormat implements Format
         $this->format = $format;
     }
 
-    public function getFileExtension() : string
+    public function getFileExtension(): string
     {
         return $this->format->getFileExtension();
     }
@@ -31,7 +31,7 @@ class InternalFormat implements Format
     /**
      * @return Directive[]
      */
-    public function getDirectives() : array
+    public function getDirectives(): array
     {
         if ($this->directives === null) {
             $this->directives = $this->format->getDirectives();
@@ -43,7 +43,7 @@ class InternalFormat implements Format
     /**
      * @return NodeRendererFactory[]
      */
-    public function getNodeRendererFactories() : array
+    public function getNodeRendererFactories(): array
     {
         if ($this->nodeRendererFactories === null) {
             $this->nodeRendererFactories = $this->format->getNodeRendererFactories();

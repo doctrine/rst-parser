@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace Doctrine\RST\Span;
 
 use Doctrine\RST\Environment;
+
+use function assert;
 use function htmlspecialchars;
+use function is_string;
 use function mt_rand;
 use function preg_match;
 use function preg_match_all;
@@ -41,7 +44,7 @@ class SpanProcessor
         $this->prefix      = mt_rand() . '|' . time();
     }
 
-    public function process() : string
+    public function process(): string
     {
         $span = $this->replaceLiterals($this->span);
 
@@ -61,7 +64,7 @@ class SpanProcessor
     /**
      * @return SpanToken[]
      */
-    public function getTokens() : array
+    public function getTokens(): array
     {
         return $this->tokens;
     }
@@ -69,16 +72,16 @@ class SpanProcessor
     /**
      * @param string[] $tokenData
      */
-    private function addToken(string $type, string $id, array $tokenData) : void
+    private function addToken(string $type, string $id, array $tokenData): void
     {
         $this->tokens[$id] = new SpanToken($type, $id, $tokenData);
     }
 
-    private function replaceLiterals(string $span) : string
+    private function replaceLiterals(string $span): string
     {
         return preg_replace_callback(
             '/``(.+)``(?!`)/mUsi',
-            function (array $match) {
+            function (array $match): string {
                 $id = $this->generateId();
 
                 $this->addToken(SpanToken::TYPE_LITERAL, $id, [
@@ -92,10 +95,10 @@ class SpanProcessor
         );
     }
 
-    private function replaceTitleLetters(string $span) : string
+    private function replaceTitleLetters(string $span): string
     {
         foreach ($this->environment->getTitleLetters() as $level => $letter) {
-            $span = preg_replace_callback('/\#\\' . $letter . '/mUsi', function (array $match) use ($level) {
+            $span = preg_replace_callback('/\#\\' . $letter . '/mUsi', function (array $match) use ($level): int {
                 return $this->environment->getNumber($level);
             }, $span);
         }
@@ -103,9 +106,9 @@ class SpanProcessor
         return $span;
     }
 
-    private function replaceReferences(string $span) : string
+    private function replaceReferences(string $span): string
     {
-        return preg_replace_callback('/:([a-z0-9]+):`(.+)`/mUsi', function ($match) {
+        return preg_replace_callback('/:([a-z0-9]+):`(.+)`/mUsi', function ($match): string {
             $section = $match[1];
 
             $url    = $match[2];
@@ -136,14 +139,14 @@ class SpanProcessor
         }, $span);
     }
 
-    private function replaceLinks(string $span) : string
+    private function replaceLinks(string $span): string
     {
         // Signaling anonymous names
         $this->environment->resetAnonymousStack();
 
         if (preg_match_all('/(_*)(([a-z0-9]+)|(`(.+)`))__/mUsi', $span, $matches) > 0) {
             foreach ($matches[3] as $k => $y) {
-                $name = $matches[3][$k] ?: $matches[5][$k];
+                $name = $matches[3][$k] ? $matches[3][$k] : $matches[5][$k];
 
                 // string prefixed with _ is not an anonymous link
                 if ($matches[1][$k]) {
@@ -154,9 +157,9 @@ class SpanProcessor
             }
         }
 
-        $linkCallback = function (array $match) : string {
-            /** @var string $link */
-            $link = $match[3] ?: $match[5];
+        $linkCallback = function (array $match): string {
+            $link = $match[3] ? $match[3] : $match[5];
+            assert(is_string($link));
 
             // a link starting with _ is not a link - return original string
             if (substr($link, 0, 1) === '_') {
@@ -217,7 +220,7 @@ class SpanProcessor
         return $span;
     }
 
-    private function replaceStandaloneHyperlinks(string $span) : string
+    private function replaceStandaloneHyperlinks(string $span): string
     {
         // Replace standalone hyperlinks using a modified version of @gruber's
         // "Liberal Regex Pattern for all URLs", https://gist.github.com/gruber/249502
@@ -226,7 +229,7 @@ class SpanProcessor
             . ']+|(\([^\s()<>]+\)))*\)|[^\s\`!()\[\]{};:\'".,<>?«»“”‘’]))#';
 
         // Standalone hyperlink callback
-        $standaloneHyperlinkCallback = function ($match, $scheme = '') {
+        $standaloneHyperlinkCallback = function ($match, $scheme = ''): string {
             $id  = $this->generateId();
             $url = $match[1];
 
@@ -245,7 +248,7 @@ class SpanProcessor
         );
     }
 
-    private function replaceStandaloneEmailAddresses(string $span) : string
+    private function replaceStandaloneEmailAddresses(string $span): string
     {
         // Replace standalone email addresses using a regex based on RFC 5322.
         $emailAddressPattern = '/((?:[a-z0-9!#$%&\'*+\/=?^_`{|}~-]+(?:\.[a-z0-9'
@@ -257,7 +260,7 @@ class SpanProcessor
             . 'b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f'
             . '])+)\]))/msi';
 
-        $standaloneEmailAddressCallback = function (array $match) {
+        $standaloneEmailAddressCallback = function (array $match): string {
             $id  = $this->generateId();
             $url = $match[1];
 
@@ -276,7 +279,7 @@ class SpanProcessor
         );
     }
 
-    private function generateId() : string
+    private function generateId(): string
     {
         $this->tokenId++;
 

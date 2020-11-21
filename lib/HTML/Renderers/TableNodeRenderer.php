@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\HTML\Renderers;
 
+use Doctrine\RST\Nodes\ListNode;
 use Doctrine\RST\Nodes\SpanNode;
 use Doctrine\RST\Nodes\TableNode;
 use Doctrine\RST\Renderers\NodeRenderer;
 use Doctrine\RST\Templates\TemplateRenderer;
+
+use function assert;
 use function count;
 
 class TableNodeRenderer implements NodeRenderer
@@ -24,7 +27,7 @@ class TableNodeRenderer implements NodeRenderer
         $this->templateRenderer = $templateRenderer;
     }
 
-    public function render() : string
+    public function render(): string
     {
         $headers = $this->tableNode->getHeaders();
         $data    = $this->tableNode->getData();
@@ -38,8 +41,8 @@ class TableNodeRenderer implements NodeRenderer
                     continue;
                 }
 
-                /** @var SpanNode $col */
                 foreach ($data[$k] as $col) {
+                    assert($col instanceof SpanNode);
                     $tableHeader[] = $col->render();
                 }
 
@@ -54,8 +57,8 @@ class TableNodeRenderer implements NodeRenderer
 
             $tableRow = [];
 
-            /** @var SpanNode $col */
             foreach ($row as $col) {
+                assert($col instanceof SpanNode || $col instanceof ListNode);
                 $tableRow[] = $col->render();
             }
 

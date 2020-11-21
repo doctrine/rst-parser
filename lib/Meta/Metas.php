@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\RST\Meta;
 
 use Doctrine\RST\Environment;
+
 use function strtolower;
 
 class Metas
@@ -23,7 +24,7 @@ class Metas
         $this->entries = $entries;
     }
 
-    public function findLinkMetaEntry(string $link) : ?MetaEntry
+    public function findLinkMetaEntry(string $link): ?MetaEntry
     {
         foreach ($this->entries as $entry) {
             if ($this->doesLinkExist($entry->getLinks(), $link)) {
@@ -37,7 +38,7 @@ class Metas
     /**
      * @return MetaEntry[]
      */
-    public function getAll() : array
+    public function getAll(): array
     {
         return $this->entries;
     }
@@ -57,7 +58,7 @@ class Metas
         int $ctime,
         array $depends,
         array $links
-    ) : void {
+    ): void {
         foreach ($tocs as $toc) {
             foreach ($toc as $child) {
                 $this->parents[$child] = $file;
@@ -88,7 +89,7 @@ class Metas
         $this->entries[$file]->setParent($this->parents[$file]);
     }
 
-    public function get(string $url) : ?MetaEntry
+    public function get(string $url): ?MetaEntry
     {
         if (isset($this->entries[$url])) {
             return $this->entries[$url];
@@ -100,7 +101,7 @@ class Metas
     /**
      * @param MetaEntry[] $metaEntries
      */
-    public function setMetaEntries(array $metaEntries) : void
+    public function setMetaEntries(array $metaEntries): void
     {
         $this->entries = $metaEntries;
     }
@@ -108,7 +109,7 @@ class Metas
     /**
      * @param string[] $links
      */
-    private function doesLinkExist(array $links, string $link) : bool
+    private function doesLinkExist(array $links, string $link): bool
     {
         foreach ($links as $name => $url) {
             if ($name === strtolower($link)) {
@@ -119,7 +120,7 @@ class Metas
         return false;
     }
 
-    private function findByTitle(string $text) : ?MetaEntry
+    private function findByTitle(string $text): ?MetaEntry
     {
         $text = Environment::slugify($text);
 

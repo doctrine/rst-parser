@@ -17,7 +17,7 @@ class CopierTest extends TestCase
     /** @var Copier */
     private $copier;
 
-    public function testDoCopy() : void
+    public function testDoCopy(): void
     {
         $this->filesystem->expects(self::once())
             ->method('copy')
@@ -28,7 +28,7 @@ class CopierTest extends TestCase
         $this->copier->doCopy('/source', '/target');
     }
 
-    public function testDoMkdir() : void
+    public function testDoMkdir(): void
     {
         $this->filesystem->expects(self::once())
             ->method('mkdir')
@@ -39,7 +39,7 @@ class CopierTest extends TestCase
         $this->copier->doMkdir('/target');
     }
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         $this->filesystem = $this->createMock(Filesystem::class);
 

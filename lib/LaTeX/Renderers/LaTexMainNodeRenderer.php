@@ -8,7 +8,7 @@ use Doctrine\RST\Renderers\NodeRenderer;
 
 class LaTexMainNodeRenderer implements NodeRenderer
 {
-    public function render() : string
+    public function render(): string
     {
         return '';
     }

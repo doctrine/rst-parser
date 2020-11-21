@@ -8,6 +8,7 @@ use Doctrine\RST\Builder;
 use Doctrine\RST\Configuration;
 use Doctrine\RST\Kernel;
 use Doctrine\Tests\RST\BaseBuilderTest;
+
 use function strpos;
 
 class BuilderUrlTest extends BaseBuilderTest
@@ -15,7 +16,7 @@ class BuilderUrlTest extends BaseBuilderTest
     /** @var Configuration */
     private $configuration;
 
-    public function testBaseUrl() : void
+    public function testBaseUrl(): void
     {
         $this->configuration->setBaseUrl('https://www.domain.com/directory');
 
@@ -23,38 +24,38 @@ class BuilderUrlTest extends BaseBuilderTest
 
         $contents = $this->getFileContents($this->targetFile('index.html'));
 
-        self::assertContains(
+        self::assertStringContainsString(
             '<a href="https://www.domain.com/directory/index.html">Test reference url</a>',
             $contents
         );
 
-        self::assertContains(
+        self::assertStringContainsString(
             '<li id="index-html-base-url" class="toc-item"><a href="https://www.domain.com/directory/index.html#base-url">Base URL</a></li>',
             $contents
         );
 
         $contents = $this->getFileContents($this->targetFile('subdir/index.html'));
 
-        self::assertContains(
+        self::assertStringContainsString(
             '<a href="https://www.domain.com/directory/index.html">Test subdir reference url</a>',
             $contents
         );
 
-        self::assertContains(
+        self::assertStringContainsString(
             '<li id="index-html-base-url" class="toc-item"><a href="https://www.domain.com/directory/index.html#base-url">Base URL</a></li>',
             $contents
         );
 
-        self::assertContains(
+        self::assertStringContainsString(
             '<li id="file-html-subdirectory-file" class="toc-item"><a href="https://www.domain.com/directory/subdir/file.html#subdirectory-file">Subdirectory File</a></li>',
             $contents
         );
     }
 
-    public function testBaseUrlEnabledCallable() : void
+    public function testBaseUrlEnabledCallable(): void
     {
         $this->configuration->setBaseUrl('https://www.domain.com/directory');
-        $this->configuration->setBaseUrlEnabledCallable(static function (string $path) : bool {
+        $this->configuration->setBaseUrlEnabledCallable(static function (string $path): bool {
             return strpos($path, 'subdir/') !== 0;
         });
 
@@ -62,86 +63,86 @@ class BuilderUrlTest extends BaseBuilderTest
 
         $contents = $this->getFileContents($this->targetFile('index.html'));
 
-        self::assertContains(
+        self::assertStringContainsString(
             '<a href="https://www.domain.com/directory/index.html">Test reference url</a>',
             $contents
         );
 
-        self::assertContains(
+        self::assertStringContainsString(
             '<li id="index-html-base-url" class="toc-item"><a href="https://www.domain.com/directory/index.html#base-url">Base URL</a></li>',
             $contents
         );
 
         $contents = $this->getFileContents($this->targetFile('subdir/index.html'));
 
-        self::assertContains(
+        self::assertStringContainsString(
             '<a href="https://www.domain.com/directory/index.html">Test subdir reference url</a>',
             $contents
         );
 
-        self::assertContains(
+        self::assertStringContainsString(
             '<a href="file.html">Test subdir file reference path</a>',
             $contents
         );
 
-        self::assertContains(
+        self::assertStringContainsString(
             '<a href="index.html#subdirectory-index">Subdirectory Index</a>',
             $contents
         );
 
-        self::assertContains(
+        self::assertStringContainsString(
             '<li id="index-html-base-url" class="toc-item"><a href="https://www.domain.com/directory/index.html#base-url">Base URL</a></li>',
             $contents
         );
 
-        self::assertContains(
+        self::assertStringContainsString(
             '<li id="file-html-subdirectory-file" class="toc-item"><a href="file.html#subdirectory-file">Subdirectory File</a></li>',
             $contents
         );
     }
 
-    public function testRelativeUrl() : void
+    public function testRelativeUrl(): void
     {
         $this->builder->build($this->sourceFile(), $this->targetFile());
 
         $contents = $this->getFileContents($this->targetFile('index.html'));
 
-        self::assertContains(
+        self::assertStringContainsString(
             '<a href="index.html">Test reference url</a>',
             $contents
         );
 
-        self::assertContains(
+        self::assertStringContainsString(
             '<li id="index-html-base-url" class="toc-item"><a href="index.html#base-url">Base URL</a></li>',
             $contents
         );
 
         $contents = $this->getFileContents($this->targetFile('subdir/index.html'));
 
-        self::assertContains(
+        self::assertStringContainsString(
             '<a href="../index.html">Test subdir reference url</a>',
             $contents
         );
 
-        self::assertContains(
+        self::assertStringContainsString(
             '<li id="index-html-base-url" class="toc-item"><a href="../index.html#base-url">Base URL</a></li>',
             $contents
         );
 
-        self::assertContains(
+        self::assertStringContainsString(
             '<li id="file-html-subdirectory-file" class="toc-item"><a href="file.html#subdirectory-file">Subdirectory File</a></li>',
             $contents
         );
     }
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         $this->configuration = new Configuration();
         $this->configuration->setUseCachedMetas(false);
         $this->builder = new Builder(new Kernel($this->configuration));
     }
 
-    protected function getFixturesDirectory() : string
+    protected function getFixturesDirectory(): string
     {
         return 'BuilderUrl';
     }
