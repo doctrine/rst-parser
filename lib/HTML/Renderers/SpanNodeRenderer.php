@@ -9,6 +9,7 @@ use Doctrine\RST\Nodes\SpanNode;
 use Doctrine\RST\References\ResolvedReference;
 use Doctrine\RST\Renderers\SpanNodeRenderer as BaseSpanNodeRenderer;
 use Doctrine\RST\Templates\TemplateRenderer;
+
 use function htmlspecialchars;
 use function trim;
 
@@ -27,27 +28,27 @@ class SpanNodeRenderer extends BaseSpanNodeRenderer
         $this->templateRenderer = $templateRenderer;
     }
 
-    public function emphasis(string $text) : string
+    public function emphasis(string $text): string
     {
         return $this->templateRenderer->render('emphasis.html.twig', ['text' => $text]);
     }
 
-    public function strongEmphasis(string $text) : string
+    public function strongEmphasis(string $text): string
     {
         return $this->templateRenderer->render('strong-emphasis.html.twig', ['text' => $text]);
     }
 
-    public function nbsp() : string
+    public function nbsp(): string
     {
         return $this->templateRenderer->render('nbsp.html.twig');
     }
 
-    public function br() : string
+    public function br(): string
     {
         return $this->templateRenderer->render('br.html.twig');
     }
 
-    public function literal(string $text) : string
+    public function literal(string $text): string
     {
         return $this->templateRenderer->render('literal.html.twig', ['text' => $text]);
     }
@@ -55,7 +56,7 @@ class SpanNodeRenderer extends BaseSpanNodeRenderer
     /**
      * @param mixed[] $attributes
      */
-    public function link(?string $url, string $title, array $attributes = []) : string
+    public function link(?string $url, string $title, array $attributes = []): string
     {
         $url = (string) $url;
 
@@ -66,7 +67,7 @@ class SpanNodeRenderer extends BaseSpanNodeRenderer
         ]);
     }
 
-    public function escape(string $span) : string
+    public function escape(string $span): string
     {
         return htmlspecialchars($span);
     }
@@ -74,9 +75,9 @@ class SpanNodeRenderer extends BaseSpanNodeRenderer
     /**
      * @param mixed[] $value
      */
-    public function reference(ResolvedReference $reference, array $value) : string
+    public function reference(ResolvedReference $reference, array $value): string
     {
-        $text = $value['text'] ?: ($reference->getTitle() ?? '');
+        $text = (bool) $value['text'] ? $value['text'] : ($reference->getTitle() ?? '');
         $text = trim($text);
 
         // reference to another document
@@ -86,6 +87,7 @@ class SpanNodeRenderer extends BaseSpanNodeRenderer
             if ($value['anchor'] !== null) {
                 $url .= '#' . $value['anchor'];
             }
+
             $link = $this->link($url, $text, $reference->getAttributes());
 
         // reference to anchor in existing document

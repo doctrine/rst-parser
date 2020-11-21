@@ -6,13 +6,13 @@
     "versions": [
         {
             "name": "1.0",
-            "branchName": "master",
+            "branchName": "1.0.x",
             "slug": "latest",
             "upcoming": true
         },
         {
             "name": "0.1",
-            "branchName": "0.1",
+            "branchName": "0.1.x",
             "slug": "0.1",
             "current": true
         }

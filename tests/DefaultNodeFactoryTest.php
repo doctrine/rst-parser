@@ -31,7 +31,7 @@ class DefaultNodeFactoryTest extends TestCase
     /** @var EventManager */
     private $eventManager;
 
-    public function testCreateDocument() : void
+    public function testCreateDocument(): void
     {
         $returnClass = DocumentNode::class;
         $type        = NodeTypes::DOCUMENT;
@@ -54,7 +54,7 @@ class DefaultNodeFactoryTest extends TestCase
         self::assertSame($expectedReturn, $defaultNodeFactory->createDocumentNode($environment));
     }
 
-    public function testCreateToc() : void
+    public function testCreateToc(): void
     {
         $returnClass = TocNode::class;
         $type        = NodeTypes::TOC;
@@ -77,7 +77,7 @@ class DefaultNodeFactoryTest extends TestCase
         self::assertSame($expectedReturn, $defaultNodeFactory->createTocNode($environment, [], []));
     }
 
-    public function testCreateTitle() : void
+    public function testCreateTitle(): void
     {
         $returnClass = TitleNode::class;
         $type        = NodeTypes::TITLE;
@@ -100,7 +100,7 @@ class DefaultNodeFactoryTest extends TestCase
         self::assertSame($expectedReturn, $defaultNodeFactory->createTitleNode($node, 1, 'test'));
     }
 
-    public function testCreateSeparator() : void
+    public function testCreateSeparator(): void
     {
         $returnClass = SeparatorNode::class;
         $type        = NodeTypes::SEPARATOR;
@@ -122,7 +122,7 @@ class DefaultNodeFactoryTest extends TestCase
         self::assertSame($expectedReturn, $defaultNodeFactory->createSeparatorNode(1));
     }
 
-    public function testCreateCode() : void
+    public function testCreateCode(): void
     {
         $returnClass = CodeNode::class;
         $type        = NodeTypes::CODE;
@@ -144,7 +144,7 @@ class DefaultNodeFactoryTest extends TestCase
         self::assertSame($expectedReturn, $defaultNodeFactory->createCodeNode([]));
     }
 
-    public function testCreateQuote() : void
+    public function testCreateQuote(): void
     {
         $returnClass = QuoteNode::class;
         $type        = NodeTypes::QUOTE;
@@ -168,7 +168,7 @@ class DefaultNodeFactoryTest extends TestCase
         self::assertSame($expectedReturn, $defaultNodeFactory->createQuoteNode($documentNode));
     }
 
-    public function testCreateParagraph() : void
+    public function testCreateParagraph(): void
     {
         $returnClass = ParagraphNode::class;
         $type        = NodeTypes::PARAGRAPH;
@@ -194,7 +194,7 @@ class DefaultNodeFactoryTest extends TestCase
         self::assertSame($expectedReturn, $defaultNodeFactory->createParagraphNode($spanNode));
     }
 
-    public function testCreateAnchor() : void
+    public function testCreateAnchor(): void
     {
         $returnClass = AnchorNode::class;
         $type        = NodeTypes::ANCHOR;
@@ -216,7 +216,7 @@ class DefaultNodeFactoryTest extends TestCase
         self::assertSame($expectedReturn, $defaultNodeFactory->createAnchorNode('test'));
     }
 
-    public function testCreateList() : void
+    public function testCreateList(): void
     {
         $returnClass = ListNode::class;
         $type        = NodeTypes::LIST;
@@ -238,7 +238,7 @@ class DefaultNodeFactoryTest extends TestCase
         self::assertSame($expectedReturn, $defaultNodeFactory->createListNode());
     }
 
-    public function testCreateTable() : void
+    public function testCreateTable(): void
     {
         $returnClass = TableNode::class;
         $type        = NodeTypes::TABLE;
@@ -262,7 +262,7 @@ class DefaultNodeFactoryTest extends TestCase
         self::assertSame($expectedReturn, $defaultNodeFactory->createTableNode($separatorLineConfig, TableNode::TYPE_SIMPLE, $lineChecker));
     }
 
-    public function testCreateSpan() : void
+    public function testCreateSpan(): void
     {
         $returnClass = SpanNode::class;
         $type        = NodeTypes::SPAN;
@@ -285,7 +285,7 @@ class DefaultNodeFactoryTest extends TestCase
         self::assertSame($expectedReturn, $defaultNodeFactory->createSpanNode($parser, 'test'));
     }
 
-    public function testGetNodeInstantiatorThrowsInvalidArgumentException() : void
+    public function testGetNodeInstantiatorThrowsInvalidArgumentException(): void
     {
         $nodeInstantiator = $this->createMock(NodeInstantiator::class);
 
@@ -301,12 +301,12 @@ class DefaultNodeFactoryTest extends TestCase
         $defaultNodeFactory->createListNode();
     }
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         $this->eventManager = $this->createMock(EventManager::class);
     }
 
-    private function createDefaultNodeFactory(NodeInstantiator $nodeInstantiator) : DefaultNodeFactory
+    private function createDefaultNodeFactory(NodeInstantiator $nodeInstantiator): DefaultNodeFactory
     {
         return new DefaultNodeFactory($this->eventManager, $nodeInstantiator);
     }

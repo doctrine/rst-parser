@@ -6,7 +6,9 @@ namespace Doctrine\RST\Renderers;
 
 use Doctrine\RST\Nodes\ListNode;
 use Doctrine\RST\Nodes\SpanNode;
+
 use function array_pop;
+use function assert;
 use function count;
 
 class ListNodeRenderer implements NodeRenderer
@@ -23,15 +25,15 @@ class ListNodeRenderer implements NodeRenderer
         $this->formatListRenderer = $formatListRenderer;
     }
 
-    public function render() : string
+    public function render(): string
     {
         $depth = -1;
         $value = '';
         $stack = [];
 
         foreach ($this->listNode->getLines() as $line) {
-            /** @var SpanNode $text */
             $text = $line['text'];
+            assert($text instanceof SpanNode);
 
             $prefix   = $line['prefix'];
             $ordered  = $line['ordered'];

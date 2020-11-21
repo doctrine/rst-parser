@@ -20,7 +20,7 @@ class TwigAdapter implements TemplateEngineAdapter
         $this->configuration = $configuration;
     }
 
-    public function getTemplateEngine() : TwigEnvironment
+    public function getTemplateEngine(): TwigEnvironment
     {
         if ($this->twigEnvironment === null) {
             $this->twigEnvironment = TwigEnvironmentFactory::createTwigEnvironment($this->configuration);
@@ -32,7 +32,7 @@ class TwigAdapter implements TemplateEngineAdapter
     /**
      * @param mixed[] $parameters
      */
-    public function render(string $template, array $parameters = []) : string
+    public function render(string $template, array $parameters = []): string
     {
         return $this->getTemplateEngine()->render($template, $parameters);
     }

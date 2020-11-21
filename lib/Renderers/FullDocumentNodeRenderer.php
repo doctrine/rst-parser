@@ -6,5 +6,5 @@ namespace Doctrine\RST\Renderers;
 
 interface FullDocumentNodeRenderer
 {
-    public function renderDocument() : string;
+    public function renderDocument(): string;
 }

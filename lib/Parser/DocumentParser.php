@@ -20,7 +20,9 @@ use Doctrine\RST\Parser;
 use Doctrine\RST\Parser\Directive as ParserDirective;
 use Exception;
 use Throwable;
+
 use function array_search;
+use function assert;
 use function chr;
 use function explode;
 use function sprintf;
@@ -122,12 +124,12 @@ class DocumentParser
         $this->buffer         = new Buffer();
     }
 
-    public function getDocument() : DocumentNode
+    public function getDocument(): DocumentNode
     {
         return $this->document;
     }
 
-    public function parse(string $contents) : DocumentNode
+    public function parse(string $contents): DocumentNode
     {
         $preParseDocumentEvent = new PreParseDocumentEvent($this->parser, $contents);
 
@@ -154,19 +156,19 @@ class DocumentParser
         return $this->document;
     }
 
-    private function init() : void
+    private function init(): void
     {
         $this->specialLetter = false;
         $this->buffer        = new Buffer();
         $this->nodeBuffer    = null;
     }
 
-    private function setState(string $state) : void
+    private function setState(string $state): void
     {
         $this->state = $state;
     }
 
-    private function prepareDocument(string $document) : string
+    private function prepareDocument(string $document): string
     {
         $document = str_replace("\r\n", "\n", $document);
         $document = sprintf("\n%s\n", $document);
@@ -186,12 +188,12 @@ class DocumentParser
         return $document;
     }
 
-    private function createLines(string $document) : Lines
+    private function createLines(string $document): Lines
     {
         return new Lines(explode("\n", $document));
     }
 
-    private function parseLines(string $document) : void
+    private function parseLines(string $document): void
     {
         $document = $this->prepareDocument($document);
 
@@ -215,7 +217,7 @@ class DocumentParser
         }
     }
 
-    private function parseLine(string $line) : bool
+    private function parseLine(string $line): bool
     {
         switch ($this->state) {
             case State::BEGIN:
@@ -223,7 +225,6 @@ class DocumentParser
                     if ($this->lineChecker->isListLine($line, $this->isCode)) {
                         $this->setState(State::LIST);
 
-                        /** @var ListNode $listNode */
                         $listNode = $this->nodeFactory->createListNode();
 
                         $this->nodeBuffer = $listNode;
@@ -278,6 +279,7 @@ class DocumentParser
                         $this->nodeBuffer = $tableNode;
                     }
                 }
+
                 break;
 
             case State::LIST:
@@ -287,6 +289,7 @@ class DocumentParser
 
                     return false;
                 }
+
                 break;
 
             case State::DEFINITION_LIST:
@@ -339,6 +342,7 @@ class DocumentParser
                             $this->buffer->push($line);
                             $this->setState(State::SEPARATOR);
                         }
+
                         $this->flush();
                         $this->setState(State::BEGIN);
                     } elseif ($this->lineChecker->isDirective($line)) {
@@ -356,6 +360,7 @@ class DocumentParser
                     $this->flush();
                     $this->setState(State::BEGIN);
                 }
+
                 break;
 
             case State::COMMENT:
@@ -366,6 +371,7 @@ class DocumentParser
 
                     return false;
                 }
+
                 break;
 
             case State::BLOCK:
@@ -378,6 +384,7 @@ class DocumentParser
                 } else {
                     $this->buffer->push($line);
                 }
+
                 break;
 
             case State::DIRECTIVE:
@@ -393,6 +400,7 @@ class DocumentParser
                     $this->flush();
                     $this->initDirective($line);
                 }
+
                 break;
 
             default:
@@ -402,7 +410,7 @@ class DocumentParser
         return true;
     }
 
-    private function flush() : void
+    private function flush(): void
     {
         $node = null;
 
@@ -476,8 +484,8 @@ class DocumentParser
                 case State::LIST:
                     $this->parseListLine(null, true);
 
-                    /** @var ListNode $node */
                     $node = $this->nodeBuffer;
+                    assert($node instanceof ListNode);
 
                     break;
 
@@ -491,8 +499,8 @@ class DocumentParser
                     break;
 
                 case State::TABLE:
-                    /** @var TableNode $node */
                     $node = $this->nodeBuffer;
+                    assert($node instanceof TableNode);
 
                     $node->finalize($this->parser);
 
@@ -545,12 +553,12 @@ class DocumentParser
         $this->init();
     }
 
-    private function hasBuffer() : bool
+    private function hasBuffer(): bool
     {
         return ! $this->buffer->isEmpty() || $this->nodeBuffer !== null;
     }
 
-    private function getCurrentDirective() : ?Directive
+    private function getCurrentDirective(): ?Directive
     {
         if ($this->directive === null) {
             return null;
@@ -561,7 +569,7 @@ class DocumentParser
         return $this->directives[$name];
     }
 
-    private function isDirectiveOption(string $line) : bool
+    private function isDirectiveOption(string $line): bool
     {
         if ($this->directive === null) {
             return false;
@@ -578,7 +586,7 @@ class DocumentParser
         return true;
     }
 
-    private function initDirective(string $line) : bool
+    private function initDirective(string $line): bool
     {
         $parserDirective = $this->lineDataParser->parseDirective($line);
 
@@ -604,7 +612,7 @@ class DocumentParser
         return true;
     }
 
-    private function prepareCode() : bool
+    private function prepareCode(): bool
     {
         $lastLine = $this->buffer->getLastLine();
 
@@ -629,7 +637,7 @@ class DocumentParser
         return false;
     }
 
-    private function parseLink(string $line) : bool
+    private function parseLink(string $line): bool
     {
         $link = $this->lineDataParser->parseLink($line);
 
@@ -649,7 +657,7 @@ class DocumentParser
         return true;
     }
 
-    private function parseListLine(?string $line, bool $flush = false) : bool
+    private function parseListLine(?string $line, bool $flush = false): bool
     {
         if ($line !== null && trim($line) !== '') {
             $listLine = $this->lineDataParser->parseListLine($line);
@@ -658,11 +666,12 @@ class DocumentParser
                 if ($this->listLine instanceof ListLine) {
                     $this->listLine->setText($this->parser->createSpanNode($this->listLine->getText()));
 
-                    /** @var ListNode $listNode */
                     $listNode = $this->nodeBuffer;
+                    assert($listNode instanceof ListNode);
 
                     $listNode->addLine($this->listLine->toArray());
                 }
+
                 $this->listLine = $listLine;
             } else {
                 if ($this->listLine instanceof ListLine && ($this->listFlow || $line[0] === ' ')) {
@@ -671,6 +680,7 @@ class DocumentParser
                     $flush = true;
                 }
             }
+
             $this->listFlow = true;
         } else {
             $this->listFlow = false;
@@ -680,8 +690,8 @@ class DocumentParser
             if ($this->listLine instanceof ListLine) {
                 $this->listLine->setText($this->parser->createSpanNode($this->listLine->getText()));
 
-                /** @var ListNode $listNode */
                 $listNode = $this->nodeBuffer;
+                assert($listNode instanceof ListNode);
 
                 $listNode->addLine($this->listLine->toArray());
 
@@ -694,7 +704,7 @@ class DocumentParser
         return true;
     }
 
-    private function endOpenSection(TitleNode $titleNode) : void
+    private function endOpenSection(TitleNode $titleNode): void
     {
         $this->document->addNode(
             $this->nodeFactory->createSectionEndNode($titleNode)

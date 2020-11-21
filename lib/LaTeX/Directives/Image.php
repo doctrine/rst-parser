@@ -8,6 +8,7 @@ use Doctrine\RST\Directives\Directive;
 use Doctrine\RST\Nodes\Node;
 use Doctrine\RST\Parser;
 use Exception;
+
 use function sprintf;
 
 /**
@@ -19,7 +20,7 @@ use function sprintf;
  */
 class Image extends Directive
 {
-    public function getName() : string
+    public function getName(): string
     {
         return 'image';
     }
@@ -32,7 +33,7 @@ class Image extends Directive
         string $variable,
         string $data,
         array $options
-    ) : ?Node {
+    ): ?Node {
         $environment = $parser->getEnvironment();
 
         $url = $environment->relativeUrl($data);

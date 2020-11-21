@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\RST\Meta;
 
 use LogicException;
+
 use function file_exists;
 use function file_get_contents;
 use function file_put_contents;
@@ -14,7 +15,7 @@ use function unserialize;
 
 final class CachedMetasLoader
 {
-    public function loadCachedMetaEntries(string $targetDirectory, Metas $metas) : void
+    public function loadCachedMetaEntries(string $targetDirectory, Metas $metas): void
     {
         $metaCachePath = $this->getMetaCachePath($targetDirectory);
         if (! file_exists($metaCachePath)) {
@@ -30,12 +31,12 @@ final class CachedMetasLoader
         $metas->setMetaEntries(unserialize($contents));
     }
 
-    public function cacheMetaEntries(string $targetDirectory, Metas $metas) : void
+    public function cacheMetaEntries(string $targetDirectory, Metas $metas): void
     {
         file_put_contents($this->getMetaCachePath($targetDirectory), serialize($metas->getAll()));
     }
 
-    private function getMetaCachePath(string $targetDirectory) : string
+    private function getMetaCachePath(string $targetDirectory): string
     {
         return $targetDirectory . '/metas.php';
     }

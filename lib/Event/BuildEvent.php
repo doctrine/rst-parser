@@ -28,17 +28,17 @@ abstract class BuildEvent extends EventArgs
         $this->targetDirectory = $targetDirectory;
     }
 
-    public function getBuilder() : Builder
+    public function getBuilder(): Builder
     {
         return $this->builder;
     }
 
-    public function getDirectory() : string
+    public function getDirectory(): string
     {
         return $this->directory;
     }
 
-    public function getTargetDirectory() : string
+    public function getTargetDirectory(): string
     {
         return $this->targetDirectory;
     }

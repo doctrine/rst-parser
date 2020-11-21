@@ -16,7 +16,7 @@ class CallableNodeRenderer implements NodeRenderer
         $this->callableNode = $callableNode;
     }
 
-    public function render() : string
+    public function render(): string
     {
         return $this->callableNode->getCallable()();
     }

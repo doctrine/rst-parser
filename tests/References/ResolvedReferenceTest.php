@@ -7,6 +7,7 @@ namespace Doctrine\Tests\RST\References;
 use Doctrine\RST\References\ResolvedReference;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
+
 use function key;
 use function sprintf;
 
@@ -17,7 +18,7 @@ class ResolvedReferenceTest extends TestCase
      *
      * @dataProvider attributesValid
      */
-    public function testCreateResolvedReference(array $attributes) : void
+    public function testCreateResolvedReference(array $attributes): void
     {
         $resolvedReference = new ResolvedReference('file', 'title', 'url', [['title' => 'title']], $attributes);
 
@@ -30,7 +31,7 @@ class ResolvedReferenceTest extends TestCase
     /**
      * @return string[][]|string[][][]
      */
-    public function attributesValid() : array
+    public function attributesValid(): array
     {
         return [
             'attributes #1' => [
@@ -62,7 +63,7 @@ class ResolvedReferenceTest extends TestCase
      *
      * @dataProvider attributesInvalid
      */
-    public function testCreateResolvedReferenceWithAttributesInvalid(array $attributes) : void
+    public function testCreateResolvedReferenceWithAttributesInvalid(array $attributes): void
     {
         self::expectException(RuntimeException::class);
         self::expectExceptionMessage(sprintf('Attribute with name "%s" is not allowed', key($attributes)));
@@ -73,7 +74,7 @@ class ResolvedReferenceTest extends TestCase
     /**
      * @return string[][]|string[][][]
      */
-    public function attributesInvalid() : array
+    public function attributesInvalid(): array
     {
         return [
             'href' => [

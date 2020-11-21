@@ -10,6 +10,7 @@ use Doctrine\RST\Renderers\DocumentNodeRenderer as BaseDocumentRender;
 use Doctrine\RST\Renderers\FullDocumentNodeRenderer;
 use Doctrine\RST\Renderers\NodeRenderer;
 use Doctrine\RST\Templates\TemplateRenderer;
+
 use function count;
 
 class DocumentNodeRenderer implements NodeRenderer, FullDocumentNodeRenderer
@@ -26,12 +27,12 @@ class DocumentNodeRenderer implements NodeRenderer, FullDocumentNodeRenderer
         $this->templateRenderer = $templateRenderer;
     }
 
-    public function render() : string
+    public function render(): string
     {
         return (new BaseDocumentRender($this->document))->render();
     }
 
-    public function renderDocument() : string
+    public function renderDocument(): string
     {
         return $this->templateRenderer->render('document.tex.twig', [
             'isMain' => $this->isMain(),
@@ -40,9 +41,9 @@ class DocumentNodeRenderer implements NodeRenderer, FullDocumentNodeRenderer
         ]);
     }
 
-    private function isMain() : bool
+    private function isMain(): bool
     {
-        return count($this->document->getNodes(static function ($node) {
+        return count($this->document->getNodes(static function ($node): bool {
             return $node instanceof MainNode;
         })) !== 0;
     }

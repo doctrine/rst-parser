@@ -13,18 +13,18 @@ use Symfony\Component\Finder\Finder;
  */
 class BuilderCustomScannerFinderTest extends BaseBuilderTest
 {
-    public function testCustomScannerFinder() : void
+    public function testCustomScannerFinder(): void
     {
         self::assertFileExists($this->targetFile('path1/file1.html'));
         self::assertFileNotExists($this->targetFile('path2/file2.html'));
     }
 
-    protected function getFixturesDirectory() : string
+    protected function getFixturesDirectory(): string
     {
         return 'BuilderCustomScannerFinder';
     }
 
-    protected function configureBuilder(Builder $builder) : void
+    protected function configureBuilder(Builder $builder): void
     {
         $finder = new Finder();
         $finder->exclude('path2');

@@ -19,6 +19,7 @@ use InvalidArgumentException;
 use LogicException;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
+
 use function file_exists;
 use function is_dir;
 use function sprintf;
@@ -82,49 +83,49 @@ class Builder
         $this->kernel->initBuilder($this);
     }
 
-    public function recreate() : Builder
+    public function recreate(): Builder
     {
         return new Builder($this->kernel);
     }
 
-    public function getKernel() : Kernel
+    public function getKernel(): Kernel
     {
         return $this->kernel;
     }
 
-    public function getConfiguration() : Configuration
+    public function getConfiguration(): Configuration
     {
         return $this->configuration;
     }
 
-    public function getDocuments() : Documents
+    public function getDocuments(): Documents
     {
         return $this->documents;
     }
 
-    public function getErrorManager() : ErrorManager
+    public function getErrorManager(): ErrorManager
     {
         return $this->errorManager;
     }
 
-    public function setIndexName(string $name) : self
+    public function setIndexName(string $name): self
     {
         $this->indexName = $name;
 
         return $this;
     }
 
-    public function getIndexName() : string
+    public function getIndexName(): string
     {
         return $this->indexName;
     }
 
-    public function getMetas() : Metas
+    public function getMetas(): Metas
     {
         return $this->metas;
     }
 
-    public function getParseQueue() : ParseQueue
+    public function getParseQueue(): ParseQueue
     {
         if ($this->parseQueue === null) {
             throw new LogicException('The ParseQueue is not set until after the build is complete');
@@ -136,7 +137,7 @@ class Builder
     public function build(
         string $directory,
         string $targetDirectory = 'output'
-    ) : void {
+    ): void {
         // Creating output directory if doesn't exists
         if (! is_dir($targetDirectory)) {
             $this->filesystem->mkdir($targetDirectory, 0755);
@@ -160,14 +161,14 @@ class Builder
         $this->cachedMetasLoader->cacheMetaEntries($targetDirectory, $this->metas);
     }
 
-    public function copy(string $source, ?string $destination = null) : self
+    public function copy(string $source, ?string $destination = null): self
     {
         $this->copier->copy($source, $destination);
 
         return $this;
     }
 
-    public function mkdir(string $directory) : self
+    public function mkdir(string $directory): self
     {
         $this->copier->mkdir($directory);
 
@@ -177,12 +178,12 @@ class Builder
     /**
      * Set the Finder that will be used for scanning files.
      */
-    public function setScannerFinder(Finder $finder) : void
+    public function setScannerFinder(Finder $finder): void
     {
         $this->scannerFinder = $finder;
     }
 
-    private function scan(string $directory, string $targetDirectory) : ParseQueue
+    private function scan(string $directory, string $targetDirectory): ParseQueue
     {
         $this->configuration->dispatchEvent(
             PreBuildScanEvent::PRE_BUILD_SCAN,
@@ -199,7 +200,7 @@ class Builder
         return $scanner->scan();
     }
 
-    private function parse(string $directory, string $targetDirectory, ParseQueue $parseQueue) : void
+    private function parse(string $directory, string $targetDirectory, ParseQueue $parseQueue): void
     {
         $this->configuration->dispatchEvent(
             PreBuildParseEvent::PRE_BUILD_PARSE,
@@ -219,7 +220,7 @@ class Builder
         $parseQueueProcessor->process($parseQueue);
     }
 
-    private function render(string $directory, string $targetDirectory) : void
+    private function render(string $directory, string $targetDirectory): void
     {
         $this->configuration->dispatchEvent(
             PreBuildRenderEvent::PRE_BUILD_RENDER,
@@ -237,7 +238,7 @@ class Builder
         );
     }
 
-    private function getScannerFinder() : Finder
+    private function getScannerFinder(): Finder
     {
         if ($this->scannerFinder === null) {
             $this->scannerFinder = new Finder();

@@ -7,3 +7,6 @@ parameters:
     paths:
       - lib
       - tests
+
+    ignoreErrors:
+      - '#Variable method call on Doctrine\\RST\\Nodes\\DocumentNode\.#'

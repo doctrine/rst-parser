@@ -36,68 +36,68 @@ use Doctrine\RST\Parser\TableSeparatorLineConfig;
 
 interface NodeFactory
 {
-    public function createDocumentNode(Environment $environment) : DocumentNode;
+    public function createDocumentNode(Environment $environment): DocumentNode;
 
     /**
      * @param string[] $files
      * @param string[] $options
      */
-    public function createTocNode(Environment $environment, array $files, array $options) : TocNode;
+    public function createTocNode(Environment $environment, array $files, array $options): TocNode;
 
-    public function createTitleNode(Node $value, int $level, string $token) : TitleNode;
+    public function createTitleNode(Node $value, int $level, string $token): TitleNode;
 
-    public function createSeparatorNode(int $level) : SeparatorNode;
-
-    /**
-     * @param string[] $lines
-     */
-    public function createBlockNode(array $lines) : BlockNode;
+    public function createSeparatorNode(int $level): SeparatorNode;
 
     /**
      * @param string[] $lines
      */
-    public function createCodeNode(array $lines) : CodeNode;
+    public function createBlockNode(array $lines): BlockNode;
 
-    public function createQuoteNode(DocumentNode $documentNode) : QuoteNode;
+    /**
+     * @param string[] $lines
+     */
+    public function createCodeNode(array $lines): CodeNode;
 
-    public function createParagraphNode(SpanNode $span) : ParagraphNode;
+    public function createQuoteNode(DocumentNode $documentNode): QuoteNode;
 
-    public function createAnchorNode(?string $value = null) : AnchorNode;
+    public function createParagraphNode(SpanNode $span): ParagraphNode;
 
-    public function createListNode() : ListNode;
+    public function createAnchorNode(?string $value = null): AnchorNode;
 
-    public function createTableNode(TableSeparatorLineConfig $separatorLineConfig, string $type, LineChecker $lineChecker) : TableNode;
+    public function createListNode(): ListNode;
+
+    public function createTableNode(TableSeparatorLineConfig $separatorLineConfig, string $type, LineChecker $lineChecker): TableNode;
 
     /**
      * @param string|string[]|SpanNode $span
      */
-    public function createSpanNode(Parser $parser, $span) : SpanNode;
+    public function createSpanNode(Parser $parser, $span): SpanNode;
 
-    public function createDefinitionListNode(DefinitionList $definitionList) : DefinitionListNode;
+    public function createDefinitionListNode(DefinitionList $definitionList): DefinitionListNode;
 
-    public function createWrapperNode(?Node $node, string $before = '', string $after = '') : WrapperNode;
+    public function createWrapperNode(?Node $node, string $before = '', string $after = ''): WrapperNode;
 
-    public function createFigureNode(ImageNode $image, ?Node $document = null) : FigureNode;
+    public function createFigureNode(ImageNode $image, ?Node $document = null): FigureNode;
 
     /**
      * @param string[] $options
      */
-    public function createImageNode(string $url, array $options = []) : ImageNode;
+    public function createImageNode(string $url, array $options = []): ImageNode;
 
-    public function createMetaNode(string $key, string $value) : MetaNode;
+    public function createMetaNode(string $key, string $value): MetaNode;
 
-    public function createRawNode(string $value) : RawNode;
+    public function createRawNode(string $value): RawNode;
 
     /**
      * @param mixed[] $data
      */
-    public function createDummyNode(array $data) : DummyNode;
+    public function createDummyNode(array $data): DummyNode;
 
-    public function createMainNode() : MainNode;
+    public function createMainNode(): MainNode;
 
-    public function createCallableNode(callable $callable) : CallableNode;
+    public function createCallableNode(callable $callable): CallableNode;
 
-    public function createSectionBeginNode(TitleNode $titleNode) : SectionBeginNode;
+    public function createSectionBeginNode(TitleNode $titleNode): SectionBeginNode;
 
-    public function createSectionEndNode(TitleNode $titleNode) : SectionEndNode;
+    public function createSectionEndNode(TitleNode $titleNode): SectionEndNode;
 }

@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 
 class UrlGeneratorTest extends TestCase
 {
-    public function testGenerateUrlRelative() : void
+    public function testGenerateUrlRelative(): void
     {
         $configuration = $this->createMock(Configuration::class);
 
@@ -21,7 +21,7 @@ class UrlGeneratorTest extends TestCase
         self::assertSame('subdir/index', $urlGenerator->generateUrl('/subdir/index', 'index', ''));
     }
 
-    public function testGenerateUrlAbsoluteBaseUrl() : void
+    public function testGenerateUrlAbsoluteBaseUrl(): void
     {
         $configuration = $this->createMock(Configuration::class);
 
@@ -42,7 +42,7 @@ class UrlGeneratorTest extends TestCase
         );
     }
 
-    public function testAbsoluteUrl() : void
+    public function testAbsoluteUrl(): void
     {
         $configuration = $this->createMock(Configuration::class);
 
@@ -57,7 +57,7 @@ class UrlGeneratorTest extends TestCase
         self::assertSame('/subdir/test', $urlGenerator->absoluteUrl('/subdir', 'test'));
     }
 
-    public function testRelativeUrl() : void
+    public function testRelativeUrl(): void
     {
         $configuration = $this->createMock(Configuration::class);
 
@@ -74,7 +74,7 @@ class UrlGeneratorTest extends TestCase
         self::assertSame('../../subdir1/subdir2/test', $urlGenerator->relativeUrl('/subdir1/subdir2/test', '/subdir1/subdir2'));
     }
 
-    public function testCanonicalUrl() : void
+    public function testCanonicalUrl(): void
     {
         $configuration = $this->createMock(Configuration::class);
 

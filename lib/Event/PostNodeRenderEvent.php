@@ -19,7 +19,7 @@ final class PostNodeRenderEvent extends EventArgs
         $this->renderedNode = $renderedNode;
     }
 
-    public function getRenderedNode() : RenderedNode
+    public function getRenderedNode(): RenderedNode
     {
         return $this->renderedNode;
     }

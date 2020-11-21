@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 class ParseQueueTest extends TestCase
 {
-    public function testAddingFiles() : void
+    public function testAddingFiles(): void
     {
         $parseQueue = new ParseQueue();
         $parseQueue->addFile('file_needs_parsing1', true);

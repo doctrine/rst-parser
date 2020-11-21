@@ -8,11 +8,12 @@ use Doctrine\RST\Meta\CachedMetasLoader;
 use Doctrine\RST\Meta\MetaEntry;
 use Doctrine\RST\Meta\Metas;
 use PHPUnit\Framework\TestCase;
+
 use function sys_get_temp_dir;
 
 class CachedMetasLoaderTest extends TestCase
 {
-    public function testSaveAndLoadCachedMetaEntries() : void
+    public function testSaveAndLoadCachedMetaEntries(): void
     {
         $targetDir = sys_get_temp_dir();
         $meta1     = new MetaEntry('file1', 'url1', 'title1', [], [], [], [], 0);

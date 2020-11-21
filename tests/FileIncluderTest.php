@@ -9,6 +9,7 @@ use Doctrine\RST\FileIncluder;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
+
 use function trim;
 
 class FileIncluderTest extends TestCase
@@ -16,7 +17,7 @@ class FileIncluderTest extends TestCase
     /** @var Environment|MockObject */
     private $environment;
 
-    public function testInclude() : void
+    public function testInclude(): void
     {
         $this->environment->expects(self::once())
             ->method('absoluteRelativePath')
@@ -30,7 +31,7 @@ class FileIncluderTest extends TestCase
         self::assertSame('I was actually included', trim($contents));
     }
 
-    public function testIncludeWithEmptyIncludeRoot() : void
+    public function testIncludeWithEmptyIncludeRoot(): void
     {
         $this->environment->expects(self::once())
             ->method('absoluteRelativePath')
@@ -44,7 +45,7 @@ class FileIncluderTest extends TestCase
         self::assertSame('I was actually included', trim($contents));
     }
 
-    public function testShouldThrowExceptionOnInvalidFileInclude() : void
+    public function testShouldThrowExceptionOnInvalidFileInclude(): void
     {
         $this->environment->expects(self::once())
             ->method('absoluteRelativePath')
@@ -59,7 +60,7 @@ class FileIncluderTest extends TestCase
         $fileIncluder->includeFiles('.. include:: non-existent-file.rst');
     }
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         $this->environment = $this->createMock(Environment::class);
     }
