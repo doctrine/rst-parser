@@ -2,4 +2,4 @@
 /vendor/
 /.phpcs-cache
 /tests/*/output
-
+/.phpunit.result.cache

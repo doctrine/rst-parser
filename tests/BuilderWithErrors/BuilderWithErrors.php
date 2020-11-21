@@ -17,8 +17,8 @@ class BuilderWithErrors extends BaseBuilderTest
     public function testMalformedTable(): void
     {
         $contents = $this->getFileContents($this->targetFile('index.html'));
-        self::assertContains('<table', $contents);
-        self::assertNotContains('<tr', $contents);
+        self::assertStringContainsString('<table', $contents);
+        self::assertStringNotContainsString('<tr', $contents);
     }
 
     protected function getFixturesDirectory(): string

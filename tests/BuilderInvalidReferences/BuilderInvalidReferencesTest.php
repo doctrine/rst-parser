@@ -39,7 +39,7 @@ class BuilderInvalidReferencesTest extends BaseBuilderTest
 
         $contents = $this->getFileContents($this->targetFile('index.html'));
 
-        self::assertContains('<p>Test unresolved reference</p>', $contents);
+        self::assertStringContainsString('<p>Test unresolved reference</p>', $contents);
     }
 
     protected function getFixturesDirectory(): string

@@ -24,29 +24,29 @@ class BuilderUrlTest extends BaseBuilderTest
 
         $contents = $this->getFileContents($this->targetFile('index.html'));
 
-        self::assertContains(
+        self::assertStringContainsString(
             '<a href="https://www.domain.com/directory/index.html">Test reference url</a>',
             $contents
         );
 
-        self::assertContains(
+        self::assertStringContainsString(
             '<li id="index-html-base-url" class="toc-item"><a href="https://www.domain.com/directory/index.html#base-url">Base URL</a></li>',
             $contents
         );
 
         $contents = $this->getFileContents($this->targetFile('subdir/index.html'));
 
-        self::assertContains(
+        self::assertStringContainsString(
             '<a href="https://www.domain.com/directory/index.html">Test subdir reference url</a>',
             $contents
         );
 
-        self::assertContains(
+        self::assertStringContainsString(
             '<li id="index-html-base-url" class="toc-item"><a href="https://www.domain.com/directory/index.html#base-url">Base URL</a></li>',
             $contents
         );
 
-        self::assertContains(
+        self::assertStringContainsString(
             '<li id="file-html-subdirectory-file" class="toc-item"><a href="https://www.domain.com/directory/subdir/file.html#subdirectory-file">Subdirectory File</a></li>',
             $contents
         );
@@ -63,39 +63,39 @@ class BuilderUrlTest extends BaseBuilderTest
 
         $contents = $this->getFileContents($this->targetFile('index.html'));
 
-        self::assertContains(
+        self::assertStringContainsString(
             '<a href="https://www.domain.com/directory/index.html">Test reference url</a>',
             $contents
         );
 
-        self::assertContains(
+        self::assertStringContainsString(
             '<li id="index-html-base-url" class="toc-item"><a href="https://www.domain.com/directory/index.html#base-url">Base URL</a></li>',
             $contents
         );
 
         $contents = $this->getFileContents($this->targetFile('subdir/index.html'));
 
-        self::assertContains(
+        self::assertStringContainsString(
             '<a href="https://www.domain.com/directory/index.html">Test subdir reference url</a>',
             $contents
         );
 
-        self::assertContains(
+        self::assertStringContainsString(
             '<a href="file.html">Test subdir file reference path</a>',
             $contents
         );
 
-        self::assertContains(
+        self::assertStringContainsString(
             '<a href="index.html#subdirectory-index">Subdirectory Index</a>',
             $contents
         );
 
-        self::assertContains(
+        self::assertStringContainsString(
             '<li id="index-html-base-url" class="toc-item"><a href="https://www.domain.com/directory/index.html#base-url">Base URL</a></li>',
             $contents
         );
 
-        self::assertContains(
+        self::assertStringContainsString(
             '<li id="file-html-subdirectory-file" class="toc-item"><a href="file.html#subdirectory-file">Subdirectory File</a></li>',
             $contents
         );
@@ -107,29 +107,29 @@ class BuilderUrlTest extends BaseBuilderTest
 
         $contents = $this->getFileContents($this->targetFile('index.html'));
 
-        self::assertContains(
+        self::assertStringContainsString(
             '<a href="index.html">Test reference url</a>',
             $contents
         );
 
-        self::assertContains(
+        self::assertStringContainsString(
             '<li id="index-html-base-url" class="toc-item"><a href="index.html#base-url">Base URL</a></li>',
             $contents
         );
 
         $contents = $this->getFileContents($this->targetFile('subdir/index.html'));
 
-        self::assertContains(
+        self::assertStringContainsString(
             '<a href="../index.html">Test subdir reference url</a>',
             $contents
         );
 
-        self::assertContains(
+        self::assertStringContainsString(
             '<li id="index-html-base-url" class="toc-item"><a href="../index.html#base-url">Base URL</a></li>',
             $contents
         );
 
-        self::assertContains(
+        self::assertStringContainsString(
             '<li id="file-html-subdirectory-file" class="toc-item"><a href="file.html#subdirectory-file">Subdirectory File</a></li>',
             $contents
         );

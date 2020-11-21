@@ -30,8 +30,8 @@ class BuilderReferenceDoesNotExistTest extends BaseBuilderTest
 
         $contents = $this->getFileContents($this->targetFile('subdir/index.html'));
 
-        self::assertContains('<p>Test link 1 to</p>', $contents);
-        self::assertContains('<p>Test link 2 to</p>', $contents);
+        self::assertStringContainsString('<p>Test link 1 to</p>', $contents);
+        self::assertStringContainsString('<p>Test link 2 to</p>', $contents);
     }
 
     protected function getFixturesDirectory(): string

@@ -54,9 +54,9 @@ EOF;
 
         $result = $this->parser->parse($rst)->render();
 
-        self::assertContains('<p>does_not_exist</p>', $result);
-        self::assertContains('<p>Does Not Exist1</p>', $result);
-        self::assertContains('<p>Does Not Exist2</p>', $result);
+        self::assertStringContainsString('<p>does_not_exist</p>', $result);
+        self::assertStringContainsString('<p>Does Not Exist1</p>', $result);
+        self::assertStringContainsString('<p>Does Not Exist2</p>', $result);
     }
 
     protected function setUp(): void

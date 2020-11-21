@@ -32,11 +32,11 @@ class BuilderMalformedReferenceTest extends BaseBuilderTest
 
         $contents = $this->getFileContents($this->targetFile('subdir/another.html'));
 
-        self::assertContains('<p>Test link to</p>', $contents);
+        self::assertStringContainsString('<p>Test link to</p>', $contents);
 
         $contents = $this->getFileContents($this->targetFile('subdir/index.html'));
 
-        self::assertContains('<a id="test_reference"></a>', $contents);
+        self::assertStringContainsString('<a id="test_reference"></a>', $contents);
     }
 
     protected function getFixturesDirectory(): string

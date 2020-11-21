@@ -17,12 +17,14 @@ class BuilderIncludeTest extends BaseBuilderTest
     public function testTocTreeGlob(): void
     {
         self::assertTrue(file_exists($this->targetFile('index.html')));
-        self::assertContains('This file is included', file_get_contents($this->targetFile('index.html')));
+        self::assertStringContainsString('This file is included', file_get_contents($this->targetFile('index.html')));
 
         foreach ($this->builder->getDocuments()->getAll() as $document) {
             foreach ($document->getEnvironment()->getMetas()->getAll() as $meta) {
                 foreach ($meta->getTocs() as $toc) {
-                    self::assertNotContains('include.inc', $toc);
+                    foreach ($toc as $tocLine) {
+                        self::assertStringNotContainsString('include.inc', $tocLine);
+                    }
                 }
             }
         }

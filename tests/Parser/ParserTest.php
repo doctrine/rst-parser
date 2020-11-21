@@ -66,7 +66,7 @@ class ParserTest extends TestCase
         self::assertHasNode($document, static function ($node) {
             return $node instanceof ParagraphNode;
         }, 1);
-        self::assertContains('Hello world!', $document->render());
+        self::assertStringContainsString('Hello world!', $document->render());
     }
 
     /**
@@ -98,7 +98,7 @@ class ParserTest extends TestCase
             return $node instanceof QuoteNode;
         }, 1);
 
-        self::assertNotContains('::', $code->render());
+        self::assertStringNotContainsString('::', $code->render());
     }
 
     /**
@@ -222,7 +222,7 @@ class ParserTest extends TestCase
     {
         $document = $this->parse('replace.rst');
 
-        self::assertContains('Hello world!', $document->render());
+        self::assertStringContainsString('Hello world!', $document->render());
     }
 
     /**
@@ -232,7 +232,7 @@ class ParserTest extends TestCase
     {
         $document = $this->parse('inclusion.rst');
 
-        self::assertContains('I was actually included', $document->renderDocument());
+        self::assertStringContainsString('I was actually included', $document->renderDocument());
     }
 
     public function testThrowExceptionOnInvalidFileInclude(): void
@@ -242,7 +242,7 @@ class ParserTest extends TestCase
 
         $data = file_get_contents(__DIR__ . '/files/inclusion-bad.rst');
 
-        self::assertInternalType('string', $data);
+        self::assertIsString($data);
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Include ".. include:: non-existent-file.rst" does not exist or is not readable.');
@@ -317,8 +317,8 @@ class ParserTest extends TestCase
         self::assertInstanceOf('Doctrine\RST\Nodes\TitleNode', $nodes[1]);
         self::assertInstanceOf('Doctrine\RST\Nodes\ParagraphNode', $nodes[2]);
         self::assertInstanceOf('Doctrine\RST\Nodes\ParagraphNode', $nodes[3]);
-        self::assertContains('<p>Test this paragraph is present.</p>', $nodes[2]->render());
-        self::assertContains('<p>And this one as well.</p>', $nodes[3]->render());
+        self::assertStringContainsString('<p>Test this paragraph is present.</p>', $nodes[2]->render());
+        self::assertStringContainsString('<p>And this one as well.</p>', $nodes[3]->render());
     }
 
     public function testIncludesKeepScope(): void
@@ -346,7 +346,7 @@ class ParserTest extends TestCase
 
         $node = $nodes[3]->getValue();
         assert($node instanceof Node);
-        self::assertContains('This is included.', $node->render());
+        self::assertStringContainsString('This is included.', $node->render());
     }
 
     public function testIncludesPolicy(): void
@@ -362,8 +362,8 @@ class ParserTest extends TestCase
 
         // Default policy:
         $document = $parser->parseFile($directory . 'inclusion-policy.rst')->render();
-        self::assertContains('SUBDIRECTORY OK', $document);
-        self::assertContains('EXTERNAL FILE INCLUDED!', $document);
+        self::assertStringContainsString('SUBDIRECTORY OK', $document);
+        self::assertStringContainsString('EXTERNAL FILE INCLUDED!', $document);
 
         // Disbaled policy:
         $parser->setIncludePolicy(false);

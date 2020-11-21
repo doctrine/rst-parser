@@ -35,9 +35,9 @@ class BuilderTest extends BaseBuilderTest
     {
         $contents = $this->getFileContents($this->targetFile('index.html'));
 
-        self::assertContains('class="tip"', $contents);
-        self::assertContains('<code', $contents);
-        self::assertContains('</code>', $contents);
+        self::assertStringContainsString('class="tip"', $contents);
+        self::assertStringContainsString('<code', $contents);
+        self::assertStringContainsString('</code>', $contents);
     }
 
     protected function getFixturesDirectory(): string

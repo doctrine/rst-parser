@@ -101,7 +101,7 @@ class BuilderTest extends BaseBuilderTest
         $builder->build($this->sourceFile(), $this->targetFile());
 
         $contents = $this->getFileContents($this->targetFile('link-to-index.html'));
-        self::assertContains('Sumario', $contents);
+        self::assertStringContainsString('Sumario', $contents);
     }
 
     /**
@@ -111,8 +111,8 @@ class BuilderTest extends BaseBuilderTest
     {
         $contents = $this->getFileContents($this->targetFile('index.html'));
 
-        self::assertContains('"magic-link.html', $contents);
-        self::assertContains('Another page', $contents);
+        self::assertStringContainsString('"magic-link.html', $contents);
+        self::assertStringContainsString('Another page', $contents);
     }
 
     /**
@@ -122,11 +122,11 @@ class BuilderTest extends BaseBuilderTest
     {
         $contents = $this->getFileContents($this->targetFile('subdir/test.html'));
 
-        self::assertContains('"../to/resource"', $contents);
-        self::assertContains('"http://absolute/"', $contents);
+        self::assertStringContainsString('"../to/resource"', $contents);
+        self::assertStringContainsString('"http://absolute/"', $contents);
 
-        self::assertContains('"http://google.com"', $contents);
-        self::assertContains('"http://yahoo.com"', $contents);
+        self::assertStringContainsString('"http://google.com"', $contents);
+        self::assertStringContainsString('"http://yahoo.com"', $contents);
 
         self::assertSame(2, substr_count($contents, 'http://something.com'));
     }
@@ -135,8 +135,8 @@ class BuilderTest extends BaseBuilderTest
     {
         $contents = $this->getFileContents($this->targetFile('subdir/test.html'));
 
-        self::assertContains('<p>This is a <a href="test.html#test-anchor">test anchor</a></p>', $contents);
-        self::assertContains('<a id="test-anchor"></a>', $contents);
+        self::assertStringContainsString('<p>This is a <a href="test.html#test-anchor">test anchor</a></p>', $contents);
+        self::assertStringContainsString('<a id="test-anchor"></a>', $contents);
     }
 
     /**
@@ -146,23 +146,23 @@ class BuilderTest extends BaseBuilderTest
     {
         $contents = $this->getFileContents($this->targetFile('index.html'));
 
-        self::assertContains('"introduction.html', $contents);
-        self::assertContains('Introduction page', $contents);
+        self::assertStringContainsString('"introduction.html', $contents);
+        self::assertStringContainsString('Introduction page', $contents);
 
-        self::assertContains('"subdirective.html', $contents);
-        self::assertContains('"subdir/test.html', $contents);
-        self::assertContains('"subdir/file.html', $contents);
+        self::assertStringContainsString('"subdirective.html', $contents);
+        self::assertStringContainsString('"subdir/test.html', $contents);
+        self::assertStringContainsString('"subdir/file.html', $contents);
     }
 
     public function testToctreeGlob(): void
     {
         $contents = $this->getFileContents($this->targetFile('toc-glob.html'));
 
-        self::assertContains('magic-link.html#another-page', $contents);
-        self::assertContains('introduction.html#introduction-page', $contents);
-        self::assertContains('subdirective.html', $contents);
-        self::assertContains('subdir/test.html#subdirectory', $contents);
-        self::assertContains('subdir/file.html#heading-1', $contents);
+        self::assertStringContainsString('magic-link.html#another-page', $contents);
+        self::assertStringContainsString('introduction.html#introduction-page', $contents);
+        self::assertStringContainsString('subdirective.html', $contents);
+        self::assertStringContainsString('subdir/test.html#subdirectory', $contents);
+        self::assertStringContainsString('subdir/file.html#heading-1', $contents);
     }
 
     public function testToctreeGlobOrder(): void
@@ -170,35 +170,35 @@ class BuilderTest extends BaseBuilderTest
         $contents = $this->getFileContents($this->targetFile('toc-glob.html'));
 
         // assert `index` is first since it is defined first in toc-glob.rst
-        self::assertContains('<div class="toc"><ul><li id="index-html-summary" class="toc-item"><a href="index.html#summary">Summary</a></li>', $contents);
+        self::assertStringContainsString('<div class="toc"><ul><li id="index-html-summary" class="toc-item"><a href="index.html#summary">Summary</a></li>', $contents);
 
         // assert `index` is not included and duplicated by the glob
-        self::assertNotContains('</ul><li id="index-html-summary" class="toc-item"><a href="index.html#summary">Summary</a></li>', $contents);
+        self::assertStringNotContainsString('</ul><li id="index-html-summary" class="toc-item"><a href="index.html#summary">Summary</a></li>', $contents);
 
         // assert `introduction` is at the end after the glob since it is defined last in toc-glob.rst
-        self::assertContains('<a href="introduction.html#introduction-page">Introduction page</a></li></ul></div>', $contents);
+        self::assertStringContainsString('<a href="introduction.html#introduction-page">Introduction page</a></li></ul></div>', $contents);
     }
 
     public function testToctreeInSubdirectory(): void
     {
         $contents = $this->getFileContents($this->targetFile('subdir/toc.html'));
 
-        self::assertContains('../introduction.html#introduction-page', $contents);
-        self::assertContains('../subdirective.html#sub-directives', $contents);
-        self::assertContains('../magic-link.html#another-page', $contents);
-        self::assertContains('test.html#subdirectory', $contents);
-        self::assertContains('file.html#heading-1', $contents);
+        self::assertStringContainsString('../introduction.html#introduction-page', $contents);
+        self::assertStringContainsString('../subdirective.html#sub-directives', $contents);
+        self::assertStringContainsString('../magic-link.html#another-page', $contents);
+        self::assertStringContainsString('test.html#subdirectory', $contents);
+        self::assertStringContainsString('file.html#heading-1', $contents);
     }
 
     public function testAnchors(): void
     {
         $contents = $this->getFileContents($this->targetFile('index.html'));
 
-        self::assertContains('<a id="reference_anchor"></a>', $contents);
+        self::assertStringContainsString('<a id="reference_anchor"></a>', $contents);
 
         $contents = $this->getFileContents($this->targetFile('introduction.html'));
 
-        self::assertContains('<p>Reference to the <a href="index.html#reference_anchor">Summary Reference</a></p>', $contents);
+        self::assertStringContainsString('<p>Reference to the <a href="index.html#reference_anchor">Summary Reference</a></p>', $contents);
     }
 
     /**
@@ -208,45 +208,45 @@ class BuilderTest extends BaseBuilderTest
     {
         $contents = $this->getFileContents($this->targetFile('introduction.html'));
 
-        self::assertContains('<a href="index.html#toc">Index, paragraph toc</a>', $contents);
-        self::assertContains('<a href="index.html">Index</a>', $contents);
-        self::assertContains('<a href="index.html">Summary</a>', $contents);
-        self::assertContains('<a href="index.html">Link index absolutely</a>', $contents);
-        self::assertContains('<a href="subdir/test.html#test_reference">Test Reference</a>', $contents);
-        self::assertContains('<a href="subdir/test.html#camelCaseReference">Camel Case Reference</a>', $contents);
+        self::assertStringContainsString('<a href="index.html#toc">Index, paragraph toc</a>', $contents);
+        self::assertStringContainsString('<a href="index.html">Index</a>', $contents);
+        self::assertStringContainsString('<a href="index.html">Summary</a>', $contents);
+        self::assertStringContainsString('<a href="index.html">Link index absolutely</a>', $contents);
+        self::assertStringContainsString('<a href="subdir/test.html#test_reference">Test Reference</a>', $contents);
+        self::assertStringContainsString('<a href="subdir/test.html#camelCaseReference">Camel Case Reference</a>', $contents);
 
         $contents = $this->getFileContents($this->targetFile('subdir/test.html'));
 
-        self::assertContains('"../index.html"', $contents);
-        self::assertContains('<a href="test.html#subdir_same_doc_reference">the subdir same doc reference</a>', $contents);
-        self::assertContains('<a href="../index.html">Reference absolute to index</a>', $contents);
-        self::assertContains('<a href="file.html">Reference absolute to file</a>', $contents);
-        self::assertContains('<a href="file.html">Reference relative to file</a>', $contents);
+        self::assertStringContainsString('"../index.html"', $contents);
+        self::assertStringContainsString('<a href="test.html#subdir_same_doc_reference">the subdir same doc reference</a>', $contents);
+        self::assertStringContainsString('<a href="../index.html">Reference absolute to index</a>', $contents);
+        self::assertStringContainsString('<a href="file.html">Reference absolute to file</a>', $contents);
+        self::assertStringContainsString('<a href="file.html">Reference relative to file</a>', $contents);
 
         $contents = $this->getFileContents($this->targetFile('index.html'));
 
-        self::assertContains('Link to <a href="index.html#same_doc_reference">the same doc reference</a>', $contents);
-        self::assertContains('Link to <a href="index.html#same_doc_reference_ticks">the same doc reference with ticks</a>', $contents);
+        self::assertStringContainsString('Link to <a href="index.html#same_doc_reference">the same doc reference</a>', $contents);
+        self::assertStringContainsString('Link to <a href="index.html#same_doc_reference_ticks">the same doc reference with ticks</a>', $contents);
 
-        self::assertContains('Link to <a href="subdir/test.html#subdirectory">Subdirectory</a>', $contents);
-        self::assertContains('Link to <a href="subdir/test.html#subdirectory">Subdirectory Test</a>', $contents);
+        self::assertStringContainsString('Link to <a href="subdir/test.html#subdirectory">Subdirectory</a>', $contents);
+        self::assertStringContainsString('Link to <a href="subdir/test.html#subdirectory">Subdirectory Test</a>', $contents);
 
-        self::assertContains('Link to <a href="subdir/test.html#subdirectory-child">Subdirectory Child', $contents);
-        self::assertContains('Link to <a href="subdir/test.html#subdirectory-child">Subdirectory Child Test</a>', $contents);
+        self::assertStringContainsString('Link to <a href="subdir/test.html#subdirectory-child">Subdirectory Child', $contents);
+        self::assertStringContainsString('Link to <a href="subdir/test.html#subdirectory-child">Subdirectory Child Test</a>', $contents);
 
-        self::assertContains('Link to <a href="subdir/test.html#subdirectory-child-level-2">Subdirectory Child Level 2', $contents);
-        self::assertContains('Link to <a href="subdir/test.html#subdirectory-child-level-2">Subdirectory Child Level 2 Test</a>', $contents);
+        self::assertStringContainsString('Link to <a href="subdir/test.html#subdirectory-child-level-2">Subdirectory Child Level 2', $contents);
+        self::assertStringContainsString('Link to <a href="subdir/test.html#subdirectory-child-level-2">Subdirectory Child Level 2 Test</a>', $contents);
 
-        self::assertContains('Link to <a href="subdir/test.html#subdirectory-child-level-3">Subdirectory Child Level 3', $contents);
-        self::assertContains('Link to <a href="subdir/test.html#subdirectory-child-level-3">Subdirectory Child Level 3 Test</a>', $contents);
+        self::assertStringContainsString('Link to <a href="subdir/test.html#subdirectory-child-level-3">Subdirectory Child Level 3', $contents);
+        self::assertStringContainsString('Link to <a href="subdir/test.html#subdirectory-child-level-3">Subdirectory Child Level 3 Test</a>', $contents);
     }
 
     public function testSubdirReferences(): void
     {
         $contents = $this->getFileContents($this->targetFile('subdir/test.html'));
 
-        self::assertContains('<p>This is a <a href="test.html#test-anchor">test anchor</a></p>', $contents);
-        self::assertContains('<p>This is a <a href="test.html#test-subdir-anchor">test subdir reference with anchor</a></p>', $contents);
+        self::assertStringContainsString('<p>This is a <a href="test.html#test-anchor">test anchor</a></p>', $contents);
+        self::assertStringContainsString('<p>This is a <a href="test.html#test-subdir-anchor">test subdir reference with anchor</a></p>', $contents);
     }
 
     public function testFileInclude(): void
@@ -264,19 +264,19 @@ class BuilderTest extends BaseBuilderTest
 
         self::assertSame(2, substr_count($contents, '<div class="note">'));
         self::assertSame(2, substr_count($contents, '<li>'));
-        self::assertContains('</div>', $contents);
+        self::assertStringContainsString('</div>', $contents);
         self::assertSame(2, substr_count($contents, '</li>'));
         self::assertSame(1, substr_count($contents, '<ul>'));
         self::assertSame(1, substr_count($contents, '</ul>'));
-        self::assertContains('<p>This is a simple note!</p>', $contents);
-        self::assertContains('<h2>There is a title here</h2>', $contents);
+        self::assertStringContainsString('<p>This is a simple note!</p>', $contents);
+        self::assertStringContainsString('<h2>There is a title here</h2>', $contents);
     }
 
     public function testReferenceInDirective(): void
     {
         $contents = $this->getFileContents($this->targetFile('index.html'));
 
-        self::assertContains(
+        self::assertStringContainsString(
             '<div class="note"><p><a href="introduction.html">Reference in directory</a></p>',
             $contents
         );
@@ -286,22 +286,22 @@ class BuilderTest extends BaseBuilderTest
     {
         $contents = $this->getFileContents($this->targetFile('magic-link.html'));
 
-        self::assertContains(
+        self::assertStringContainsString(
             '<p>see <a href="magic-link.html#see-also">See also</a></p>',
             $contents
         );
 
-        self::assertContains(
+        self::assertStringContainsString(
             '<p>see <a href="magic-link.html#another-page">Another page</a></p>',
             $contents
         );
 
-        self::assertContains(
+        self::assertStringContainsString(
             '<p>see <a href="magic-link.html#test">test</a></p>',
             $contents
         );
 
-        self::assertContains(
+        self::assertStringContainsString(
             '<p>see <a href="magic-link.html#title-with-ampersand">title with ampersand &amp;</a></p>',
             $contents
         );
@@ -312,7 +312,7 @@ class BuilderTest extends BaseBuilderTest
         $contents = $this->getFileContents($this->targetFile('subdir/file.html'));
 
         foreach (range(1, 6) as $index) {
-            self::assertContains(
+            self::assertStringContainsString(
                 sprintf(
                     '<h%d>Heading %d</h%d>',
                     $index,
@@ -328,7 +328,7 @@ class BuilderTest extends BaseBuilderTest
     {
         $contents = $this->getFileContents($this->targetFile('subdir/test.html'));
 
-        self::assertContains(
+        self::assertStringContainsString(
             '<a href="subdir/test.html#em">em</a>',
             $contents
         );

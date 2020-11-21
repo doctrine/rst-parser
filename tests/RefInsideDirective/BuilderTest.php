@@ -25,6 +25,6 @@ class BuilderTest extends TestCase
 
         $expected = 'Test a reference in a directive <a href="file.html#some_reference">A file</a>.';
 
-        self::assertContains($expected, file_get_contents(__DIR__ . '/output/index.html'));
+        self::assertStringContainsString($expected, file_get_contents(__DIR__ . '/output/index.html'));
     }
 }
