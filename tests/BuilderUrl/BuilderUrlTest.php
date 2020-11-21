@@ -8,6 +8,7 @@ use Doctrine\RST\Builder;
 use Doctrine\RST\Configuration;
 use Doctrine\RST\Kernel;
 use Doctrine\Tests\RST\BaseBuilderTest;
+
 use function strpos;
 
 class BuilderUrlTest extends BaseBuilderTest
@@ -15,7 +16,7 @@ class BuilderUrlTest extends BaseBuilderTest
     /** @var Configuration */
     private $configuration;
 
-    public function testBaseUrl() : void
+    public function testBaseUrl(): void
     {
         $this->configuration->setBaseUrl('https://www.domain.com/directory');
 
@@ -51,10 +52,10 @@ class BuilderUrlTest extends BaseBuilderTest
         );
     }
 
-    public function testBaseUrlEnabledCallable() : void
+    public function testBaseUrlEnabledCallable(): void
     {
         $this->configuration->setBaseUrl('https://www.domain.com/directory');
-        $this->configuration->setBaseUrlEnabledCallable(static function (string $path) : bool {
+        $this->configuration->setBaseUrlEnabledCallable(static function (string $path): bool {
             return strpos($path, 'subdir/') !== 0;
         });
 
@@ -100,7 +101,7 @@ class BuilderUrlTest extends BaseBuilderTest
         );
     }
 
-    public function testRelativeUrl() : void
+    public function testRelativeUrl(): void
     {
         $this->builder->build($this->sourceFile(), $this->targetFile());
 
@@ -134,14 +135,14 @@ class BuilderUrlTest extends BaseBuilderTest
         );
     }
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         $this->configuration = new Configuration();
         $this->configuration->setUseCachedMetas(false);
         $this->builder = new Builder(new Kernel($this->configuration));
     }
 
-    protected function getFixturesDirectory() : string
+    protected function getFixturesDirectory(): string
     {
         return 'BuilderUrl';
     }

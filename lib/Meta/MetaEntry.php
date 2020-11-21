@@ -6,6 +6,7 @@ namespace Doctrine\RST\Meta;
 
 use Doctrine\RST\Environment;
 use LogicException;
+
 use function array_merge;
 use function array_search;
 use function in_array;
@@ -71,17 +72,17 @@ class MetaEntry
         $this->ctime   = $ctime;
     }
 
-    public function getFile() : string
+    public function getFile(): string
     {
         return $this->file;
     }
 
-    public function getUrl() : string
+    public function getUrl(): string
     {
         return $this->url;
     }
 
-    public function getTitle() : string
+    public function getTitle(): string
     {
         return $this->title;
     }
@@ -89,12 +90,12 @@ class MetaEntry
     /**
      * @return string[][]|string[][][]
      */
-    public function getTitles() : array
+    public function getTitles(): array
     {
         return $this->titles;
     }
 
-    public function hasTitle(string $text) : bool
+    public function hasTitle(string $text): bool
     {
         $titles = $this->getAllTitles();
 
@@ -112,7 +113,7 @@ class MetaEntry
     /**
      * @return mixed[][]
      */
-    public function getTocs() : array
+    public function getTocs(): array
     {
         return $this->tocs;
     }
@@ -120,7 +121,7 @@ class MetaEntry
     /**
      * @return string[]
      */
-    public function getDepends() : array
+    public function getDepends(): array
     {
         return $this->depends;
     }
@@ -128,7 +129,7 @@ class MetaEntry
     /**
      * Call to replace a dependency with the resolved, real filename.
      */
-    public function resolveDependency(string $originalDependency, ?string $newDependency) : void
+    public function resolveDependency(string $originalDependency, ?string $newDependency): void
     {
         if ($newDependency === null) {
             return;
@@ -149,7 +150,7 @@ class MetaEntry
         $this->resolvedDependencies[] = $originalDependency;
     }
 
-    public function removeDependency(string $dependency) : void
+    public function removeDependency(string $dependency): void
     {
         $key = array_search($dependency, $this->depends, true);
 
@@ -163,22 +164,22 @@ class MetaEntry
     /**
      * @return string[]
      */
-    public function getLinks() : array
+    public function getLinks(): array
     {
         return $this->links;
     }
 
-    public function getCtime() : int
+    public function getCtime(): int
     {
         return $this->ctime;
     }
 
-    public function setParent(string $parent) : void
+    public function setParent(string $parent): void
     {
         $this->parent = $parent;
     }
 
-    public function getParent() : ?string
+    public function getParent(): ?string
     {
         return $this->parent;
     }
@@ -188,7 +189,7 @@ class MetaEntry
      *
      * @return string[]
      */
-    private function getAllTitles(?array $entryTitles = null) : array
+    private function getAllTitles(?array $entryTitles = null): array
     {
         if ($entryTitles === null) {
             $entryTitles = $this->titles;

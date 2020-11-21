@@ -9,12 +9,13 @@ use Doctrine\RST\Environment;
 use Doctrine\RST\Nodes\DocumentNode;
 use Doctrine\RST\Nodes\Node;
 use Doctrine\RST\Parser;
+
 use function array_map;
 use function explode;
 
 class ClassDirective extends SubDirective
 {
-    public function getName() : string
+    public function getName(): string
     {
         return 'class';
     }
@@ -28,7 +29,7 @@ class ClassDirective extends SubDirective
         string $variable,
         string $data,
         array $options
-    ) : ?Node {
+    ): ?Node {
         if ($document === null) {
             return null;
         }
@@ -52,7 +53,7 @@ class ClassDirective extends SubDirective
      * @param Node[]   $nodes
      * @param string[] $classes
      */
-    private function setNodesClasses(array $nodes, array $classes) : void
+    private function setNodesClasses(array $nodes, array $classes): void
     {
         foreach ($nodes as $node) {
             $node->setClasses($classes);

@@ -8,6 +8,7 @@ use Doctrine\RST\Nodes\ListNode;
 use Doctrine\RST\Renderers\FormatListRenderer;
 use Doctrine\RST\Templates\TemplateRenderer;
 use RuntimeException;
+
 use function array_filter;
 use function array_map;
 use function array_values;
@@ -28,7 +29,7 @@ class ListRenderer implements FormatListRenderer
         $this->templateRenderer = $templateRenderer;
     }
 
-    public function createElement(string $text, string $prefix) : string
+    public function createElement(string $text, string $prefix): string
     {
         return $this->templateRenderer->render('list-item.html.twig', [
             'listNode' => $this->listNode,
@@ -40,7 +41,7 @@ class ListRenderer implements FormatListRenderer
     /**
      * @return string[]
      */
-    public function createList(bool $ordered) : array
+    public function createList(bool $ordered): array
     {
         $lines = explode("\n", $this->templateRenderer->render('list.html.twig', [
             'listNode' => $this->listNode,

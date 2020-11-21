@@ -9,6 +9,8 @@ use Doctrine\RST\Nodes\DocumentNode;
 use Doctrine\RST\Nodes\Node;
 use Doctrine\RST\Parser;
 
+use function assert;
+
 /**
  * Adds a stylesheet to a document, example:
  *
@@ -16,7 +18,7 @@ use Doctrine\RST\Parser;
  */
 class Stylesheet extends Directive
 {
-    public function getName() : string
+    public function getName(): string
     {
         return 'stylesheet';
     }
@@ -30,9 +32,9 @@ class Stylesheet extends Directive
         string $variable,
         string $data,
         array $options
-    ) : void {
-        /** @var DocumentNode $document */
+    ): void {
         $document = $parser->getDocument();
+        assert($document instanceof DocumentNode);
 
         $document->addCss($data);
 

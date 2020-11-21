@@ -14,7 +14,7 @@ use Doctrine\RST\Parser;
  */
 class Replace extends Directive
 {
-    public function getName() : string
+    public function getName(): string
     {
         return 'replace';
     }
@@ -27,7 +27,7 @@ class Replace extends Directive
         string $variable,
         string $data,
         array $options
-    ) : ?Node {
+    ): ?Node {
         return $parser->createSpanNode($data);
     }
 }

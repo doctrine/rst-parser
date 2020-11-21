@@ -21,6 +21,9 @@ use Doctrine\RST\Templates\TwigAdapter;
 use Doctrine\RST\Templates\TwigTemplateRenderer;
 use RuntimeException;
 use Twig\Environment as TwigEnvironment;
+
+use function assert;
+use function is_callable;
 use function sprintf;
 use function sys_get_temp_dir;
 
@@ -91,22 +94,22 @@ class Configuration
         ];
     }
 
-    public function getCacheDir() : string
+    public function getCacheDir(): string
     {
         return $this->cacheDir;
     }
 
-    public function setCacheDir(string $cacheDir) : void
+    public function setCacheDir(string $cacheDir): void
     {
         $this->cacheDir = $cacheDir;
     }
 
-    public function getTemplateRenderer() : TemplateRenderer
+    public function getTemplateRenderer(): TemplateRenderer
     {
         return $this->templateRenderer;
     }
 
-    public function setTemplateRenderer(TemplateRenderer $templateRenderer) : void
+    public function setTemplateRenderer(TemplateRenderer $templateRenderer): void
     {
         $this->templateRenderer = $templateRenderer;
     }
@@ -122,7 +125,7 @@ class Configuration
     /**
      * @return string[]
      */
-    public function getCustomTemplateDirs() : array
+    public function getCustomTemplateDirs(): array
     {
         return $this->customTemplateDirs;
     }
@@ -130,57 +133,57 @@ class Configuration
     /**
      * @param string[] $customTemplateDirs
      */
-    public function setCustomTemplateDirs(array $customTemplateDirs) : void
+    public function setCustomTemplateDirs(array $customTemplateDirs): void
     {
         $this->customTemplateDirs = $customTemplateDirs;
     }
 
-    public function addCustomTemplateDir(string $customTemplateDir) : void
+    public function addCustomTemplateDir(string $customTemplateDir): void
     {
         $this->customTemplateDirs[] = $customTemplateDir;
     }
 
-    public function getTheme() : string
+    public function getTheme(): string
     {
         return $this->theme;
     }
 
-    public function setTheme(string $theme) : void
+    public function setTheme(string $theme): void
     {
         $this->theme = $theme;
     }
 
-    public function getBaseUrl() : string
+    public function getBaseUrl(): string
     {
         return $this->baseUrl;
     }
 
-    public function setBaseUrl(string $baseUrl) : self
+    public function setBaseUrl(string $baseUrl): self
     {
         $this->baseUrl = $baseUrl;
 
         return $this;
     }
 
-    public function setBaseUrlEnabledCallable(?callable $baseUrlEnabledCallable) : void
+    public function setBaseUrlEnabledCallable(?callable $baseUrlEnabledCallable): void
     {
         $this->baseUrlEnabledCallable = $baseUrlEnabledCallable;
     }
 
-    public function getBaseUrlEnabledCallable() : ?callable
+    public function getBaseUrlEnabledCallable(): ?callable
     {
         return $this->baseUrlEnabledCallable;
     }
 
-    public function isBaseUrlEnabled(string $path) : bool
+    public function isBaseUrlEnabled(string $path): bool
     {
         if ($this->baseUrl === '') {
             return false;
         }
 
         if ($this->baseUrlEnabledCallable !== null) {
-            /** @var callable $baseUrlEnabledCallable */
             $baseUrlEnabledCallable = $this->baseUrlEnabledCallable;
+            assert(is_callable($baseUrlEnabledCallable));
 
             return $baseUrlEnabledCallable($path);
         }
@@ -188,57 +191,57 @@ class Configuration
         return true;
     }
 
-    public function isAbortOnError() : bool
+    public function isAbortOnError(): bool
     {
         return $this->abortOnError;
     }
 
-    public function abortOnError(bool $abortOnError) : void
+    public function abortOnError(bool $abortOnError): void
     {
         $this->abortOnError = $abortOnError;
     }
 
-    public function getIgnoreInvalidReferences() : bool
+    public function getIgnoreInvalidReferences(): bool
     {
         return $this->ignoreInvalidReferences;
     }
 
-    public function setIgnoreInvalidReferences(bool $ignoreInvalidReferences) : void
+    public function setIgnoreInvalidReferences(bool $ignoreInvalidReferences): void
     {
         $this->ignoreInvalidReferences = $ignoreInvalidReferences;
     }
 
-    public function setIndentHTML(bool $indentHTML) : void
+    public function setIndentHTML(bool $indentHTML): void
     {
         $this->indentHTML = $indentHTML;
     }
 
-    public function getIndentHTML() : bool
+    public function getIndentHTML(): bool
     {
         return $this->indentHTML;
     }
 
-    public function setUseCachedMetas(bool $useCachedMetas) : void
+    public function setUseCachedMetas(bool $useCachedMetas): void
     {
         $this->useCachedMetas = $useCachedMetas;
     }
 
-    public function getUseCachedMetas() : bool
+    public function getUseCachedMetas(): bool
     {
         return $this->useCachedMetas;
     }
 
-    public function getFileExtension() : string
+    public function getFileExtension(): string
     {
         return $this->fileExtension;
     }
 
-    public function setFileExtension(string $fileExtension) : void
+    public function setFileExtension(string $fileExtension): void
     {
         $this->fileExtension = $fileExtension;
     }
 
-    public function getNodeFactory(Environment $environment) : NodeFactory
+    public function getNodeFactory(Environment $environment): NodeFactory
     {
         if ($this->nodeFactory !== null) {
             return $this->nodeFactory;
@@ -272,32 +275,32 @@ class Configuration
         );
     }
 
-    public function setNodeFactory(NodeFactory $nodeFactory) : void
+    public function setNodeFactory(NodeFactory $nodeFactory): void
     {
         $this->nodeFactory = $nodeFactory;
     }
 
-    public function setEventManager(EventManager $eventManager) : void
+    public function setEventManager(EventManager $eventManager): void
     {
         $this->eventManager = $eventManager;
     }
 
-    public function getEventManager() : EventManager
+    public function getEventManager(): EventManager
     {
         return $this->eventManager;
     }
 
-    public function dispatchEvent(string $eventName, ?EventArgs $eventArgs = null) : void
+    public function dispatchEvent(string $eventName, ?EventArgs $eventArgs = null): void
     {
         $this->eventManager->dispatchEvent($eventName, $eventArgs);
     }
 
-    public function addFormat(Format $format) : void
+    public function addFormat(Format $format): void
     {
         $this->formats[$format->getFileExtension()] = $format;
     }
 
-    public function getFormat() : Format
+    public function getFormat(): Format
     {
         if (! isset($this->formats[$this->fileExtension])) {
             throw new RuntimeException(
@@ -308,12 +311,12 @@ class Configuration
         return $this->formats[$this->fileExtension];
     }
 
-    public function getSourceFileExtension() : string
+    public function getSourceFileExtension(): string
     {
         return $this->sourceFileExtension;
     }
 
-    private function createNodeInstantiator(Environment $environment, string $type, string $nodeClassName) : NodeInstantiator
+    private function createNodeInstantiator(Environment $environment, string $type, string $nodeClassName): NodeInstantiator
     {
         return new NodeInstantiator(
             $type,
@@ -324,7 +327,7 @@ class Configuration
         );
     }
 
-    private function getNodeRendererFactory(string $nodeClassName) : ?NodeRendererFactory
+    private function getNodeRendererFactory(string $nodeClassName): ?NodeRendererFactory
     {
         return $this->getFormat()->getNodeRendererFactories()[$nodeClassName] ?? null;
     }

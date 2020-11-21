@@ -15,7 +15,7 @@ use PHPUnit\Framework\TestCase;
 
 class DocumentParserTest extends TestCase
 {
-    public function testErrorWhenDirectiveThrowsException() : void
+    public function testErrorWhenDirectiveThrowsException(): void
     {
         $parser             = $this->createMock(Parser::class);
         $environment        = $this->createMock(Environment::class);

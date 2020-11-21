@@ -18,6 +18,8 @@ use Exception;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
+
+use function assert;
 use function count;
 use function file_get_contents;
 use function sprintf;
@@ -28,7 +30,7 @@ use function trim;
  */
 class ParserTest extends TestCase
 {
-    public function testGetSubParserPassesConfiguration() : void
+    public function testGetSubParserPassesConfiguration(): void
     {
         $parser = new Parser();
 
@@ -42,7 +44,7 @@ class ParserTest extends TestCase
     /**
      * Testing that code node value is good
      */
-    public function testCodeNode() : void
+    public function testCodeNode(): void
     {
         $document = $this->parse('code-block-lastline.rst');
 
@@ -57,7 +59,7 @@ class ParserTest extends TestCase
     /**
      * Testing paragraph nodes
      */
-    public function testParagraphNode() : void
+    public function testParagraphNode(): void
     {
         $document = $this->parse('paragraph.rst');
 
@@ -70,7 +72,7 @@ class ParserTest extends TestCase
     /**
      * Testing multi-paragraph nodes
      */
-    public function testParagraphNodes() : void
+    public function testParagraphNodes(): void
     {
         $document = $this->parse('paragraphs.rst');
 
@@ -82,7 +84,7 @@ class ParserTest extends TestCase
     /**
      * Testing quote and block code
      */
-    public function testBlockNode() : void
+    public function testBlockNode(): void
     {
         $quote = $this->parse('quote.rst');
 
@@ -102,7 +104,7 @@ class ParserTest extends TestCase
     /**
      * Testing the titling
      */
-    public function testTitles() : void
+    public function testTitles(): void
     {
         $document = $this->parse('title.rst');
 
@@ -122,7 +124,7 @@ class ParserTest extends TestCase
     /**
      * Testing the titling
      */
-    public function testList() : void
+    public function testList(): void
     {
         $document = $this->parse('list.rst');
 
@@ -145,7 +147,7 @@ class ParserTest extends TestCase
     /**
      * Testing the titles retrieving
      */
-    public function testGetTitles() : void
+    public function testGetTitles(): void
     {
         $document = $this->parse('titles.rst');
 
@@ -176,7 +178,7 @@ class ParserTest extends TestCase
     /**
      * Testing the table feature
      */
-    public function testTable() : void
+    public function testTable(): void
     {
         $document = $this->parse('table.rst');
 
@@ -187,8 +189,8 @@ class ParserTest extends TestCase
         self::assertSame(count($nodes), 1);
 
         if ($nodes !== []) {
-            /** @var TableNode $table */
             $table = $nodes[0];
+            assert($table instanceof TableNode);
 
             self::assertSame(3, $table->getCols());
             self::assertSame(3, $table->getRows());
@@ -206,8 +208,8 @@ class ParserTest extends TestCase
             return;
         }
 
-        /** @var TableNode $table */
         $table = $nodes[0];
+        assert($table instanceof TableNode);
 
         self::assertSame(3, $table->getCols());
         self::assertSame(2, $table->getRows());
@@ -216,7 +218,7 @@ class ParserTest extends TestCase
     /**
      * Tests that a simple replace works
      */
-    public function testReplace() : void
+    public function testReplace(): void
     {
         $document = $this->parse('replace.rst');
 
@@ -226,14 +228,14 @@ class ParserTest extends TestCase
     /**
      * Test the include:: pseudo-directive
      */
-    public function testInclusion() : void
+    public function testInclusion(): void
     {
         $document = $this->parse('inclusion.rst');
 
         self::assertContains('I was actually included', $document->renderDocument());
     }
 
-    public function testThrowExceptionOnInvalidFileInclude() : void
+    public function testThrowExceptionOnInvalidFileInclude(): void
     {
         $parser      = new Parser();
         $environment = $parser->getEnvironment();
@@ -248,7 +250,7 @@ class ParserTest extends TestCase
         $parser->parse($data);
     }
 
-    public function testDirective() : void
+    public function testDirective(): void
     {
         $document = $this->parse('directive.rst');
 
@@ -262,8 +264,8 @@ class ParserTest extends TestCase
             return;
         }
 
-        /** @var DummyNode $node */
         $node = $nodes[0];
+        assert($node instanceof DummyNode);
 
         $data = $node->data;
 
@@ -276,7 +278,7 @@ class ParserTest extends TestCase
         self::assertSame('123', $options['maxdepth']);
     }
 
-    public function testSubsequentParsesDontHaveTheSameTitleLevelOrder() : void
+    public function testSubsequentParsesDontHaveTheSameTitleLevelOrder(): void
     {
         $directory = __DIR__ . '/files';
 
@@ -284,28 +286,28 @@ class ParserTest extends TestCase
         $parser->getEnvironment()->setCurrentDirectory($directory);
 
         /** @var TitleNode[] $nodes1 */
-        /** @var TitleNode[] $nodes2 */
         $nodes1 = $parser->parseFile(sprintf('%s/mixed-titles-1.rst', $directory))->getNodes();
+        /** @var TitleNode[] $nodes2 */
         $nodes2 = $parser->parseFile(sprintf('%s/mixed-titles-2.rst', $directory))->getNodes();
 
-        /** @var TitleNode $node */
         $node = $nodes1[1];
+        assert($node instanceof TitleNode);
         self::assertSame(1, $node->getLevel());
 
-        /** @var TitleNode $node */
         $node = $nodes1[3];
+        assert($node instanceof TitleNode);
         self::assertSame(2, $node->getLevel());
 
-        /** @var TitleNode $node */
         $node = $nodes2[1];
+        assert($node instanceof TitleNode);
         self::assertSame(1, $node->getLevel(), 'Title level in second parse is influenced by first parse');
 
-        /** @var TitleNode $node */
         $node = $nodes2[3];
+        assert($node instanceof TitleNode);
         self::assertSame(2, $node->getLevel(), 'Title level in second parse is influenced by first parse');
     }
 
-    public function testNewlineBeforeAnIncludedIsntGobbled() : void
+    public function testNewlineBeforeAnIncludedIsntGobbled(): void
     {
         /** @var Node[] $nodes */
         $nodes = $this->parse('inclusion-newline.rst')->getNodes();
@@ -319,7 +321,7 @@ class ParserTest extends TestCase
         self::assertContains('<p>And this one as well.</p>', $nodes[3]->render());
     }
 
-    public function testIncludesKeepScope() : void
+    public function testIncludesKeepScope(): void
     {
         // See http://docutils.sourceforge.net/docs/ref/rst/directives.html#including-an-external-document-fragment
 
@@ -328,26 +330,26 @@ class ParserTest extends TestCase
 
         self::assertCount(4, $nodes);
 
-        /** @var Node $node */
         $node = $nodes[0]->getValue();
+        assert($node instanceof Node);
         self::assertSame("This first example will be parsed at the document level, and can\nthus contain any construct, including section headers.", $node->render());
 
-        /** @var Node $node */
         $node = $nodes[1]->getValue();
+        assert($node instanceof Node);
         self::assertSame('This is included.', $node->render());
 
-        /** @var Node $node */
         $node = $nodes[2]->getValue();
+        assert($node instanceof Node);
         self::assertSame('Back in the main document.', $node->render());
 
         self::assertInstanceOf('Doctrine\RST\Nodes\QuoteNode', $nodes[3]);
 
-        /** @var Node $node */
         $node = $nodes[3]->getValue();
+        assert($node instanceof Node);
         self::assertContains('This is included.', $node->render());
     }
 
-    public function testIncludesPolicy() : void
+    public function testIncludesPolicy(): void
     {
         $directory   = __DIR__ . '/files/';
         $parser      = new Parser();
@@ -379,7 +381,7 @@ class ParserTest extends TestCase
         self::assertCount(5, $nodes);
     }
 
-    public function testParseFileThrowsInvalidArgumentExceptionForMissingFile() : void
+    public function testParseFileThrowsInvalidArgumentExceptionForMissingFile(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('File at path does-not-exist.rst does not exist');
@@ -392,7 +394,7 @@ class ParserTest extends TestCase
      * Helper function, parses a file and returns the document
      * produced by the parser
      */
-    private function parse(string $file) : DocumentNode
+    private function parse(string $file): DocumentNode
     {
         $directory   = __DIR__ . '/files/';
         $parser      = new Parser();
@@ -411,7 +413,7 @@ class ParserTest extends TestCase
     /**
      * Asserts that a document has nodes that satisfy the function
      */
-    private function assertHasNode(DocumentNode $document, callable $function, ?int $count = null) : void
+    private function assertHasNode(DocumentNode $document, callable $function, ?int $count = null): void
     {
         $nodes = $document->getNodes($function);
         self::assertNotEmpty($nodes);

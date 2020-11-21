@@ -23,7 +23,7 @@ class LaTeXFormat implements Format
         $this->templateRenderer = $templateRenderer;
     }
 
-    public function getFileExtension() : string
+    public function getFileExtension(): string
     {
         return Format::LATEX;
     }
@@ -31,7 +31,7 @@ class LaTeXFormat implements Format
     /**
      * @return Directive[]
      */
-    public function getDirectives() : array
+    public function getDirectives(): array
     {
         return [
             new LaTeX\Directives\LaTeXMain(),
@@ -47,7 +47,7 @@ class LaTeXFormat implements Format
     /**
      * @return NodeRendererFactory[]
      */
-    public function getNodeRendererFactories() : array
+    public function getNodeRendererFactories(): array
     {
         return [
             Nodes\AnchorNode::class => new CallableNodeRendererFactory(

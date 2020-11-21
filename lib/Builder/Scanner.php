@@ -8,6 +8,7 @@ use Doctrine\RST\Meta\Metas;
 use InvalidArgumentException;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
+
 use function sprintf;
 use function strlen;
 use function substr;
@@ -48,7 +49,7 @@ class Scanner
      * objects, and avoids adding files to the parse queue that have
      * not changed and whose direct dependencies have not changed.
      */
-    public function scan() : ParseQueue
+    public function scan(): ParseQueue
     {
         // completely populate the splFileInfos property
         $this->fileInfos = [];
@@ -71,7 +72,7 @@ class Scanner
         return $parseQueue;
     }
 
-    private function doesFileRequireParsing(string $filename, ParseQueue $parseQueue) : bool
+    private function doesFileRequireParsing(string $filename, ParseQueue $parseQueue): bool
     {
         if (! isset($this->fileInfos[$filename])) {
             throw new InvalidArgumentException(sprintf('No file info found for "%s" - file does not exist.', $filename));
@@ -125,7 +126,7 @@ class Scanner
         return false;
     }
 
-    private function hasFileBeenUpdated(string $filename) : bool
+    private function hasFileBeenUpdated(string $filename): bool
     {
         $file = $this->fileInfos[$filename];
 
@@ -139,7 +140,7 @@ class Scanner
     /**
      * Converts foo/bar.rst to foo/bar (the document filename)
      */
-    private function getFilenameFromFile(SplFileInfo $file) : string
+    private function getFilenameFromFile(SplFileInfo $file): string
     {
         return substr($file->getRelativePathname(), 0, -(strlen($this->fileExtension) + 1));
     }

@@ -23,7 +23,7 @@ class HTMLFormat implements Format
         $this->templateRenderer = $templateRenderer;
     }
 
-    public function getFileExtension() : string
+    public function getFileExtension(): string
     {
         return Format::HTML;
     }
@@ -31,7 +31,7 @@ class HTMLFormat implements Format
     /**
      * @return Directive[]
      */
-    public function getDirectives() : array
+    public function getDirectives(): array
     {
         return [
             new HTML\Directives\Image(),
@@ -49,7 +49,7 @@ class HTMLFormat implements Format
     /**
      * @return NodeRendererFactory[]
      */
-    public function getNodeRendererFactories() : array
+    public function getNodeRendererFactories(): array
     {
         return [
             Nodes\AnchorNode::class => new CallableNodeRendererFactory(

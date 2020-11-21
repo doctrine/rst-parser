@@ -22,7 +22,7 @@ class SectionEndNodeRenderer implements NodeRenderer
         $this->templateRenderer = $templateRenderer;
     }
 
-    public function render() : string
+    public function render(): string
     {
         return $this->templateRenderer->render('section-end.html.twig', [
             'sectionEndNode' => $this->sectionEndNode,

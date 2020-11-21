@@ -16,7 +16,7 @@ class CallableNode extends Node
         $this->callable = $callable;
     }
 
-    public function getCallable() : callable
+    public function getCallable(): callable
     {
         return $this->callable;
     }

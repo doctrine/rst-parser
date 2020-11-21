@@ -13,6 +13,7 @@ use Doctrine\RST\Renderers\DefaultNodeRenderer;
 use Doctrine\RST\Renderers\NodeRenderer;
 use Doctrine\RST\Renderers\NodeRendererFactory;
 use Doctrine\RST\Renderers\RenderedNode;
+
 use function implode;
 use function strlen;
 use function substr;
@@ -43,27 +44,27 @@ abstract class Node
         $this->value = $value;
     }
 
-    public function setNodeRendererFactory(NodeRendererFactory $nodeRendererFactory) : void
+    public function setNodeRendererFactory(NodeRendererFactory $nodeRendererFactory): void
     {
         $this->nodeRendererFactory = $nodeRendererFactory;
     }
 
-    public function setEventManager(EventManager $eventManager) : void
+    public function setEventManager(EventManager $eventManager): void
     {
         $this->eventManager = $eventManager;
     }
 
-    public function setEnvironment(Environment $environment) : void
+    public function setEnvironment(Environment $environment): void
     {
         $this->environment = $environment;
     }
 
-    public function getEnvironment() : ?Environment
+    public function getEnvironment(): ?Environment
     {
         return $this->environment;
     }
 
-    public function render() : string
+    public function render(): string
     {
         $this->dispatchEvent(
             PreNodeRenderEvent::PRE_NODE_RENDER,
@@ -91,7 +92,7 @@ abstract class Node
     /**
      * @param Node|string|null $value
      */
-    public function setValue($value) : void
+    public function setValue($value): void
     {
         $this->value = $value;
     }
@@ -99,12 +100,12 @@ abstract class Node
     /**
      * @return string[]
      */
-    public function getClasses() : array
+    public function getClasses(): array
     {
         return $this->classes;
     }
 
-    public function getClassesString() : string
+    public function getClassesString(): string
     {
         return implode(' ', $this->classes);
     }
@@ -112,12 +113,12 @@ abstract class Node
     /**
      * @param string[] $classes
      */
-    public function setClasses(array $classes) : void
+    public function setClasses(array $classes): void
     {
         $this->classes = $classes;
     }
 
-    public function getValueString() : string
+    public function getValueString(): string
     {
         if ($this->value === null) {
             return '';
@@ -133,7 +134,7 @@ abstract class Node
     /**
      * @param string[] $lines
      */
-    protected function normalizeLines(array $lines) : string
+    protected function normalizeLines(array $lines): string
     {
         if ($lines !== []) {
             $firstLine = $lines[0];
@@ -154,12 +155,12 @@ abstract class Node
         return implode("\n", $lines);
     }
 
-    protected function doRender() : string
+    protected function doRender(): string
     {
         return $this->getRenderer()->render();
     }
 
-    protected function getRenderer() : NodeRenderer
+    protected function getRenderer(): NodeRenderer
     {
         $renderer = $this->createRenderer();
 
@@ -170,7 +171,7 @@ abstract class Node
         return $this->createDefaultRenderer();
     }
 
-    private function createRenderer() : ?NodeRenderer
+    private function createRenderer(): ?NodeRenderer
     {
         if ($this->nodeRendererFactory !== null) {
             return $this->nodeRendererFactory->create($this);
@@ -179,12 +180,12 @@ abstract class Node
         return null;
     }
 
-    private function createDefaultRenderer() : NodeRenderer
+    private function createDefaultRenderer(): NodeRenderer
     {
         return new DefaultNodeRenderer($this);
     }
 
-    public function dispatchEvent(string $eventName, ?EventArgs $eventArgs = null) : void
+    public function dispatchEvent(string $eventName, ?EventArgs $eventArgs = null): void
     {
         if ($this->eventManager === null) {
             return;

@@ -15,7 +15,7 @@ use Doctrine\RST\Parser;
  */
 class Stylesheet extends Directive
 {
-    public function getName() : string
+    public function getName(): string
     {
         return 'stylesheet';
     }
@@ -29,6 +29,6 @@ class Stylesheet extends Directive
         string $variable,
         string $data,
         array $options
-    ) : void {
+    ): void {
     }
 }

@@ -23,7 +23,7 @@ class ImageNode extends Node
         $this->options = $options;
     }
 
-    public function getUrl() : string
+    public function getUrl(): string
     {
         return $this->url;
     }
@@ -31,7 +31,7 @@ class ImageNode extends Node
     /**
      * @return string[]
      */
-    public function getOptions() : array
+    public function getOptions(): array
     {
         return $this->options;
     }

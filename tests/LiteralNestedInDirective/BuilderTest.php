@@ -8,6 +8,7 @@ use Doctrine\RST\Builder;
 use Doctrine\RST\Configuration;
 use Doctrine\RST\Kernel;
 use Doctrine\Tests\RST\BaseBuilderTest;
+
 use function shell_exec;
 
 /**
@@ -15,7 +16,7 @@ use function shell_exec;
  */
 class BuilderTest extends BaseBuilderTest
 {
-    protected function setUp() : void
+    protected function setUp(): void
     {
         shell_exec('rm -rf ' . $this->targetFile());
 
@@ -30,7 +31,7 @@ class BuilderTest extends BaseBuilderTest
         $this->builder->build($this->sourceFile(), $this->targetFile());
     }
 
-    public function testLiteralNestedInDirective() : void
+    public function testLiteralNestedInDirective(): void
     {
         $contents = $this->getFileContents($this->targetFile('index.html'));
 
@@ -39,7 +40,7 @@ class BuilderTest extends BaseBuilderTest
         self::assertContains('</code>', $contents);
     }
 
-    protected function getFixturesDirectory() : string
+    protected function getFixturesDirectory(): string
     {
         return 'LiteralNestedInDirective';
     }

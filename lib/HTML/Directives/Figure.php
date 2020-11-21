@@ -8,6 +8,7 @@ use Doctrine\RST\Directives\SubDirective;
 use Doctrine\RST\Nodes\Node;
 use Doctrine\RST\Parser;
 use Exception;
+
 use function sprintf;
 
 /**
@@ -21,7 +22,7 @@ use function sprintf;
  */
 class Figure extends SubDirective
 {
-    public function getName() : string
+    public function getName(): string
     {
         return 'figure';
     }
@@ -35,7 +36,7 @@ class Figure extends SubDirective
         string $variable,
         string $data,
         array $options
-    ) : ?Node {
+    ): ?Node {
         $environment = $parser->getEnvironment();
 
         $url = $environment->relativeUrl($data);

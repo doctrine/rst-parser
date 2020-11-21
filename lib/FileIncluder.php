@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\RST;
 
 use RuntimeException;
+
 use function explode;
 use function file_exists;
 use function file_get_contents;
@@ -35,7 +36,7 @@ class FileIncluder
         $this->includeRoot    = $includeRoot;
     }
 
-    public function includeFiles(string $document) : string
+    public function includeFiles(string $document): string
     {
         return preg_replace_callback(
             '/^\.\. include:: (.+)$/m',
@@ -62,7 +63,7 @@ class FileIncluder
         );
     }
 
-    private function isFileIncludeAllowed(string $path) : bool
+    private function isFileIncludeAllowed(string $path): bool
     {
         if (! $this->includeAllowed) {
             return false;

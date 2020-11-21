@@ -12,6 +12,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
+
 use function time;
 
 class ScannerTest extends TestCase
@@ -31,7 +32,7 @@ class ScannerTest extends TestCase
     /** @var MetaEntry[]|MockObject[] */
     private $metaEntryMocks = [];
 
-    public function testScanWithNoMetas() : void
+    public function testScanWithNoMetas(): void
     {
         $this->metas->expects(self::any())
             ->method('get')
@@ -53,7 +54,7 @@ class ScannerTest extends TestCase
         ], $parseQueue->getAllFilesThatRequireParsing());
     }
 
-    public function testScanWithNonFreshMetas() : void
+    public function testScanWithNonFreshMetas(): void
     {
         $file1InfoMock = $this->addFileMockToFinder('file1.rst');
         $file1MetaMock = $this->createMetaEntryMock('file1');
@@ -83,7 +84,7 @@ class ScannerTest extends TestCase
         self::assertFalse($parseQueue->doesFileRequireParsing('file2'));
     }
 
-    public function testScanWithDependencies() : void
+    public function testScanWithDependencies(): void
     {
         /*
          * Here is the dependency tree and results:
@@ -159,7 +160,7 @@ class ScannerTest extends TestCase
         ], $parseQueue->getAllFilesThatRequireParsing());
     }
 
-    public function testScanWithNonExistentDependency() : void
+    public function testScanWithNonExistentDependency(): void
     {
         /*
          *      * file1 (unmodified)
@@ -185,7 +186,7 @@ class ScannerTest extends TestCase
         self::assertSame(['file1'], $parseQueue->getAllFilesThatRequireParsing());
     }
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         $this->fileMocks = new ArrayIterator();
         $this->finder    = $this->createMock(Finder::class);

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\Tests\RST\BuilderInclude;
 
 use Doctrine\Tests\RST\BaseBuilderTest;
+
 use function file_exists;
 use function file_get_contents;
 
@@ -13,7 +14,7 @@ use function file_get_contents;
  */
 class BuilderIncludeTest extends BaseBuilderTest
 {
-    public function testTocTreeGlob() : void
+    public function testTocTreeGlob(): void
     {
         self::assertTrue(file_exists($this->targetFile('index.html')));
         self::assertContains('This file is included', file_get_contents($this->targetFile('index.html')));
@@ -27,7 +28,7 @@ class BuilderIncludeTest extends BaseBuilderTest
         }
     }
 
-    protected function getFixturesDirectory() : string
+    protected function getFixturesDirectory(): string
     {
         return 'BuilderInclude';
     }

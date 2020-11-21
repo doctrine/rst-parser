@@ -8,6 +8,7 @@ use Doctrine\RST\Meta\Metas;
 use Doctrine\RST\Nodes\DocumentNode;
 use InvalidArgumentException;
 use Symfony\Component\Filesystem\Filesystem;
+
 use function dirname;
 use function is_dir;
 use function sprintf;
@@ -34,22 +35,22 @@ class Documents
     /**
      * @return DocumentNode[]
      */
-    public function getAll() : array
+    public function getAll(): array
     {
         return $this->documents;
     }
 
-    public function hasDocument(string $file) : bool
+    public function hasDocument(string $file): bool
     {
         return isset($this->documents[$file]);
     }
 
-    public function addDocument(string $file, DocumentNode $document) : void
+    public function addDocument(string $file, DocumentNode $document): void
     {
         $this->documents[$file] = $document;
     }
 
-    public function render(string $targetDirectory) : void
+    public function render(string $targetDirectory): void
     {
         foreach ($this->documents as $file => $document) {
             $target = $this->getTargetOf($targetDirectory, $file);
@@ -64,7 +65,7 @@ class Documents
         }
     }
 
-    private function getTargetOf(string $targetDirectory, string $file) : string
+    private function getTargetOf(string $targetDirectory, string $file): string
     {
         $metaEntry = $this->metas->get($file);
 

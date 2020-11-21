@@ -14,7 +14,7 @@ class BuilderMalformedReferenceTest extends BaseBuilderTest
     /** @var Configuration */
     private $configuration;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         $this->configuration = new Configuration();
         $this->configuration->setUseCachedMetas(false);
@@ -24,7 +24,7 @@ class BuilderMalformedReferenceTest extends BaseBuilderTest
         $this->builder = new Builder(new Kernel($this->configuration));
     }
 
-    public function testMalformedReference() : void
+    public function testMalformedReference(): void
     {
         // test that invalid references can be ignored and no exception gets thrown
 
@@ -39,7 +39,7 @@ class BuilderMalformedReferenceTest extends BaseBuilderTest
         self::assertContains('<a id="test_reference"></a>', $contents);
     }
 
-    protected function getFixturesDirectory() : string
+    protected function getFixturesDirectory(): string
     {
         return 'BuilderMalformedReference';
     }

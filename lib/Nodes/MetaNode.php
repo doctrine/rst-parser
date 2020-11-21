@@ -20,12 +20,12 @@ class MetaNode extends Node
         $this->value = $value;
     }
 
-    public function getKey() : string
+    public function getKey(): string
     {
         return $this->key;
     }
 
-    public function getValue() : string
+    public function getValue(): string
     {
         return $this->value;
     }

@@ -23,7 +23,7 @@ class DocumentsTest extends TestCase
     /** @var Documents */
     private $documents;
 
-    public function testGetAll() : void
+    public function testGetAll(): void
     {
         $document1 = $this->createMock(DocumentNode::class);
         $document2 = $this->createMock(DocumentNode::class);
@@ -39,7 +39,7 @@ class DocumentsTest extends TestCase
         self::assertSame($expected, $this->documents->getAll());
     }
 
-    public function testHasDocument() : void
+    public function testHasDocument(): void
     {
         self::assertFalse($this->documents->hasDocument('document'));
 
@@ -50,7 +50,7 @@ class DocumentsTest extends TestCase
         self::assertTrue($this->documents->hasDocument('document'));
     }
 
-    public function testRender() : void
+    public function testRender(): void
     {
         $document = $this->createMock(DocumentNode::class);
 
@@ -82,7 +82,7 @@ class DocumentsTest extends TestCase
         $this->documents->render('/target');
     }
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         $this->filesystem = $this->createMock(Filesystem::class);
         $this->metas      = $this->createMock(Metas::class);

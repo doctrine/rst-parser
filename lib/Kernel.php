@@ -8,6 +8,7 @@ use Doctrine\RST\Directives\Directive;
 use Doctrine\RST\Nodes\DocumentNode;
 use Doctrine\RST\References\Doc;
 use Doctrine\RST\References\Reference;
+
 use function array_merge;
 
 class Kernel
@@ -46,7 +47,7 @@ class Kernel
         ], $this->createReferences(), $references);
     }
 
-    public function getConfiguration() : Configuration
+    public function getConfiguration(): Configuration
     {
         return $this->configuration;
     }
@@ -54,7 +55,7 @@ class Kernel
     /**
      * @return Directive[]
      */
-    public function getDirectives() : array
+    public function getDirectives(): array
     {
         return $this->directives;
     }
@@ -62,23 +63,23 @@ class Kernel
     /**
      * @return Reference[]
      */
-    public function getReferences() : array
+    public function getReferences(): array
     {
         return $this->references;
     }
 
-    public function postParse(DocumentNode $document) : void
+    public function postParse(DocumentNode $document): void
     {
     }
 
-    public function initBuilder(Builder $builder) : void
+    public function initBuilder(Builder $builder): void
     {
     }
 
     /**
      * @return Doc[]
      */
-    protected function createReferences() : array
+    protected function createReferences(): array
     {
         return [];
     }

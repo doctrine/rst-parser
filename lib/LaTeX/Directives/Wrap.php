@@ -21,7 +21,7 @@ class Wrap extends SubDirective
         $this->class = $class;
     }
 
-    public function getName() : string
+    public function getName(): string
     {
         return $this->class;
     }
@@ -35,7 +35,7 @@ class Wrap extends SubDirective
         string $variable,
         string $data,
         array $options
-    ) : ?Node {
+    ): ?Node {
         return $document;
     }
 }

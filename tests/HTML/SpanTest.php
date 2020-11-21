@@ -12,6 +12,8 @@ use Doctrine\RST\Parser;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
+use function assert;
+
 class SpanTest extends TestCase
 {
     /**
@@ -19,13 +21,13 @@ class SpanTest extends TestCase
      *
      * @dataProvider linkProvider
      */
-    public function testLink(string $url, string $title, array $attributes, string $expectedLink) : void
+    public function testLink(string $url, string $title, array $attributes, string $expectedLink): void
     {
-        /** @var Parser|MockObject $parser */
         $parser = $this->createMock(Parser::class);
+        assert($parser instanceof Parser || $parser instanceof MockObject);
 
-        /** @var Environment|MockObject $environment */
         $environment = $this->createMock(Environment::class);
+        assert($environment instanceof Environment || $environment instanceof MockObject);
 
         $parser->expects(self::once())
             ->method('getEnvironment')
@@ -51,7 +53,7 @@ class SpanTest extends TestCase
     /**
      * @return string[][]|string[][][]
      */
-    public function linkProvider() : array
+    public function linkProvider(): array
     {
         return [
             'no attributes #1' => [

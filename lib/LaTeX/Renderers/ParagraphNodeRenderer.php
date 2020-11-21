@@ -22,7 +22,7 @@ class ParagraphNodeRenderer implements NodeRenderer
         $this->templateRenderer = $templateRenderer;
     }
 
-    public function render() : string
+    public function render(): string
     {
         return $this->templateRenderer->render('paragraph.tex.twig', [
             'paragraphNode' => $this->paragraphNode,

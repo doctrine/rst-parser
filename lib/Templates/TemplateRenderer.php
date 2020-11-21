@@ -9,5 +9,5 @@ interface TemplateRenderer
     /**
      * @param mixed[] $parameters
      */
-    public function render(string $template, array $parameters = []) : string;
+    public function render(string $template, array $parameters = []): string;
 }

@@ -5,17 +5,18 @@ declare(strict_types=1);
 namespace Doctrine\Tests\RST\BuilderToctree;
 
 use Doctrine\Tests\RST\BaseBuilderTest;
+
 use function file_exists;
 
 class BuilderTocTreeTest extends BaseBuilderTest
 {
-    public function testTocTreeGlob() : void
+    public function testTocTreeGlob(): void
     {
         self::assertTrue(file_exists($this->targetFile('subdir/toctree.html')));
         self::assertTrue(file_exists($this->targetFile('orphaned/file.html')));
     }
 
-    public function testMaxDepth() : void
+    public function testMaxDepth(): void
     {
         $contents = $this->getFileContents($this->targetFile('index.html'));
 
@@ -32,7 +33,7 @@ class BuilderTocTreeTest extends BaseBuilderTest
         self::assertContains('<div class="toc"><ul><li id="index-html-title" class="toc-item"><a href="index.html#title">Title</a><ul><li id="index-html-max-depth-level-2" class="toc-item"><a href="index.html#max-depth-level-2">Max Depth Level 2</a><ul><li id="index-html-max-depth-level-3" class="toc-item"><a href="index.html#max-depth-level-3">Max Depth Level 3</a><ul><li id="index-html-max-depth-level-4" class="toc-item"><a href="index.html#max-depth-level-4">Max Depth Level 4</a></li></ul></li></ul></li></ul></li></ul></div>', $contents);
     }
 
-    protected function getFixturesDirectory() : string
+    protected function getFixturesDirectory(): string
     {
         return 'BuilderToctree';
     }

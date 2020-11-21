@@ -6,6 +6,7 @@ namespace Doctrine\RST\Toc;
 
 use Doctrine\RST\Environment;
 use Doctrine\RST\Nodes\Node;
+
 use function array_filter;
 use function array_map;
 use function explode;
@@ -31,7 +32,7 @@ class ToctreeBuilder
         Environment $environment,
         Node $node,
         array $options
-    ) : array {
+    ): array {
         $toctreeFiles = [];
 
         foreach ($this->parseToctreeFiles($node) as $file) {
@@ -63,7 +64,7 @@ class ToctreeBuilder
     /**
      * @return string[]
      */
-    private function parseToctreeFiles(Node $node) : array
+    private function parseToctreeFiles(Node $node): array
     {
         return array_filter(array_map('trim', explode("\n", $node->getValueString())), static function (string $file) {
             return $file !== '';
@@ -73,7 +74,7 @@ class ToctreeBuilder
     /**
      * @param mixed[] $options
      */
-    private function isGlob(array $options, string $file) : bool
+    private function isGlob(array $options, string $file): bool
     {
         return isset($options['glob']) && strpos($file, '*') !== false;
     }

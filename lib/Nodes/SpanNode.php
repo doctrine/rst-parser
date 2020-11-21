@@ -8,6 +8,7 @@ use Doctrine\RST\Environment;
 use Doctrine\RST\Parser;
 use Doctrine\RST\Span\SpanProcessor;
 use Doctrine\RST\Span\SpanToken;
+
 use function implode;
 use function is_array;
 
@@ -45,7 +46,7 @@ class SpanNode extends Node
         $this->tokens = $spanProcessor->getTokens();
     }
 
-    public function getValue() : string
+    public function getValue(): string
     {
         return $this->value;
     }
@@ -53,12 +54,12 @@ class SpanNode extends Node
     /**
      * @return SpanToken[]
      */
-    public function getTokens() : array
+    public function getTokens(): array
     {
         return $this->tokens;
     }
 
-    public function getEnvironment() : Environment
+    public function getEnvironment(): Environment
     {
         return $this->environment;
     }

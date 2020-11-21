@@ -20,17 +20,17 @@ class RenderedNode
         $this->rendered = $rendered;
     }
 
-    public function getNode() : Node
+    public function getNode(): Node
     {
         return $this->node;
     }
 
-    public function setRendered(string $rendered) : void
+    public function setRendered(string $rendered): void
     {
         $this->rendered = $rendered;
     }
 
-    public function getRendered() : string
+    public function getRendered(): string
     {
         return $this->rendered;
     }

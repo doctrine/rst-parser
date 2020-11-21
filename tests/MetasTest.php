@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 
 class MetasTest extends TestCase
 {
-    public function testFindLinkMetaEntry() : void
+    public function testFindLinkMetaEntry(): void
     {
         $entry1 = new MetaEntry(
             'test.rst',

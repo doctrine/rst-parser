@@ -22,7 +22,7 @@ class TitleNodeRenderer implements NodeRenderer
         $this->templateRenderer = $templateRenderer;
     }
 
-    public function render() : string
+    public function render(): string
     {
         $type = 'chapter';
 

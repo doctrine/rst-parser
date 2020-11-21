@@ -12,15 +12,15 @@ interface Format
     public const HTML  = 'html';
     public const LATEX = 'tex';
 
-    public function getFileExtension() : string;
+    public function getFileExtension(): string;
 
     /**
      * @return Directive[]
      */
-    public function getDirectives() : array;
+    public function getDirectives(): array;
 
     /**
      * @return NodeRendererFactory[]
      */
-    public function getNodeRendererFactories() : array;
+    public function getNodeRendererFactories(): array;
 }

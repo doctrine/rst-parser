@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\RST\Templates;
 
 use Doctrine\RST\Configuration;
+
 use function rtrim;
 
 class TwigTemplateRenderer implements TemplateRenderer
@@ -20,7 +21,7 @@ class TwigTemplateRenderer implements TemplateRenderer
     /**
      * @param mixed[] $parameters
      */
-    public function render(string $template, array $parameters = []) : string
+    public function render(string $template, array $parameters = []): string
     {
         return rtrim($this->configuration->getTemplateEngine()->render($template, $parameters), "\n");
     }

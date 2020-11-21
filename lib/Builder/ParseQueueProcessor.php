@@ -9,6 +9,7 @@ use Doctrine\RST\Kernel;
 use Doctrine\RST\Meta\Metas;
 use Doctrine\RST\Nodes\DocumentNode;
 use Doctrine\RST\Parser;
+
 use function filectime;
 
 class ParseQueueProcessor
@@ -52,14 +53,14 @@ class ParseQueueProcessor
         $this->fileExtension   = $fileExtension;
     }
 
-    public function process(ParseQueue $parseQueue) : void
+    public function process(ParseQueue $parseQueue): void
     {
         foreach ($parseQueue->getAllFilesThatRequireParsing() as $file) {
             $this->processFile($file);
         }
     }
 
-    private function processFile(string $file) : void
+    private function processFile(string $file): void
     {
         $fileAbsolutePath = $this->buildFileAbsolutePath($file);
 
@@ -85,7 +86,7 @@ class ParseQueueProcessor
         );
     }
 
-    private function createFileParser(string $file) : Parser
+    private function createFileParser(string $file): Parser
     {
         $parser = new Parser($this->kernel);
 
@@ -99,12 +100,12 @@ class ParseQueueProcessor
         return $parser;
     }
 
-    private function buildFileAbsolutePath(string $file) : string
+    private function buildFileAbsolutePath(string $file): string
     {
         return $this->directory . '/' . $file . '.rst';
     }
 
-    private function buildDocumentUrl(DocumentNode $document) : string
+    private function buildDocumentUrl(DocumentNode $document): string
     {
         return $document->getEnvironment()->getUrl() . '.' . $this->fileExtension;
     }

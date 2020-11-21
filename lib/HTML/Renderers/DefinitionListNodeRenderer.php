@@ -22,7 +22,7 @@ class DefinitionListNodeRenderer implements NodeRenderer
         $this->templateRenderer   = $templateRenderer;
     }
 
-    public function render() : string
+    public function render(): string
     {
         return $this->templateRenderer->render('definition-list.html.twig', [
             'definitionListNode' => $this->definitionListNode,

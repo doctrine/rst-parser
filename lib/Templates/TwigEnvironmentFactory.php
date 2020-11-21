@@ -7,11 +7,12 @@ namespace Doctrine\RST\Templates;
 use Doctrine\RST\Configuration;
 use Twig\Environment as TwigEnvironment;
 use Twig\Loader\FilesystemLoader;
+
 use function sprintf;
 
 class TwigEnvironmentFactory
 {
-    public static function createTwigEnvironment(Configuration $configuration) : TwigEnvironment
+    public static function createTwigEnvironment(Configuration $configuration): TwigEnvironment
     {
         $loader = new FilesystemLoader(self::getTemplatesDirs($configuration));
 
@@ -22,9 +23,9 @@ class TwigEnvironmentFactory
         ]);
     }
 
-    private static function getThemeDir(Configuration $configuration, string $templatesDir, ?string $theme = null) : string
+    private static function getThemeDir(Configuration $configuration, string $templatesDir, ?string $theme = null): string
     {
-        $theme         = $theme ?? $configuration->getTheme();
+        $theme         =  $theme ?? $configuration->getTheme();
         $fileExtension = $configuration->getFileExtension();
 
         return $templatesDir . '/' . $theme . '/' . $fileExtension;
@@ -33,7 +34,7 @@ class TwigEnvironmentFactory
     /**
      * @return string[]
      */
-    private static function getTemplatesDirs(Configuration $configuration) : array
+    private static function getTemplatesDirs(Configuration $configuration): array
     {
         $themeDirs = [];
 

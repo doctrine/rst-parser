@@ -11,6 +11,7 @@ use Doctrine\RST\Nodes\SpanNode;
 use Doctrine\RST\Parser\DocumentParser;
 use InvalidArgumentException;
 use RuntimeException;
+
 use function file_exists;
 use function file_get_contents;
 use function sprintf;
@@ -57,12 +58,12 @@ class Parser
         $this->initReferences();
     }
 
-    public function getSubParser() : Parser
+    public function getSubParser(): Parser
     {
         return new Parser($this->kernel, $this->environment);
     }
 
-    public function getNodeFactory() : NodeFactory
+    public function getNodeFactory(): NodeFactory
     {
         return $this->configuration->getNodeFactory($this->environment);
     }
@@ -70,12 +71,12 @@ class Parser
     /**
      * @param mixed[] $parameters
      */
-    public function renderTemplate(string $template, array $parameters = []) : string
+    public function renderTemplate(string $template, array $parameters = []): string
     {
         return $this->configuration->getTemplateRenderer()->render($template, $parameters);
     }
 
-    public function initDirectives() : void
+    public function initDirectives(): void
     {
         $directives = $this->kernel->getDirectives();
 
@@ -84,7 +85,7 @@ class Parser
         }
     }
 
-    public function initReferences() : void
+    public function initReferences(): void
     {
         $references = $this->kernel->getReferences();
 
@@ -93,22 +94,22 @@ class Parser
         }
     }
 
-    public function getEnvironment() : Environment
+    public function getEnvironment(): Environment
     {
         return $this->environment;
     }
 
-    public function getKernel() : Kernel
+    public function getKernel(): Kernel
     {
         return $this->kernel;
     }
 
-    public function registerDirective(Directive $directive) : void
+    public function registerDirective(Directive $directive): void
     {
         $this->directives[$directive->getName()] = $directive;
     }
 
-    public function getDocument() : DocumentNode
+    public function getDocument(): DocumentNode
     {
         if ($this->documentParser === null) {
             throw new RuntimeException('Nothing has been parsed yet.');
@@ -117,22 +118,22 @@ class Parser
         return $this->documentParser->getDocument();
     }
 
-    public function getFilename() : string
+    public function getFilename(): string
     {
         return $this->filename ?: '(unknown)';
     }
 
-    public function getIncludeAllowed() : bool
+    public function getIncludeAllowed(): bool
     {
         return $this->includeAllowed;
     }
 
-    public function getIncludeRoot() : string
+    public function getIncludeRoot(): string
     {
         return $this->includeRoot;
     }
 
-    public function setIncludePolicy(bool $includeAllowed, ?string $directory = null) : self
+    public function setIncludePolicy(bool $includeAllowed, ?string $directory = null): self
     {
         $this->includeAllowed = $includeAllowed;
 
@@ -146,31 +147,31 @@ class Parser
     /**
      * @param string|string[]|SpanNode $span
      */
-    public function createSpanNode($span) : SpanNode
+    public function createSpanNode($span): SpanNode
     {
         return $this->getNodeFactory()->createSpanNode($this, $span);
     }
 
-    public function parse(string $contents) : DocumentNode
+    public function parse(string $contents): DocumentNode
     {
         $this->getEnvironment()->reset();
 
         return $this->parseLocal($contents);
     }
 
-    public function parseLocal(string $contents) : DocumentNode
+    public function parseLocal(string $contents): DocumentNode
     {
         $this->documentParser = $this->createDocumentParser();
 
         return $this->documentParser->parse($contents);
     }
 
-    public function parseFragment(string $contents) : DocumentNode
+    public function parseFragment(string $contents): DocumentNode
     {
         return $this->createDocumentParser()->parse($contents);
     }
 
-    public function parseFile(string $file) : DocumentNode
+    public function parseFile(string $file): DocumentNode
     {
         if (! file_exists($file)) {
             throw new InvalidArgumentException(sprintf('File at path %s does not exist', $file));
@@ -187,7 +188,7 @@ class Parser
         return $this->parse($contents);
     }
 
-    private function createDocumentParser() : DocumentParser
+    private function createDocumentParser(): DocumentParser
     {
         return new DocumentParser(
             $this,

@@ -7,6 +7,7 @@ namespace Doctrine\Tests\RST\Builder;
 use Doctrine\RST\Builder;
 use Doctrine\RST\Meta\MetaEntry;
 use Doctrine\Tests\RST\BaseBuilderTest;
+
 use function array_unique;
 use function array_values;
 use function file_exists;
@@ -25,7 +26,7 @@ use function unserialize;
  */
 class BuilderTest extends BaseBuilderTest
 {
-    public function testRecreate() : void
+    public function testRecreate(): void
     {
         $builder = $this->builder->recreate();
 
@@ -36,7 +37,7 @@ class BuilderTest extends BaseBuilderTest
     /**
      * Tests that the build produced the excepted documents
      */
-    public function testBuild() : void
+    public function testBuild(): void
     {
         self::assertTrue(is_dir($this->targetFile()));
         self::assertTrue(file_exists($this->targetFile('index.html')));
@@ -47,7 +48,7 @@ class BuilderTest extends BaseBuilderTest
         self::assertTrue(file_exists($this->targetFile('subdir/file.html')));
     }
 
-    public function testCachedMetas() : void
+    public function testCachedMetas(): void
     {
         // check that metas were cached
         self::assertTrue(file_exists($this->targetFile('metas.php')));
@@ -106,7 +107,7 @@ class BuilderTest extends BaseBuilderTest
     /**
      * Tests the ..url :: directive
      */
-    public function testUrl() : void
+    public function testUrl(): void
     {
         $contents = $this->getFileContents($this->targetFile('index.html'));
 
@@ -117,7 +118,7 @@ class BuilderTest extends BaseBuilderTest
     /**
      * Tests the links
      */
-    public function testLinks() : void
+    public function testLinks(): void
     {
         $contents = $this->getFileContents($this->targetFile('subdir/test.html'));
 
@@ -130,7 +131,7 @@ class BuilderTest extends BaseBuilderTest
         self::assertSame(2, substr_count($contents, 'http://something.com'));
     }
 
-    public function testAnchor() : void
+    public function testAnchor(): void
     {
         $contents = $this->getFileContents($this->targetFile('subdir/test.html'));
 
@@ -141,7 +142,7 @@ class BuilderTest extends BaseBuilderTest
     /**
      * Tests that the index toctree worked
      */
-    public function testToctree() : void
+    public function testToctree(): void
     {
         $contents = $this->getFileContents($this->targetFile('index.html'));
 
@@ -153,7 +154,7 @@ class BuilderTest extends BaseBuilderTest
         self::assertContains('"subdir/file.html', $contents);
     }
 
-    public function testToctreeGlob() : void
+    public function testToctreeGlob(): void
     {
         $contents = $this->getFileContents($this->targetFile('toc-glob.html'));
 
@@ -164,7 +165,7 @@ class BuilderTest extends BaseBuilderTest
         self::assertContains('subdir/file.html#heading-1', $contents);
     }
 
-    public function testToctreeGlobOrder() : void
+    public function testToctreeGlobOrder(): void
     {
         $contents = $this->getFileContents($this->targetFile('toc-glob.html'));
 
@@ -178,7 +179,7 @@ class BuilderTest extends BaseBuilderTest
         self::assertContains('<a href="introduction.html#introduction-page">Introduction page</a></li></ul></div>', $contents);
     }
 
-    public function testToctreeInSubdirectory() : void
+    public function testToctreeInSubdirectory(): void
     {
         $contents = $this->getFileContents($this->targetFile('subdir/toc.html'));
 
@@ -189,7 +190,7 @@ class BuilderTest extends BaseBuilderTest
         self::assertContains('file.html#heading-1', $contents);
     }
 
-    public function testAnchors() : void
+    public function testAnchors(): void
     {
         $contents = $this->getFileContents($this->targetFile('index.html'));
 
@@ -203,7 +204,7 @@ class BuilderTest extends BaseBuilderTest
     /**
      * Testing references to other documents
      */
-    public function testReferences() : void
+    public function testReferences(): void
     {
         $contents = $this->getFileContents($this->targetFile('introduction.html'));
 
@@ -240,7 +241,7 @@ class BuilderTest extends BaseBuilderTest
         self::assertContains('Link to <a href="subdir/test.html#subdirectory-child-level-3">Subdirectory Child Level 3 Test</a>', $contents);
     }
 
-    public function testSubdirReferences() : void
+    public function testSubdirReferences(): void
     {
         $contents = $this->getFileContents($this->targetFile('subdir/test.html'));
 
@@ -248,7 +249,7 @@ class BuilderTest extends BaseBuilderTest
         self::assertContains('<p>This is a <a href="test.html#test-subdir-anchor">test subdir reference with anchor</a></p>', $contents);
     }
 
-    public function testFileInclude() : void
+    public function testFileInclude(): void
     {
         $contents = $this->getFileContents($this->targetFile('subdir/test.html'));
         self::assertSame(2, substr_count($contents, 'This file is included'));
@@ -257,7 +258,7 @@ class BuilderTest extends BaseBuilderTest
     /**
      * Testing wrapping sub directive
      */
-    public function testSubDirective() : void
+    public function testSubDirective(): void
     {
         $contents = $this->getFileContents($this->targetFile('subdirective.html'));
 
@@ -271,7 +272,7 @@ class BuilderTest extends BaseBuilderTest
         self::assertContains('<h2>There is a title here</h2>', $contents);
     }
 
-    public function testReferenceInDirective() : void
+    public function testReferenceInDirective(): void
     {
         $contents = $this->getFileContents($this->targetFile('index.html'));
 
@@ -281,7 +282,7 @@ class BuilderTest extends BaseBuilderTest
         );
     }
 
-    public function testTitleLinks() : void
+    public function testTitleLinks(): void
     {
         $contents = $this->getFileContents($this->targetFile('magic-link.html'));
 
@@ -306,7 +307,7 @@ class BuilderTest extends BaseBuilderTest
         );
     }
 
-    public function testHeadings() : void
+    public function testHeadings(): void
     {
         $contents = $this->getFileContents($this->targetFile('subdir/file.html'));
 
@@ -323,7 +324,7 @@ class BuilderTest extends BaseBuilderTest
         }
     }
 
-    public function testReferenceToTitleWith2CharactersLong() : void
+    public function testReferenceToTitleWith2CharactersLong(): void
     {
         $contents = $this->getFileContents($this->targetFile('subdir/test.html'));
 
@@ -333,7 +334,7 @@ class BuilderTest extends BaseBuilderTest
         );
     }
 
-    protected function getFixturesDirectory() : string
+    protected function getFixturesDirectory(): string
     {
         return 'Builder';
     }

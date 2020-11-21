@@ -6,6 +6,7 @@ namespace Doctrine\Tests\RST;
 
 use Doctrine\RST\Configuration;
 use PHPUnit\Framework\TestCase;
+
 use function strpos;
 
 class ConfigurationTest extends TestCase
@@ -13,7 +14,7 @@ class ConfigurationTest extends TestCase
     /** @var Configuration */
     private $configuration;
 
-    public function testBaseUrl() : void
+    public function testBaseUrl(): void
     {
         self::assertSame('', $this->configuration->getBaseUrl());
 
@@ -22,13 +23,13 @@ class ConfigurationTest extends TestCase
         self::assertSame('https://www.domain.com/directory', $this->configuration->getBaseUrl());
     }
 
-    public function testBaseUrlEnabledCallable() : void
+    public function testBaseUrlEnabledCallable(): void
     {
         $callable = $this->configuration->getBaseUrlEnabledCallable();
 
         self::assertNull($callable);
 
-        $callable = static function (string $path) : bool {
+        $callable = static function (string $path): bool {
             return strpos($path, 'use-base-url') !== false;
         };
 
@@ -37,11 +38,11 @@ class ConfigurationTest extends TestCase
         self::assertSame($callable, $this->configuration->getBaseUrlEnabledCallable());
     }
 
-    public function testIsBaseUrlEnabled() : void
+    public function testIsBaseUrlEnabled(): void
     {
         self::assertFalse($this->configuration->isBaseUrlEnabled('/path'));
 
-        $callable = static function (string $path) : bool {
+        $callable = static function (string $path): bool {
             return strpos($path, '/use-base-url') !== false;
         };
 
@@ -52,7 +53,7 @@ class ConfigurationTest extends TestCase
         self::assertFalse($this->configuration->isBaseUrlEnabled('/path/do-not-use-base-url'));
     }
 
-    public function testAbortOnError() : void
+    public function testAbortOnError(): void
     {
         self::assertTrue($this->configuration->isAbortOnError());
 
@@ -61,7 +62,7 @@ class ConfigurationTest extends TestCase
         self::assertFalse($this->configuration->isAbortOnError());
     }
 
-    public function testIgnoreInvalidReferences() : void
+    public function testIgnoreInvalidReferences(): void
     {
         self::assertFalse($this->configuration->getIgnoreInvalidReferences());
 
@@ -70,7 +71,7 @@ class ConfigurationTest extends TestCase
         self::assertTrue($this->configuration->getIgnoreInvalidReferences());
     }
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         $this->configuration = new Configuration();
     }

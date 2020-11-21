@@ -6,6 +6,7 @@ namespace Doctrine\RST\Nodes;
 
 use Doctrine\RST\Parser;
 use Doctrine\RST\Parser\LineChecker;
+
 use function array_fill_keys;
 use function array_keys;
 use function array_map;
@@ -52,12 +53,12 @@ class TableNode extends Node
         $this->lineChecker = $lineChecker;
     }
 
-    public function getCols() : int
+    public function getCols(): int
     {
         return count($this->parts[2]);
     }
 
-    public function getRows() : int
+    public function getRows(): int
     {
         return count($this->data) - 1;
     }
@@ -65,7 +66,7 @@ class TableNode extends Node
     /**
      * @return string[][]|SpanNode[][]
      */
-    public function getData() : array
+    public function getData(): array
     {
         return $this->data;
     }
@@ -73,7 +74,7 @@ class TableNode extends Node
     /**
      * @return bool[]
      */
-    public function getHeaders() : array
+    public function getHeaders(): array
     {
         return $this->headers;
     }
@@ -81,7 +82,7 @@ class TableNode extends Node
     /**
      * @param mixed[]|null $parts
      */
-    public function push(?array $parts, string $line) : bool
+    public function push(?array $parts, string $line): bool
     {
         $line = utf8_decode($line);
 
@@ -95,6 +96,7 @@ class TableNode extends Node
                 if ($parts[0] === true) {
                     $this->headers[count($this->data) - 1] = true;
                 }
+
                 $this->data[] = [];
             } elseif (count($this->headers) === 0) {
                 $this->headers = array_fill_keys(array_keys($this->data), true);
@@ -131,6 +133,7 @@ class TableNode extends Node
                 } else {
                     $row[$k - 1] = $data;
                 }
+
                 $row[$k - 1] = trim((string) $row[$k - 1]);
             }
         }
@@ -138,7 +141,7 @@ class TableNode extends Node
         return true;
     }
 
-    public function finalize(Parser $parser) : void
+    public function finalize(Parser $parser): void
     {
         if (count($this->headers) === count($this->data)) {
             $data = array_map(static function ($item) {
