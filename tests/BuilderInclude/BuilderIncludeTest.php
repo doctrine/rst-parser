@@ -6,6 +6,7 @@ namespace Doctrine\Tests\RST\BuilderInclude;
 
 use Doctrine\Tests\RST\BaseBuilderTest;
 
+use function assert;
 use function file_exists;
 use function file_get_contents;
 
@@ -17,7 +18,10 @@ class BuilderIncludeTest extends BaseBuilderTest
     public function testTocTreeGlob(): void
     {
         self::assertTrue(file_exists($this->targetFile('index.html')));
-        self::assertStringContainsString('This file is included', file_get_contents($this->targetFile('index.html')));
+        $contents = file_get_contents($this->targetFile('index.html'));
+        assert($contents !== false);
+
+        self::assertStringContainsString('This file is included', $contents);
 
         foreach ($this->builder->getDocuments()->getAll() as $document) {
             foreach ($document->getEnvironment()->getMetas()->getAll() as $meta) {

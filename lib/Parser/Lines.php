@@ -6,6 +6,9 @@ namespace Doctrine\RST\Parser;
 
 use Iterator;
 
+/**
+ * @template-implements Iterator<array-key, string>
+ */
 class Lines implements Iterator
 {
     /** @var string[] */

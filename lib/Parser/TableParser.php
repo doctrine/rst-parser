@@ -88,7 +88,7 @@ class TableParser
     }
 
     /**
-     * @return string[]
+     * @psalm-return array{string, ?string}
      */
     private function findTableChars(string $line): ?array
     {

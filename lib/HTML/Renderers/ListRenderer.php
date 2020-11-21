@@ -50,7 +50,7 @@ class ListRenderer implements FormatListRenderer
 
         $lines = array_map('trim', $lines);
 
-        $lines = array_values(array_filter($lines, static function (string $line) {
+        $lines = array_values(array_filter($lines, static function (string $line): bool {
             return $line !== '';
         }));
 

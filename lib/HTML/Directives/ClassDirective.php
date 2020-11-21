@@ -36,7 +36,7 @@ class ClassDirective extends SubDirective
 
         $classes = explode(' ', $data);
 
-        $normalizedClasses = array_map(static function (string $class) {
+        $normalizedClasses = array_map(static function (string $class): string {
             return Environment::slugify($class);
         }, $classes);
 

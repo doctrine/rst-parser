@@ -109,7 +109,7 @@ class DocumentNode extends Node
     {
         $tocs = [];
 
-        $nodes = $this->getNodes(static function ($node) {
+        $nodes = $this->getNodes(static function ($node): bool {
             return $node instanceof TocNode;
         });
 

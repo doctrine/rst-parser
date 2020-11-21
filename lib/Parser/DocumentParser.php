@@ -225,7 +225,6 @@ class DocumentParser
                         $this->setState(State::LIST);
 
                         $listNode = $this->nodeFactory->createListNode();
-                        assert($listNode instanceof ListNode);
 
                         $this->nodeBuffer = $listNode;
 

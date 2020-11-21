@@ -11,6 +11,7 @@ use Doctrine\RST\Parser;
 use Gajus\Dindent\Indenter;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Finder\Finder;
+use Throwable;
 
 use function array_map;
 use function basename;
@@ -43,6 +44,7 @@ class FunctionalTest extends TestCase
         $firstLine     = $expectedLines[0];
 
         if (strpos($firstLine, 'Exception:') === 0) {
+            /** @psalm-var class-string<Throwable> */
             $exceptionClass = str_replace('Exception: ', '', $firstLine);
             $this->expectException($exceptionClass);
 
@@ -127,7 +129,7 @@ class FunctionalTest extends TestCase
     {
         $lines = explode("\n", $string);
 
-        $lines = array_map(static function (string $line) {
+        $lines = array_map(static function (string $line): string {
             return rtrim($line);
         }, $lines);
 

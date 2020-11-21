@@ -10,9 +10,11 @@ use Doctrine\RST\Parser\LineChecker;
 use function array_fill_keys;
 use function array_keys;
 use function array_map;
+use function assert;
 use function count;
 use function explode;
 use function implode;
+use function is_bool;
 use function sprintf;
 use function strlen;
 use function substr;
@@ -64,7 +66,7 @@ class TableNode extends Node
     }
 
     /**
-     * @return string[][]|SpanNode[][]
+     * @return string[][]|SpanNode[][]|ListNode[][]
      */
     public function getData(): array
     {
@@ -119,6 +121,7 @@ class TableNode extends Node
                         $data = substr($line, $parts[$k - 1], $parts[$k] - $parts[$k - 1]);
                     }
 
+                    assert(is_bool($pretty));
                     if ($pretty) {
                         $data = substr($data, 0, -1);
                     }
@@ -144,7 +147,7 @@ class TableNode extends Node
     public function finalize(Parser $parser): void
     {
         if (count($this->headers) === count($this->data)) {
-            $data = array_map(static function ($item) {
+            $data = array_map(static function ($item): string {
                 return implode(' | ', $item);
             }, $this->data);
 

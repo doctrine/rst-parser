@@ -6,6 +6,7 @@ namespace Doctrine\RST\Parser;
 
 use Doctrine\Common\EventManager;
 use Doctrine\RST\Event\OnLinkParsedEvent;
+use Doctrine\RST\Nodes\SpanNode;
 use Doctrine\RST\Parser;
 
 use function array_map;
@@ -174,7 +175,7 @@ class LineDataParser
                 $term = $parts[0];
                 unset($parts[0]);
 
-                $classifiers = array_map(function (string $classifier) {
+                $classifiers = array_map(function (string $classifier): SpanNode {
                     return $this->parser->createSpanNode($classifier);
                 }, array_map('trim', $parts));
 
@@ -185,7 +186,7 @@ class LineDataParser
                 ];
 
             // last line
-            } elseif ($definitionListTerm !== null && trim($line) === '' && count($lines) - 1 === $key) {
+            } elseif ($definitionListTerm !== null && count($lines) - 1 === $key) {
                 if ($currentDefinition !== null) {
                     $definitionListTerm['definitions'][] = $this->parser->createSpanNode($currentDefinition);
 
@@ -199,7 +200,7 @@ class LineDataParser
                 );
 
             // empty line, start of a new definition for the current term
-            } elseif ($currentDefinition !== null && $definitionListTerm !== null && trim($line) === '') {
+            } elseif ($currentDefinition !== null && $definitionListTerm !== null) {
                 $definitionListTerm['definitions'][] = $this->parser->createSpanNode($currentDefinition);
 
                 $currentDefinition = null;

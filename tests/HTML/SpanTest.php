@@ -9,10 +9,7 @@ use Doctrine\RST\Environment;
 use Doctrine\RST\HTML\Renderers\SpanNodeRenderer;
 use Doctrine\RST\Nodes\SpanNode;
 use Doctrine\RST\Parser;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-
-use function assert;
 
 class SpanTest extends TestCase
 {
@@ -23,11 +20,8 @@ class SpanTest extends TestCase
      */
     public function testLink(string $url, string $title, array $attributes, string $expectedLink): void
     {
-        $parser = $this->createMock(Parser::class);
-        assert($parser instanceof Parser || $parser instanceof MockObject);
-
+        $parser      = $this->createMock(Parser::class);
         $environment = $this->createMock(Environment::class);
-        assert($environment instanceof Environment || $environment instanceof MockObject);
 
         $parser->expects(self::once())
             ->method('getEnvironment')

@@ -52,7 +52,7 @@ class Parser
 
         $this->configuration = $kernel->getConfiguration();
         $this->kernel        = $kernel;
-        $this->environment   = $environment ?: new Environment($this->configuration);
+        $this->environment   = $environment ??  new Environment($this->configuration);
 
         $this->initDirectives();
         $this->initReferences();
@@ -120,7 +120,7 @@ class Parser
 
     public function getFilename(): string
     {
-        return $this->filename ?: '(unknown)';
+        return $this->filename ?? '(unknown)';
     }
 
     public function getIncludeAllowed(): bool

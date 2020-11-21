@@ -5,11 +5,8 @@ declare(strict_types=1);
 namespace Doctrine\RST\HTML\Directives;
 
 use Doctrine\RST\Directives\Directive;
-use Doctrine\RST\Nodes\DocumentNode;
 use Doctrine\RST\Nodes\Node;
 use Doctrine\RST\Parser;
-
-use function assert;
 
 /**
  * Adds a stylesheet to a document, example:
@@ -34,8 +31,6 @@ class Stylesheet extends Directive
         array $options
     ): void {
         $document = $parser->getDocument();
-        assert($document instanceof DocumentNode);
-
         $document->addCss($data);
 
         if ($node === null) {

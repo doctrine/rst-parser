@@ -40,7 +40,7 @@ class FileIncluder
     {
         return preg_replace_callback(
             '/^\.\. include:: (.+)$/m',
-            function ($match) {
+            function ($match): string {
                 $path = $this->environment->absoluteRelativePath($match[1]);
 
                 if (! file_exists($path)) {

@@ -26,7 +26,7 @@ class ScannerTest extends TestCase
     /** @var Scanner */
     private $scanner;
 
-    /** @var SplFileInfo[]|MockObject[]|ArrayIterator */
+    /** @var SplFileInfo[]|MockObject[]|ArrayIterator<string, SplFileInfo> */
     private $fileMocks;
 
     /** @var MetaEntry[]|MockObject[] */

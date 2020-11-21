@@ -22,8 +22,6 @@ use Doctrine\RST\Templates\TwigTemplateRenderer;
 use RuntimeException;
 use Twig\Environment as TwigEnvironment;
 
-use function assert;
-use function is_callable;
 use function sprintf;
 use function sys_get_temp_dir;
 
@@ -183,7 +181,6 @@ class Configuration
 
         if ($this->baseUrlEnabledCallable !== null) {
             $baseUrlEnabledCallable = $this->baseUrlEnabledCallable;
-            assert(is_callable($baseUrlEnabledCallable));
 
             return $baseUrlEnabledCallable($path);
         }

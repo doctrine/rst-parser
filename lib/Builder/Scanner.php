@@ -36,7 +36,7 @@ class Scanner
         $this->directory     = $directory;
         $this->metas         = $metas;
 
-        $this->finder = $finder ?: new Finder();
+        $this->finder = $finder ?? new Finder();
         $this->finder->in($this->directory)
             ->files()
             ->name('*.' . $this->fileExtension);

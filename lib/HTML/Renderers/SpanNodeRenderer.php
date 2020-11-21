@@ -77,7 +77,7 @@ class SpanNodeRenderer extends BaseSpanNodeRenderer
      */
     public function reference(ResolvedReference $reference, array $value): string
     {
-        $text = $value['text'] ?: ($reference->getTitle() ?? '');
+        $text = (bool) $value['text'] ? $value['text'] : ($reference->getTitle() ?? '');
         $text = trim($text);
 
         // reference to another document

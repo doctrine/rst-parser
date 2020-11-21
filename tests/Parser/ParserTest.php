@@ -48,7 +48,7 @@ class ParserTest extends TestCase
     {
         $document = $this->parse('code-block-lastline.rst');
 
-        $nodes = $document->getNodes(static function ($node) {
+        $nodes = $document->getNodes(static function ($node): bool {
             return $node instanceof CodeNode;
         });
 
@@ -63,7 +63,7 @@ class ParserTest extends TestCase
     {
         $document = $this->parse('paragraph.rst');
 
-        self::assertHasNode($document, static function ($node) {
+        self::assertHasNode($document, static function ($node): bool {
             return $node instanceof ParagraphNode;
         }, 1);
         self::assertStringContainsString('Hello world!', $document->render());
@@ -76,7 +76,7 @@ class ParserTest extends TestCase
     {
         $document = $this->parse('paragraphs.rst');
 
-        self::assertHasNode($document, static function ($node) {
+        self::assertHasNode($document, static function ($node): bool {
             return $node instanceof ParagraphNode;
         }, 3);
     }
@@ -88,13 +88,13 @@ class ParserTest extends TestCase
     {
         $quote = $this->parse('quote.rst');
 
-        self::assertHasNode($quote, static function ($node) {
+        self::assertHasNode($quote, static function ($node): bool {
             return $node instanceof QuoteNode;
         }, 1);
 
         $code = $this->parse('code.rst');
 
-        self::assertHasNode($quote, static function ($node) {
+        self::assertHasNode($quote, static function ($node): bool {
             return $node instanceof QuoteNode;
         }, 1);
 
@@ -108,14 +108,14 @@ class ParserTest extends TestCase
     {
         $document = $this->parse('title.rst');
 
-        self::assertHasNode($document, static function ($node) {
+        self::assertHasNode($document, static function ($node): bool {
             return $node instanceof TitleNode
                 && $node->getLevel() === 1;
         }, 1);
 
         $document = $this->parse('title2.rst');
 
-        self::assertHasNode($document, static function ($node) {
+        self::assertHasNode($document, static function ($node): bool {
             return $node instanceof TitleNode
                 && $node->getLevel() === 2;
         }, 1);
@@ -128,18 +128,18 @@ class ParserTest extends TestCase
     {
         $document = $this->parse('list.rst');
 
-        self::assertHasNode($document, static function ($node) {
+        self::assertHasNode($document, static function ($node): bool {
             return $node instanceof ListNode;
         }, 1);
 
         $document = $this->parse('indented-list.rst');
 
-        self::assertHasNode($document, static function ($node) {
+        self::assertHasNode($document, static function ($node): bool {
             return $node instanceof ListNode;
         }, 1);
 
         $document = $this->parse('list-empty.rst');
-        self::assertHasNode($document, static function ($node) {
+        self::assertHasNode($document, static function ($node): bool {
             return $node instanceof ListNode;
         }, 1);
     }
@@ -182,31 +182,25 @@ class ParserTest extends TestCase
     {
         $document = $this->parse('table.rst');
 
-        $nodes = $document->getNodes(static function ($node) {
+        $nodes = $document->getNodes(static function ($node): bool {
             return $node instanceof TableNode;
         });
 
         self::assertSame(count($nodes), 1);
 
-        if ($nodes !== []) {
-            $table = $nodes[0];
-            assert($table instanceof TableNode);
+        $table = $nodes[0];
+        assert($table instanceof TableNode);
 
-            self::assertSame(3, $table->getCols());
-            self::assertSame(3, $table->getRows());
-        }
+        self::assertSame(3, $table->getCols());
+        self::assertSame(3, $table->getRows());
 
         $document = $this->parse('pretty-table.rst');
 
-        $nodes = $document->getNodes(static function ($node) {
+        $nodes = $document->getNodes(static function ($node): bool {
             return $node instanceof TableNode;
         });
 
         self::assertSame(count($nodes), 1);
-
-        if ($nodes === []) {
-            return;
-        }
 
         $table = $nodes[0];
         assert($table instanceof TableNode);
@@ -254,15 +248,11 @@ class ParserTest extends TestCase
     {
         $document = $this->parse('directive.rst');
 
-        $nodes = $document->getNodes(static function ($node) {
+        $nodes = $document->getNodes(static function ($node): bool {
             return $node instanceof DummyNode;
         });
 
         self::assertSame(1, count($nodes));
-
-        if ($nodes === []) {
-            return;
-        }
 
         $node = $nodes[0];
         assert($node instanceof DummyNode);
@@ -291,19 +281,15 @@ class ParserTest extends TestCase
         $nodes2 = $parser->parseFile(sprintf('%s/mixed-titles-2.rst', $directory))->getNodes();
 
         $node = $nodes1[1];
-        assert($node instanceof TitleNode);
         self::assertSame(1, $node->getLevel());
 
         $node = $nodes1[3];
-        assert($node instanceof TitleNode);
         self::assertSame(2, $node->getLevel());
 
         $node = $nodes2[1];
-        assert($node instanceof TitleNode);
         self::assertSame(1, $node->getLevel(), 'Title level in second parse is influenced by first parse');
 
         $node = $nodes2[3];
-        assert($node instanceof TitleNode);
         self::assertSame(2, $node->getLevel(), 'Title level in second parse is influenced by first parse');
     }
 
@@ -345,7 +331,6 @@ class ParserTest extends TestCase
         self::assertInstanceOf('Doctrine\RST\Nodes\QuoteNode', $nodes[3]);
 
         $node = $nodes[3]->getValue();
-        assert($node instanceof Node);
         self::assertStringContainsString('This is included.', $node->render());
     }
 

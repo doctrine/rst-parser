@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\HTML\Renderers;
 
+use Doctrine\RST\Nodes\ListNode;
 use Doctrine\RST\Nodes\SpanNode;
 use Doctrine\RST\Nodes\TableNode;
 use Doctrine\RST\Renderers\NodeRenderer;
@@ -57,6 +58,7 @@ class TableNodeRenderer implements NodeRenderer
             $tableRow = [];
 
             foreach ($row as $col) {
+                assert($col instanceof SpanNode || $col instanceof ListNode);
                 $tableRow[] = $col->render();
             }
 

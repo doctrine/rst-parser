@@ -29,7 +29,7 @@ class VersionAddedDirective extends SubDirective
         array $options
     ): ?Node {
         return $parser->getNodeFactory()->createCallableNode(
-            static function () use ($data, $document) {
+            static function () use ($data, $document): string {
                 $nodeValue = '';
 
                 if ($document !== null) {
