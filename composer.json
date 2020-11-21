@@ -23,11 +23,11 @@
         "doctrine/event-manager": "^1.0"
     },
     "require-dev": {
-        "doctrine/coding-standard": "^6.0",
-        "phpstan/phpstan": "^0.10",
-        "phpstan/phpstan-deprecation-rules": "^0.10",
-        "phpstan/phpstan-phpunit": "^0.10",
-        "phpstan/phpstan-strict-rules": "^0.10",
+        "doctrine/coding-standard": "^8.0",
+        "phpstan/phpstan": "^0.12",
+        "phpstan/phpstan-deprecation-rules": "^0.12",
+        "phpstan/phpstan-phpunit": "^0.12",
+        "phpstan/phpstan-strict-rules": "^0.12",
         "phpunit/phpunit": "^7.0",
         "gajus/dindent": "^2.0.2"
     },
