@@ -1,4 +1,5 @@
 /**.swp
+/composer.lock
 /vendor/
 /.phpcs-cache
 /tests/*/output
