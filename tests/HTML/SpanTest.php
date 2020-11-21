@@ -9,7 +9,6 @@ use Doctrine\RST\Environment;
 use Doctrine\RST\HTML\Renderers\SpanNodeRenderer;
 use Doctrine\RST\Nodes\SpanNode;
 use Doctrine\RST\Parser;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class SpanTest extends TestCase
@@ -19,12 +18,9 @@ class SpanTest extends TestCase
      *
      * @dataProvider linkProvider
      */
-    public function testLink(string $url, string $title, array $attributes, string $expectedLink) : void
+    public function testLink(string $url, string $title, array $attributes, string $expectedLink): void
     {
-        /** @var Parser|MockObject $parser */
-        $parser = $this->createMock(Parser::class);
-
-        /** @var Environment|MockObject $environment */
+        $parser      = $this->createMock(Parser::class);
         $environment = $this->createMock(Environment::class);
 
         $parser->expects(self::once())
@@ -51,7 +47,7 @@ class SpanTest extends TestCase
     /**
      * @return string[][]|string[][][]
      */
-    public function linkProvider() : array
+    public function linkProvider(): array
     {
         return [
             'no attributes #1' => [

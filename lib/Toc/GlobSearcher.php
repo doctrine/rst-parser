@@ -6,6 +6,7 @@ namespace Doctrine\RST\Toc;
 
 use Doctrine\RST\Environment;
 use Symfony\Component\Finder\Finder;
+
 use function array_merge;
 use function realpath;
 use function rtrim;
@@ -16,7 +17,7 @@ class GlobSearcher
     /**
      * @return string[]
      */
-    public function globSearch(Environment $environment, string $globPattern) : array
+    public function globSearch(Environment $environment, string $globPattern): array
     {
         $currentFilePath = (string) realpath(rtrim($environment->absoluteRelativePath(''), '/'));
 

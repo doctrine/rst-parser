@@ -23,7 +23,7 @@ class HTMLFormat implements Format
         $this->templateRenderer = $templateRenderer;
     }
 
-    public function getFileExtension() : string
+    public function getFileExtension(): string
     {
         return Format::HTML;
     }
@@ -31,7 +31,7 @@ class HTMLFormat implements Format
     /**
      * @return Directive[]
      */
-    public function getDirectives() : array
+    public function getDirectives(): array
     {
         return [
             new HTML\Directives\Image(),
@@ -49,11 +49,11 @@ class HTMLFormat implements Format
     /**
      * @return NodeRendererFactory[]
      */
-    public function getNodeRendererFactories() : array
+    public function getNodeRendererFactories(): array
     {
         return [
             Nodes\AnchorNode::class => new CallableNodeRendererFactory(
-                function (Nodes\AnchorNode $node) {
+                function (Nodes\AnchorNode $node): HTML\Renderers\AnchorNodeRenderer {
                     return new HTML\Renderers\AnchorNodeRenderer(
                         $node,
                         $this->templateRenderer
@@ -61,7 +61,7 @@ class HTMLFormat implements Format
                 }
             ),
             Nodes\CodeNode::class => new CallableNodeRendererFactory(
-                function (Nodes\CodeNode $node) {
+                function (Nodes\CodeNode $node): HTML\Renderers\CodeNodeRenderer {
                     return new HTML\Renderers\CodeNodeRenderer(
                         $node,
                         $this->templateRenderer
@@ -69,7 +69,7 @@ class HTMLFormat implements Format
                 }
             ),
             Nodes\DefinitionListNode::class => new CallableNodeRendererFactory(
-                function (Nodes\DefinitionListNode $node) {
+                function (Nodes\DefinitionListNode $node): HTML\Renderers\DefinitionListNodeRenderer {
                     return new HTML\Renderers\DefinitionListNodeRenderer(
                         $node,
                         $this->templateRenderer
@@ -77,7 +77,7 @@ class HTMLFormat implements Format
                 }
             ),
             Nodes\FigureNode::class => new CallableNodeRendererFactory(
-                function (Nodes\FigureNode $node) {
+                function (Nodes\FigureNode $node): HTML\Renderers\FigureNodeRenderer {
                     return new HTML\Renderers\FigureNodeRenderer(
                         $node,
                         $this->templateRenderer
@@ -85,7 +85,7 @@ class HTMLFormat implements Format
                 }
             ),
             Nodes\ImageNode::class => new CallableNodeRendererFactory(
-                function (Nodes\ImageNode $node) {
+                function (Nodes\ImageNode $node): HTML\Renderers\ImageNodeRenderer {
                     return new HTML\Renderers\ImageNodeRenderer(
                         $node,
                         $this->templateRenderer
@@ -93,7 +93,7 @@ class HTMLFormat implements Format
                 }
             ),
             Nodes\ListNode::class => new CallableNodeRendererFactory(
-                function (Nodes\ListNode $node) {
+                function (Nodes\ListNode $node): Renderers\ListNodeRenderer {
                     return new Renderers\ListNodeRenderer(
                         $node,
                         new HTML\Renderers\ListRenderer($node, $this->templateRenderer)
@@ -101,7 +101,7 @@ class HTMLFormat implements Format
                 }
             ),
             Nodes\MetaNode::class => new CallableNodeRendererFactory(
-                function (Nodes\MetaNode $node) {
+                function (Nodes\MetaNode $node): HTML\Renderers\MetaNodeRenderer {
                     return new HTML\Renderers\MetaNodeRenderer(
                         $node,
                         $this->templateRenderer
@@ -109,7 +109,7 @@ class HTMLFormat implements Format
                 }
             ),
             Nodes\ParagraphNode::class => new CallableNodeRendererFactory(
-                function (Nodes\ParagraphNode $node) {
+                function (Nodes\ParagraphNode $node): HTML\Renderers\ParagraphNodeRenderer {
                     return new HTML\Renderers\ParagraphNodeRenderer(
                         $node,
                         $this->templateRenderer
@@ -117,7 +117,7 @@ class HTMLFormat implements Format
                 }
             ),
             Nodes\QuoteNode::class => new CallableNodeRendererFactory(
-                function (Nodes\QuoteNode $node) {
+                function (Nodes\QuoteNode $node): HTML\Renderers\QuoteNodeRenderer {
                     return new HTML\Renderers\QuoteNodeRenderer(
                         $node,
                         $this->templateRenderer
@@ -125,14 +125,14 @@ class HTMLFormat implements Format
                 }
             ),
             Nodes\SeparatorNode::class => new CallableNodeRendererFactory(
-                function (Nodes\SeparatorNode $node) {
+                function (Nodes\SeparatorNode $node): HTML\Renderers\SeparatorNodeRenderer {
                     return new HTML\Renderers\SeparatorNodeRenderer(
                         $this->templateRenderer
                     );
                 }
             ),
             Nodes\TableNode::class => new CallableNodeRendererFactory(
-                function (Nodes\TableNode $node) {
+                function (Nodes\TableNode $node): HTML\Renderers\TableNodeRenderer {
                     return new HTML\Renderers\TableNodeRenderer(
                         $node,
                         $this->templateRenderer
@@ -140,7 +140,7 @@ class HTMLFormat implements Format
                 }
             ),
             Nodes\TitleNode::class => new CallableNodeRendererFactory(
-                function (Nodes\TitleNode $node) {
+                function (Nodes\TitleNode $node): HTML\Renderers\TitleNodeRenderer {
                     return new HTML\Renderers\TitleNodeRenderer(
                         $node,
                         $this->templateRenderer
@@ -148,7 +148,7 @@ class HTMLFormat implements Format
                 }
             ),
             Nodes\TocNode::class => new CallableNodeRendererFactory(
-                function (Nodes\TocNode $node) {
+                function (Nodes\TocNode $node): HTML\Renderers\TocNodeRenderer {
                     return new HTML\Renderers\TocNodeRenderer(
                         $node->getEnvironment(),
                         $node,
@@ -157,7 +157,7 @@ class HTMLFormat implements Format
                 }
             ),
             Nodes\DocumentNode::class => new CallableNodeRendererFactory(
-                function (Nodes\DocumentNode $node) {
+                function (Nodes\DocumentNode $node): HTML\Renderers\DocumentNodeRenderer {
                     return new HTML\Renderers\DocumentNodeRenderer(
                         $node,
                         $this->templateRenderer
@@ -165,7 +165,7 @@ class HTMLFormat implements Format
                 }
             ),
             Nodes\SpanNode::class => new CallableNodeRendererFactory(
-                function (Nodes\SpanNode $node) {
+                function (Nodes\SpanNode $node): HTML\Renderers\SpanNodeRenderer {
                     return new HTML\Renderers\SpanNodeRenderer(
                         $node->getEnvironment(),
                         $node,
@@ -174,14 +174,14 @@ class HTMLFormat implements Format
                 }
             ),
             Nodes\CallableNode::class => new CallableNodeRendererFactory(
-                static function (Nodes\CallableNode $node) {
+                static function (Nodes\CallableNode $node): Renderers\CallableNodeRenderer {
                     return new Renderers\CallableNodeRenderer(
                         $node
                     );
                 }
             ),
             Nodes\SectionBeginNode::class => new CallableNodeRendererFactory(
-                function (Nodes\SectionBeginNode $node) {
+                function (Nodes\SectionBeginNode $node): HTML\Renderers\SectionBeginNodeRenderer {
                     return new HTML\Renderers\SectionBeginNodeRenderer(
                         $node,
                         $this->templateRenderer
@@ -189,7 +189,7 @@ class HTMLFormat implements Format
                 }
             ),
             Nodes\SectionEndNode::class => new CallableNodeRendererFactory(
-                function (Nodes\SectionEndNode $node) {
+                function (Nodes\SectionEndNode $node): HTML\Renderers\SectionEndNodeRenderer {
                     return new HTML\Renderers\SectionEndNodeRenderer(
                         $node,
                         $this->templateRenderer

@@ -7,12 +7,13 @@ namespace Doctrine\Tests\RST\RefInsideDirective;
 use Doctrine\RST\Directives\SubDirective;
 use Doctrine\RST\Nodes\Node;
 use Doctrine\RST\Parser;
+
 use function sprintf;
 use function strip_tags;
 
 class VersionAddedDirective extends SubDirective
 {
-    public function getName() : string
+    public function getName(): string
     {
         return 'versionadded';
     }
@@ -26,9 +27,9 @@ class VersionAddedDirective extends SubDirective
         string $variable,
         string $data,
         array $options
-    ) : ?Node {
+    ): ?Node {
         return $parser->getNodeFactory()->createCallableNode(
-            static function () use ($data, $document) {
+            static function () use ($data, $document): string {
                 $nodeValue = '';
 
                 if ($document !== null) {

@@ -8,8 +8,8 @@ use Doctrine\Common\EventManager;
 use Doctrine\RST\Parser;
 use Doctrine\RST\Parser\LineChecker;
 use Doctrine\RST\Parser\LineDataParser;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+
 use function str_repeat;
 
 class LineCheckerTest extends TestCase
@@ -20,11 +20,10 @@ class LineCheckerTest extends TestCase
     /** @var LineChecker */
     private $lineChecker;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         $this->parser = $this->createMock(Parser::class);
 
-        /** @var EventManager|MockObject $eventManager */
         $eventManager = $this->createMock(EventManager::class);
 
         $this->lineChecker = new LineChecker(new LineDataParser($this->parser, $eventManager));
@@ -33,7 +32,7 @@ class LineCheckerTest extends TestCase
     /**
      * @dataProvider getSpecialCharacters
      */
-    public function testIsSpecialLine(string $specialCharacter) : void
+    public function testIsSpecialLine(string $specialCharacter): void
     {
         self::assertNull($this->lineChecker->isSpecialLine($specialCharacter));
         self::assertSame($specialCharacter, $this->lineChecker->isSpecialLine(str_repeat($specialCharacter, 2)));
@@ -43,12 +42,12 @@ class LineCheckerTest extends TestCase
     /**
      * @return string[][]
      */
-    public function getSpecialCharacters() : array
+    public function getSpecialCharacters(): array
     {
         return [['='], ['-'], ['~'], ['*'], ['+'], ['^'], ['"'], ['.'], ['`'], ["'"], ['_'], ['#'], [':']];
     }
 
-    public function testIsListLine() : void
+    public function testIsListLine(): void
     {
         self::assertTrue($this->lineChecker->isListLine('- Test', true));
         self::assertTrue($this->lineChecker->isListLine('- Test', false));
@@ -56,7 +55,7 @@ class LineCheckerTest extends TestCase
         self::assertTrue($this->lineChecker->isListLine(' - Test', false));
     }
 
-    public function testIsBlockLine() : void
+    public function testIsBlockLine(): void
     {
         self::assertTrue($this->lineChecker->isBlockLine(' '));
         self::assertTrue($this->lineChecker->isBlockLine('  '));
@@ -65,13 +64,13 @@ class LineCheckerTest extends TestCase
         self::assertFalse($this->lineChecker->isBlockLine('.. code-block::'));
     }
 
-    public function testIsComment() : void
+    public function testIsComment(): void
     {
         self::assertTrue($this->lineChecker->isComment('.. Test'));
         self::assertFalse($this->lineChecker->isComment('Test'));
     }
 
-    public function testIsDirective() : void
+    public function testIsDirective(): void
     {
         self::assertTrue($this->lineChecker->isDirective('.. code-block::'));
         self::assertTrue($this->lineChecker->isDirective('.. code-block:: php'));
@@ -84,14 +83,14 @@ class LineCheckerTest extends TestCase
         self::assertFalse($this->lineChecker->isDirective('Test'));
     }
 
-    public function testIsDefinitionList() : void
+    public function testIsDefinitionList(): void
     {
         self::assertTrue($this->lineChecker->isDefinitionList('    '));
         self::assertTrue($this->lineChecker->isDefinitionList('     '));
         self::assertFalse($this->lineChecker->isDefinitionList('Test'));
     }
 
-    public function testIsDefinitionListEnded() : void
+    public function testIsDefinitionListEnded(): void
     {
         self::assertTrue($this->lineChecker->isDefinitionListEnded('Test', ''));
         self::assertFalse($this->lineChecker->isDefinitionListEnded('Term', '    Definition'));

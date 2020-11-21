@@ -16,7 +16,7 @@ class CallableNodeRendererFactory implements NodeRendererFactory
         $this->callable = $callable;
     }
 
-    public function create(Node $node) : NodeRenderer
+    public function create(Node $node): NodeRenderer
     {
         return ($this->callable)($node);
     }

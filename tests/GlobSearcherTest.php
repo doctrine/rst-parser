@@ -7,6 +7,7 @@ namespace Doctrine\Tests\RST;
 use Doctrine\RST\Environment;
 use Doctrine\RST\Toc\GlobSearcher;
 use PHPUnit\Framework\TestCase;
+
 use function sort;
 
 class GlobSearcherTest extends TestCase
@@ -14,7 +15,7 @@ class GlobSearcherTest extends TestCase
     /** @var GlobSearcher */
     private $globSearcher;
 
-    public function testGlobSearch() : void
+    public function testGlobSearch(): void
     {
         $dir = __DIR__ . '/BuilderToctree/input';
 
@@ -45,7 +46,7 @@ class GlobSearcherTest extends TestCase
         self::assertSame($expected, $files);
     }
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         $this->globSearcher = new GlobSearcher();
     }

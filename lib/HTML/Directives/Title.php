@@ -15,7 +15,7 @@ use Doctrine\RST\Parser;
  */
 class Title extends Directive
 {
-    public function getName() : string
+    public function getName(): string
     {
         return 'title';
     }
@@ -29,7 +29,7 @@ class Title extends Directive
         string $variable,
         string $data,
         array $options
-    ) : void {
+    ): void {
         $document = $parser->getDocument();
 
         $title = $parser->renderTemplate('title.html.twig', ['title' => $data]);

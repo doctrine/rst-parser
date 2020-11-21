@@ -22,7 +22,7 @@ class SectionBeginNodeRenderer implements NodeRenderer
         $this->templateRenderer = $templateRenderer;
     }
 
-    public function render() : string
+    public function render(): string
     {
         return $this->templateRenderer->render('section-begin.html.twig', [
             'sectionBeginNode' => $this->sectionBeginNode,

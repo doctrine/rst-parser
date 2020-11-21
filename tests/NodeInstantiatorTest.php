@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
 
 class NodeInstantiatorTest extends TestCase
 {
-    public function testGetType() : void
+    public function testGetType(): void
     {
         $environment = $this->createMock(Environment::class);
 
@@ -22,7 +22,7 @@ class NodeInstantiatorTest extends TestCase
         self::assertSame(NodeTypes::DOCUMENT, $nodeInstantiator->getType());
     }
 
-    public function testInvalidTypeThrowsInvalidArgumentException() : void
+    public function testInvalidTypeThrowsInvalidArgumentException(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Node type invalid is not a valid node type.');
@@ -32,7 +32,7 @@ class NodeInstantiatorTest extends TestCase
         $nodeInstantiator = new NodeInstantiator('invalid', DocumentNode::class, $environment);
     }
 
-    public function testCreate() : void
+    public function testCreate(): void
     {
         $environment = $this->createMock(Environment::class);
 

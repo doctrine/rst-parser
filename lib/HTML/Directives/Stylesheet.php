@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Doctrine\RST\HTML\Directives;
 
 use Doctrine\RST\Directives\Directive;
-use Doctrine\RST\Nodes\DocumentNode;
 use Doctrine\RST\Nodes\Node;
 use Doctrine\RST\Parser;
 
@@ -16,7 +15,7 @@ use Doctrine\RST\Parser;
  */
 class Stylesheet extends Directive
 {
-    public function getName() : string
+    public function getName(): string
     {
         return 'stylesheet';
     }
@@ -30,10 +29,8 @@ class Stylesheet extends Directive
         string $variable,
         string $data,
         array $options
-    ) : void {
-        /** @var DocumentNode $document */
+    ): void {
         $document = $parser->getDocument();
-
         $document->addCss($data);
 
         if ($node === null) {

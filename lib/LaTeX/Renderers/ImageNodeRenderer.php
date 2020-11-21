@@ -22,7 +22,7 @@ class ImageNodeRenderer implements NodeRenderer
         $this->templateRenderer = $templateRenderer;
     }
 
-    public function render() : string
+    public function render(): string
     {
         return $this->templateRenderer->render('image.tex.twig', [
             'imageNode' => $this->imageNode,

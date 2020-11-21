@@ -7,6 +7,7 @@ namespace Doctrine\RST\HTML\Directives;
 use Doctrine\RST\Directives\SubDirective;
 use Doctrine\RST\Nodes\Node;
 use Doctrine\RST\Parser;
+
 use function uniqid;
 
 /**
@@ -26,7 +27,7 @@ class Wrap extends SubDirective
         $this->uniqid = $uniqid;
     }
 
-    public function getName() : string
+    public function getName(): string
     {
         return $this->class;
     }
@@ -40,7 +41,7 @@ class Wrap extends SubDirective
         string $variable,
         string $data,
         array $options
-    ) : ?Node {
+    ): ?Node {
         if ($this->uniqid) {
             $id = uniqid($this->class);
         } else {

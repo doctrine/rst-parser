@@ -26,7 +26,7 @@ class ResolverTest extends TestCase
     /** @var Resolver */
     private $resolver;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         $this->environment = $this->createMock(Environment::class);
 
@@ -51,7 +51,7 @@ class ResolverTest extends TestCase
         $this->resolver = new Resolver();
     }
 
-    public function testResolveFileReference() : void
+    public function testResolveFileReference(): void
     {
         $this->environment->expects(self::once())
             ->method('canonicalUrl')
@@ -71,7 +71,7 @@ class ResolverTest extends TestCase
         );
     }
 
-    public function testResolveAnchorReference() : void
+    public function testResolveAnchorReference(): void
     {
         $this->environment->expects(self::once())
             ->method('canonicalUrl')
@@ -91,7 +91,7 @@ class ResolverTest extends TestCase
         );
     }
 
-    public function testUnResolvedReference1() : void
+    public function testUnResolvedReference1(): void
     {
         $this->environment->expects(self::once())
             ->method('canonicalUrl')
@@ -104,7 +104,7 @@ class ResolverTest extends TestCase
         self::assertNull($this->resolver->resolve($this->environment, 'invalid-reference'));
     }
 
-    public function testUnResolvedReference2() : void
+    public function testUnResolvedReference2(): void
     {
         $this->environment->expects(self::once())
             ->method('canonicalUrl')

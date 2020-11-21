@@ -12,6 +12,7 @@ use Doctrine\RST\Kernel;
 use Doctrine\RST\Meta\Metas;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+
 use function sys_get_temp_dir;
 use function touch;
 
@@ -41,7 +42,7 @@ class ParseQueueProcessorTest extends TestCase
     /** @var ParseQueueProcessor */
     private $parseQueueProcessor;
 
-    public function testProcess() : void
+    public function testProcess(): void
     {
         touch($this->directory . '/file.rst');
 
@@ -61,7 +62,7 @@ class ParseQueueProcessorTest extends TestCase
         $this->parseQueueProcessor->process($parseQueue);
     }
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         $this->kernel          = $this->createMock(Kernel::class);
         $this->errorManager    = $this->createMock(ErrorManager::class);

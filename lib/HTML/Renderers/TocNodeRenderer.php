@@ -8,6 +8,7 @@ use Doctrine\RST\Environment;
 use Doctrine\RST\Nodes\TocNode;
 use Doctrine\RST\Renderers\NodeRenderer;
 use Doctrine\RST\Templates\TemplateRenderer;
+
 use function count;
 use function is_array;
 
@@ -29,7 +30,7 @@ class TocNodeRenderer implements NodeRenderer
         $this->templateRenderer = $templateRenderer;
     }
 
-    public function render() : string
+    public function render(): string
     {
         $options = $this->tocNode->getOptions();
 
@@ -66,7 +67,7 @@ class TocNodeRenderer implements NodeRenderer
         array $titles,
         int $level,
         array &$tocItems
-    ) : void {
+    ): void {
         $html = '';
 
         foreach ($titles as $k => $entry) {
@@ -91,7 +92,7 @@ class TocNodeRenderer implements NodeRenderer
         }
     }
 
-    private function generateTargetId(string $target) : string
+    private function generateTargetId(string $target): string
     {
         return Environment::slugify($target);
     }
@@ -101,7 +102,7 @@ class TocNodeRenderer implements NodeRenderer
      *
      * @return mixed[]
      */
-    private function generateTarget(?string $url, $title) : array
+    private function generateTarget(?string $url, $title): array
     {
         $anchor = $this->generateAnchorFromTitle($title);
 
@@ -125,7 +126,7 @@ class TocNodeRenderer implements NodeRenderer
     /**
      * @param string[]|string $title
      */
-    private function generateAnchorFromTitle($title) : string
+    private function generateAnchorFromTitle($title): string
     {
         $slug = is_array($title)
             ? $title[1]

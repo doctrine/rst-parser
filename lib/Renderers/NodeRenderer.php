@@ -6,5 +6,5 @@ namespace Doctrine\RST\Renderers;
 
 interface NodeRenderer
 {
-    public function render() : string;
+    public function render(): string;
 }

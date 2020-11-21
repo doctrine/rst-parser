@@ -14,7 +14,7 @@ class ParagraphNode extends Node
         parent::__construct($value);
     }
 
-    public function getValue() : SpanNode
+    public function getValue(): SpanNode
     {
         return $this->value;
     }

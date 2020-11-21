@@ -9,7 +9,7 @@ use Doctrine\RST\Parser;
 
 class Dummy extends Directive
 {
-    public function getName() : string
+    public function getName(): string
     {
         return 'dummy';
     }
@@ -22,7 +22,7 @@ class Dummy extends Directive
         string $variable,
         string $data,
         array $options
-    ) : ?Node {
+    ): ?Node {
         return $parser->getNodeFactory()->createDummyNode([
             'data' => $data,
             'options' => $options,

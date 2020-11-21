@@ -9,7 +9,9 @@ use Doctrine\RST\Environment;
 use Doctrine\RST\ErrorManager;
 use Doctrine\RST\Renderers\FullDocumentNodeRenderer;
 use Exception;
+
 use function array_unshift;
+use function assert;
 use function count;
 use function explode;
 use function implode;
@@ -43,12 +45,12 @@ class DocumentNode extends Node
         $this->errorManager  = $environment->getErrorManager();
     }
 
-    public function getEnvironment() : Environment
+    public function getEnvironment(): Environment
     {
         return $this->environment;
     }
 
-    public function getConfiguration() : Configuration
+    public function getConfiguration(): Configuration
     {
         return $this->configuration;
     }
@@ -56,12 +58,12 @@ class DocumentNode extends Node
     /**
      * @return Node[]
      */
-    public function getHeaderNodes() : array
+    public function getHeaderNodes(): array
     {
         return $this->headerNodes;
     }
 
-    public function renderDocument() : string
+    public function renderDocument(): string
     {
         $renderedDocument = $this->doRenderDocument();
 
@@ -73,7 +75,7 @@ class DocumentNode extends Node
     /**
      * @return Node[]
      */
-    public function getNodes(?callable $function = null) : array
+    public function getNodes(?callable $function = null): array
     {
         $nodes = [];
 
@@ -92,7 +94,7 @@ class DocumentNode extends Node
         return $nodes;
     }
 
-    public function getTitle() : ?string
+    public function getTitle(): ?string
     {
         foreach ($this->nodes as $node) {
             if ($node instanceof TitleNode && $node->getLevel() === 1) {
@@ -106,16 +108,16 @@ class DocumentNode extends Node
     /**
      * @return mixed[]
      */
-    public function getTocs() : array
+    public function getTocs(): array
     {
         $tocs = [];
 
-        $nodes = $this->getNodes(static function ($node) {
+        $nodes = $this->getNodes(static function ($node): bool {
             return $node instanceof TocNode;
         });
 
-        /** @var TocNode $toc */
         foreach ($nodes as $toc) {
+            assert($toc instanceof TocNode);
             $files = $toc->getFiles();
 
             foreach ($files as &$file) {
@@ -131,7 +133,7 @@ class DocumentNode extends Node
     /**
      * @return string[][]
      */
-    public function getTitles() : array
+    public function getTitles(): array
     {
         $titles = [];
         $levels = [&$titles];
@@ -162,7 +164,7 @@ class DocumentNode extends Node
     /**
      * @param string|Node $node
      */
-    public function addNode($node) : void
+    public function addNode($node): void
     {
         if (is_string($node)) {
             $node = new RawNode($node);
@@ -171,17 +173,17 @@ class DocumentNode extends Node
         $this->nodes[] = $node;
     }
 
-    public function prependNode(Node $node) : void
+    public function prependNode(Node $node): void
     {
         array_unshift($this->nodes, $node);
     }
 
-    public function addHeaderNode(Node $node) : void
+    public function addHeaderNode(Node $node): void
     {
         $this->headerNodes[] = $node;
     }
 
-    public function addCss(string $css) : void
+    public function addCss(string $css): void
     {
         $css = $this->environment->relativeUrl($css);
 
@@ -194,7 +196,7 @@ class DocumentNode extends Node
         ));
     }
 
-    public function addJs(string $js) : void
+    public function addJs(string $js): void
     {
         $js = $this->environment->relativeUrl($js);
 
@@ -207,7 +209,7 @@ class DocumentNode extends Node
         ));
     }
 
-    public function addFavicon(string $url = '/favicon.ico') : void
+    public function addFavicon(string $url = '/favicon.ico'): void
     {
         $url = $this->environment->relativeUrl($url);
 
@@ -220,15 +222,15 @@ class DocumentNode extends Node
         ));
     }
 
-    protected function doRenderDocument() : string
+    protected function doRenderDocument(): string
     {
-        /** @var FullDocumentNodeRenderer $renderer */
         $renderer = $this->getRenderer();
+        assert($renderer instanceof FullDocumentNodeRenderer);
 
         return $renderer->renderDocument();
     }
 
-    private function postRenderValidate() : void
+    private function postRenderValidate(): void
     {
         if ($this->configuration->getIgnoreInvalidReferences() !== false) {
             return;
@@ -262,7 +264,7 @@ class DocumentNode extends Node
      * This corrects that by looking back into the Node to
      * get the original text.
      */
-    private function getTextFromNode(TitleNode $node) : ?string
+    private function getTextFromNode(TitleNode $node): string
     {
         $text = $node->getValue()->getValue();
 

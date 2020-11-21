@@ -8,6 +8,7 @@ use Doctrine\RST\Nodes\TableNode;
 use Doctrine\RST\Renderers\NodeRenderer;
 use Doctrine\RST\Templates\TemplateRenderer;
 use LogicException;
+
 use function sprintf;
 
 class TableNodeRenderer implements NodeRenderer
@@ -24,7 +25,7 @@ class TableNodeRenderer implements NodeRenderer
         $this->templateRenderer = $templateRenderer;
     }
 
-    public function render() : string
+    public function render(): string
     {
         $headers = $this->tableNode->getHeaders();
         $rows    = $this->tableNode->getData();

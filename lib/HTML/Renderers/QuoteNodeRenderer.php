@@ -22,7 +22,7 @@ class QuoteNodeRenderer implements NodeRenderer
         $this->templateRenderer = $templateRenderer;
     }
 
-    public function render() : string
+    public function render(): string
     {
         return $this->templateRenderer->render('quote.html.twig', [
             'quoteNode' => $this->quoteNode,

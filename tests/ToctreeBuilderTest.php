@@ -19,7 +19,7 @@ class ToctreeBuilderTest extends TestCase
     /** @var ToctreeBuilder */
     private $toctreeBuilder;
 
-    public function testBuildToctreeFiles() : void
+    public function testBuildToctreeFiles(): void
     {
         $environment = $this->createMock(Environment::class);
         $node        = $this->createMock(Node::class);
@@ -63,7 +63,7 @@ EOF;
         self::assertSame($expected, $toctreeFiles);
     }
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         $this->globSearcher = $this->createMock(GlobSearcher::class);
 

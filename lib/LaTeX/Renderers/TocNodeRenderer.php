@@ -27,7 +27,7 @@ class TocNodeRenderer implements NodeRenderer
         $this->templateRenderer = $templateRenderer;
     }
 
-    public function render() : string
+    public function render(): string
     {
         $tocItems = [];
 

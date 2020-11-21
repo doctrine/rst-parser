@@ -8,5 +8,5 @@ use Doctrine\RST\Nodes\Node;
 
 interface NodeRendererFactory
 {
-    public function create(Node $node) : NodeRenderer;
+    public function create(Node $node): NodeRenderer;
 }

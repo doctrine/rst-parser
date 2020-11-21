@@ -12,6 +12,7 @@ use Doctrine\RST\Parser\LineChecker;
 use Doctrine\RST\Parser\TableSeparatorLineConfig;
 use Exception;
 use LogicException;
+
 use function array_keys;
 use function array_reverse;
 use function array_values;
@@ -70,7 +71,7 @@ class TableNode extends Node
         $this->lineChecker = $lineChecker;
     }
 
-    public function getCols() : int
+    public function getCols(): int
     {
         if ($this->isCompiled === false) {
             throw new LogicException('Call compile() first.');
@@ -84,7 +85,7 @@ class TableNode extends Node
         return $columns;
     }
 
-    public function getRows() : int
+    public function getRows(): int
     {
         if ($this->isCompiled === false) {
             throw new LogicException('Call compile() first.');
@@ -96,7 +97,7 @@ class TableNode extends Node
     /**
      * @return TableRow[]
      */
-    public function getData() : array
+    public function getData(): array
     {
         if ($this->isCompiled === false) {
             throw new LogicException('Call compile() first.');
@@ -112,7 +113,7 @@ class TableNode extends Node
      *
      * @return bool[]
      */
-    public function getHeaders() : array
+    public function getHeaders(): array
     {
         if ($this->isCompiled === false) {
             throw new LogicException('Call compile() first.');
@@ -121,7 +122,7 @@ class TableNode extends Node
         return $this->headers;
     }
 
-    public function pushSeparatorLine(TableSeparatorLineConfig $separatorLineConfig) : void
+    public function pushSeparatorLine(TableSeparatorLineConfig $separatorLineConfig): void
     {
         if ($this->isCompiled === true) {
             throw new LogicException('Cannot push data after TableNode is compiled');
@@ -131,7 +132,7 @@ class TableNode extends Node
         $this->currentLineNumber++;
     }
 
-    public function pushContentLine(string $line) : void
+    public function pushContentLine(string $line): void
     {
         if ($this->isCompiled === true) {
             throw new LogicException('Cannot push data after TableNode is compiled');
@@ -141,7 +142,7 @@ class TableNode extends Node
         $this->currentLineNumber++;
     }
 
-    public function finalize(Parser $parser) : void
+    public function finalize(Parser $parser): void
     {
         if ($this->isCompiled === false) {
             $this->compile();
@@ -179,7 +180,7 @@ class TableNode extends Node
      * Looks at all the raw data and finally populates the data
      * and headers.
      */
-    private function compile() : void
+    private function compile(): void
     {
         $this->isCompiled = true;
 
@@ -190,7 +191,7 @@ class TableNode extends Node
         }
     }
 
-    private function compileSimpleTable() : void
+    private function compileSimpleTable(): void
     {
         // determine if there is second === separator line (other than
         // the last line): this would mean there are header rows
@@ -212,14 +213,14 @@ class TableNode extends Node
 
         // if the final header row is *after* the last data line, it's not
         // really a header "ending" and so there are no headers
-        $lastDataLineNumber = array_keys($this->rawDataLines)[count($this->rawDataLines)-1];
+        $lastDataLineNumber = array_keys($this->rawDataLines)[count($this->rawDataLines) - 1];
         if ($finalHeadersRow > $lastDataLineNumber) {
             $finalHeadersRow = 0;
         }
 
         // todo - support "---" in the future for colspan
         $columnRanges       = $this->separatorLineConfigs[0]->getPartRanges();
-        $lastColumnRangeEnd = array_values($columnRanges)[count($columnRanges)-1][1];
+        $lastColumnRangeEnd = array_values($columnRanges)[count($columnRanges) - 1][1];
         foreach ($this->rawDataLines as $i => $line) {
             $row = new TableRow();
             // loop over where all the columns should be
@@ -268,7 +269,6 @@ class TableNode extends Node
             $this->data[$i] = $row;
         }
 
-        /** @var TableRow|null $previousRow */
         $previousRow = null;
         // check for empty first columns, which means this is
         // not a new row, but the continuation of the previous row
@@ -289,7 +289,7 @@ class TableNode extends Node
         }
     }
 
-    private function compilePrettyTable() : void
+    private function compilePrettyTable(): void
     {
         // loop over ALL separator lines to find ALL of the column ranges
         $columnRanges    = [];
@@ -392,6 +392,7 @@ class TableNode extends Node
                 if ($currentColumnStart === null) {
                     $currentColumnStart = $start;
                 }
+
                 $previousColumnEnd = $end;
             }
 
@@ -446,12 +447,14 @@ class TableNode extends Node
                 if ($columnInRowspan === null) {
                     throw new LogicException('Cannot find column for index "%s"', $columnIndex);
                 }
+
                 $prevTargetColumn->addContent("\n" . $columnInRowspan->getContent());
 
                 // now this column actually needs to be removed from this row,
                 // as it's not a real column that needs to be printed
                 $row->removeColumn($columnIndex);
             }
+
             $columnIndexesCurrentlyInRowspan = [];
 
             // if the next row is just $i+1, it means there
@@ -490,7 +493,7 @@ class TableNode extends Node
         $this->data = $rows;
     }
 
-    private function getTableAsString() : string
+    private function getTableAsString(): string
     {
         $lines = [];
         $i     = 0;
@@ -507,7 +510,7 @@ class TableNode extends Node
         return implode("\n", $lines);
     }
 
-    private function addError(string $message) : void
+    private function addError(string $message): void
     {
         $this->errors[] = $message;
     }
@@ -515,7 +518,7 @@ class TableNode extends Node
     /**
      * @param TableRow[] $rows
      */
-    private function findColumnInPreviousRows(int $columnIndex, array $rows, int $currentRowIndex) : TableColumn
+    private function findColumnInPreviousRows(int $columnIndex, array $rows, int $currentRowIndex): TableColumn
     {
         /** @var TableRow[] $reversedRows */
         $reversedRows = array_reverse($rows, true);

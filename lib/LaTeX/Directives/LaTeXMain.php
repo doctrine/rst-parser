@@ -13,7 +13,7 @@ use Doctrine\RST\Parser;
  */
 class LaTeXMain extends Directive
 {
-    public function getName() : string
+    public function getName(): string
     {
         return 'latex-main';
     }
@@ -26,7 +26,7 @@ class LaTeXMain extends Directive
         string $variable,
         string $data,
         array $options
-    ) : ?Node {
+    ): ?Node {
         return $parser->getNodeFactory()->createMainNode();
     }
 }

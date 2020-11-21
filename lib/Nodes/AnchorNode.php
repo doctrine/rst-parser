@@ -14,7 +14,7 @@ class AnchorNode extends Node
         parent::__construct($value);
     }
 
-    public function getValue() : string
+    public function getValue(): string
     {
         return $this->value;
     }

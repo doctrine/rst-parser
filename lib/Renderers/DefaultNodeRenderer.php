@@ -16,7 +16,7 @@ class DefaultNodeRenderer implements NodeRenderer
         $this->node = $node;
     }
 
-    public function render() : string
+    public function render(): string
     {
         $value = $this->node->getValue();
 

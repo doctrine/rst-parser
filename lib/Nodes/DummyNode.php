@@ -19,7 +19,7 @@ class DummyNode extends Node
         $this->data = $data;
     }
 
-    protected function doRender() : string
+    protected function doRender(): string
     {
         return '';
     }

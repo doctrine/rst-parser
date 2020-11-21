@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\RST\Builder;
 
 use InvalidArgumentException;
+
 use function array_filter;
 use function array_key_exists;
 use function array_keys;
@@ -20,7 +21,7 @@ final class ParseQueue
      */
     private $fileStatuses = [];
 
-    public function addFile(string $filename, bool $parseNeeded) : void
+    public function addFile(string $filename, bool $parseNeeded): void
     {
         if (isset($this->fileStatuses[$filename])) {
             throw new InvalidArgumentException(sprintf('File "%s" is already in the parse queue', $filename));
@@ -29,12 +30,12 @@ final class ParseQueue
         $this->fileStatuses[$filename] = $parseNeeded;
     }
 
-    public function isFileKnownToParseQueue(string $filename) : bool
+    public function isFileKnownToParseQueue(string $filename): bool
     {
         return array_key_exists($filename, $this->fileStatuses);
     }
 
-    public function doesFileRequireParsing(string $filename) : bool
+    public function doesFileRequireParsing(string $filename): bool
     {
         if (! $this->isFileKnownToParseQueue($filename)) {
             throw new InvalidArgumentException(sprintf('File "%s" is not known to the parse queue', $filename));
@@ -46,9 +47,9 @@ final class ParseQueue
     /**
      * @return string[]
      */
-    public function getAllFilesThatRequireParsing() : array
+    public function getAllFilesThatRequireParsing(): array
     {
-        return array_keys(array_filter($this->fileStatuses, static function (bool $parseNeeded) {
+        return array_keys(array_filter($this->fileStatuses, static function (bool $parseNeeded): bool {
             return $parseNeeded;
         }));
     }
