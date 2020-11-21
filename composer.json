@@ -19,6 +19,7 @@
     "require": {
         "php": "^7.1 || ^8.0",
         "symfony/filesystem": "^4.1",
+        "symfony/finder": "^4.1 || ^5.0",
         "twig/twig": "^2.5",
         "doctrine/event-manager": "^1.0"
     },
