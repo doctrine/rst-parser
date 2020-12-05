@@ -72,6 +72,24 @@ class ParserTest extends TestCase
     }
 
     /**
+     * Testing that code node options are parsed
+     */
+    public function testCodeNodeWithOptions(): void
+    {
+        $document = $this->parse('code-block-with-options.rst');
+
+        $nodes = $document->getNodes(static function (Node $node): bool {
+            return $node instanceof CodeNode;
+        });
+
+        self::assertSame(1, count($nodes));
+        $codeNode = $nodes[0];
+        assert($codeNode instanceof CodeNode);
+        self::assertSame("A\nB\nC", trim($codeNode->getValueString()));
+        self::assertSame(['name' => 'My Very Best Code'], $codeNode->getOptions());
+    }
+
+    /**
      * Testing paragraph nodes
      */
     public function testParagraphNode(): void
