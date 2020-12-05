@@ -21,14 +21,22 @@ use function file_get_contents;
 use function implode;
 use function in_array;
 use function rtrim;
+use function setlocale;
 use function sprintf;
 use function str_replace;
 use function strpos;
 use function trim;
 
+use const LC_ALL;
+
 class FunctionalTest extends TestCase
 {
     private const RENDER_DOCUMENT_FILES = ['main-directive'];
+
+    protected function setUp(): void
+    {
+        setlocale(LC_ALL, 'en_US.utf8');
+    }
 
     /**
      * @dataProvider getFunctionalTests
