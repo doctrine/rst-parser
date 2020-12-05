@@ -11,7 +11,7 @@ You can install the Doctrine RST Parser with composer:
 
 .. code-block:: console
 
-    $ composer install doctrine/rst-parser
+    $ composer require doctrine/rst-parser
 
 Basic Usage
 -----------
