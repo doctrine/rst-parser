@@ -16,7 +16,7 @@ class BuilderCustomScannerFinderTest extends BaseBuilderTest
     public function testCustomScannerFinder(): void
     {
         self::assertFileExists($this->targetFile('path1/file1.html'));
-        self::assertFileNotExists($this->targetFile('path2/file2.html'));
+        self::assertFileDoesNotExist($this->targetFile('path2/file2.html'));
     }
 
     protected function getFixturesDirectory(): string

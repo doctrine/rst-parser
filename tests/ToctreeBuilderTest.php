@@ -35,20 +35,17 @@ EOF;
             ->method('getValueString')
             ->willReturn($toc);
 
-        $environment->expects(self::at(0))
+        $environment->expects($this->exactly(2))
             ->method('absoluteUrl')
-            ->with('test1')
-            ->willReturn('/test1');
+            ->withConsecutive(['test1'], ['test4'])
+            ->willReturnCallback(static function ($arg) {
+                return '/' . $arg;
+            });
 
         $this->globSearcher->expects(self::once())
             ->method('globSearch')
             ->with($environment, '*')
             ->willReturn(['/test1', '/test2', '/test3']);
-
-        $environment->expects(self::at(1))
-            ->method('absoluteUrl')
-            ->with('test4')
-            ->willReturn('/test4');
 
         $toctreeFiles = $this->toctreeBuilder
             ->buildToctreeFiles($environment, $node, $options);
