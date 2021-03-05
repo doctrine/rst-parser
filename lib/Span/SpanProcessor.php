@@ -79,7 +79,7 @@ class SpanProcessor
 
     private function replaceLiterals(string $span): string
     {
-        return preg_replace_callback(
+        return (string) preg_replace_callback(
             '/``(.+)``(?!`)/mUsi',
             function (array $match): string {
                 $id = $this->generateId();
@@ -98,7 +98,7 @@ class SpanProcessor
     private function replaceTitleLetters(string $span): string
     {
         foreach ($this->environment->getTitleLetters() as $level => $letter) {
-            $span = preg_replace_callback('/\#\\' . $letter . '/mUsi', function (array $match) use ($level): int {
+            $span = (string) preg_replace_callback('/\#\\' . $letter . '/mUsi', function (array $match) use ($level) {
                 return $this->environment->getNumber($level);
             }, $span);
         }
@@ -108,7 +108,7 @@ class SpanProcessor
 
     private function replaceReferences(string $span): string
     {
-        return preg_replace_callback('/:([a-z0-9]+):`(.+)`/mUsi', function ($match): string {
+        return (string) preg_replace_callback('/:([a-z0-9]+):`(.+)`/mUsi', function ($match) {
             $section = $match[1];
 
             $url    = $match[2];
@@ -169,7 +169,7 @@ class SpanProcessor
             // the link may have a new line in it so we need to strip it
             // before setting the link and adding a token to be replaced
             $link = str_replace("\n", ' ', $link);
-            $link = preg_replace('/\s+/', ' ', $link);
+            $link = (string) preg_replace('/\s+/', ' ', $link);
 
             // we need to maintain the characters before and after the link
             $prev = $match[1]; // previous character before the link
@@ -204,15 +204,15 @@ class SpanProcessor
         };
 
         // Replacing anonymous links
-        $span = preg_replace_callback(
-            '/(^|[ ])(([a-z0-9_-]+)|(`(.+)`))__([^a-z0-9]{1}|$)/mUsi',
+        $span = (string) preg_replace_callback(
+            '/(^|[ \(])(([a-z0-9_-]+)|(`(.+)`))__([^a-z0-9]{1}|$)/mUsi',
             $linkCallback,
             $span
         );
 
         // Replacing links
-        $span = preg_replace_callback(
-            '/(^|[ ])(([a-z0-9_-]+)|(`(.+)`))_([^a-z0-9]{1}|$)/mUsi',
+        $span = (string) preg_replace_callback(
+            '/(^|[ \(])(([a-z0-9_-]+)|(`(.+)`))_([^a-z0-9]{1}|$)/mUsi',
             $linkCallback,
             $span
         );
@@ -241,7 +241,7 @@ class SpanProcessor
             return $id;
         };
 
-        return preg_replace_callback(
+        return (string) preg_replace_callback(
             $absoluteUriPattern,
             $standaloneHyperlinkCallback,
             $span
@@ -272,7 +272,7 @@ class SpanProcessor
             return $id;
         };
 
-        return preg_replace_callback(
+        return (string) preg_replace_callback(
             $emailAddressPattern,
             $standaloneEmailAddressCallback,
             $span

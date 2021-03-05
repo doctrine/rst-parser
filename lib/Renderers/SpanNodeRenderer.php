@@ -63,26 +63,26 @@ abstract class SpanNodeRenderer implements NodeRenderer, SpanRenderer
 
     private function renderStrongEmphasis(string $span): string
     {
-        return preg_replace_callback('/\*\*(.+)\*\*/mUsi', function (array $matches): string {
+        return (string) preg_replace_callback('/\*\*(.+)\*\*/mUsi', function (array $matches) : string {
             return $this->strongEmphasis($matches[1]);
         }, $span);
     }
 
     private function renderEmphasis(string $span): string
     {
-        return preg_replace_callback('/\*(.+)\*/mUsi', function (array $matches): string {
+        return (string) preg_replace_callback('/\*(.+)\*/mUsi', function (array $matches) : string {
             return $this->emphasis($matches[1]);
         }, $span);
     }
 
     private function renderNbsp(string $span): string
     {
-        return preg_replace('/~/', $this->nbsp(), $span);
+        return (string) preg_replace('/~/', $this->nbsp(), $span);
     }
 
     private function renderVariables(string $span): string
     {
-        return preg_replace_callback('/\|(.+)\|/mUsi', function (array $match): string {
+        return (string) preg_replace_callback('/\|(.+)\|/mUsi', function (array $match) : string {
             $variable = $this->environment->getVariable($match[1]);
 
             if ($variable === null) {
@@ -104,7 +104,7 @@ abstract class SpanNodeRenderer implements NodeRenderer, SpanRenderer
     private function renderBrs(string $span): string
     {
         // Adding brs when a space is at the end of a line
-        return preg_replace('/ \n/', $this->br(), $span);
+        return (string) preg_replace('/ \n/', $this->br(), $span);
     }
 
     private function renderTokens(string $span): string

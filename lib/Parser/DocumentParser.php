@@ -18,6 +18,7 @@ use Doctrine\RST\Nodes\TableNode;
 use Doctrine\RST\Nodes\TitleNode;
 use Doctrine\RST\Parser;
 use Doctrine\RST\Parser\Directive as ParserDirective;
+use Exception;
 use Throwable;
 
 use function array_search;
@@ -259,9 +260,9 @@ class DocumentParser
 
                         return true;
                     } else {
-                        $tableParts = $this->tableParser->parseTableLine($line);
+                        $separatorLineConfig = $this->tableParser->parseTableSeparatorLine($line);
 
-                        if ($tableParts === null) {
+                        if ($separatorLineConfig === null) {
                             $this->setState(State::NORMAL);
 
                             return false;
@@ -270,7 +271,7 @@ class DocumentParser
                         $this->setState(State::TABLE);
 
                         $tableNode = $this->nodeFactory->createTableNode(
-                            $tableParts,
+                            $separatorLineConfig,
                             $this->tableParser->guessTableType($line),
                             $this->lineChecker
                         );
@@ -308,14 +309,18 @@ class DocumentParser
                     $this->flush();
                     $this->setState(State::BEGIN);
                 } else {
-                    $parts = $this->tableParser->parseTableLine($line);
+                    $separatorLineConfig = $this->tableParser->parseTableSeparatorLine($line);
 
-                    if ($this->nodeBuffer instanceof TableNode && ! $this->nodeBuffer->push($parts, $line)) {
-                        $this->flush();
+                    // not sure if this is possible, being cautious
+                    if (! $this->nodeBuffer instanceof TableNode) {
+                        throw new Exception('Node Buffer should be a TableNode instance');
+                    }
 
-                        $this->setState(State::BEGIN);
-
-                        return false;
+                    // push the separator or content line onto the TableNode
+                    if ($separatorLineConfig !== null) {
+                        $this->nodeBuffer->pushSeparatorLine($separatorLineConfig);
+                    } else {
+                        $this->nodeBuffer->pushContentLine($line);
                     }
                 }
 
@@ -417,6 +422,7 @@ class DocumentParser
                     $data = $this->buffer->getLinesString();
 
                     $level = $this->environment->getLevel((string) $this->specialLetter);
+                    $level = $this->environment->getConfiguration()->getInitialHeaderLevel() + $level - 1;
 
                     $token = $this->environment->createTitle($level);
 

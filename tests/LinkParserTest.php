@@ -59,6 +59,22 @@ EOF;
         self::assertStringContainsString('<p>Does Not Exist2</p>', $result);
     }
 
+    public function testLinkWithParenthesis() : void
+    {
+        $rst = <<<EOF
+Example_, `Example Web Site`_, Example (`Web Site`_), and Example (Link_)
+
+.. _Example: http://www.example.com/
+.. _`Example Web Site`: http://www.example.com/
+.. _`Web Site`: http://www.example.com/
+.. _Link: http://www.example.com/
+EOF;
+
+        $result = $this->parser->parse($rst)->render();
+
+        self::assertSame('<p><a href="http://www.example.com/">Example</a>, <a href="http://www.example.com/">Example Web Site</a>, Example (<a href="http://www.example.com/">Web Site</a>), and Example (<a href="http://www.example.com/">Link</a>)</p>', trim($result));
+    }
+
     protected function setUp(): void
     {
         $this->configuration = new Configuration();

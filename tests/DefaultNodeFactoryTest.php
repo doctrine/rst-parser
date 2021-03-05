@@ -251,14 +251,15 @@ class DefaultNodeFactoryTest extends TestCase
             ->method('getType')
             ->willReturn($type);
 
+        $separatorLineConfig = new Parser\TableSeparatorLineConfig(true, TableNode::TYPE_SIMPLE, [], '=', '=== ===');
         $nodeInstantiator->expects(self::once())
             ->method('create')
-            ->with([[], TableNode::TYPE_SIMPLE, $lineChecker])
+            ->with([$separatorLineConfig, TableNode::TYPE_SIMPLE, $lineChecker])
             ->willReturn($expectedReturn);
 
         $defaultNodeFactory = $this->createDefaultNodeFactory($nodeInstantiator);
 
-        self::assertSame($expectedReturn, $defaultNodeFactory->createTableNode([], TableNode::TYPE_SIMPLE, $lineChecker));
+        self::assertSame($expectedReturn, $defaultNodeFactory->createTableNode($separatorLineConfig, TableNode::TYPE_SIMPLE, $lineChecker));
     }
 
     public function testCreateSpan(): void

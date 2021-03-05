@@ -5,14 +5,19 @@ declare(strict_types=1);
 namespace Doctrine\RST\Parser;
 
 use Doctrine\RST\Nodes\TableNode;
-
+use Exception;
 use function count;
+use function in_array;
+use function sprintf;
 use function strlen;
 use function trim;
 
 class TableParser
 {
-    private const TABLE_LETTER = '=';
+    private const SIMPLE_TABLE_LETTER = '=';
+    // "-" is valid as a separator in a simple table, except
+    // on the first and last lines
+    private const SIMPLE_TABLE_LETTER_ALT = '-';
 
     private const PRETTY_TABLE_LETTER = '-';
 
@@ -21,9 +26,11 @@ class TableParser
     private const PRETTY_TABLE_JOINT = '+';
 
     /**
-     * @return mixed[]|null
+     * Parses a line from a table to see if it is a separator line.
+     *
+     * Returns TableSeparatorLineConfig if it *is* a separator, null otherwise.
      */
-    public function parseTableLine(string $line): ?array
+    public function parseTableSeparatorLine(string $line): ?TableSeparatorLineConfig
     {
         $header = false;
         $pretty = false;
@@ -42,41 +49,69 @@ class TableParser
 
         if ($chars[0] === self::PRETTY_TABLE_JOINT && $chars[1] === self::PRETTY_TABLE_LETTER) {
             $pretty = true;
-            $chars  = [self::PRETTY_TABLE_LETTER, self::PRETTY_TABLE_JOINT];
+            // reverse the chars: - is the line char, + is the space char
+            $chars = [self::PRETTY_TABLE_LETTER, self::PRETTY_TABLE_JOINT];
         } elseif ($chars[0] === self::PRETTY_TABLE_JOINT && $chars[1] === self::PRETTY_TABLE_HEADER) {
             $pretty = true;
             $header = true;
-            $chars  = [self::PRETTY_TABLE_HEADER, self::PRETTY_TABLE_JOINT];
+            // reverse the chars: = is the line char, + is the space char
+            $chars = [self::PRETTY_TABLE_HEADER, self::PRETTY_TABLE_JOINT];
         } else {
-            if (! ($chars[0] === self::TABLE_LETTER && $chars[1] === ' ')) {
+            // either a simple table or not a separator line
+
+            // if line char is not "=" or "-", not a separator line
+            if (! in_array($chars[0], [self::SIMPLE_TABLE_LETTER, self::SIMPLE_TABLE_LETTER_ALT], true)) {
+                return null;
+            }
+
+            // if space char is not a space, not a separator line
+            if ($chars[1] !== ' ') {
                 return null;
             }
         }
 
-        $parts     = [];
-        $separator = false;
+        $parts = [];
+        /** @var int|null $currentPartStart */
+        $currentPartStart = null;
 
+        $i = 0;
         for ($i = 0; $i < strlen($line); $i++) {
+            // we found the "line char": "-" or "="
             if ($line[$i] === $chars[0]) {
-                if (! $separator) {
-                    $parts[]   = $i;
-                    $separator = true;
-                }
-            } else {
-                if ($line[$i] !== $chars[1]) {
-                    return null;
+                if ($currentPartStart === null) {
+                    $currentPartStart = $i;
                 }
 
-                $separator = false;
+                continue;
             }
+
+            if ($line[$i] !== $chars[1]) {
+                throw new Exception(sprintf('Unexpected char "%s"', $line[$i]));
+            }
+
+            // found the "space" char
+            // record the part "range" if we're at the end of a range
+            if ($currentPartStart === null) {
+                continue;
+            }
+
+            $parts[]          = [$currentPartStart, $i];
+            $currentPartStart = null;
+        }
+
+        // finish the last "part"
+        if ($currentPartStart !== null) {
+            $parts[] = [$currentPartStart, $i];
         }
 
         if (count($parts) > 1) {
-            return [
+            return new TableSeparatorLineConfig(
                 $header,
-                $pretty,
+                $pretty ? TableNode::TYPE_PRETTY : TableNode::TYPE_SIMPLE,
                 $parts,
-            ];
+                $chars[0],
+                $line
+            );
         }
 
         return null;
@@ -84,10 +119,16 @@ class TableParser
 
     public function guessTableType(string $line): string
     {
-        return $line[0] === self::TABLE_LETTER ? TableNode::TYPE_SIMPLE : TableNode::TYPE_PRETTY;
+        return $line[0] === self::SIMPLE_TABLE_LETTER ? TableNode::TYPE_SIMPLE : TableNode::TYPE_PRETTY;
     }
 
     /**
+     * A "line" separator always has only two characters.
+     * This method returns those two characters.
+     *
+     * This returns null if this is not a separator line
+     * or it's malformed in any way.
+     *
      * @psalm-return array{string, ?string}
      */
     private function findTableChars(string $line): ?array
@@ -102,11 +143,17 @@ class TableParser
 
             if ($spaceChar === null) {
                 $spaceChar = $line[$i];
-            } else {
-                if ($line[$i] !== $spaceChar) {
-                    return null;
-                }
+
+                continue;
             }
+
+            if ($line[$i] !== $spaceChar) {
+                return null;
+            }
+        }
+
+        if ($spaceChar === null) {
+            return null;
         }
 
         return [$lineChar, $spaceChar];

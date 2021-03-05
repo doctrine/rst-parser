@@ -30,6 +30,21 @@ use function trim;
  */
 class ParserTest extends TestCase
 {
+    /** @var Parser $parser */
+    protected $parser;
+
+    protected function setUp() : void
+    {
+        parent::setUp();
+
+        $directory = __DIR__ . '/files/';
+        $parser    = new Parser();
+
+        $parser->getEnvironment()->setCurrentDirectory($directory);
+
+        $this->parser = $parser;
+    }
+
     public function testGetSubParserPassesConfiguration(): void
     {
         $parser = new Parser();
@@ -118,6 +133,23 @@ class ParserTest extends TestCase
         self::assertHasNode($document, static function ($node): bool {
             return $node instanceof TitleNode
                 && $node->getLevel() === 2;
+        }, 1);
+    }
+
+    public function testTitlesWithCustomInitialHeaderLevel() : void
+    {
+        $this->parser->getEnvironment()->getConfiguration()->setInitialHeaderLevel(2);
+
+        $document = $this->parse('title.rst');
+
+        self::assertHasNode($document, static function ($node) {
+            return $node instanceof TitleNode && $node->getLevel() === 2;
+        }, 1);
+
+        $document = $this->parse('title2.rst');
+
+        self::assertHasNode($document, static function ($node) {
+            return $node instanceof TitleNode && $node->getLevel() === 3;
         }, 1);
     }
 
@@ -381,18 +413,14 @@ class ParserTest extends TestCase
      */
     private function parse(string $file): DocumentNode
     {
-        $directory   = __DIR__ . '/files/';
-        $parser      = new Parser();
-        $environment = $parser->getEnvironment();
-        $environment->setCurrentDirectory($directory);
-
-        $data = file_get_contents($directory . $file);
+        $directory = $this->parser->getEnvironment()->getCurrentDirectory();
+        $data      = file_get_contents($directory . $file);
 
         if ($data === false) {
             throw new Exception('Could not open file.');
         }
 
-        return $parser->parse($data);
+        return $this->parser->parse($data);
     }
 
     /**

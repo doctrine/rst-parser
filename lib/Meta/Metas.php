@@ -55,7 +55,7 @@ class Metas
         string $title,
         array $titles,
         array $tocs,
-        int $ctime,
+        int $mtime,
         array $depends,
         array $links
     ): void {
@@ -79,7 +79,7 @@ class Metas
             $tocs,
             $depends,
             $links,
-            $ctime
+            $mtime
         );
 
         if (! isset($this->parents[$file])) {

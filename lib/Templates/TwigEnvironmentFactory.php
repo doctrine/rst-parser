@@ -7,14 +7,14 @@ namespace Doctrine\RST\Templates;
 use Doctrine\RST\Configuration;
 use Twig\Environment as TwigEnvironment;
 use Twig\Loader\FilesystemLoader;
-
+use function file_exists;
 use function sprintf;
 
 class TwigEnvironmentFactory
 {
     public static function createTwigEnvironment(Configuration $configuration): TwigEnvironment
     {
-        $loader = new FilesystemLoader(self::getTemplatesDirs($configuration));
+        $loader = new FilesystemLoader(self::getTemplateDirs($configuration));
 
         return new TwigEnvironment($loader, [
             'strict_variables' => true,
@@ -23,37 +23,37 @@ class TwigEnvironmentFactory
         ]);
     }
 
-    private static function getThemeDir(Configuration $configuration, string $templatesDir, ?string $theme = null): string
-    {
-        $theme         =  $theme ?? $configuration->getTheme();
-        $fileExtension = $configuration->getFileExtension();
-
-        return $templatesDir . '/' . $theme . '/' . $fileExtension;
-    }
-
     /**
      * @return string[]
      */
-    private static function getTemplatesDirs(Configuration $configuration): array
+    private static function getTemplateDirs(Configuration $configuration): array
     {
-        $themeDirs = [];
+        $themeDirs     = [];
+        $fileExtension = $configuration->getFileExtension();
 
-        // check custom template directories first
-        $customTemplateDirs = $configuration->getCustomTemplateDirs();
+        $templateDirectories = $configuration->getCustomTemplateDirs();
+        // add the fallback directory
+        $templateDirectories[] = __DIR__;
 
-        if ($customTemplateDirs !== []) {
-            foreach ($customTemplateDirs as $customTemplateDir) {
-                $themeDirs[] = self::getThemeDir($configuration, $customTemplateDir);
+        foreach ($templateDirectories as $templateDir) {
+            $themePath = $templateDir . '/' . $configuration->getTheme() . '/' . $fileExtension;
+            if (! file_exists($themePath)) {
+                continue;
             }
+
+            $themeDirs[] = $themePath;
         }
 
-        // fallback to core templates for the configured theme
-        $themeDirs[] = self::getThemeDir($configuration, __DIR__);
-
-        // fallback to core templates for the default theme
-        // if the configured theme is not the default
+        // look for the fallback "default" in all directories
         if ($configuration->getTheme() !== Configuration::THEME_DEFAULT) {
-            $themeDirs[] = self::getThemeDir($configuration, __DIR__, Configuration::THEME_DEFAULT);
+            foreach ($templateDirectories as $templateDir) {
+                $themePath = $templateDir . '/' . Configuration::THEME_DEFAULT . '/' . $fileExtension;
+                if (! file_exists($themePath)) {
+                    continue;
+                }
+
+                $themeDirs[] = $themePath;
+            }
         }
 
         return $themeDirs;

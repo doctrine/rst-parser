@@ -60,9 +60,9 @@ class ScannerTest extends TestCase
         $file1MetaMock = $this->createMetaEntryMock('file1');
 
         // file1.rst was modified 50 seconds ago
-        $file1InfoMock->method('getCTime')->willReturn(time() - 50);
+        $file1InfoMock->method('getMTime')->willReturn(time() - 50);
         // but file1 MetaEntry was modified 100 seconds ago (is out of date)
-        $file1MetaMock->method('getCTime')->willReturn(time() - 100);
+        $file1MetaMock->method('getMTime')->willReturn(time() - 100);
         // should never be called because the meta is definitely not fresh
         $file1MetaMock->expects(self::never())->method('getDepends');
 
@@ -71,9 +71,9 @@ class ScannerTest extends TestCase
 
         // file2.rst was modified 50 seconds ago
         $lastModifiedTime = time() - 50;
-        $file2InfoMock->method('getCTime')->willReturn($lastModifiedTime);
+        $file2InfoMock->method('getMTime')->willReturn($lastModifiedTime);
         // and file2 MetaEntry was also 50 seconds ago, fresh
-        $file2MetaMock->method('getCTime')->willReturn($lastModifiedTime);
+        $file2MetaMock->method('getMTime')->willReturn($lastModifiedTime);
         // ignore dependencies for this test
         $file2MetaMock->expects(self::once())
             ->method('getDepends')
@@ -108,50 +108,50 @@ class ScannerTest extends TestCase
          *      * file6
          */
 
-        $metaCTime = time() - 50;
+        $metaMTime = time() - 50;
 
         $file1InfoMock = $this->addFileMockToFinder('file1.rst');
-        $file1InfoMock->method('getCTime')->willReturn($metaCTime);
+        $file1InfoMock->method('getMTime')->willReturn($metaMTime);
         $file1MetaMock = $this->createMetaEntryMock('file1');
         $file1MetaMock->method('getDepends')
             ->willReturn(['file2']);
-        $file1MetaMock->method('getCTime')->willReturn($metaCTime);
+        $file1MetaMock->method('getMTime')->willReturn($metaMTime);
 
         $file2InfoMock = $this->addFileMockToFinder('file2.rst');
-        $file2InfoMock->method('getCTime')->willReturn($metaCTime);
+        $file2InfoMock->method('getMTime')->willReturn($metaMTime);
         $file2MetaMock = $this->createMetaEntryMock('file2');
         $file2MetaMock->method('getDepends')
             ->willReturn(['file2', 'file3']);
-        $file2MetaMock->method('getCTime')->willReturn($metaCTime);
+        $file2MetaMock->method('getMTime')->willReturn($metaMTime);
 
         $file3InfoMock = $this->addFileMockToFinder('file3.rst');
-        $file3InfoMock->method('getCTime')->willReturn($metaCTime);
+        $file3InfoMock->method('getMTime')->willReturn($metaMTime);
         $file3MetaMock = $this->createMetaEntryMock('file3');
         $file3MetaMock->method('getDepends')
             ->willReturn(['file4', 'file5', 'file3', 'file2']);
-        $file3MetaMock->method('getCTime')->willReturn($metaCTime);
+        $file3MetaMock->method('getMTime')->willReturn($metaMTime);
 
         $file4InfoMock = $this->addFileMockToFinder('file4.rst');
-        $file4InfoMock->method('getCTime')->willReturn($metaCTime);
+        $file4InfoMock->method('getMTime')->willReturn($metaMTime);
         $file4MetaMock = $this->createMetaEntryMock('file4');
         $file4MetaMock->method('getDepends')
             ->willReturn([]);
-        $file4MetaMock->method('getCTime')->willReturn($metaCTime);
+        $file4MetaMock->method('getMTime')->willReturn($metaMTime);
 
         $file5InfoMock = $this->addFileMockToFinder('file5.rst');
         // THIS file is the one file that's modified
-        $file5InfoMock->method('getCTime')->willReturn(time() - 10);
+        $file5InfoMock->method('getMTime')->willReturn(time() - 10);
         $file5MetaMock = $this->createMetaEntryMock('file5');
         $file5MetaMock->method('getDepends')
             ->willReturn(['file3', 'file6']);
-        $file5MetaMock->method('getCTime')->willReturn($metaCTime);
+        $file5MetaMock->method('getMTime')->willReturn($metaMTime);
 
         $file6InfoMock = $this->addFileMockToFinder('file6.rst');
-        $file6InfoMock->method('getCTime')->willReturn($metaCTime);
+        $file6InfoMock->method('getMTime')->willReturn($metaMTime);
         $file6MetaMock = $this->createMetaEntryMock('file6');
         $file6MetaMock->method('getDepends')
             ->willReturn(['file4']);
-        $file6MetaMock->method('getCTime')->willReturn($metaCTime);
+        $file6MetaMock->method('getMTime')->willReturn($metaMTime);
 
         $parseQueue = $this->scanner->scan();
         self::assertSame([
@@ -171,14 +171,14 @@ class ScannerTest extends TestCase
          * Result is that file 1 DOES need to be parsed
          */
 
-        $metaCTime = time() - 50;
+        $metaMTime = time() - 50;
 
         $file1InfoMock = $this->addFileMockToFinder('file1.rst');
-        $file1InfoMock->method('getCTime')->willReturn($metaCTime);
+        $file1InfoMock->method('getMTime')->willReturn($metaMTime);
         $file1MetaMock = $this->createMetaEntryMock('file1');
         $file1MetaMock->method('getDepends')
             ->willReturn(['file2']);
-        $file1MetaMock->method('getCTime')->willReturn($metaCTime);
+        $file1MetaMock->method('getMTime')->willReturn($metaMTime);
 
         // no file info made for file2
 

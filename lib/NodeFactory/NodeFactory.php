@@ -32,6 +32,7 @@ use Doctrine\RST\Nodes\WrapperNode;
 use Doctrine\RST\Parser;
 use Doctrine\RST\Parser\DefinitionList;
 use Doctrine\RST\Parser\LineChecker;
+use Doctrine\RST\Parser\TableSeparatorLineConfig;
 
 interface NodeFactory
 {
@@ -65,10 +66,7 @@ interface NodeFactory
 
     public function createListNode(): ListNode;
 
-    /**
-     * @param string[] $parts
-     */
-    public function createTableNode(array $parts, string $type, LineChecker $lineChecker): TableNode;
+    public function createTableNode(TableSeparatorLineConfig $separatorLineConfig, string $type, LineChecker $lineChecker): TableNode;
 
     /**
      * @param string|string[]|SpanNode $span

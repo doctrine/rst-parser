@@ -15,10 +15,13 @@ use Doctrine\RST\Event\PreBuildRenderEvent;
 use Doctrine\RST\Event\PreBuildScanEvent;
 use Doctrine\RST\Meta\CachedMetasLoader;
 use Doctrine\RST\Meta\Metas;
+use InvalidArgumentException;
 use LogicException;
 use Symfony\Component\Filesystem\Filesystem;
-
+use Symfony\Component\Finder\Finder;
+use function file_exists;
 use function is_dir;
+use function sprintf;
 
 class Builder
 {
@@ -48,6 +51,9 @@ class Builder
 
     /** @var Copier */
     private $copier;
+
+    /** @var Finder|null */
+    private $scannerFinder;
 
     /** @var string */
     private $indexName = 'index';
@@ -136,6 +142,11 @@ class Builder
             $this->filesystem->mkdir($targetDirectory, 0755);
         }
 
+        $indexFilename = sprintf('%s.%s', $this->indexName, $this->configuration->getSourceFileExtension());
+        if (! file_exists($directory . '/' . $indexFilename)) {
+            throw new InvalidArgumentException(sprintf('Could not find index file "%s" in "%s"', $indexFilename, $directory));
+        }
+
         if ($this->configuration->getUseCachedMetas()) {
             $this->cachedMetasLoader->loadCachedMetaEntries($targetDirectory, $this->metas);
         }
@@ -163,6 +174,14 @@ class Builder
         return $this;
     }
 
+    /**
+     * Set the Finder that will be used for scanning files.
+     */
+    public function setScannerFinder(Finder $finder) : void
+    {
+        $this->scannerFinder = $finder;
+    }
+
     private function scan(string $directory, string $targetDirectory): ParseQueue
     {
         $this->configuration->dispatchEvent(
@@ -173,7 +192,8 @@ class Builder
         $scanner = new Scanner(
             $this->configuration->getSourceFileExtension(),
             $directory,
-            $this->metas
+            $this->metas,
+            $this->getScannerFinder()
         );
 
         return $scanner->scan();
@@ -215,5 +235,14 @@ class Builder
             PostBuildRenderEvent::POST_BUILD_RENDER,
             new PostBuildRenderEvent($this, $directory, $targetDirectory)
         );
+    }
+
+    private function getScannerFinder() : Finder
+    {
+        if ($this->scannerFinder === null) {
+            $this->scannerFinder = new Finder();
+        }
+
+        return $this->scannerFinder;
     }
 }
