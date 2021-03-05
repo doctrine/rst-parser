@@ -271,7 +271,6 @@ class TableNode extends Node
         }
 
         $previousRow = null;
-        assert($previousRow instanceof TableRow || $previousRow === null);
         // check for empty first columns, which means this is
         // not a new row, but the continuation of the previous row
         foreach ($this->data as $i => $row) {
@@ -357,6 +356,7 @@ class TableNode extends Node
 
             $currentColumnStart = null;
             $currentSpan        = 1;
+            /** @var int|null $previousColumnEnd */
             $previousColumnEnd  = null;
             foreach ($columnRanges as $start => $end) {
                 // a content line that ends before it should

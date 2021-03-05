@@ -142,13 +142,13 @@ class ParserTest extends TestCase
 
         $document = $this->parse('title.rst');
 
-        self::assertHasNode($document, static function ($node) {
+        self::assertHasNode($document, static function ($node): bool {
             return $node instanceof TitleNode && $node->getLevel() === 2;
         }, 1);
 
         $document = $this->parse('title2.rst');
 
-        self::assertHasNode($document, static function ($node) {
+        self::assertHasNode($document, static function ($node): bool {
             return $node instanceof TitleNode && $node->getLevel() === 3;
         }, 1);
     }

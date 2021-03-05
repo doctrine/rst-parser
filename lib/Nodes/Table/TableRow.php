@@ -70,7 +70,7 @@ final class TableRow
 
     public function toString(): string
     {
-        return implode(' | ', array_map(static function (TableColumn $column) {
+        return implode(' | ', array_map(static function (TableColumn $column): string {
             return $column->getContent();
         }, $this->columns));
     }

@@ -75,7 +75,6 @@ class TableParser
 
         $parts            = [];
         $currentPartStart = null;
-        assert(is_int($currentPartStart) || $currentPartStart === null);
 
         $i = 0;
         for ($i = 0; $i < strlen($line); $i++) {

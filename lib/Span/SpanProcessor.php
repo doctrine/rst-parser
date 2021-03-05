@@ -98,7 +98,7 @@ class SpanProcessor
     private function replaceTitleLetters(string $span): string
     {
         foreach ($this->environment->getTitleLetters() as $level => $letter) {
-            $span = (string) preg_replace_callback('/\#\\' . $letter . '/mUsi', function (array $match) use ($level) {
+            $span = (string) preg_replace_callback('/\#\\' . $letter . '/mUsi', function (array $match) use ($level): int {
                 return $this->environment->getNumber($level);
             }, $span);
         }
@@ -108,7 +108,7 @@ class SpanProcessor
 
     private function replaceReferences(string $span): string
     {
-        return (string) preg_replace_callback('/:([a-z0-9]+):`(.+)`/mUsi', function ($match) {
+        return (string) preg_replace_callback('/:([a-z0-9]+):`(.+)`/mUsi', function ($match): string {
             $section = $match[1];
 
             $url    = $match[2];

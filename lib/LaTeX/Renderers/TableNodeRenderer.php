@@ -33,7 +33,6 @@ class TableNodeRenderer implements NodeRenderer
             $cols   = max($cols, count($row->getColumns()));
 
             foreach ($row->getColumns() as $n => $col) {
-                assert($col instanceof SpanNode);
                 $rowTex .= $col->render();
 
                 if ((int) $n + 1 >= count($row->getColumns())) {

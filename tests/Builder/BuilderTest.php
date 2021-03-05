@@ -306,7 +306,7 @@ class BuilderTest extends BaseBuilderTest
             $contents
         );
 
-        self::assertContains(
+        self::assertStringContainsString(
             '<p>see <a href="magic-link.html#a-title-with-ticks">A title with ticks</a></p>',
             $contents
         );
