@@ -7,6 +7,7 @@ namespace Doctrine\RST\Templates;
 use Doctrine\RST\Configuration;
 use Twig\Environment as TwigEnvironment;
 use Twig\Loader\FilesystemLoader;
+
 use function file_exists;
 use function sprintf;
 

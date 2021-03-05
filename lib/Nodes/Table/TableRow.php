@@ -7,6 +7,7 @@ namespace Doctrine\RST\Nodes\Table;
 use Doctrine\RST\Exception\InvalidTableStructure;
 use InvalidArgumentException;
 use LogicException;
+
 use function array_map;
 use function implode;
 use function sprintf;
@@ -16,7 +17,7 @@ final class TableRow
     /** @var TableColumn[] */
     private $columns = [];
 
-    public function addColumn(string $content, int $colSpan) : void
+    public function addColumn(string $content, int $colSpan): void
     {
         $this->columns[] = new TableColumn($content, $colSpan);
     }
@@ -24,17 +25,17 @@ final class TableRow
     /**
      * @return TableColumn[]
      */
-    public function getColumns() : array
+    public function getColumns(): array
     {
         return $this->columns;
     }
 
-    public function getColumn(int $index) : ?TableColumn
+    public function getColumn(int $index): ?TableColumn
     {
         return $this->columns[$index] ?? null;
     }
 
-    public function getFirstColumn() : TableColumn
+    public function getFirstColumn(): TableColumn
     {
         $column = $this->getColumn(0);
 
@@ -54,7 +55,7 @@ final class TableRow
      *
      * @throws InvalidTableStructure
      */
-    public function absorbRowContent(TableRow $targetRow) : void
+    public function absorbRowContent(TableRow $targetRow): void
     {
         // iterate over each column and combine the content
         foreach ($this->getColumns() as $columnIndex => $column) {
@@ -67,14 +68,14 @@ final class TableRow
         }
     }
 
-    public function toString() : string
+    public function toString(): string
     {
         return implode(' | ', array_map(static function (TableColumn $column) {
             return $column->getContent();
         }, $this->columns));
     }
 
-    public function removeColumn(int $columnIndex) : void
+    public function removeColumn(int $columnIndex): void
     {
         if ($this->getColumn($columnIndex) === null) {
             throw new InvalidArgumentException(sprintf('Bad column index "%d"', $columnIndex));

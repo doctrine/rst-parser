@@ -33,7 +33,7 @@ class ParserTest extends TestCase
     /** @var Parser $parser */
     protected $parser;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -136,7 +136,7 @@ class ParserTest extends TestCase
         }, 1);
     }
 
-    public function testTitlesWithCustomInitialHeaderLevel() : void
+    public function testTitlesWithCustomInitialHeaderLevel(): void
     {
         $this->parser->getEnvironment()->getConfiguration()->setInitialHeaderLevel(2);
 

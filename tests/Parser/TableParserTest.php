@@ -13,7 +13,7 @@ class TableParserTest extends TestCase
     /**
      * @dataProvider getLineSeparatorsData
      */
-    public function testParseTableLineSeparator(string $inputLine, ?Parser\TableSeparatorLineConfig $expectedConfig) : void
+    public function testParseTableLineSeparator(string $inputLine, ?Parser\TableSeparatorLineConfig $expectedConfig): void
     {
         $tableParser           = new Parser\TableParser();
         $actualSeparatorConfig = $tableParser->parseTableSeparatorLine($inputLine);
@@ -25,7 +25,7 @@ class TableParserTest extends TestCase
     /**
      * @return mixed[]
      */
-    public function getLineSeparatorsData() : array
+    public function getLineSeparatorsData(): array
     {
         return [
             [

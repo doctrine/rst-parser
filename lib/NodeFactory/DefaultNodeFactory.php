@@ -149,8 +149,8 @@ class DefaultNodeFactory implements NodeFactory
 
     public function createTableNode(Parser\TableSeparatorLineConfig $separatorLineConfig, string $type, LineChecker $lineChecker): TableNode
     {
-        /** @var TableNode $tableNode */
         $tableNode = $this->create(NodeTypes::TABLE, [$separatorLineConfig, $type, $lineChecker]);
+        assert($tableNode instanceof TableNode);
 
         return $tableNode;
     }

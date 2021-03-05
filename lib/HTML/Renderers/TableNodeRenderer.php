@@ -8,6 +8,7 @@ use Doctrine\RST\Nodes\TableNode;
 use Doctrine\RST\Renderers\NodeRenderer;
 use Doctrine\RST\Templates\TemplateRenderer;
 use LogicException;
+
 use function sprintf;
 
 class TableNodeRenderer implements NodeRenderer

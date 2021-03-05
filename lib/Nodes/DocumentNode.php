@@ -264,7 +264,7 @@ class DocumentNode extends Node
      * This corrects that by looking back into the Node to
      * get the original text.
      */
-    private function getTextFromNode(TitleNode $node) : ?string
+    private function getTextFromNode(TitleNode $node): ?string
     {
         $text = $node->getValue()->getValue();
 

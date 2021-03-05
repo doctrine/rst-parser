@@ -59,7 +59,7 @@ EOF;
         self::assertStringContainsString('<p>Does Not Exist2</p>', $result);
     }
 
-    public function testLinkWithParenthesis() : void
+    public function testLinkWithParenthesis(): void
     {
         $rst = <<<EOF
 Example_, `Example Web Site`_, Example (`Web Site`_), and Example (Link_)

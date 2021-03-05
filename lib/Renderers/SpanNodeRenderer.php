@@ -63,14 +63,14 @@ abstract class SpanNodeRenderer implements NodeRenderer, SpanRenderer
 
     private function renderStrongEmphasis(string $span): string
     {
-        return (string) preg_replace_callback('/\*\*(.+)\*\*/mUsi', function (array $matches) : string {
+        return (string) preg_replace_callback('/\*\*(.+)\*\*/mUsi', function (array $matches): string {
             return $this->strongEmphasis($matches[1]);
         }, $span);
     }
 
     private function renderEmphasis(string $span): string
     {
-        return (string) preg_replace_callback('/\*(.+)\*/mUsi', function (array $matches) : string {
+        return (string) preg_replace_callback('/\*(.+)\*/mUsi', function (array $matches): string {
             return $this->emphasis($matches[1]);
         }, $span);
     }
@@ -82,7 +82,7 @@ abstract class SpanNodeRenderer implements NodeRenderer, SpanRenderer
 
     private function renderVariables(string $span): string
     {
-        return (string) preg_replace_callback('/\|(.+)\|/mUsi', function (array $match) : string {
+        return (string) preg_replace_callback('/\|(.+)\|/mUsi', function (array $match): string {
             $variable = $this->environment->getVariable($match[1]);
 
             if ($variable === null) {

@@ -6,8 +6,11 @@ namespace Doctrine\RST\Parser;
 
 use Doctrine\RST\Nodes\TableNode;
 use Exception;
+
+use function assert;
 use function count;
 use function in_array;
+use function is_int;
 use function sprintf;
 use function strlen;
 use function trim;
@@ -70,9 +73,9 @@ class TableParser
             }
         }
 
-        $parts = [];
-        /** @var int|null $currentPartStart */
+        $parts            = [];
         $currentPartStart = null;
+        assert(is_int($currentPartStart) || $currentPartStart === null);
 
         $i = 0;
         for ($i = 0; $i < strlen($line); $i++) {

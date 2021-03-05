@@ -19,6 +19,7 @@ use InvalidArgumentException;
 use LogicException;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
+
 use function file_exists;
 use function is_dir;
 use function sprintf;
@@ -177,7 +178,7 @@ class Builder
     /**
      * Set the Finder that will be used for scanning files.
      */
-    public function setScannerFinder(Finder $finder) : void
+    public function setScannerFinder(Finder $finder): void
     {
         $this->scannerFinder = $finder;
     }
@@ -237,7 +238,7 @@ class Builder
         );
     }
 
-    private function getScannerFinder() : Finder
+    private function getScannerFinder(): Finder
     {
         if ($this->scannerFinder === null) {
             $this->scannerFinder = new Finder();

@@ -11,6 +11,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
+
 use function realpath;
 use function sys_get_temp_dir;
 
@@ -21,7 +22,7 @@ class TwigEnvironmentFactoryTest extends TestCase
     /** @var Filesystem */
     private $filesystem;
 
-    public function testTemplateDirectoriesNothingCustom() : void
+    public function testTemplateDirectoriesNothingCustom(): void
     {
         $configuration = new Configuration();
         $configuration->setFileExtension('html');
@@ -33,7 +34,7 @@ class TwigEnvironmentFactoryTest extends TestCase
         );
     }
 
-    public function testTemplateDirectoriesThemeAndDirectories() : void
+    public function testTemplateDirectoriesThemeAndDirectories(): void
     {
         $configuration = new Configuration();
         $configuration->setFileExtension('html');
@@ -69,7 +70,7 @@ class TwigEnvironmentFactoryTest extends TestCase
     /**
      * @param string[] $expectedPaths
      */
-    private static function assertLoaderPaths(array $expectedPaths, Environment $twig) : void
+    private static function assertLoaderPaths(array $expectedPaths, Environment $twig): void
     {
         $loader = $twig->getLoader();
         if (! $loader instanceof FilesystemLoader) {
@@ -79,13 +80,13 @@ class TwigEnvironmentFactoryTest extends TestCase
         self::assertSame($expectedPaths, $loader->getPaths());
     }
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         $this->tmpPath    = sys_get_temp_dir() . '/_rst_twig_tests';
         $this->filesystem = new Filesystem();
     }
 
-    protected function tearDown() : void
+    protected function tearDown(): void
     {
         $this->filesystem->remove($this->tmpPath);
     }

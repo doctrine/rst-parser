@@ -221,12 +221,12 @@ class Configuration
         return $this->indentHTML;
     }
 
-    public function setInitialHeaderLevel(int $initialHeaderLevel) : void
+    public function setInitialHeaderLevel(int $initialHeaderLevel): void
     {
         $this->initialHeaderLevel = $initialHeaderLevel;
     }
 
-    public function getInitialHeaderLevel() : int
+    public function getInitialHeaderLevel(): int
     {
         return $this->initialHeaderLevel;
     }
