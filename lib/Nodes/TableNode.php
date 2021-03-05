@@ -16,7 +16,6 @@ use LogicException;
 use function array_keys;
 use function array_reverse;
 use function array_values;
-use function assert;
 use function count;
 use function explode;
 use function implode;
@@ -356,7 +355,6 @@ class TableNode extends Node
 
             $currentColumnStart = null;
             $currentSpan        = 1;
-            /** @var int|null $previousColumnEnd */
             $previousColumnEnd  = null;
             foreach ($columnRanges as $start => $end) {
                 // a content line that ends before it should
@@ -367,10 +365,6 @@ class TableNode extends Node
                 }
 
                 if ($currentColumnStart !== null) {
-                    if ($previousColumnEnd === null) {
-                        throw new LogicException('The previous column end is not set yet');
-                    }
-
                     $gapText = substr($line, $previousColumnEnd, $start - $previousColumnEnd);
                     if (strpos($gapText, '|') === false && strpos($gapText, '+') === false) {
                         // text continued through the "gap". This is a colspan

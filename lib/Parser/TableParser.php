@@ -7,10 +7,8 @@ namespace Doctrine\RST\Parser;
 use Doctrine\RST\Nodes\TableNode;
 use Exception;
 
-use function assert;
 use function count;
 use function in_array;
-use function is_int;
 use function sprintf;
 use function strlen;
 use function trim;

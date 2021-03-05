@@ -35,10 +35,10 @@ EOF;
             ->method('getValueString')
             ->willReturn($toc);
 
-        $environment->expects($this->exactly(2))
+        $environment->expects(self::exactly(2))
             ->method('absoluteUrl')
             ->withConsecutive(['test1'], ['test4'])
-            ->willReturnCallback(static function ($arg) {
+            ->willReturnCallback(static function ($arg): string {
                 return '/' . $arg;
             });
 
