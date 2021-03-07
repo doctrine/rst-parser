@@ -365,10 +365,6 @@ class TableNode extends Node
                 }
 
                 if ($currentColumnStart !== null) {
-                    if ($previousColumnEnd === null) {
-                        throw new LogicException('The previous column end is not set yet');
-                    }
-
                     $gapText = substr($line, $previousColumnEnd, $start - $previousColumnEnd);
                     if (strpos($gapText, '|') === false && strpos($gapText, '+') === false) {
                         // text continued through the "gap". This is a colspan
