@@ -138,27 +138,8 @@ class Builder
         string $directory,
         string $targetDirectory = 'output'
     ): void {
-        // Creating output directory if doesn't exists
-        if (! is_dir($targetDirectory)) {
-            $this->filesystem->mkdir($targetDirectory, 0755);
-        }
-
-        $indexFilename = sprintf('%s.%s', $this->indexName, $this->configuration->getSourceFileExtension());
-        if (! file_exists($directory . '/' . $indexFilename)) {
-            throw new InvalidArgumentException(sprintf('Could not find index file "%s" in "%s"', $indexFilename, $directory));
-        }
-
-        if ($this->configuration->getUseCachedMetas()) {
-            $this->cachedMetasLoader->loadCachedMetaEntries($targetDirectory, $this->metas);
-        }
-
-        $parseQueue = $this->scan($directory, $targetDirectory);
-
-        $this->parse($directory, $targetDirectory, $parseQueue);
-
+        $this->parse($directory, $targetDirectory);
         $this->render($directory, $targetDirectory);
-
-        $this->cachedMetasLoader->cacheMetaEntries($targetDirectory, $this->metas);
     }
 
     public function copy(string $source, ?string $destination = null): self
@@ -200,7 +181,25 @@ class Builder
         return $scanner->scan();
     }
 
-    private function parse(string $directory, string $targetDirectory, ParseQueue $parseQueue): void
+    public function parse(string $directory, string $targetDirectory): void
+    {
+        $this->ensureDirectoryExists($targetDirectory);
+
+        $indexFilename = sprintf('%s.%s', $this->indexName, $this->configuration->getSourceFileExtension());
+        if (! file_exists($directory . '/' . $indexFilename)) {
+            throw new InvalidArgumentException(sprintf('Could not find index file "%s" in "%s"', $indexFilename, $directory));
+        }
+
+        if ($this->configuration->getUseCachedMetas()) {
+            $this->cachedMetasLoader->loadCachedMetaEntries($targetDirectory, $this->metas);
+        }
+
+        $parseQueue = $this->scan($directory, $targetDirectory);
+
+        $this->doParse($directory, $targetDirectory, $parseQueue);
+    }
+
+    private function doParse(string $directory, string $targetDirectory, ParseQueue $parseQueue): void
     {
         $this->configuration->dispatchEvent(
             PreBuildParseEvent::PRE_BUILD_PARSE,
@@ -220,8 +219,10 @@ class Builder
         $parseQueueProcessor->process($parseQueue);
     }
 
-    private function render(string $directory, string $targetDirectory): void
+    public function render(string $directory, string $targetDirectory): void
     {
+        $this->ensureDirectoryExists($targetDirectory);
+
         $this->configuration->dispatchEvent(
             PreBuildRenderEvent::PRE_BUILD_RENDER,
             new PreBuildRenderEvent($this, $directory, $targetDirectory)
@@ -236,6 +237,28 @@ class Builder
             PostBuildRenderEvent::POST_BUILD_RENDER,
             new PostBuildRenderEvent($this, $directory, $targetDirectory)
         );
+
+        $this->storeCache($targetDirectory);
+    }
+
+    private function ensureDirectoryExists(string $targetDirectory): void
+    {
+        if (is_dir($targetDirectory)) {
+            return;
+        }
+
+        $this->filesystem->mkdir($targetDirectory, 0755);
+    }
+
+    /**
+     * Persist the cache to disk.
+     *
+     * The meta's are cached after we finished rendering as the renderer resolves the filenames of the dependencies in
+     * these meta's.
+     */
+    private function storeCache(string $targetDirectory): void
+    {
+        $this->cachedMetasLoader->cacheMetaEntries($targetDirectory, $this->metas);
     }
 
     private function getScannerFinder(): Finder
