@@ -1,7 +1,7 @@
-{% spaceless %}
+{% apply spaceless %}
     <ul>
         {% for tocItem in tocItems %}
             {% include "toc-item.html.twig" %}
         {% endfor %}
     </ul>
-{% endspaceless %}
+{% endapply %}
