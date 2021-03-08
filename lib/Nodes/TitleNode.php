@@ -29,7 +29,7 @@ class TitleNode extends Node
 
         $this->level = $level;
         $this->token = $token;
-        $this->id    = Environment::slugify($this->value->getValue());
+        $this->id    = Environment::slugify($this->value->getText());
     }
 
     public function getValue(): SpanNode
