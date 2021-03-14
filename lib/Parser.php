@@ -152,6 +152,9 @@ class Parser
         return $this->getNodeFactory()->createSpanNode($this, $span);
     }
 
+    /**
+     * Parses the given contents as a new file.
+     */
     public function parse(string $contents): DocumentNode
     {
         $this->getEnvironment()->reset();
@@ -159,6 +162,15 @@ class Parser
         return $this->parseLocal($contents);
     }
 
+    /**
+     * Parses the given contents in a new document node.
+     *
+     * CAUTION: This modifies the state of the Parser, do not use this method
+     * on the main parser (use `Parser::getSubParser()->parseLocal(...)` instead).
+     *
+     * Use this method to parse contents of an other node. Nodes created by
+     * this new parser are not added to the main DocumentNode.
+     */
     public function parseLocal(string $contents): DocumentNode
     {
         $this->documentParser = $this->createDocumentParser();
