@@ -6,6 +6,7 @@ namespace Doctrine\RST\Parser;
 
 use Doctrine\Common\EventManager;
 use Doctrine\RST\Event\OnLinkParsedEvent;
+use Doctrine\RST\Nodes\ParagraphNode;
 use Doctrine\RST\Nodes\SpanNode;
 use Doctrine\RST\Parser;
 
@@ -147,27 +148,42 @@ class LineDataParser
      */
     public function parseDefinitionList(array $lines): DefinitionList
     {
-        $definitionList     = [];
+        /** @var array{term: SpanNode, classifiers: list<SpanNode>, definition: string}|null $definitionListTerm */
         $definitionListTerm = null;
-        $currentDefinition  = null;
+        $definitionList     = [];
+
+        $createDefinitionTerm = function (array $definitionListTerm): DefinitionListTerm {
+            // parse any markup in the definition (e.g. lists, directives)
+            $definitionNodes = $this->parser->getSubParser()->parseLocal($definitionListTerm['definition'])->getNodes();
+            if (count($definitionNodes) === 1 && $definitionNodes[0] instanceof ParagraphNode) {
+                // if there is only one paragraph node, the value is put directly in the <dd> element
+                $definitionNodes = [$definitionNodes[0]->getValue()];
+            } else {
+                // otherwise, .first and .last are added to the first and last nodes of the definition
+                $definitionNodes[0]->setClasses($definitionNodes[0]->getClasses() + ['first']);
+                $definitionNodes[count($definitionNodes) - 1]->setClasses($definitionNodes[count($definitionNodes) - 1]->getClasses() + ['last']);
+            }
+
+            return new DefinitionListTerm(
+                $definitionListTerm['term'],
+                $definitionListTerm['classifiers'],
+                $definitionNodes
+            );
+        };
 
         foreach ($lines as $key => $line) {
-            // term definition line
-            if ($definitionListTerm !== null && substr($line, 0, 4) === '    ') {
-                $definition = trim($line);
+            // indent or empty line = term definition line
+            if ($definitionListTerm !== null && (substr($line, 0, 4) === '    ' || trim($line) === '')) {
+                $definition = substr($line, 4);
 
-                $currentDefinition .= $definition . ' ';
+                $definitionListTerm['definition'] .= $definition . "\n";
 
-            // non empty string
+            // non empty string at the start of the line = definition term
             } elseif (trim($line) !== '') {
                 // we are starting a new term so if we have an existing
                 // term with definitions, add it to the definition list
                 if ($definitionListTerm !== null) {
-                    $definitionList[] = new DefinitionListTerm(
-                        $definitionListTerm['term'],
-                        $definitionListTerm['classifiers'],
-                        $definitionListTerm['definitions']
-                    );
+                    $definitionList[] = $createDefinitionTerm($definitionListTerm);
                 }
 
                 $parts = explode(':', trim($line));
@@ -182,29 +198,14 @@ class LineDataParser
                 $definitionListTerm = [
                     'term' => $this->parser->createSpanNode($term),
                     'classifiers' => $classifiers,
-                    'definitions' => [],
+                    'definition' => '',
                 ];
-
-            // last line
-            } elseif ($definitionListTerm !== null && count($lines) - 1 === $key) {
-                if ($currentDefinition !== null) {
-                    $definitionListTerm['definitions'][] = $this->parser->createSpanNode($currentDefinition);
-
-                    $currentDefinition = null;
-                }
-
-                $definitionList[] = new DefinitionListTerm(
-                    $definitionListTerm['term'],
-                    $definitionListTerm['classifiers'],
-                    $definitionListTerm['definitions']
-                );
-
-            // empty line, start of a new definition for the current term
-            } elseif ($currentDefinition !== null && $definitionListTerm !== null) {
-                $definitionListTerm['definitions'][] = $this->parser->createSpanNode($currentDefinition);
-
-                $currentDefinition = null;
             }
+        }
+
+        // append the last definition of the list
+        if ($definitionListTerm !== null) {
+            $definitionList[] = $createDefinitionTerm($definitionListTerm);
         }
 
         return new DefinitionList($definitionList);
