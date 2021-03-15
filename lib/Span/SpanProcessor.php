@@ -69,6 +69,15 @@ class SpanProcessor
         return $this->tokens;
     }
 
+    public function getText(string $value): string
+    {
+        foreach ($this->tokens as $token) {
+            $value = str_replace($token->getId(), $token->get('text'), $value);
+        }
+
+        return $value;
+    }
+
     /**
      * @param string[] $tokenData
      */

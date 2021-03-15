@@ -42,12 +42,12 @@ class BuilderUrlTest extends BaseBuilderTest
         );
 
         self::assertStringContainsString(
-            '<li id="index-html-base-url" class="toc-item"><a href="https://www.domain.com/directory/index.html#base-url">Base URL</a></li>',
+            '<li id="index-html" class="toc-item"><a href="https://www.domain.com/directory/index.html">Base URL</a></li>',
             $contents
         );
 
         self::assertStringContainsString(
-            '<li id="file-html-subdirectory-file" class="toc-item"><a href="https://www.domain.com/directory/subdir/file.html#subdirectory-file">Subdirectory File</a></li>',
+            '<li id="file-html" class="toc-item"><a href="https://www.domain.com/directory/subdir/file.html">Subdirectory File</a></li>',
             $contents
         );
     }
@@ -91,12 +91,12 @@ class BuilderUrlTest extends BaseBuilderTest
         );
 
         self::assertStringContainsString(
-            '<li id="index-html-base-url" class="toc-item"><a href="https://www.domain.com/directory/index.html#base-url">Base URL</a></li>',
+            '<li id="index-html" class="toc-item"><a href="https://www.domain.com/directory/index.html">Base URL</a></li>',
             $contents
         );
 
         self::assertStringContainsString(
-            '<li id="file-html-subdirectory-file" class="toc-item"><a href="file.html#subdirectory-file">Subdirectory File</a></li>',
+            '<li id="file-html" class="toc-item"><a href="file.html">Subdirectory File</a></li>',
             $contents
         );
     }
@@ -125,12 +125,12 @@ class BuilderUrlTest extends BaseBuilderTest
         );
 
         self::assertStringContainsString(
-            '<li id="index-html-base-url" class="toc-item"><a href="../index.html#base-url">Base URL</a></li>',
+            '<li id="index-html" class="toc-item"><a href="../index.html">Base URL</a></li>',
             $contents
         );
 
         self::assertStringContainsString(
-            '<li id="file-html-subdirectory-file" class="toc-item"><a href="file.html#subdirectory-file">Subdirectory File</a></li>',
+            '<li id="file-html" class="toc-item"><a href="file.html">Subdirectory File</a></li>',
             $contents
         );
     }

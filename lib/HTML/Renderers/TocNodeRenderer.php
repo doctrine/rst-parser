@@ -49,7 +49,7 @@ class TocNodeRenderer implements NodeRenderer
 
             $url = $this->environment->relativeUrl($reference->getUrl());
 
-            $this->buildLevel($url, $reference->getTitles(), 1, $tocItems);
+            $this->buildLevel($url, $reference->getTitles(), 1, $tocItems, $file);
         }
 
         return $this->templateRenderer->render('toc.html.twig', [
@@ -66,14 +66,18 @@ class TocNodeRenderer implements NodeRenderer
         ?string $url,
         array $titles,
         int $level,
-        array &$tocItems
+        array &$tocItems,
+        string $file
     ): void {
-        $html = '';
-
         foreach ($titles as $k => $entry) {
             [$title, $children] = $entry;
 
-            [$title, $target] = $this->generateTarget($url, $title);
+            [$title, $target] = $this->generateTarget(
+                $url,
+                $title,
+                // don't add anchor for first h1 in a different file (link directly to the file)
+                ! ($level === 1 && $k === 0 && $file !== '/' . $this->environment->getCurrentFileName())
+            );
 
             $tocItem = [
                 'targetId' => $this->generateTargetId($target),
@@ -85,7 +89,7 @@ class TocNodeRenderer implements NodeRenderer
 
             // render children until we hit the configured maxdepth
             if (count($children) > 0 && $level < $this->tocNode->getDepth()) {
-                $this->buildLevel($url, $children, $level + 1, $tocItem['children']);
+                $this->buildLevel($url, $children, $level + 1, $tocItem['children'], $file);
             }
 
             $tocItems[] = $tocItem;
@@ -102,11 +106,13 @@ class TocNodeRenderer implements NodeRenderer
      *
      * @return mixed[]
      */
-    private function generateTarget(?string $url, $title): array
+    private function generateTarget(?string $url, $title, bool $withAnchor): array
     {
-        $anchor = $this->generateAnchorFromTitle($title);
-
-        $target = $url . '#' . $anchor;
+        $target = $url;
+        if ($withAnchor) {
+            $anchor  = $this->generateAnchorFromTitle($title);
+            $target .= '#' . $anchor;
+        }
 
         if (is_array($title)) {
             [$title, $target] = $title;

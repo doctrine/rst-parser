@@ -235,6 +235,12 @@ class DocumentParser
                         return false;
                     }
 
+                    if (trim($line) === '::') {
+                        $this->isCode = true;
+
+                        return true;
+                    }
+
                     if ($this->lineChecker->isBlockLine($line)) {
                         if ($this->isCode) {
                             $this->setState(State::CODE);
