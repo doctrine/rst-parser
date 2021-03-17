@@ -4,6 +4,27 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\Nodes;
 
+/**
+ * Represents a "code node", which encompasses more than "code blocks".
+ *
+ * A code node is any block that's introduced with a :: followed
+ * by a number of lines that are considered the "value" of that node.
+ *
+ * For example, a code-block would be parsed as a CodeNode:
+ *
+ *      .. code-block:: php
+ *
+ *          // I am the first line of the value
+ *          // I am the second line
+ *
+ * But a toctree is *also* considered a CodeNode
+ *
+ *      .. toctree::
+ *          :maxdepth: 1
+ *
+ *          file
+ *          file2
+ */
 class CodeNode extends Node
 {
     /** @var string */
@@ -16,7 +37,7 @@ class CodeNode extends Node
     protected $language = null;
 
     /** @var string[] */
-    private $options;
+    private $options = [];
 
     /**
      * @param string[] $lines
@@ -26,6 +47,9 @@ class CodeNode extends Node
         parent::__construct($this->normalizeLines($lines));
     }
 
+    /**
+     * The "contents" of the block - see the class description for more details.
+     */
     public function getValue(): string
     {
         return $this->value;

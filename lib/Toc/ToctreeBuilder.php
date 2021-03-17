@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\RST\Toc;
 
 use Doctrine\RST\Environment;
+use Doctrine\RST\Nodes\CodeNode;
 use Doctrine\RST\Nodes\Node;
 
 use function array_filter;
@@ -30,7 +31,7 @@ class ToctreeBuilder
      */
     public function buildToctreeFiles(
         Environment $environment,
-        Node $node,
+        CodeNode $node,
         array $options
     ): array {
         $toctreeFiles = [];

@@ -98,6 +98,11 @@ abstract class Directive
 
     /**
      * Should the following block be passed as a CodeNode?
+     *
+     * A CodeNode is not just a "code block", but any directive
+     * whose "value" lives as indented lines under the directive.
+     *
+     * See CodeNode for more details.
      */
     public function wantCode(): bool
     {
