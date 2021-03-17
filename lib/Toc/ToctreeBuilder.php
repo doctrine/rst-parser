@@ -10,6 +10,8 @@ use Doctrine\RST\Nodes\Node;
 
 use function array_filter;
 use function array_map;
+use function array_reverse;
+use function asort;
 use function explode;
 use function in_array;
 use function strpos;
@@ -43,10 +45,17 @@ class ToctreeBuilder
                 $globFiles = $this->globSearcher
                     ->globSearch($environment, $globPattern);
 
+                asort($globFiles);
+
                 foreach ($globFiles as $globFile) {
                     // if glob finds a file already explicitly defined
                     // don't duplicate it in the toctree again
                     if (in_array($globFile, $toctreeFiles, true)) {
+                        continue;
+                    }
+
+                    if ($globFile === $environment->absoluteUrl($environment->getCurrentFileName())) {
+                        // filter out the current file from being added as a glob
                         continue;
                     }
 
@@ -57,6 +66,10 @@ class ToctreeBuilder
 
                 $toctreeFiles[] = $absoluteUrl;
             }
+        }
+
+        if ((bool) ($options['reversed'] ?? false)) {
+            $toctreeFiles = array_reverse($toctreeFiles);
         }
 
         return $toctreeFiles;
