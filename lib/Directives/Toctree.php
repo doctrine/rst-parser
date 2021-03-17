@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\Directives;
 
+use Doctrine\RST\Nodes\CodeNode;
 use Doctrine\RST\Nodes\Node;
 use Doctrine\RST\Parser;
 use Doctrine\RST\Toc\GlobSearcher;
 use Doctrine\RST\Toc\ToctreeBuilder;
+
+use function assert;
 
 class Toctree extends Directive
 {
@@ -38,6 +41,8 @@ class Toctree extends Directive
             return;
         }
 
+        assert($node instanceof CodeNode, 'Toctree should be passed a CodeNode only');
+
         $environment = $parser->getEnvironment();
 
         $toctreeFiles = $this->toctreeBuilder
@@ -53,6 +58,13 @@ class Toctree extends Directive
         $parser->getDocument()->addNode($tocNode);
     }
 
+    /**
+     * This directive includes the "code formatting" where the
+     * "value" of the block are indented as lines inside the directive.
+     *
+     * This will cause a CodeNode to passed to proces().
+     * See CodeNode for more details.
+     */
     public function wantCode(): bool
     {
         return true;

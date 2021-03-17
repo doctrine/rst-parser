@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\Tests\RST;
 
 use Doctrine\RST\Environment;
-use Doctrine\RST\Nodes\Node;
+use Doctrine\RST\Nodes\CodeNode;
 use Doctrine\RST\Toc\GlobSearcher;
 use Doctrine\RST\Toc\ToctreeBuilder;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -22,7 +22,7 @@ class ToctreeBuilderTest extends TestCase
     public function testBuildToctreeFiles(): void
     {
         $environment = $this->createMock(Environment::class);
-        $node        = $this->createMock(Node::class);
+        $node        = $this->createMock(CodeNode::class);
         $options     = ['glob' => true];
 
         $toc = <<<EOF
