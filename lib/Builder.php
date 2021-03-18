@@ -115,6 +115,15 @@ class Builder
         return $this;
     }
 
+    /**
+     * Returns the "master document" name (e.g. index).
+     *
+     * This is the first document whose toctree should be read
+     * when building the table of contents. It is usually "index",
+     * which means index.rst is read first.
+     *
+     * @return string
+     */
     public function getIndexName(): string
     {
         return $this->indexName;
