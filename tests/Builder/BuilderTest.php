@@ -207,9 +207,10 @@ class BuilderTest extends BaseBuilderTest
             'subdir/test.html',
             'subdir/toc.html',
             'subdirective.html',
-            // toc-glob.html#toc-glob not here because that is THIS file
-            // this is manually included again
             'toc-glob-reversed.html',
+            // only here because we explicitly include it, "self file" is normally ignored
+            'toc-glob.html#toc-glob',
+            // this is manually included again
             'introduction.html',
         ];
         $actualLinks   = array_map(static function ($linkElement): string {
