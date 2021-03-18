@@ -6,4 +6,5 @@ TOC Glob
 
     index
     *
+    toc-glob
     introduction
