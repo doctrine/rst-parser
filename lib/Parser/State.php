@@ -4,11 +4,23 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\Parser;
 
+/**
+ * "States" for DocumentParser as it parses line-by-line.
+ */
 class State
 {
-    public const BEGIN           = 'begin';
-    public const NORMAL          = 'normal';
-    public const DIRECTIVE       = 'directive';
+    /**
+     * There is currently no state: the next line will being a new state
+     */
+    public const BEGIN = 'begin';
+    /**
+     * Normal, non-indented, non-table lines
+     */
+    public const NORMAL    = 'normal';
+    public const DIRECTIVE = 'directive';
+    /**
+     * Indented lines
+     */
     public const BLOCK           = 'block';
     public const TITLE           = 'title';
     public const LIST            = 'list';
