@@ -99,8 +99,9 @@ abstract class Directive
     /**
      * Should the following block be passed as a CodeNode?
      *
-     * A CodeNode is not just a "code block", but any directive
-     * whose "value" lives as indented lines under the directive.
+     * You should probably return false from this. If you do,
+     * in most cases (unless you directive allows for some fancy
+     * syntax), you will receive a BlockNode object in processNode().
      *
      * See CodeNode for more details.
      */

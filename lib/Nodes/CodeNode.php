@@ -5,25 +5,11 @@ declare(strict_types=1);
 namespace Doctrine\RST\Nodes;
 
 /**
- * Represents a "code node", which encompasses more than "code blocks".
+ * Represents a "code node", which *sometimes* encompasses more than "code blocks".
  *
- * A code node is any block that's introduced with a :: followed
- * by a number of lines that are considered the "value" of that node.
- *
- * For example, a code-block would be parsed as a CodeNode:
- *
- *      .. code-block:: php
- *
- *          // I am the first line of the value
- *          // I am the second line
- *
- * But a toctree is *also* considered a CodeNode
- *
- *      .. toctree::
- *          :maxdepth: 1
- *
- *          file
- *          file2
+ * The intention of this class is for it to be used for "code blocks".
+ * However, if a directive returns true from wantCode(), they will
+ * be passed a CodeNode.
  */
 class CodeNode extends Node
 {
