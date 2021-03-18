@@ -25,12 +25,7 @@ class ErrorManager
         $this->errors[] = $message;
 
         if ($this->configuration->isAbortOnError()) {
-            // throw the actual throwable if one is available
-            if ($throwable !== null) {
-                throw $throwable;
-            }
-
-            throw new Exception($message);
+            throw new Exception($message, 0, $throwable);
         }
 
         if ($this->configuration->isSilentOnError()) {
