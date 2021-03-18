@@ -494,7 +494,7 @@ class DocumentParser
 
                     // This means we are in an indented area that is not a code block.
                     // If we're NOT in a directive, then this must be a blockquote.
-                    // If we ARE in a directive, allow the directice to convert
+                    // If we ARE in a directive, allow the directive to convert
                     // the BlockNode into what it needs
                     if ($this->directive === null) {
                         $document = $this->parser->getSubParser()->parseLocal($node->getValue());

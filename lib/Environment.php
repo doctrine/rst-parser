@@ -11,6 +11,7 @@ use Doctrine\RST\References\Reference;
 use Doctrine\RST\References\ResolvedReference;
 use Doctrine\RST\Templates\TemplateRenderer;
 use InvalidArgumentException;
+use Throwable;
 
 use function array_shift;
 use function dirname;
@@ -472,7 +473,7 @@ class Environment
         return $this->titleLetters;
     }
 
-    public function addError(string $message, \Throwable $throwable = null): void
+    public function addError(string $message, ?Throwable $throwable = null): void
     {
         $this->errorManager->error($message, $throwable);
     }
