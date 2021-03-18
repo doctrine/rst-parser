@@ -386,6 +386,9 @@ class Environment
         $this->currentFileName = $filename;
     }
 
+    /**
+     * Returns the currently-parsed filename, without the extension (e.g. "index" or "subdir/file")
+     */
     public function getCurrentFileName(): string
     {
         return $this->currentFileName;

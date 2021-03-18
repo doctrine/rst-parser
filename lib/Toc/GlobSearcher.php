@@ -15,6 +15,12 @@ use function str_replace;
 class GlobSearcher
 {
     /**
+     * Returns array of absolute URL strings.
+     *
+     * For example, if you were glob'inb from inside a file called
+     * "subdir/file.rst", it would return paths like "/subdir/other-file"
+     * and "/subdir/more-dir/file2".
+     *
      * @return string[]
      */
     public function globSearch(Environment $environment, string $globPattern): array
