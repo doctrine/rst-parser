@@ -19,6 +19,8 @@ class BuilderWithErrors extends BaseBuilderTest
         $contents = $this->getFileContents($this->targetFile('index.html'));
         self::assertStringContainsString('<table', $contents);
         self::assertStringNotContainsString('<tr', $contents);
+
+        var_dump($this->builder->getErrorManager()->getErrors());die;
     }
 
     protected function getFixturesDirectory(): string
