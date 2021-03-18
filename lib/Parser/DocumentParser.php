@@ -84,7 +84,7 @@ class DocumentParser
     /** @var Lines */
     private $lines;
 
-    /** @var integer|null */
+    /** @var int|null */
     private $currentLineNumber;
 
     /** @var string */
@@ -211,6 +211,7 @@ class DocumentParser
                 }
             }
         }
+
         $this->currentLineNumber = null;
 
         // DocumentNode is flushed twice to trigger the directives
@@ -283,6 +284,18 @@ class DocumentParser
                         $separatorLineConfig = $this->tableParser->parseTableSeparatorLine($line);
 
                         if ($separatorLineConfig === null) {
+                            if ($this->getCurrentDirective() !== null && ! $this->getCurrentDirective()->canApplyToNonBlockContent()) {
+                                // If there is a directive set, it means we are the line *after* that directive
+                                // But the state is being set to NORMAL, which means we are a non-indented line.
+                                // Some special directive (like class) allow their content to be non-indented.
+                                // But most do not, which means that our directive is now finished.
+                                // We flush so that the directive can be processed. It will be passed a
+                                // null node (We know because we are currently in a NEW state. If there
+                                // had been legitimately-indented content, that would have matched some
+                                // other state (e.g. BLOCK or CODE) and flushed when it finished.
+                                $this->flush();
+                            }
+
                             $this->setState(State::NORMAL);
 
                             return false;
@@ -562,7 +575,7 @@ class DocumentParser
                         'Error while processing "%s" directive%s%s: %s',
                         $currentDirective->getName(),
                         $this->environment->getCurrentFileName() !== '' ? sprintf(' in "%s"', $this->environment->getCurrentFileName()) : '',
-                        $this->currentLineNumber !== null ? (' around line '.$this->currentLineNumber) : '',
+                        $this->currentLineNumber !== null ? ' around line ' . $this->currentLineNumber : '',
                         $e->getMessage()
                     );
 

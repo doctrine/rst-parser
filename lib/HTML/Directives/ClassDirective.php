@@ -49,6 +49,11 @@ class ClassDirective extends SubDirective
         return $document;
     }
 
+    public function canApplyToNonBlockContent(): bool
+    {
+        return true;
+    }
+
     /**
      * @param Node[]   $nodes
      * @param string[] $classes

@@ -109,4 +109,30 @@ abstract class Directive
     {
         return false;
     }
+
+    /**
+     * Can this directive apply to content that is not indented under it?
+     *
+     * Most directives that allow content require that content to be
+     * indented under it. For example:
+     *
+     *      .. note::
+     *
+     *          This is my note! It must be indented.
+     *
+     * But some are allowed to apply to content that is *not* indented:
+     *
+     *      .. class:: align-center
+     *
+     *      I will be a "p" tag with an align-center class
+     *
+     * If your directive allows the "class" directive functionality,
+     * return true from this function. The result is that your
+     * directive's process() method will be called for the next
+     * node after your directive (e.g. a ParagraphNode, ListNode, etc)
+     */
+    public function canApplyToNonBlockContent(): bool
+    {
+        return false;
+    }
 }
