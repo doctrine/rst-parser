@@ -31,8 +31,8 @@
         "phpstan/phpstan-phpunit": "^0.12",
         "phpstan/phpstan-strict-rules": "^0.12",
         "phpunit/phpunit": "^7.5 || ^8.0 || ^9.0",
-        "symfony/css-selector": "^5.2",
-        "symfony/dom-crawler": "^5.2"
+        "symfony/css-selector": "4.4 || ^5.2",
+        "symfony/dom-crawler": "4.4 || ^5.2"
     },
     "autoload": {
         "psr-4": {
