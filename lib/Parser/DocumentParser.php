@@ -217,6 +217,11 @@ class DocumentParser
         }
     }
 
+    /**
+     * Return true if this line has completed process.
+     *
+     * If false is returned, this function will be called again with the same line.
+     */
     private function parseLine(string $line): bool
     {
         switch ($this->state) {
@@ -235,9 +240,13 @@ class DocumentParser
                         return false;
                     }
 
+                    // Represents a literal block here the entire line is literally "::"
+                    // Ref: https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#literal-blocks
+                    //  > If it occurs as a paragraph of its own, that paragraph is completely left out of the document.
                     if (trim($line) === '::') {
                         $this->isCode = true;
 
+                        // return true to move onto the next line, this line is omitted
                         return true;
                     }
 
@@ -383,6 +392,8 @@ class DocumentParser
             case State::BLOCK:
             case State::CODE:
                 if (! $this->lineChecker->isBlockLine($line)) {
+                    // the previous line(s) was in a block (indented), but
+                    // this line is no longer indented
                     $this->flush();
                     $this->setState(State::BEGIN);
 
@@ -479,11 +490,17 @@ class DocumentParser
                     /** @var string[] $lines */
                     $lines = $this->buffer->getLines();
 
-                    $blockNode = $this->nodeFactory->createBlockNode($lines);
+                    $node = $this->nodeFactory->createBlockNode($lines);
 
-                    $document = $this->parser->getSubParser()->parseLocal($blockNode->getValue());
+                    // This means we are in an indented area that is not a code block.
+                    // If we're NOT in a directive, then this must be a blockquote.
+                    // If we ARE in a directive, allow the directice to convert
+                    // the BlockNode into what it needs
+                    if ($this->directive === null) {
+                        $document = $this->parser->getSubParser()->parseLocal($node->getValue());
 
-                    $node = $this->nodeFactory->createQuoteNode($document);
+                        $node = $this->nodeFactory->createQuoteNode($document);
+                    }
 
                     break;
 
@@ -618,6 +635,10 @@ class DocumentParser
         return true;
     }
 
+    /**
+     * Called on a NORMAL state line: it's used to determine of this
+     * it beginning a code block - by having a line ending in "::"
+     */
     private function prepareCode(): bool
     {
         $lastLine = $this->buffer->getLastLine();

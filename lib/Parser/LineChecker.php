@@ -54,6 +54,9 @@ class LineChecker
         return false;
     }
 
+    /**
+     * Is this line "indented"?
+     */
     public function isBlockLine(string $line): bool
     {
         if ($line !== '') {
