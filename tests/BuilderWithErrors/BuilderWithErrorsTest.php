@@ -18,7 +18,7 @@ class BuilderWithErrorsTest extends BaseBuilderTest
     public function testNoContentDirectiveError(): void
     {
         self::assertEquals(
-            ['Error while processing "note" directive in "no_content_directive": Content expected, none found.'],
+            ['Error while processing "note" directive in "no_content_directive" around line 6: Content expected, none found.'],
             $this->builder->getErrorManager()->getErrors()
         );
     }

@@ -84,6 +84,9 @@ class DocumentParser
     /** @var Lines */
     private $lines;
 
+    /** @var integer|null */
+    private $currentLineNumber;
+
     /** @var string */
     private $state;
 
@@ -200,13 +203,15 @@ class DocumentParser
         $this->lines = $this->createLines($document);
         $this->setState(State::BEGIN);
 
-        foreach ($this->lines as $line) {
+        foreach ($this->lines as $i => $line) {
+            $this->currentLineNumber = $i + 1;
             while (true) {
                 if ($this->parseLine($line)) {
                     break;
                 }
             }
         }
+        $this->currentLineNumber = null;
 
         // DocumentNode is flushed twice to trigger the directives
         $this->flush();
@@ -554,9 +559,10 @@ class DocumentParser
                     );
                 } catch (Throwable $e) {
                     $message = sprintf(
-                        'Error while processing "%s" directive%s: %s',
+                        'Error while processing "%s" directive%s%s: %s',
                         $currentDirective->getName(),
                         $this->environment->getCurrentFileName() !== '' ? sprintf(' in "%s"', $this->environment->getCurrentFileName()) : '',
+                        $this->currentLineNumber !== null ? (' around line '.$this->currentLineNumber) : '',
                         $e->getMessage()
                     );
 
