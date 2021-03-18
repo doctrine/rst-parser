@@ -387,7 +387,10 @@ class Environment
     }
 
     /**
-     * Returns the currently-parsed filename, without the extension (e.g. "index" or "subdir/file")
+     * Returns the currently-parsed filename.
+     *
+     * This is relative to the root source directory and without
+     * the extension (e.g. "index" or "subdir/file")
      */
     public function getCurrentFileName(): string
     {

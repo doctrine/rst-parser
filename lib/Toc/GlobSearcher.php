@@ -17,7 +17,7 @@ class GlobSearcher
     /**
      * Returns array of absolute URL strings.
      *
-     * For example, if you were glob'inb from inside a file called
+     * For example, if you were glob'ing from inside a file called
      * "subdir/file.rst", it would return paths like "/subdir/other-file"
      * and "/subdir/more-dir/file2".
      *
