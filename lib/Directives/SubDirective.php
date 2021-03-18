@@ -6,8 +6,8 @@ namespace Doctrine\RST\Directives;
 
 use Doctrine\RST\Nodes\BlockNode;
 use Doctrine\RST\Nodes\Node;
-use Doctrine\RST\Nodes\SpanNode;
 use Doctrine\RST\Parser;
+use RuntimeException;
 
 /**
  * A directive that parses the sub block and call the processSub that can
@@ -31,7 +31,7 @@ abstract class SubDirective extends Directive
         string $data,
         array $options
     ): void {
-        if (null === $node) {
+        if ($node === null) {
             /*
              * A directive with no content (which is not allowed for sub-directives.
              *
@@ -41,7 +41,7 @@ abstract class SubDirective extends Directive
              *
              *      Now more normal text.
              */
-            throw new \RuntimeException('Content expected, none found.');
+            throw new RuntimeException('Content expected, none found.');
         }
 
         /*
@@ -68,7 +68,7 @@ abstract class SubDirective extends Directive
          */
         if ($node instanceof BlockNode) {
             $subParser = $parser->getSubParser();
-            $document = $subParser->parseLocal((string) $node->getValue());;
+            $document  = $subParser->parseLocal($node->getValue());
         } else {
             $document = $node;
         }
