@@ -472,9 +472,9 @@ class Environment
         return $this->titleLetters;
     }
 
-    public function addError(string $message): void
+    public function addError(string $message, \Throwable $throwable = null): void
     {
-        $this->errorManager->error($message);
+        $this->errorManager->error($message, $throwable);
     }
 
     public static function slugify(string $text): string

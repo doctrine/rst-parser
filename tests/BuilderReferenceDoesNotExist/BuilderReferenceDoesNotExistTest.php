@@ -19,6 +19,7 @@ class BuilderReferenceDoesNotExistTest extends BaseBuilderTest
         $this->configuration = new Configuration();
         $this->configuration->setUseCachedMetas(false);
         $this->configuration->abortOnError(false);
+        $this->configuration->silentOnError(true);
         $this->configuration->setIgnoreInvalidReferences(false);
 
         $this->builder = new Builder(new Kernel($this->configuration));

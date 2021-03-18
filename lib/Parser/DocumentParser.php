@@ -560,7 +560,7 @@ class DocumentParser
                         $e->getMessage()
                     );
 
-                    $this->environment->addError($message);
+                    $this->environment->addError($message, $e);
                 }
             }
 
