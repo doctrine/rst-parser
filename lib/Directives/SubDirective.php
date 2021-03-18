@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\Directives;
 
-use Doctrine\RST\Nodes\CodeNode;
+use Doctrine\RST\Nodes\BlockNode;
 use Doctrine\RST\Nodes\Node;
+use Doctrine\RST\Nodes\SpanNode;
 use Doctrine\RST\Parser;
 
 /**
@@ -30,10 +31,44 @@ abstract class SubDirective extends Directive
         string $data,
         array $options
     ): void {
-        $subParser = $parser->getSubParser();
+        if (null === $node) {
+            /*
+             * A directive with no content (which is not allowed for sub-directives.
+             *
+             * For example:
+             *
+             *      .. note::
+             *
+             *      Now more normal text.
+             */
+            throw new \RuntimeException('Content expected, none found.');
+        }
 
-        if ($node instanceof CodeNode) {
-            $document = $subParser->parseLocal($node->getValue());
+        /*
+         * A BlockNode indicates that the content was passed in "raw" and should
+         * be sub-parsed. This is the main use-case.
+         *
+         * However, there are some odd cases where a directive appears
+         * to "end"... and DocumentParser continues parsing the next
+         * section, for example as a ParagraphNode or ListNode. When
+         * that terminates, the original directive is THEN processed
+         * and called.
+         *
+         * A key example is the "class::" directive (see class-directive.rst test case).
+         * That is where it is legal to have a format like this:
+         *
+         *      .. class:: special-list
+         *
+         *      - Test list item 1.
+         *      - Test list item 2.
+         *
+         * Notice the 2 list items are NOT indented. This is legal, and ultimately
+         * those two items would be parsed as a ListNode and THEN passed to
+         * ClassDirective (which extends SubDirective) for processing.
+         */
+        if ($node instanceof BlockNode) {
+            $subParser = $parser->getSubParser();
+            $document = $subParser->parseLocal((string) $node->getValue());;
         } else {
             $document = $node;
         }
@@ -62,10 +97,5 @@ abstract class SubDirective extends Directive
         array $options
     ): ?Node {
         return null;
-    }
-
-    public function wantCode(): bool
-    {
-        return true;
     }
 }

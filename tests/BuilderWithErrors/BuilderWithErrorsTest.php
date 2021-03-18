@@ -7,20 +7,22 @@ namespace Doctrine\Tests\RST\BuilderWithErrors;
 use Doctrine\RST\Builder;
 use Doctrine\Tests\RST\BaseBuilderTest;
 
-class BuilderWithErrors extends BaseBuilderTest
+class BuilderWithErrorsTest extends BaseBuilderTest
 {
     protected function configureBuilder(Builder $builder): void
     {
         $builder->getConfiguration()->abortOnError(false);
+        $builder->getConfiguration()->silentOnError(true);
     }
 
-    public function testMalformedTable(): void
+    public function testNoContentDirectiveError(): void
     {
-        $contents = $this->getFileContents($this->targetFile('index.html'));
-        self::assertStringContainsString('<table', $contents);
-        self::assertStringNotContainsString('<tr', $contents);
-
-        var_dump($this->builder->getErrorManager()->getErrors());die;
+        self::assertEquals(
+            [
+                'Error while processing "note" directive in "no_content_directive": Content expected, none found.'
+            ],
+            $this->builder->getErrorManager()->getErrors()
+        );
     }
 
     protected function getFixturesDirectory(): string
