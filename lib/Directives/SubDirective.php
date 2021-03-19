@@ -53,8 +53,7 @@ abstract class SubDirective extends Directive
          * ClassDirective (which extends SubDirective) for processing.
          */
         if ($node instanceof BlockNode) {
-            $subParser = $parser->getSubParser();
-            $document  = $subParser->parseLocal($node->getValue());
+            $document = $parser->getSubParser()->parseLocal($node->getValue());
         } else {
             // If the $node is null, it represents a node with no content.
             // Some directives - like "figure" - both allow content AND no content.

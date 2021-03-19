@@ -287,7 +287,7 @@ class DocumentParser
                             if ($this->getCurrentDirective() !== null && ! $this->getCurrentDirective()->appliesToNonBlockContent()) {
                                 // If there is a directive set, it means we are the line *after* that directive
                                 // But the state is being set to NORMAL, which means we are a non-indented line.
-                                // Some special directive (like class) allow their content to be non-indented.
+                                // Some special directives (like class) allow their content to be non-indented.
                                 // But most do not, which means that our directive is now finished.
                                 // We flush so that the directive can be processed. It will be passed a
                                 // null node (We know because we are currently in a NEW state. If there
@@ -655,7 +655,7 @@ class DocumentParser
     }
 
     /**
-     * Called on a NORMAL state line: it's used to determine of this
+     * Called on a NORMAL state line: it's used to determine if this
      * it beginning a code block - by having a line ending in "::"
      */
     private function prepareCode(): bool
