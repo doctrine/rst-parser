@@ -49,7 +49,7 @@ class ClassDirective extends SubDirective
         return $document;
     }
 
-    public function canApplyToNonBlockContent(): bool
+    public function appliesToNonBlockContent(): bool
     {
         return true;
     }

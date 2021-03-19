@@ -284,7 +284,7 @@ class DocumentParser
                         $separatorLineConfig = $this->tableParser->parseTableSeparatorLine($line);
 
                         if ($separatorLineConfig === null) {
-                            if ($this->getCurrentDirective() !== null && ! $this->getCurrentDirective()->canApplyToNonBlockContent()) {
+                            if ($this->getCurrentDirective() !== null && ! $this->getCurrentDirective()->appliesToNonBlockContent()) {
                                 // If there is a directive set, it means we are the line *after* that directive
                                 // But the state is being set to NORMAL, which means we are a non-indented line.
                                 // Some special directive (like class) allow their content to be non-indented.

@@ -131,7 +131,7 @@ abstract class Directive
      * directive's process() method will be called for the next
      * node after your directive (e.g. a ParagraphNode, ListNode, etc)
      */
-    public function canApplyToNonBlockContent(): bool
+    public function appliesToNonBlockContent(): bool
     {
         return false;
     }
