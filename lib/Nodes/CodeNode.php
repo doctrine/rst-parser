@@ -33,9 +33,6 @@ class CodeNode extends Node
         parent::__construct($this->normalizeLines($lines));
     }
 
-    /**
-     * The "contents" of the block - see the class description for more details.
-     */
     public function getValue(): string
     {
         return $this->value;

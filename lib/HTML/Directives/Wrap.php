@@ -7,6 +7,7 @@ namespace Doctrine\RST\HTML\Directives;
 use Doctrine\RST\Directives\SubDirective;
 use Doctrine\RST\Nodes\Node;
 use Doctrine\RST\Parser;
+use RuntimeException;
 
 use function uniqid;
 
@@ -42,6 +43,11 @@ class Wrap extends SubDirective
         string $data,
         array $options
     ): ?Node {
+        // if there is a "Wrap" directive (e.g. a note::), blank content is unexpected
+        if ($document === null) {
+            throw new RuntimeException('Content expected, none found.');
+        }
+
         if ($this->uniqid) {
             $id = uniqid($this->class);
         } else {

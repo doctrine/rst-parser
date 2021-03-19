@@ -7,7 +7,6 @@ namespace Doctrine\RST\Directives;
 use Doctrine\RST\Nodes\BlockNode;
 use Doctrine\RST\Nodes\Node;
 use Doctrine\RST\Parser;
-use RuntimeException;
 
 /**
  * A directive that parses the sub block and call the processSub that can
@@ -31,19 +30,6 @@ abstract class SubDirective extends Directive
         string $data,
         array $options
     ): void {
-        if ($node === null) {
-            /*
-             * A directive with no content (which is not allowed for sub-directives.
-             *
-             * For example:
-             *
-             *      .. note::
-             *
-             *      Now more normal text.
-             */
-            throw new RuntimeException('Content expected, none found.');
-        }
-
         /*
          * A BlockNode indicates that the content was passed in "raw" and should
          * be sub-parsed. This is the main use-case.
@@ -70,6 +56,8 @@ abstract class SubDirective extends Directive
             $subParser = $parser->getSubParser();
             $document  = $subParser->parseLocal($node->getValue());
         } else {
+            // If the $node is null, it represents a node with no content.
+            // Some directives - like "figure" - both allow content AND no content.
             $document = $node;
         }
 
