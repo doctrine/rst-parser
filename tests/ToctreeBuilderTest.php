@@ -43,7 +43,7 @@ EOF;
             ->with($environment, '*')
             ->willReturn(['/test1', '/test2', '/test3', '/apple', '/current_filename']);
 
-        $environment->expects(self::any())
+        $environment
             ->method('getCurrentFileName')
             ->willReturn('current_filename');
 
