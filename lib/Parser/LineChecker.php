@@ -56,14 +56,15 @@ class LineChecker
 
     /**
      * Is this line "indented"?
+     *
+     * A blank line also counts as a "block" line, as it
+     * may be the empty line between, for example, a
+     * ".. note::" directive and the indented content on the
+     * next lines.
      */
     public function isBlockLine(string $line): bool
     {
-        if ($line !== '') {
-            return trim($line[0]) === '';
-        }
-
-        return trim($line) === '';
+        return $line === '' || trim($line[0]) === '';
     }
 
     public function isComment(string $line): bool

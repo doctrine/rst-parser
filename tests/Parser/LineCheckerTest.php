@@ -60,6 +60,7 @@ class LineCheckerTest extends TestCase
         self::assertTrue($this->lineChecker->isBlockLine(' '));
         self::assertTrue($this->lineChecker->isBlockLine('  '));
         self::assertTrue($this->lineChecker->isBlockLine('   '));
+        self::assertTrue($this->lineChecker->isBlockLine(''));
         self::assertFalse($this->lineChecker->isBlockLine('- Test'));
         self::assertFalse($this->lineChecker->isBlockLine('.. code-block::'));
     }
