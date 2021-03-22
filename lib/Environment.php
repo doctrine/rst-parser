@@ -11,6 +11,7 @@ use Doctrine\RST\References\Reference;
 use Doctrine\RST\References\ResolvedReference;
 use Doctrine\RST\Templates\TemplateRenderer;
 use InvalidArgumentException;
+use Throwable;
 
 use function array_shift;
 use function dirname;
@@ -386,6 +387,12 @@ class Environment
         $this->currentFileName = $filename;
     }
 
+    /**
+     * Returns the currently-parsed filename.
+     *
+     * This is relative to the root source directory and without
+     * the extension (e.g. "index" or "subdir/file")
+     */
     public function getCurrentFileName(): string
     {
         return $this->currentFileName;
@@ -466,9 +473,9 @@ class Environment
         return $this->titleLetters;
     }
 
-    public function addError(string $message): void
+    public function addError(string $message, ?Throwable $throwable = null): void
     {
-        $this->errorManager->error($message);
+        $this->errorManager->error($message, $throwable);
     }
 
     public static function slugify(string $text): string

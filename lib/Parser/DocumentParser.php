@@ -84,6 +84,9 @@ class DocumentParser
     /** @var Lines */
     private $lines;
 
+    /** @var int|null */
+    private $currentLineNumber;
+
     /** @var string */
     private $state;
 
@@ -200,13 +203,16 @@ class DocumentParser
         $this->lines = $this->createLines($document);
         $this->setState(State::BEGIN);
 
-        foreach ($this->lines as $line) {
+        foreach ($this->lines as $i => $line) {
+            $this->currentLineNumber = $i + 1;
             while (true) {
                 if ($this->parseLine($line)) {
                     break;
                 }
             }
         }
+
+        $this->currentLineNumber = null;
 
         // DocumentNode is flushed twice to trigger the directives
         $this->flush();
@@ -217,6 +223,14 @@ class DocumentParser
         }
     }
 
+    /**
+     * Return true if this line has completed process.
+     *
+     * If false is returned, this function will be called again with the same line.
+     * This is useful when you switched state and want to parse the line again
+     * with the new state (e.g. when the end of a list is found, you want the line
+     * to be parsed as "BEGIN" again).
+     */
     private function parseLine(string $line): bool
     {
         switch ($this->state) {
@@ -235,9 +249,13 @@ class DocumentParser
                         return false;
                     }
 
+                    // Represents a literal block here the entire line is literally "::"
+                    // Ref: https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#literal-blocks
+                    //  > If it occurs as a paragraph of its own, that paragraph is completely left out of the document.
                     if (trim($line) === '::') {
                         $this->isCode = true;
 
+                        // return true to move onto the next line, this line is omitted
                         return true;
                     }
 
@@ -269,6 +287,18 @@ class DocumentParser
                         $separatorLineConfig = $this->tableParser->parseTableSeparatorLine($line);
 
                         if ($separatorLineConfig === null) {
+                            if ($this->getCurrentDirective() !== null && ! $this->getCurrentDirective()->appliesToNonBlockContent()) {
+                                // If there is a directive set, it means we are the line *after* that directive
+                                // But the state is being set to NORMAL, which means we are a non-indented line.
+                                // Some special directives (like class) allow their content to be non-indented.
+                                // But most do not, which means that our directive is now finished.
+                                // We flush so that the directive can be processed. It will be passed a
+                                // null node (We know because we are currently in a NEW state. If there
+                                // had been legitimately-indented content, that would have matched some
+                                // other state (e.g. BLOCK or CODE) and flushed when it finished.
+                                $this->flush();
+                            }
+
                             $this->setState(State::NORMAL);
 
                             return false;
@@ -383,6 +413,8 @@ class DocumentParser
             case State::BLOCK:
             case State::CODE:
                 if (! $this->lineChecker->isBlockLine($line)) {
+                    // the previous line(s) was in a block (indented), but
+                    // this line is no longer indented
                     $this->flush();
                     $this->setState(State::BEGIN);
 
@@ -479,11 +511,18 @@ class DocumentParser
                     /** @var string[] $lines */
                     $lines = $this->buffer->getLines();
 
-                    $blockNode = $this->nodeFactory->createBlockNode($lines);
+                    $node = $this->nodeFactory->createBlockNode($lines);
 
-                    $document = $this->parser->getSubParser()->parseLocal($blockNode->getValue());
+                    // This means we are in an indented area that is not a code block
+                    // or definition list.
+                    // If we're NOT in a directive, then this must be a blockquote.
+                    // If we ARE in a directive, allow the directive to convert
+                    // the BlockNode into what it needs
+                    if ($this->directive === null) {
+                        $document = $this->parser->getSubParser()->parseLocal($node->getValue());
 
-                    $node = $this->nodeFactory->createQuoteNode($document);
+                        $node = $this->nodeFactory->createQuoteNode($document);
+                    }
 
                     break;
 
@@ -537,13 +576,14 @@ class DocumentParser
                     );
                 } catch (Throwable $e) {
                     $message = sprintf(
-                        'Error while processing "%s" directive%s: %s',
+                        'Error while processing "%s" directive%s%s: %s',
                         $currentDirective->getName(),
                         $this->environment->getCurrentFileName() !== '' ? sprintf(' in "%s"', $this->environment->getCurrentFileName()) : '',
+                        $this->currentLineNumber !== null ? ' around line ' . $this->currentLineNumber : '',
                         $e->getMessage()
                     );
 
-                    $this->environment->addError($message);
+                    $this->environment->addError($message, $e);
                 }
             }
 
@@ -618,6 +658,10 @@ class DocumentParser
         return true;
     }
 
+    /**
+     * Called on a NORMAL state line: it's used to determine if this
+     * it beginning a code block - by having a line ending in "::"
+     */
     private function prepareCode(): bool
     {
         $lastLine = $this->buffer->getLastLine();

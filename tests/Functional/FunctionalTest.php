@@ -121,6 +121,7 @@ class FunctionalTest extends TestCase
 
                 $configuration = new Configuration();
                 $configuration->setFileExtension($format);
+                $configuration->silentOnError(true);
 
                 $kernel = new Kernel($configuration);
                 $parser = new Parser($kernel);

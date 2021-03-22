@@ -61,7 +61,9 @@ class EnvironmentTest extends TestCase
     {
         $this->expectException(Throwable::class);
         $this->expectExceptionMessage($expectedMessage);
-        $environment = new Environment(new Configuration());
+        $configuration = new Configuration();
+        $configuration->silentOnError(true);
+        $environment = new Environment($configuration);
         if ($currentFilename !== null) {
             $environment->setCurrentFileName($currentFilename);
         }

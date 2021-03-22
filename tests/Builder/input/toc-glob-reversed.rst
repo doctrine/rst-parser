@@ -1,10 +1,10 @@
-TOC Glob
-========
+TOC Reversed
+============
 
 .. toctree::
     :glob:
+    :reversed:
 
     index
     *
-    toc-glob
     introduction

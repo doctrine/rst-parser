@@ -11,6 +11,8 @@ use Doctrine\RST\Toc\ToctreeBuilder;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
+use function ltrim;
+
 class ToctreeBuilderTest extends TestCase
 {
     /** @var GlobSearcher|MockObject */
@@ -29,35 +31,43 @@ class ToctreeBuilderTest extends TestCase
 test1
 *
 test4
+banana
 EOF;
 
         $node->expects(self::once())
             ->method('getValueString')
             ->willReturn($toc);
 
-        $environment->expects(self::at(0))
-            ->method('absoluteUrl')
-            ->with('test1')
-            ->willReturn('/test1');
-
         $this->globSearcher->expects(self::once())
             ->method('globSearch')
             ->with($environment, '*')
-            ->willReturn(['/test1', '/test2', '/test3']);
+            ->willReturn(['/test1', '/test2', '/test3', '/apple', '/current_filename']);
 
-        $environment->expects(self::at(1))
+        $environment
+            ->method('getCurrentFileName')
+            ->willReturn('current_filename');
+
+        // expected to be called:
+        // 3 times for "test1", "test4" then "banana"
+        // 4 times for the globbed files (5 globbed files, but test1 is repeated & skipped)
+        $environment->expects(self::exactly(7))
             ->method('absoluteUrl')
-            ->with('test4')
-            ->willReturn('/test4');
+            ->willReturnCallback(static function ($arg): string {
+                return '/' . ltrim($arg, '/');
+            });
 
         $toctreeFiles = $this->toctreeBuilder
             ->buildToctreeFiles($environment, $node, $options);
 
         $expected = [
             '/test1',
+            // alphabetically sorted glob
+            '/apple',
+            // /current_filename is missing: "own" files are not included in toc
             '/test2',
             '/test3',
             '/test4',
+            '/banana',
         ];
 
         self::assertSame($expected, $toctreeFiles);

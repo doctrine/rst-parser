@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\RST;
 
 use Exception;
+use Throwable;
 
 class ErrorManager
 {
@@ -19,15 +20,17 @@ class ErrorManager
         $this->configuration = $configuration;
     }
 
-    public function error(string $message): void
+    public function error(string $message, ?Throwable $throwable = null): void
     {
         $this->errors[] = $message;
 
-        if ($this->configuration->isAbortOnError()) {
-            throw new Exception($message);
+        if (! $this->configuration->isSilentOnError()) {
+            echo '/!\\ ' . $message . "\n";
         }
 
-        echo '/!\\ ' . $message . "\n";
+        if ($this->configuration->isAbortOnError()) {
+            throw new Exception($message, 0, $throwable);
+        }
     }
 
     /**
