@@ -103,7 +103,7 @@ abstract class Directive
      * in most cases (unless you directive allows for some fancy
      * syntax), you will receive a BlockNode object in processNode().
      *
-     * See CodeNode for more details.
+     * @see CodeNode
      */
     public function wantCode(): bool
     {

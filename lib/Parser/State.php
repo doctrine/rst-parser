@@ -10,7 +10,7 @@ namespace Doctrine\RST\Parser;
 class State
 {
     /**
-     * There is currently no state: the next line will being a new state
+     * There is currently no state: the next line will begin a new state
      */
     public const BEGIN = 'begin';
     /**

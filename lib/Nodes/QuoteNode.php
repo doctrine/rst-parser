@@ -7,7 +7,7 @@ namespace Doctrine\RST\Nodes;
 /**
  * Represents a "Block Quote"
  *
- * https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#block-quotes
+ * @see https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#block-quotes
  */
 class QuoteNode extends Node
 {

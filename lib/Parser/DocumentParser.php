@@ -227,6 +227,9 @@ class DocumentParser
      * Return true if this line has completed process.
      *
      * If false is returned, this function will be called again with the same line.
+     * This is useful when you switched state and want to parse the line again
+     * with the new state (e.g. when the end of a list is found, you want the line
+     * to be parsed as "BEGIN" again).
      */
     private function parseLine(string $line): bool
     {
@@ -510,7 +513,8 @@ class DocumentParser
 
                     $node = $this->nodeFactory->createBlockNode($lines);
 
-                    // This means we are in an indented area that is not a code block.
+                    // This means we are in an indented area that is not a code block
+                    // or definition list.
                     // If we're NOT in a directive, then this must be a blockquote.
                     // If we ARE in a directive, allow the directive to convert
                     // the BlockNode into what it needs

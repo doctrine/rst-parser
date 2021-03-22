@@ -24,15 +24,13 @@ class ErrorManager
     {
         $this->errors[] = $message;
 
+        if (! $this->configuration->isSilentOnError()) {
+            echo '/!\\ ' . $message . "\n";
+        }
+
         if ($this->configuration->isAbortOnError()) {
             throw new Exception($message, 0, $throwable);
         }
-
-        if ($this->configuration->isSilentOnError()) {
-            return;
-        }
-
-        echo '/!\\ ' . $message . "\n";
     }
 
     /**
