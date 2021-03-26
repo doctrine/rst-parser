@@ -61,10 +61,13 @@ class LineChecker
      * may be the empty line between, for example, a
      * ".. note::" directive and the indented content on the
      * next lines.
+     *
+     * @param int $minIndent can be used to require a specific level of
+     *                       indentation for non-blank lines (number of spaces)
      */
-    public function isBlockLine(string $line): bool
+    public function isBlockLine(string $line, int $minIndent = 1): bool
     {
-        return $line === '' || trim($line[0]) === '';
+        return trim($line) === '' || $this->isIndented($line, $minIndent);
     }
 
     public function isComment(string $line): bool
@@ -77,21 +80,37 @@ class LineChecker
         return preg_match('/^\.\. (\|(.+)\| |)([^\s]+)::( (.*)|)$/mUsi', $line) > 0;
     }
 
-    public function isDefinitionList(string $line): bool
+    /**
+     * Check if line is an indented one.
+     *
+     * This does *not* include blank lines, use {@see isBlockLine()} to check
+     * for blank or indented lines.
+     *
+     * @param int $minIndent can be used to require a specific level of indentation (number of spaces)
+     */
+    public function isIndented(string $line, int $minIndent = 1): bool
     {
-        return strpos($line, '    ') === 0;
+        return strpos($line, str_repeat(' ', $minIndent)) === 0;
     }
 
+    /**
+     * Checks if the current line can be considered part of the definition list.
+     *
+     * Either the current line, or the next line must be indented to be considered
+     * definition.
+     *
+     * @see https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#definition-lists
+     */
     public function isDefinitionListEnded(string $line, string $nextLine): bool
     {
         if (trim($line) === '') {
             return false;
         }
 
-        if ($this->isDefinitionList($line)) {
+        if ($this->isIndented($line)) {
             return false;
         }
 
-        return ! $this->isDefinitionList($nextLine);
+        return ! $this->isIndented($nextLine);
     }
 }

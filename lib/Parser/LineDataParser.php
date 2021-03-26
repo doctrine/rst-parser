@@ -171,10 +171,17 @@ class LineDataParser
             );
         };
 
+        $currentOffset = 0;
         foreach ($lines as $key => $line) {
             // indent or empty line = term definition line
-            if ($definitionListTerm !== null && (substr($line, 0, 4) === '    ' || trim($line) === '')) {
-                $definition = substr($line, 4);
+            if ($definitionListTerm !== null && (trim($line) === '') || $line[0] === ' ') {
+                if ($currentOffset === 0) {
+                    // first line of a definition determines the indentation offset
+                    $definition    = ltrim($line);
+                    $currentOffset = strlen($line) - strlen($definition);
+                } else {
+                    $definition = substr($line, $currentOffset);
+                }
 
                 $definitionListTerm['definition'] .= $definition . "\n";
 
@@ -195,6 +202,7 @@ class LineDataParser
                     return $this->parser->createSpanNode($classifier);
                 }, array_map('trim', $parts));
 
+                $currentOffset      = 0;
                 $definitionListTerm = [
                     'term' => $this->parser->createSpanNode($term),
                     'classifiers' => $classifiers,

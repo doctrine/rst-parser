@@ -84,11 +84,13 @@ class LineCheckerTest extends TestCase
         self::assertFalse($this->lineChecker->isDirective('Test'));
     }
 
-    public function testIsDefinitionList(): void
+    public function testIsIndented(): void
     {
-        self::assertTrue($this->lineChecker->isDefinitionList('    '));
-        self::assertTrue($this->lineChecker->isDefinitionList('     '));
-        self::assertFalse($this->lineChecker->isDefinitionList('Test'));
+        self::assertTrue($this->lineChecker->isIndented('    Test'));
+        self::assertTrue($this->lineChecker->isIndented('  Test'));
+        self::assertFalse($this->lineChecker->isIndented('Test'));
+        self::assertFalse($this->lineChecker->isIndented(''));
+        self::assertFalse($this->lineChecker->isIndented('  Test', 4));
     }
 
     public function testIsDefinitionListEnded(): void

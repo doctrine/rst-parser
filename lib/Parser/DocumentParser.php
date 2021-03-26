@@ -278,7 +278,7 @@ class DocumentParser
                         $this->buffer = new Buffer();
                         $this->flush();
                         $this->initDirective($line);
-                    } elseif ($this->lineChecker->isDefinitionList($this->lines->getNextLine())) {
+                    } elseif ($this->lineChecker->isIndented($this->lines->getNextLine())) {
                         $this->setState(State::DEFINITION_LIST);
                         $this->buffer->push($line);
 
