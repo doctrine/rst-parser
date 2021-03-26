@@ -25,6 +25,11 @@ class Lines implements Iterator
         $this->lines = $lines;
     }
 
+    public function getPreviousLine(): string
+    {
+        return $this->lines[$this->position - 1] ?? '';
+    }
+
     public function getNextLine(): string
     {
         return $this->lines[$this->position + 1] ?? '';

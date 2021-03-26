@@ -6,6 +6,8 @@ namespace Doctrine\RST\Parser;
 
 use function in_array;
 use function preg_match;
+use function preg_replace;
+use function str_repeat;
 use function strlen;
 use function strpos;
 use function trim;
@@ -14,13 +16,19 @@ class LineChecker
 {
     private const HEADER_LETTERS = ['=', '-', '~', '*', '+', '^', '"', '.', '`', "'", '_', '#', ':'];
 
-    /** @var LineDataParser */
-    private $lineParser;
-
-    public function __construct(LineDataParser $lineParser)
-    {
-        $this->lineParser = $lineParser;
-    }
+    /**
+     * A regex matching all bullet list markers and a subset of the enumerated list markers.
+     *
+     * @see https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#bullet-lists
+     * @see https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#enumerated-lists
+     */
+    public const LIST_MARKER = '/
+        ^(
+            [-+*\x{2022}\x{2023}\x{2043}]     # match bullet list markers: "*", "+", "-", "•", "‣", or "⁃"
+            |(?:[\d#]+\.|[\d#]+\)|\([\d#]+\)) # match arabic (1-9) or auto-enumerated ("#") lists with formats: "1.", "1)", or "(1)"
+        )
+        (?:\s+|$) # capture the spaces between marker and text to determine the list item text offset (or eol, if text starts on a new line)
+        /ux';
 
     public function isSpecialLine(string $line): ?string
     {
@@ -43,15 +51,49 @@ class LineChecker
         return $letter;
     }
 
-    public function isListLine(string $line, bool $isCode): bool
+    /**
+     * Checks if this line is the start of a list item.
+     *
+     * @see self::LIST_MARKER
+     *
+     * @param string|null $listMarker if provided, this function only returns "true" if the
+     *                                same list marker format is used (e.g. all dashes).
+     * @param int|null    $listOffset if this line is a list, this will be set to the column
+     *                                number of the start of the list item content (used to
+     *                                match multiline items)
+     * @param string|null $nextLine   if set, this line must also be a valid list line or
+     *                                indented content for enumerated lists
+     */
+    public function isListLine(string $line, ?string &$listMarker = null, ?int &$listOffset = 0, ?string $nextLine = null): bool
     {
-        $listLine = $this->lineParser->parseListLine($line);
-
-        if ($listLine !== null) {
-            return $listLine->getDepth() === 0 || ! $isCode;
+        $isList = preg_match(self::LIST_MARKER, $line, $m) > 0;
+        if (! $isList) {
+            return false;
         }
 
-        return false;
+        $offset           = strlen($m[0]);
+        $normalizedMarker = preg_replace('/\d+/', 'd', $m[1]);
+        if (
+            // validate if next line can be considered part of a list for enumerated lists
+            $normalizedMarker !== $m[1]
+            && $nextLine !== null
+            && trim($nextLine) !== ''
+            && ! $this->isBlockLine($nextLine, $offset)
+            && ! $this->isListLine($nextLine, $normalizedMarker)
+        ) {
+            return false;
+        }
+
+        if ($listMarker !== null) {
+            $isList = $normalizedMarker === $listMarker;
+        }
+
+        if ($isList) {
+            $listOffset = $offset;
+            $listMarker = $normalizedMarker;
+        }
+
+        return $isList;
     }
 
     /**

@@ -13,6 +13,8 @@ use Doctrine\RST\Parser;
 use function array_map;
 use function count;
 use function explode;
+use function ltrim;
+use function mb_strlen;
 use function preg_match;
 use function strlen;
 use function substr;
@@ -105,42 +107,57 @@ class LineDataParser
         return null;
     }
 
-    public function parseListLine(string $line): ?ListLine
+    /**
+     * @param string[] $lines
+     *
+     * @return ListItem[]
+     */
+    public function parseList(array $lines): array
     {
-        $depth = 0;
-        $i     = 0;
+        $list          = [];
+        $currentItem   = null;
+        $currentPrefix = null;
+        $currentOffset = 0;
 
-        for ($i = 0; $i < strlen($line); $i++) {
-            $char = $line[$i];
-
-            if ($char === ' ') {
-                $depth++;
-            } elseif ($char === "\t") {
-                $depth += 2;
-            } else {
-                break;
+        $createListItem = function (string $item, string $prefix): ListItem {
+            // parse any markup in the list item (e.g. sublists, directives)
+            $nodes = $this->parser->getSubParser()->parseLocal($item)->getNodes();
+            if (count($nodes) === 1 && $nodes[0] instanceof ParagraphNode) {
+                // if there is only one paragraph node, the value is put directly in the <li> element
+                $nodes = [$nodes[0]->getValue()];
             }
+
+            return new ListItem($prefix, mb_strlen($prefix) > 1, $nodes);
+        };
+
+        foreach ($lines as $line) {
+            if (preg_match(LineChecker::LIST_MARKER, $line, $m) > 0) {
+                // a list marker indicates the start of a new list item,
+                // complete the previous one and start a new one
+                if ($currentItem !== null) {
+                    $list[] = $createListItem($currentItem, $currentPrefix);
+                }
+
+                $currentOffset = strlen($m[0]);
+                $currentPrefix = $m[1];
+                $currentItem   = substr($line, $currentOffset) . "\n";
+
+                continue;
+            }
+
+            // the list item offset is determined by the offset of the first text
+            if (trim($currentItem) === '') {
+                $currentOffset = strlen($line) - strlen(ltrim($line));
+            }
+
+            $currentItem .= substr($line, $currentOffset) . "\n";
         }
 
-        if (preg_match('/^((\*|\-)|([\d#]+)\.) (.+)$/', trim($line), $match) > 0) {
-            return new ListLine(
-                $line[$i],
-                $line[$i] !== '*' && $line[$i] !== '-',
-                $depth,
-                [$match[4]]
-            );
+        if ($currentItem !== null) {
+            $list[] = $createListItem($currentItem, $currentPrefix);
         }
 
-        if (strlen($line) === 1 && $line[0] === '-') {
-            return new ListLine(
-                $line[$i],
-                $line[$i] !== '*' && $line[$i] !== '-',
-                $depth,
-                ['']
-            );
-        }
-
-        return null;
+        return $list;
     }
 
     /**

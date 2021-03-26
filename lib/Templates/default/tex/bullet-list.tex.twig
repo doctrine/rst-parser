@@ -1,0 +1,5 @@
+\begin{{ '{' }}itemize{{ '}' }}
+    {%- for item in listNode.items -%}
+        {{ include('list-item.tex.twig', {text: item.contentsAsString, prefix: item.prefix}) }}
+    {%- endfor %}
+\end{{ '{' }}itemize{{ '}' }}
