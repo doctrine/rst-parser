@@ -15,6 +15,11 @@ classes for HTML and LaTex, which receive the new `ListNode`.
 Removed `Doctrine\RST\Parser\ListLine` in favor of `Doctrine\RST\Parser\ListItem`
 and changed signature of `Doctrine\RST\Parser\LineChecker::isListLine()`.
 
+## Property visibility changed from protected to private
+
+Some directives and node classes had protected visibility for their properties.
+That has now been changed to private.
+
 # Upgrade to 0.3
 
 ## `DefinitionListTerm::$definitions` is a list of `Node`'s instead of `SpanNode`'s

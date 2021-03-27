@@ -17,10 +17,10 @@ class CodeNode extends Node
     protected $value;
 
     /** @var bool */
-    protected $raw = false;
+    private $raw = false;
 
     /** @var string|null */
-    protected $language = null;
+    private $language = null;
 
     /** @var string[] */
     private $options = [];

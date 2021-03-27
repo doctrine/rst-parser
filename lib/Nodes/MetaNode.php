@@ -7,7 +7,7 @@ namespace Doctrine\RST\Nodes;
 class MetaNode extends Node
 {
     /** @var string */
-    protected $key;
+    private $key;
 
     /** @var string */
     protected $value;

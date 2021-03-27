@@ -34,7 +34,7 @@ abstract class Node
     protected $value;
 
     /** @var string[] */
-    protected $classes = [];
+    private $classes = [];
 
     /**
      * @param Node|string|null $value

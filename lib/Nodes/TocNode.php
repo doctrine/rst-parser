@@ -14,10 +14,10 @@ class TocNode extends Node
     protected $environment;
 
     /** @var string[] */
-    protected $files;
+    private $files;
 
     /** @var string[] */
-    protected $options;
+    private $options;
 
     /**
      * @param string[] $files

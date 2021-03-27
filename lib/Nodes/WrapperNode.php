@@ -7,13 +7,13 @@ namespace Doctrine\RST\Nodes;
 class WrapperNode extends Node
 {
     /** @var Node|null */
-    protected $node;
+    private $node;
 
     /** @var string */
-    protected $before;
+    private $before;
 
     /** @var string */
-    protected $after;
+    private $after;
 
     public function __construct(?Node $node, string $before = '', string $after = '')
     {

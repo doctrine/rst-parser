@@ -7,10 +7,10 @@ namespace Doctrine\RST\Nodes;
 class ImageNode extends Node
 {
     /** @var string */
-    protected $url;
+    private $url;
 
     /** @var string[] */
-    protected $options;
+    private $options;
 
     /**
      * @param string[] $options

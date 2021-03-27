@@ -17,10 +17,10 @@ use function uniqid;
 class Wrap extends SubDirective
 {
     /** @var string */
-    protected $class;
+    private $class;
 
     /** @var bool */
-    protected $uniqid;
+    private $uniqid;
 
     public function __construct(string $class, bool $uniqid = false)
     {

@@ -22,16 +22,16 @@ class DocumentNode extends Node
     protected $environment;
 
     /** @var Configuration */
-    protected $configuration;
+    private $configuration;
 
     /** @var ErrorManager */
-    protected $errorManager;
+    private $errorManager;
 
     /** @var Node[] */
-    protected $headerNodes = [];
+    private $headerNodes = [];
 
     /** @var Node[] */
-    protected $nodes = [];
+    private $nodes = [];
 
     public function __construct(Environment $environment)
     {
