@@ -58,6 +58,8 @@ class SpanProcessor
 
         $span = $this->replaceStandaloneEmailAddresses($span);
 
+        $span = $this->replaceEscapes($span);
+
         return $span;
     }
 
@@ -286,6 +288,14 @@ class SpanProcessor
             $standaloneEmailAddressCallback,
             $span
         );
+    }
+
+    /**
+     * Removes every backslash that is not escaped by a preceding backslash.
+     */
+    private function replaceEscapes(string $span): string
+    {
+        return preg_replace('/(?<!\\\\)\\\\/', '', $span);
     }
 
     private function generateId(): string

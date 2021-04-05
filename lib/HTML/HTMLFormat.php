@@ -93,10 +93,10 @@ class HTMLFormat implements Format
                 }
             ),
             Nodes\ListNode::class => new CallableNodeRendererFactory(
-                function (Nodes\ListNode $node): Renderers\ListNodeRenderer {
-                    return new Renderers\ListNodeRenderer(
+                function (Nodes\ListNode $node): HTML\Renderers\ListNodeRenderer {
+                    return new HTML\Renderers\ListNodeRenderer(
                         $node,
-                        new HTML\Renderers\ListRenderer($node, $this->templateRenderer)
+                        $this->templateRenderer
                     );
                 }
             ),

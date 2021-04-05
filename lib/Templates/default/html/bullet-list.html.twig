@@ -1,0 +1,5 @@
+<ul{% if listNode.classes %} class="{{ listNode.classesString }}"{% endif %}>
+    {% for item in listNode.items -%}
+        {{ include('list-item.html.twig', {text: item.contentsAsString, prefix: item.prefix}) }}
+    {%- endfor %}
+</ul>

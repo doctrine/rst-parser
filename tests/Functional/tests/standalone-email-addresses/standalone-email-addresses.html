@@ -19,7 +19,7 @@ Message-ID: &lt;<a href="mailto:1234@local.machine.example">1234@local.machine.e
     <hr />
     <p>From: &quot;Joe Q. Public&quot; &lt;<a href="mailto:john.q.public@example.com">john.q.public@example.com</a>&gt;
 To: Mary Smith &lt;<a href="mailto:mary@x.test">mary@x.test</a>&gt;, <a href="mailto:jdoe@example.org">jdoe@example.org</a>, Who? &lt;<a href="mailto:one@y.test">one@y.test</a>&gt;
-Cc: &lt;<a href="mailto:boss@nil.test">boss@nil.test</a>&gt;, &quot;Giant; \&quot;Big\&quot; Box&quot; &lt;<a href="mailto:sysservices@example.net">sysservices@example.net</a>&gt;
+Cc: &lt;<a href="mailto:boss@nil.test">boss@nil.test</a>&gt;, &quot;Giant; &quot;Big&quot; Box&quot; &lt;<a href="mailto:sysservices@example.net">sysservices@example.net</a>&gt;
 Date: Tue, 1 Jul 2003 10:52:37 +0200
 Message-ID: &lt;<a href="mailto:5678.21-Nov-1997@example.com">5678.21-Nov-1997@example.com</a>&gt;</p>
     <div class="section" id="hi-everyone">
@@ -79,8 +79,15 @@ Message-ID: &lt;<a href="mailto:1236@local.machine.example">1236@local.machine.e
 <p>Appendix A.4. Messages with Trace Fields</p>
 <blockquote>
     <hr />
-    <p>Received: from x.y.test by example.net via TCP with ESMTP id ABC12345 for &lt;<a href="mailto:mary@example4.net">mary@example4.net</a>&gt;; 21 Nov 1997 10:05:43 -0600
-Received: from node.example by x.y.test; 21 Nov 1997 10:01:22 -0600
+    <dl>
+        <dt> Received <span class="classifier-delimiter">:</span><span class="classifier">from x.y.test</span></dt>
+        <dd> by example.net
+via TCP
+with ESMTP
+id ABC12345
+for &lt;<a href="mailto:mary@example4.net">mary@example4.net</a>&gt;; 21 Nov 1997 10:05:43 -0600 </dd>
+    </dl>
+    <p>Received: from node.example by x.y.test; 21 Nov 1997 10:01:22 -0600
 From: John Doe &lt;<a href="mailto:jdoe@node.example">jdoe@node.example</a>&gt;
 To: Mary Smith &lt;<a href="mailto:mary@example5.net">mary@example5.net</a>&gt;
 Subject: Saying Hello
@@ -97,7 +104,7 @@ Message-ID: &lt;<a href="mailto:1236@local.node.example">1236@local.node.example
 going to support all these formats.</p>
 <blockquote>
     <hr />
-    <p>From: Pete(A nice \) chap) &lt;pete(his account)@silly.test(his host)&gt;
+    <p>From: Pete(A nice ) chap) &lt;pete(his account)@silly.test(his host)&gt;
 To:A Group(Some people) :Chris Jones &lt;c@(Chris's host.)public.example&gt;, <a href="mailto:joe@example.org">joe@example.org</a>, John &lt;<a href="mailto:jdoe@one2.test">jdoe@one2.test</a>&gt; (my dear friend); (the end of the group)
 Cc:(Empty list)(start)Hidden recipients :(nobody(that I know)) ;
 Date: Thu, 13 Feb 1969 23:32 -0330 (Newfoundland Time)

@@ -33,6 +33,21 @@ class ErrorManager
         }
     }
 
+    public function warning(string $message): void
+    {
+        if ($this->configuration->isWarningsAsError()) {
+            $this->error($message);
+
+            return;
+        }
+
+        if ($this->configuration->isSilentOnError()) {
+            return;
+        }
+
+        echo $message . "\n";
+    }
+
     /**
      * @return string[]
      */

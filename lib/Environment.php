@@ -478,6 +478,11 @@ class Environment
         $this->errorManager->error($message, $throwable);
     }
 
+    public function addWarning(string $message): void
+    {
+        $this->errorManager->warning($message);
+    }
+
     public static function slugify(string $text): string
     {
         // replace non letter or digits by -

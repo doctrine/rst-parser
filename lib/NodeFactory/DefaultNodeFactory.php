@@ -35,6 +35,7 @@ use Doctrine\RST\Nodes\WrapperNode;
 use Doctrine\RST\Parser;
 use Doctrine\RST\Parser\DefinitionList;
 use Doctrine\RST\Parser\LineChecker;
+use Doctrine\RST\Parser\ListItem;
 use InvalidArgumentException;
 
 use function assert;
@@ -139,9 +140,12 @@ class DefaultNodeFactory implements NodeFactory
         return $anchorNode;
     }
 
-    public function createListNode(): ListNode
+    /**
+     * @param ListItem[] $items
+     */
+    public function createListNode(array $items, bool $ordered): ListNode
     {
-        $listNode = $this->create(NodeTypes::LIST, []);
+        $listNode = $this->create(NodeTypes::LIST, [$items, $ordered]);
         assert($listNode instanceof ListNode);
 
         return $listNode;
