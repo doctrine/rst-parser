@@ -12,7 +12,6 @@ use Doctrine\RST\Event\PreParseDocumentEvent;
 use Doctrine\RST\FileIncluder;
 use Doctrine\RST\NodeFactory\NodeFactory;
 use Doctrine\RST\Nodes\DocumentNode;
-use Doctrine\RST\Nodes\ListNode;
 use Doctrine\RST\Nodes\Node;
 use Doctrine\RST\Nodes\TableNode;
 use Doctrine\RST\Nodes\TitleNode;
@@ -25,6 +24,8 @@ use function array_search;
 use function assert;
 use function chr;
 use function explode;
+use function ltrim;
+use function max;
 use function sprintf;
 use function str_replace;
 use function strlen;
@@ -84,20 +85,23 @@ class DocumentParser
     /** @var Lines */
     private $lines;
 
+    /** @var int|null */
+    private $currentLineNumber;
+
     /** @var string */
     private $state;
-
-    /** @var ListLine|null */
-    private $listLine;
-
-    /** @var bool */
-    private $listFlow = false;
 
     /** @var TitleNode */
     private $lastTitleNode;
 
     /** @var TitleNode[] */
     private $openTitleNodes = [];
+
+    /** @var int */
+    private $listOffset = 0;
+
+    /** @var string|null */
+    private $listMarker = null;
 
     /**
      * @param Directive[] $directives
@@ -119,7 +123,7 @@ class DocumentParser
         $this->includeAllowed = $includeAllowed;
         $this->includeRoot    = $includeRoot;
         $this->lineDataParser = new LineDataParser($this->parser, $eventManager);
-        $this->lineChecker    = new LineChecker($this->lineDataParser);
+        $this->lineChecker    = new LineChecker();
         $this->tableParser    = new TableParser();
         $this->buffer         = new Buffer();
     }
@@ -161,6 +165,8 @@ class DocumentParser
         $this->specialLetter = false;
         $this->buffer        = new Buffer();
         $this->nodeBuffer    = null;
+        $this->listOffset    = 0;
+        $this->listMarker    = null;
     }
 
     private function setState(string $state): void
@@ -200,13 +206,16 @@ class DocumentParser
         $this->lines = $this->createLines($document);
         $this->setState(State::BEGIN);
 
-        foreach ($this->lines as $line) {
+        foreach ($this->lines as $i => $line) {
+            $this->currentLineNumber = $i + 1;
             while (true) {
                 if ($this->parseLine($line)) {
                     break;
                 }
             }
         }
+
+        $this->currentLineNumber = null;
 
         // DocumentNode is flushed twice to trigger the directives
         $this->flush();
@@ -217,22 +226,34 @@ class DocumentParser
         }
     }
 
+    /**
+     * Return true if this line has completed process.
+     *
+     * If false is returned, this function will be called again with the same line.
+     * This is useful when you switched state and want to parse the line again
+     * with the new state (e.g. when the end of a list is found, you want the line
+     * to be parsed as "BEGIN" again).
+     */
     private function parseLine(string $line): bool
     {
         switch ($this->state) {
             case State::BEGIN:
                 if (trim($line) !== '') {
-                    if ($this->lineChecker->isListLine($line, $this->isCode)) {
+                    if ($this->lineChecker->isListLine($line, $this->listMarker, $this->listOffset, $this->lines->getNextLine())) {
                         $this->setState(State::LIST);
+                        $this->buffer->push($line);
 
-                        $listNode = $this->nodeFactory->createListNode();
+                        return true;
+                    }
 
-                        $this->nodeBuffer = $listNode;
+                    // Represents a literal block here the entire line is literally "::"
+                    // Ref: https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#literal-blocks
+                    //  > If it occurs as a paragraph of its own, that paragraph is completely left out of the document.
+                    if (trim($line) === '::') {
+                        $this->isCode = true;
 
-                        $this->listLine = null;
-                        $this->listFlow = true;
-
-                        return false;
+                        // return true to move onto the next line, this line is omitted
+                        return true;
                     }
 
                     if ($this->lineChecker->isBlockLine($line)) {
@@ -254,7 +275,7 @@ class DocumentParser
                         $this->buffer = new Buffer();
                         $this->flush();
                         $this->initDirective($line);
-                    } elseif ($this->lineChecker->isDefinitionList($this->lines->getNextLine())) {
+                    } elseif ($this->lineChecker->isIndented($this->lines->getNextLine())) {
                         $this->setState(State::DEFINITION_LIST);
                         $this->buffer->push($line);
 
@@ -263,6 +284,18 @@ class DocumentParser
                         $separatorLineConfig = $this->tableParser->parseTableSeparatorLine($line);
 
                         if ($separatorLineConfig === null) {
+                            if ($this->getCurrentDirective() !== null && ! $this->getCurrentDirective()->appliesToNonBlockContent()) {
+                                // If there is a directive set, it means we are the line *after* that directive
+                                // But the state is being set to NORMAL, which means we are a non-indented line.
+                                // Some special directives (like class) allow their content to be non-indented.
+                                // But most do not, which means that our directive is now finished.
+                                // We flush so that the directive can be processed. It will be passed a
+                                // null node (We know because we are currently in a NEW state. If there
+                                // had been legitimately-indented content, that would have matched some
+                                // other state (e.g. BLOCK or CODE) and flushed when it finished.
+                                $this->flush();
+                            }
+
                             $this->setState(State::NORMAL);
 
                             return false;
@@ -283,12 +316,28 @@ class DocumentParser
                 break;
 
             case State::LIST:
-                if (! $this->parseListLine($line)) {
+                if (! $this->lineChecker->isListLine($line, $this->listMarker, $this->listOffset) && ! $this->lineChecker->isBlockLine($line, max(1, $this->listOffset))) {
+                    if (trim($this->lines->getPreviousLine()) !== '') {
+                        $this->environment->addWarning(sprintf(
+                            'Warning%s%s: List ends without a blank line; unexpected unindent.',
+                            $this->environment->getCurrentFileName() !== '' ? sprintf(' in "%s"', $this->environment->getCurrentFileName()) : '',
+                            $this->currentLineNumber !== null ? ' around line ' . ($this->currentLineNumber - 1) : ''
+                        ));
+                    }
+
                     $this->flush();
                     $this->setState(State::BEGIN);
 
                     return false;
                 }
+
+                // the list item offset is determined by the offset of the first text.
+                // An offset of 1 or lower indicates that the list line didn't contain any text.
+                if ($this->listOffset <= 1) {
+                    $this->listOffset = strlen($line) - strlen(ltrim($line));
+                }
+
+                $this->buffer->push($line);
 
                 break;
 
@@ -377,6 +426,8 @@ class DocumentParser
             case State::BLOCK:
             case State::CODE:
                 if (! $this->lineChecker->isBlockLine($line)) {
+                    // the previous line(s) was in a block (indented), but
+                    // this line is no longer indented
                     $this->flush();
                     $this->setState(State::BEGIN);
 
@@ -473,19 +524,27 @@ class DocumentParser
                     /** @var string[] $lines */
                     $lines = $this->buffer->getLines();
 
-                    $blockNode = $this->nodeFactory->createBlockNode($lines);
+                    $node = $this->nodeFactory->createBlockNode($lines);
 
-                    $document = $this->parser->getSubParser()->parseLocal($blockNode->getValue());
+                    // This means we are in an indented area that is not a code block
+                    // or definition list.
+                    // If we're NOT in a directive, then this must be a blockquote.
+                    // If we ARE in a directive, allow the directive to convert
+                    // the BlockNode into what it needs
+                    if ($this->directive === null) {
+                        $document = $this->parser->getSubParser()->parseLocal($node->getValue());
 
-                    $node = $this->nodeFactory->createQuoteNode($document);
+                        $node = $this->nodeFactory->createQuoteNode($document);
+                    }
 
                     break;
 
                 case State::LIST:
-                    $this->parseListLine(null, true);
+                    $list = $this->lineDataParser->parseList(
+                        $this->buffer->getLines()
+                    );
 
-                    $node = $this->nodeBuffer;
-                    assert($node instanceof ListNode);
+                    $node = $this->nodeFactory->createListNode($list, $list[0]->isOrdered());
 
                     break;
 
@@ -531,13 +590,14 @@ class DocumentParser
                     );
                 } catch (Throwable $e) {
                     $message = sprintf(
-                        'Error while processing "%s" directive%s: %s',
+                        'Error while processing "%s" directive%s%s: %s',
                         $currentDirective->getName(),
                         $this->environment->getCurrentFileName() !== '' ? sprintf(' in "%s"', $this->environment->getCurrentFileName()) : '',
+                        $this->currentLineNumber !== null ? ' around line ' . $this->currentLineNumber : '',
                         $e->getMessage()
                     );
 
-                    $this->environment->addError($message);
+                    $this->environment->addError($message, $e);
                 }
             }
 
@@ -612,6 +672,10 @@ class DocumentParser
         return true;
     }
 
+    /**
+     * Called on a NORMAL state line: it's used to determine if this
+     * it beginning a code block - by having a line ending in "::"
+     */
     private function prepareCode(): bool
     {
         $lastLine = $this->buffer->getLastLine();
@@ -653,53 +717,6 @@ class DocumentParser
         }
 
         $this->environment->setLink($link->getName(), $link->getUrl());
-
-        return true;
-    }
-
-    private function parseListLine(?string $line, bool $flush = false): bool
-    {
-        if ($line !== null && trim($line) !== '') {
-            $listLine = $this->lineDataParser->parseListLine($line);
-
-            if ($listLine !== null) {
-                if ($this->listLine instanceof ListLine) {
-                    $this->listLine->setText($this->parser->createSpanNode($this->listLine->getText()));
-
-                    $listNode = $this->nodeBuffer;
-                    assert($listNode instanceof ListNode);
-
-                    $listNode->addLine($this->listLine->toArray());
-                }
-
-                $this->listLine = $listLine;
-            } else {
-                if ($this->listLine instanceof ListLine && ($this->listFlow || $line[0] === ' ')) {
-                    $this->listLine->addText($line);
-                } else {
-                    $flush = true;
-                }
-            }
-
-            $this->listFlow = true;
-        } else {
-            $this->listFlow = false;
-        }
-
-        if ($flush) {
-            if ($this->listLine instanceof ListLine) {
-                $this->listLine->setText($this->parser->createSpanNode($this->listLine->getText()));
-
-                $listNode = $this->nodeBuffer;
-                assert($listNode instanceof ListNode);
-
-                $listNode->addLine($this->listLine->toArray());
-
-                $this->listLine = null;
-            }
-
-            return false;
-        }
 
         return true;
     }

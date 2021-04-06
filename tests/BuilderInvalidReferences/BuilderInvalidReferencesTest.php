@@ -19,6 +19,7 @@ class BuilderInvalidReferencesTest extends BaseBuilderTest
     {
         $this->configuration = new Configuration();
         $this->configuration->setUseCachedMetas(false);
+        $this->configuration->silentOnError(true);
 
         $this->builder = new Builder(new Kernel($this->configuration));
     }

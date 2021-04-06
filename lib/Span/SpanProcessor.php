@@ -58,6 +58,8 @@ class SpanProcessor
 
         $span = $this->replaceStandaloneEmailAddresses($span);
 
+        $span = $this->replaceEscapes($span);
+
         return $span;
     }
 
@@ -67,6 +69,15 @@ class SpanProcessor
     public function getTokens(): array
     {
         return $this->tokens;
+    }
+
+    public function getText(string $value): string
+    {
+        foreach ($this->tokens as $token) {
+            $value = str_replace($token->getId(), $token->get('text'), $value);
+        }
+
+        return $value;
     }
 
     /**
@@ -277,6 +288,14 @@ class SpanProcessor
             $standaloneEmailAddressCallback,
             $span
         );
+    }
+
+    /**
+     * Removes every backslash that is not escaped by a preceding backslash.
+     */
+    private function replaceEscapes(string $span): string
+    {
+        return preg_replace('/(?<!\\\\)\\\\/', '', $span);
     }
 
     private function generateId(): string

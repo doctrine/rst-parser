@@ -32,3 +32,6 @@ em
 
 Second Main Title
 =================
+
+Title with ``code literal``
+---------------------------

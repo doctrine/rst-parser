@@ -17,6 +17,9 @@ class SpanNode extends Node
     /** @var string */
     protected $value;
 
+    /** @var string */
+    private $text;
+
     /** @var Environment */
     protected $environment;
 
@@ -43,6 +46,7 @@ class SpanNode extends Node
         $spanProcessor = new SpanProcessor($this->environment, $span);
 
         $this->value  = $spanProcessor->process();
+        $this->text   = $spanProcessor->getText($this->value);
         $this->tokens = $spanProcessor->getTokens();
     }
 
@@ -62,5 +66,10 @@ class SpanNode extends Node
     public function getEnvironment(): Environment
     {
         return $this->environment;
+    }
+
+    public function getText(): string
+    {
+        return $this->text;
     }
 }

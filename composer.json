@@ -18,19 +18,22 @@
     ],
     "require": {
         "php": "^7.1 || ^8.0",
+        "doctrine/event-manager": "^1.0",
         "symfony/filesystem": "^4.1 || ^5.0",
         "symfony/finder": "^4.1 || ^5.0",
-        "twig/twig": "^2.9 || ^3.3",
-        "doctrine/event-manager": "^1.0"
+        "symfony/polyfill-mbstring": "^1.0",
+        "twig/twig": "^2.9 || ^3.3"
     },
     "require-dev": {
         "doctrine/coding-standard": "^8.0",
+        "gajus/dindent": "^2.0.2",
         "phpstan/phpstan": "^0.12",
         "phpstan/phpstan-deprecation-rules": "^0.12",
         "phpstan/phpstan-phpunit": "^0.12",
         "phpstan/phpstan-strict-rules": "^0.12",
         "phpunit/phpunit": "^7.5 || ^8.0 || ^9.0",
-        "gajus/dindent": "^2.0.2"
+        "symfony/css-selector": "4.4 || ^5.2",
+        "symfony/dom-crawler": "4.4 || ^5.2"
     },
     "autoload": {
         "psr-4": {
@@ -41,5 +44,8 @@
         "psr-4": {
             "Doctrine\\Tests\\RST\\": "tests/"
         }
+    },
+    "config": {
+        "sort-packages": true
     }
 }

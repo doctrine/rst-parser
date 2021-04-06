@@ -179,7 +179,7 @@ class ParserTest extends TestCase
             return $node instanceof ListNode;
         }, 1);
 
-        $document = $this->parse('indented-list.rst');
+        $document = $this->parse('list.rst');
 
         self::assertHasNode($document, static function ($node): bool {
             return $node instanceof ListNode;

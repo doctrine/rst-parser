@@ -75,10 +75,10 @@ class LaTeXFormat implements Format
                 }
             ),
             Nodes\ListNode::class => new CallableNodeRendererFactory(
-                function (Nodes\ListNode $node): Renderers\ListNodeRenderer {
-                    return new Renderers\ListNodeRenderer(
+                function (Nodes\ListNode $node): LaTeX\Renderers\ListNodeRenderer {
+                    return new LaTeX\Renderers\ListNodeRenderer(
                         $node,
-                        new LaTeX\Renderers\ListRenderer($node, $this->templateRenderer)
+                        $this->templateRenderer
                     );
                 }
             ),

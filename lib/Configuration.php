@@ -48,6 +48,12 @@ class Configuration
     private $abortOnError = true;
 
     /** @var bool */
+    private $silentOnError = false;
+
+    /** @var bool */
+    private $warningsAsError = false;
+
+    /** @var bool */
     private $ignoreInvalidReferences = false;
 
     /** @var bool */
@@ -199,6 +205,26 @@ class Configuration
     public function abortOnError(bool $abortOnError): void
     {
         $this->abortOnError = $abortOnError;
+    }
+
+    public function silentOnError(bool $silentOnError = true): void
+    {
+        $this->silentOnError = $silentOnError;
+    }
+
+    public function isSilentOnError(): bool
+    {
+        return $this->silentOnError;
+    }
+
+    public function treatWarningsAsError(bool $warningsAsError): void
+    {
+        $this->warningsAsError = $warningsAsError;
+    }
+
+    public function isWarningsAsError(): bool
+    {
+        return $this->warningsAsError;
     }
 
     public function getIgnoreInvalidReferences(): bool

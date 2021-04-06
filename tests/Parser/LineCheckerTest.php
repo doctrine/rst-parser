@@ -5,28 +5,21 @@ declare(strict_types=1);
 namespace Doctrine\Tests\RST\Parser;
 
 use Doctrine\Common\EventManager;
-use Doctrine\RST\Parser;
 use Doctrine\RST\Parser\LineChecker;
-use Doctrine\RST\Parser\LineDataParser;
 use PHPUnit\Framework\TestCase;
 
 use function str_repeat;
 
 class LineCheckerTest extends TestCase
 {
-    /** @var Parser */
-    private $parser;
-
     /** @var LineChecker */
     private $lineChecker;
 
     protected function setUp(): void
     {
-        $this->parser = $this->createMock(Parser::class);
-
         $eventManager = $this->createMock(EventManager::class);
 
-        $this->lineChecker = new LineChecker(new LineDataParser($this->parser, $eventManager));
+        $this->lineChecker = new LineChecker();
     }
 
     /**
@@ -49,10 +42,9 @@ class LineCheckerTest extends TestCase
 
     public function testIsListLine(): void
     {
-        self::assertTrue($this->lineChecker->isListLine('- Test', true));
-        self::assertTrue($this->lineChecker->isListLine('- Test', false));
-        self::assertFalse($this->lineChecker->isListLine(' - Test', true));
-        self::assertTrue($this->lineChecker->isListLine(' - Test', false));
+        self::assertTrue($this->lineChecker->isListLine('- Test'));
+        self::assertTrue($this->lineChecker->isListLine('- Test'));
+        self::assertFalse($this->lineChecker->isListLine(' - Test'));
     }
 
     public function testIsBlockLine(): void
@@ -60,6 +52,7 @@ class LineCheckerTest extends TestCase
         self::assertTrue($this->lineChecker->isBlockLine(' '));
         self::assertTrue($this->lineChecker->isBlockLine('  '));
         self::assertTrue($this->lineChecker->isBlockLine('   '));
+        self::assertTrue($this->lineChecker->isBlockLine(''));
         self::assertFalse($this->lineChecker->isBlockLine('- Test'));
         self::assertFalse($this->lineChecker->isBlockLine('.. code-block::'));
     }
@@ -83,11 +76,13 @@ class LineCheckerTest extends TestCase
         self::assertFalse($this->lineChecker->isDirective('Test'));
     }
 
-    public function testIsDefinitionList(): void
+    public function testIsIndented(): void
     {
-        self::assertTrue($this->lineChecker->isDefinitionList('    '));
-        self::assertTrue($this->lineChecker->isDefinitionList('     '));
-        self::assertFalse($this->lineChecker->isDefinitionList('Test'));
+        self::assertTrue($this->lineChecker->isIndented('    Test'));
+        self::assertTrue($this->lineChecker->isIndented('  Test'));
+        self::assertFalse($this->lineChecker->isIndented('Test'));
+        self::assertFalse($this->lineChecker->isIndented(''));
+        self::assertFalse($this->lineChecker->isIndented('  Test', 4));
     }
 
     public function testIsDefinitionListEnded(): void

@@ -1,0 +1,3 @@
+#!/bin/sh
+rm -rf tests/Functional/_sphinx
+${SPHINX_BUILD:=sphinx-build} -C -D master_doc=$1 tests/Functional/tests/$1 tests/Functional/_sphinx

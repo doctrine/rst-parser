@@ -52,9 +52,4 @@ class Toctree extends Directive
 
         $parser->getDocument()->addNode($tocNode);
     }
-
-    public function wantCode(): bool
-    {
-        return true;
-    }
 }

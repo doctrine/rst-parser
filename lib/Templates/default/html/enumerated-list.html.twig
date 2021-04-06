@@ -1,0 +1,5 @@
+<ol class="{{ ('arabic ' ~ listNode.classesString)|trim }}">
+    {% for item in listNode.items -%}
+        {{ include('list-item.html.twig', {text: item.contentsAsString, prefix: item.prefix}) }}
+    {%- endfor %}
+</ol>

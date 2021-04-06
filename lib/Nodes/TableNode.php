@@ -165,7 +165,7 @@ class TableNode extends Node
             foreach ($row->getColumns() as $col) {
                 $lines = explode("\n", $col->getContent());
 
-                if ($this->lineChecker->isListLine($lines[0], false)) {
+                if ($this->lineChecker->isListLine($lines[0])) {
                     $node = $parser->parseFragment($col->getContent())->getNodes()[0];
                 } else {
                     $node = $parser->createSpanNode($col->getContent());

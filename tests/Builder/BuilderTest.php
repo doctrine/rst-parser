@@ -7,13 +7,16 @@ namespace Doctrine\Tests\RST\Builder;
 use Doctrine\RST\Builder;
 use Doctrine\RST\Meta\MetaEntry;
 use Doctrine\Tests\RST\BaseBuilderTest;
+use Symfony\Component\DomCrawler\Crawler;
 
+use function array_map;
 use function array_unique;
 use function array_values;
 use function file_exists;
 use function file_get_contents;
 use function file_put_contents;
 use function is_dir;
+use function iterator_to_array;
 use function range;
 use function sleep;
 use function sprintf;
@@ -158,11 +161,21 @@ class BuilderTest extends BaseBuilderTest
     {
         $contents = $this->getFileContents($this->targetFile('toc-glob.html'));
 
-        self::assertStringContainsString('magic-link.html#another-page', $contents);
-        self::assertStringContainsString('introduction.html#introduction-page', $contents);
-        self::assertStringContainsString('subdirective.html', $contents);
+        // links to first <h1> tag of other pages must not contain a url fragment
+        self::assertStringContainsString('magic-link.html"', $contents);
+        self::assertStringContainsString('introduction.html"', $contents);
+        self::assertStringContainsString('subdirective.html"', $contents);
+        self::assertStringContainsString('subdir/file.html"', $contents);
+
+        // links to other <h1> tags should contain a url fragment
+        self::assertStringContainsString('index.html#another-h1', $contents);
+
+        // links to other headings contain a url fragment
         self::assertStringContainsString('subdir/test.html#subdirectory', $contents);
-        self::assertStringContainsString('subdir/file.html#heading-1', $contents);
+        self::assertStringContainsString('subdir/file.html#heading-2', $contents);
+
+        // link to <h1> inside the same page contains a url fragment
+        self::assertStringContainsString('toc-glob.html#toc-glob', $contents);
     }
 
     public function testToctreeGlobOrder(): void
@@ -170,24 +183,77 @@ class BuilderTest extends BaseBuilderTest
         $contents = $this->getFileContents($this->targetFile('toc-glob.html'));
 
         // assert `index` is first since it is defined first in toc-glob.rst
-        self::assertStringContainsString('<div class="toc"><ul><li id="index-html-summary" class="toc-item"><a href="index.html#summary">Summary</a></li>', $contents);
+        self::assertStringContainsString('<div class="toc"><ul><li id="index-html" class="toc-item"><a href="index.html">Summary</a></li>', $contents);
 
         // assert `index` is not included and duplicated by the glob
-        self::assertStringNotContainsString('</ul><li id="index-html-summary" class="toc-item"><a href="index.html#summary">Summary</a></li>', $contents);
+        self::assertStringNotContainsString('</ul><li id="index-html" class="toc-item"><a href="index.html">Summary</a></li>', $contents);
 
         // assert `introduction` is at the end after the glob since it is defined last in toc-glob.rst
-        self::assertStringContainsString('<a href="introduction.html#introduction-page">Introduction page</a></li></ul></div>', $contents);
+        self::assertStringContainsString('<a href="introduction.html">Introduction page</a></li></ul></div>', $contents);
+
+        // assert the glob part is alphabetical
+        $crawler       = new Crawler($contents);
+        $expectedLinks = [
+            'index.html',
+            // a second "h1" (a rare thing) is included as a top-level headline
+            'index.html#another-h1',
+            // this is another.rst - it has a custom url
+            'magic-link.html',
+            'introduction.html',
+            'link-to-index.html',
+            // the subdir handling is actually different than Sphinx, which
+            // does not look into subdirs with a normal * glob
+            'subdir/file.html',
+            'subdir/test.html',
+            'subdir/toc.html',
+            'subdirective.html',
+            'toc-glob-reversed.html',
+            // only here because we explicitly include it, "self file" is normally ignored
+            'toc-glob.html#toc-glob',
+            // this is manually included again
+            'introduction.html',
+        ];
+        $actualLinks   = array_map(static function ($linkElement): string {
+            return $linkElement->attributes->getNamedItem('href')->nodeValue;
+        }, iterator_to_array($crawler->filter('.toc > ul > li > a')));
+        self::assertSame($expectedLinks, $actualLinks);
+    }
+
+    public function testToctreeGlobReversedOrder(): void
+    {
+        $contents = $this->getFileContents($this->targetFile('toc-glob-reversed.html'));
+
+        $crawler = new Crawler($contents);
+        // see previous test for why they are in this order (now reversed)
+        $expectedLinks = [
+            'introduction.html',
+            'toc-glob.html',
+            'subdirective.html',
+            'subdir/toc.html',
+            'subdir/test.html',
+            'subdir/file.html',
+            'link-to-index.html',
+            'introduction.html',
+            'magic-link.html',
+            'index.html',
+            // having the other h1 anchor AFTER index.html is what Sphinx does too
+            'index.html#another-h1',
+        ];
+        $actualLinks   = array_map(static function ($linkElement): string {
+            return $linkElement->attributes->getNamedItem('href')->nodeValue;
+        }, iterator_to_array($crawler->filter('.toc > ul > li > a')));
+        self::assertSame($expectedLinks, $actualLinks);
     }
 
     public function testToctreeInSubdirectory(): void
     {
         $contents = $this->getFileContents($this->targetFile('subdir/toc.html'));
 
-        self::assertStringContainsString('../introduction.html#introduction-page', $contents);
-        self::assertStringContainsString('../subdirective.html#sub-directives', $contents);
-        self::assertStringContainsString('../magic-link.html#another-page', $contents);
-        self::assertStringContainsString('test.html#subdirectory', $contents);
-        self::assertStringContainsString('file.html#heading-1', $contents);
+        self::assertStringContainsString('../introduction.html"', $contents);
+        self::assertStringContainsString('../subdirective.html"', $contents);
+        self::assertStringContainsString('../magic-link.html"', $contents);
+        self::assertStringContainsString('"test.html"', $contents);
+        self::assertStringContainsString('file.html"', $contents);
     }
 
     public function testAnchors(): void

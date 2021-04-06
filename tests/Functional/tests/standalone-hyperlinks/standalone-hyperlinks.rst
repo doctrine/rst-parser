@@ -64,6 +64,7 @@ Matches the right thing in the following lines:
     How about multiple http://example.com/uris on the mailto:same-line@example.com
 
 Should fail against:
+
     6:00p
     filename.txt
     www.c.ws/䨹

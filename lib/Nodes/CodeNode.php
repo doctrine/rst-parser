@@ -4,6 +4,13 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\Nodes;
 
+/**
+ * Represents a "code node", which *sometimes* encompasses more than "code blocks".
+ *
+ * The intention of this class is for it to be used for "code blocks".
+ * However, if a directive returns true from wantCode(), they will
+ * be passed a CodeNode.
+ */
 class CodeNode extends Node
 {
     /** @var string */
@@ -16,7 +23,7 @@ class CodeNode extends Node
     protected $language = null;
 
     /** @var string[] */
-    private $options;
+    private $options = [];
 
     /**
      * @param string[] $lines

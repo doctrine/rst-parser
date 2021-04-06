@@ -230,12 +230,12 @@ class DefaultNodeFactoryTest extends TestCase
 
         $nodeInstantiator->expects(self::once())
             ->method('create')
-            ->with([])
+            ->with([[], false])
             ->willReturn($expectedReturn);
 
         $defaultNodeFactory = $this->createDefaultNodeFactory($nodeInstantiator);
 
-        self::assertSame($expectedReturn, $defaultNodeFactory->createListNode());
+        self::assertSame($expectedReturn, $defaultNodeFactory->createListNode([], false));
     }
 
     public function testCreateTable(): void
@@ -298,7 +298,7 @@ class DefaultNodeFactoryTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Could not find node instantiator of type list');
 
-        $defaultNodeFactory->createListNode();
+        $defaultNodeFactory->createListNode([], false);
     }
 
     protected function setUp(): void
