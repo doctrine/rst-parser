@@ -13,7 +13,7 @@ use Doctrine\RST\Parser;
  *
  * .. stylesheet:: style.css
  */
-class Stylesheet extends Directive
+final class Stylesheet extends Directive
 {
     public function getName(): string
     {

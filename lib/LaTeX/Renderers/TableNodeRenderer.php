@@ -11,7 +11,7 @@ use function count;
 use function implode;
 use function max;
 
-class TableNodeRenderer implements NodeRenderer
+final class TableNodeRenderer implements NodeRenderer
 {
     /** @var TableNode */
     private $tableNode;

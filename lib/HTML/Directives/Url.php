@@ -12,7 +12,7 @@ use function trim;
 /**
  * Sets the document URL
  */
-class Url extends Directive
+final class Url extends Directive
 {
     public function getName(): string
     {

@@ -15,7 +15,7 @@ use function explode;
 use function in_array;
 use function strpos;
 
-class ToctreeBuilder
+final class ToctreeBuilder
 {
     /** @var GlobSearcher */
     private $globSearcher;

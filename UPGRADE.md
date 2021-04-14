@@ -1,3 +1,14 @@
+# Upgrade to 0.5
+
+## Property visibility changed from protected to private
+
+Some directives and node classes had protected visibility for their properties.
+That has now been changed to private.
+
+## Final classes by default
+
+Many classes have been made final because they were never actually extended.
+
 # Upgrade to 0.4
 
 ## Refactored List Rendering
@@ -14,11 +25,6 @@ classes for HTML and LaTex, which receive the new `ListNode`.
 
 Removed `Doctrine\RST\Parser\ListLine` in favor of `Doctrine\RST\Parser\ListItem`
 and changed signature of `Doctrine\RST\Parser\LineChecker::isListLine()`.
-
-## Property visibility changed from protected to private
-
-Some directives and node classes had protected visibility for their properties.
-That has now been changed to private.
 
 # Upgrade to 0.3
 

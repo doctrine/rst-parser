@@ -20,7 +20,7 @@ use function strlen;
 use function substr;
 use function trim;
 
-class LineDataParser
+final class LineDataParser
 {
     /** @var Parser */
     private $parser;

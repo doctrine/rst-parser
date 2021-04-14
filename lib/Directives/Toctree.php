@@ -9,7 +9,7 @@ use Doctrine\RST\Parser;
 use Doctrine\RST\Toc\GlobSearcher;
 use Doctrine\RST\Toc\ToctreeBuilder;
 
-class Toctree extends Directive
+final class Toctree extends Directive
 {
     /** @var ToctreeBuilder */
     private $toctreeBuilder;

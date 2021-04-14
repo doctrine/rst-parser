@@ -20,7 +20,7 @@ use function sprintf;
  *
  *      Here is an awesome caption
  */
-class Figure extends SubDirective
+final class Figure extends SubDirective
 {
     public function getName(): string
     {

@@ -10,7 +10,7 @@ use function is_string;
 use function preg_match;
 use function sprintf;
 
-class ResolvedReference
+final class ResolvedReference
 {
     /** @var ?string */
     private $file;

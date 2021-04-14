@@ -13,7 +13,7 @@ use Doctrine\RST\Templates\TemplateRenderer;
 use function htmlspecialchars;
 use function trim;
 
-class SpanNodeRenderer extends BaseSpanNodeRenderer
+final class SpanNodeRenderer extends BaseSpanNodeRenderer
 {
     /** @var TemplateRenderer */
     private $templateRenderer;

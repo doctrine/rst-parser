@@ -8,7 +8,7 @@ use Doctrine\RST\Nodes\SectionBeginNode;
 use Doctrine\RST\Renderers\NodeRenderer;
 use Doctrine\RST\Templates\TemplateRenderer;
 
-class SectionBeginNodeRenderer implements NodeRenderer
+final class SectionBeginNodeRenderer implements NodeRenderer
 {
     /** @var SectionBeginNode */
     private $sectionBeginNode;

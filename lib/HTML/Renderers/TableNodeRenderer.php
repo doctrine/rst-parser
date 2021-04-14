@@ -11,7 +11,7 @@ use LogicException;
 
 use function sprintf;
 
-class TableNodeRenderer implements NodeRenderer
+final class TableNodeRenderer implements NodeRenderer
 {
     /** @var TableNode */
     private $tableNode;

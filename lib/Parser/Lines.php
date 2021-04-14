@@ -9,7 +9,7 @@ use Iterator;
 /**
  * @template-implements Iterator<array-key, string>
  */
-class Lines implements Iterator
+final class Lines implements Iterator
 {
     /** @var string[] */
     private $lines = [];

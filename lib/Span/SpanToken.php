@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\Span;
 
-class SpanToken
+final class SpanToken
 {
     public const TYPE_LITERAL   = 'literal';
     public const TYPE_REFERENCE = 'reference';

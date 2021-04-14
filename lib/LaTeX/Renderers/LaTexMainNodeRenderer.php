@@ -6,7 +6,7 @@ namespace Doctrine\RST\LaTeX\Renderers;
 
 use Doctrine\RST\Renderers\NodeRenderer;
 
-class LaTexMainNodeRenderer implements NodeRenderer
+final class LaTexMainNodeRenderer implements NodeRenderer
 {
     public function render(): string
     {

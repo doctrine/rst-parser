@@ -12,7 +12,7 @@ use Doctrine\RST\Templates\TemplateRenderer;
 use function count;
 use function is_array;
 
-class TocNodeRenderer implements NodeRenderer
+final class TocNodeRenderer implements NodeRenderer
 {
     /** @var Environment */
     private $environment;

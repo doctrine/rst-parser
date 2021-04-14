@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\Nodes;
 
-class WrapperNode extends Node
+final class WrapperNode extends Node
 {
     /** @var Node|null */
     private $node;

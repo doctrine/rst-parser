@@ -8,7 +8,7 @@ use Doctrine\RST\Nodes\AnchorNode;
 use Doctrine\RST\Renderers\NodeRenderer;
 use Doctrine\RST\Templates\TemplateRenderer;
 
-class AnchorNodeRenderer implements NodeRenderer
+final class AnchorNodeRenderer implements NodeRenderer
 {
     /** @var AnchorNode */
     private $anchorNode;

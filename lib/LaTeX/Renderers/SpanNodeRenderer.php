@@ -14,7 +14,7 @@ use function is_string;
 use function substr;
 use function trim;
 
-class SpanNodeRenderer extends BaseSpanNodeRenderer
+final class SpanNodeRenderer extends BaseSpanNodeRenderer
 {
     /** @var TemplateRenderer */
     private $templateRenderer;

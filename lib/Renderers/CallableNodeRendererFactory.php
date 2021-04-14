@@ -6,7 +6,7 @@ namespace Doctrine\RST\Renderers;
 
 use Doctrine\RST\Nodes\Node;
 
-class CallableNodeRendererFactory implements NodeRendererFactory
+final class CallableNodeRendererFactory implements NodeRendererFactory
 {
     /** @var callable */
     private $callable;

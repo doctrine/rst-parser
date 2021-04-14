@@ -8,7 +8,7 @@ use function array_pop;
 use function count;
 use function implode;
 
-class Buffer
+final class Buffer
 {
     /** @var string[] */
     private $lines = [];

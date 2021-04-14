@@ -14,7 +14,7 @@ use function uniqid;
 /**
  * Wraps a sub document in a div with a given class
  */
-class Wrap extends SubDirective
+final class Wrap extends SubDirective
 {
     /** @var string */
     private $class;

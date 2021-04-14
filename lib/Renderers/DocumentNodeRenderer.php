@@ -6,7 +6,7 @@ namespace Doctrine\RST\Renderers;
 
 use Doctrine\RST\Nodes\DocumentNode;
 
-class DocumentNodeRenderer implements NodeRenderer
+final class DocumentNodeRenderer implements NodeRenderer
 {
     /** @var DocumentNode */
     private $document;

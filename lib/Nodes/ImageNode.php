@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\Nodes;
 
-class ImageNode extends Node
+final class ImageNode extends Node
 {
     /** @var string */
     private $url;

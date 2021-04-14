@@ -15,7 +15,7 @@ use Doctrine\RST\Parser;
  *
  *      <u>Undelined!</u>
  */
-class Raw extends Directive
+final class Raw extends Directive
 {
     public function getName(): string
     {

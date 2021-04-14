@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\Nodes;
 
-class MetaNode extends Node
+final class MetaNode extends Node
 {
     /** @var string */
     private $key;

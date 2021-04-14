@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\Parser;
 
-class Directive
+final class Directive
 {
     /** @var string */
     private $variable;

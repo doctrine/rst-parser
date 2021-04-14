@@ -8,7 +8,7 @@ use Doctrine\RST\Nodes\DefinitionListNode;
 use Doctrine\RST\Renderers\NodeRenderer;
 use Doctrine\RST\Templates\TemplateRenderer;
 
-class DefinitionListNodeRenderer implements NodeRenderer
+final class DefinitionListNodeRenderer implements NodeRenderer
 {
     /** @var DefinitionListNode */
     private $definitionListNode;

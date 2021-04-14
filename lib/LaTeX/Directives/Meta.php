@@ -14,7 +14,7 @@ use Doctrine\RST\Parser;
  * .. meta::
  *      :key: value
  */
-class Meta extends Directive
+final class Meta extends Directive
 {
     public function getName(): string
     {

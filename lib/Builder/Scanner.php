@@ -13,7 +13,7 @@ use function sprintf;
 use function strlen;
 use function substr;
 
-class Scanner
+final class Scanner
 {
     /** @var string */
     private $fileExtension;
