@@ -236,11 +236,10 @@ class DocumentNode extends Node
         $currentFileName = $this->environment->getCurrentFileName();
 
         foreach ($this->environment->getInvalidLinks() as $invalidLink) {
-            $this->errorManager->error(sprintf(
-                'Found invalid reference "%s"%s',
-                $invalidLink->getName(),
-                $currentFileName !== '' ? sprintf(' in file "%s"', $currentFileName) : ''
-            ));
+            $this->errorManager->addError(
+                sprintf('Found invalid reference "%s"', $invalidLink->getName()),
+                $currentFileName
+            );
         }
     }
 }

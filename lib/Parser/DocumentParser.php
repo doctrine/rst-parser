@@ -318,11 +318,11 @@ final class DocumentParser
             case State::LIST:
                 if (! $this->lineChecker->isListLine($line, $this->listMarker, $this->listOffset) && ! $this->lineChecker->isBlockLine($line, max(1, $this->listOffset))) {
                     if (trim($this->lines->getPreviousLine()) !== '') {
-                        $this->environment->addWarning(sprintf(
-                            'Warning%s%s: List ends without a blank line; unexpected unindent.',
-                            $this->environment->getCurrentFileName() !== '' ? sprintf(' in "%s"', $this->environment->getCurrentFileName()) : '',
-                            $this->currentLineNumber !== null ? ' around line ' . ($this->currentLineNumber - 1) : ''
-                        ));
+                        $this->environment->getErrorManager()->addWarning(
+                            'List ends without a blank line; unexpected unindent',
+                            $this->environment->getCurrentFileName(),
+                            $this->currentLineNumber !== null ? $this->currentLineNumber - 1 : null
+                        );
                     }
 
                     $this->flush();
@@ -455,7 +455,7 @@ final class DocumentParser
                 break;
 
             default:
-                $this->environment->addError('Parser ended in an unexcepted state');
+                $this->environment->getErrorManager()->addError('Parser ended in an unexcepted state');
         }
 
         return true;
@@ -589,15 +589,12 @@ final class DocumentParser
                         $this->directive->getOptions()
                     );
                 } catch (Throwable $e) {
-                    $message = sprintf(
-                        'Error while processing "%s" directive%s%s: %s',
-                        $currentDirective->getName(),
-                        $this->environment->getCurrentFileName() !== '' ? sprintf(' in "%s"', $this->environment->getCurrentFileName()) : '',
-                        $this->currentLineNumber !== null ? ' around line ' . $this->currentLineNumber : '',
-                        $e->getMessage()
+                    $this->environment->getErrorManager()->addError(
+                        sprintf('Error while processing "%s" directive: %s', $currentDirective->getName(), $e->getMessage()),
+                        $this->environment->getCurrentFileName(),
+                        $this->currentLineNumber ?? null,
+                        $e
                     );
-
-                    $this->environment->addError($message, $e);
                 }
             }
 
@@ -655,14 +652,10 @@ final class DocumentParser
         }
 
         if (! isset($this->directives[$parserDirective->getName()])) {
-            $message = sprintf(
-                'Unknown directive: "%s" %sfor line "%s"',
-                $parserDirective->getName(),
-                $this->environment->getCurrentFileName() !== '' ? sprintf('in "%s" ', $this->environment->getCurrentFileName()) : '',
-                $line
+            $this->environment->getErrorManager()->addError(
+                sprintf('Unknown directive "%s": %s', $parserDirective->getName(), $line),
+                $this->environment->getCurrentFileName()
             );
-
-            $this->environment->addError($message);
 
             return false;
         }

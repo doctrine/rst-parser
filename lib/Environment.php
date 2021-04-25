@@ -473,11 +473,17 @@ class Environment
         return $this->titleLetters;
     }
 
+    /**
+     * @deprecated use $this->getErrorManager()->addError() instead.
+     */
     public function addError(string $message, ?Throwable $throwable = null): void
     {
         $this->errorManager->error($message, $throwable);
     }
 
+    /**
+     * @deprecated use $this->getErrorManager()->addWarning() instead.
+     */
     public function addWarning(string $message): void
     {
         $this->errorManager->warning($message);
@@ -508,10 +514,9 @@ class Environment
 
     private function addMissingReferenceSectionError(string $section): void
     {
-        $this->errorManager->error(sprintf(
-            'Unknown reference section "%s"%s',
-            $section,
-            $this->getCurrentFileName() !== '' ? sprintf(' in "%s" ', $this->getCurrentFileName()) : ''
-        ));
+        $this->errorManager->addError(
+            sprintf('Unknown reference section "%s"', $section),
+            $this->getCurrentFileName()
+        );
     }
 }
