@@ -232,12 +232,18 @@ class Configuration
         return $this->warningsAsError;
     }
 
-    public function getOutputFormat(): string
+    /**
+     * @psalm-return self::OUTPUT_FORMAT_*
+     */
+    final public function getOutputFormat(): string
     {
         return $this->outputFormat;
     }
 
-    public function setOutputFormat(string $outputFormat): void
+    /**
+     * @psalm-param self::OUTPUT_FORMAT_* $outputFormat
+     */
+    final public function setOutputFormat(string $outputFormat): void
     {
         $this->outputFormat = $outputFormat;
     }
