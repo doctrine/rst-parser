@@ -27,7 +27,7 @@ use function sys_get_temp_dir;
 
 class Configuration
 {
-    public const THEME_DEFAULT = 'default';
+    public const THEME_DEFAULT         = 'default';
     public const OUTPUT_FORMAT_CONSOLE = 'console';
     public const OUTPUT_FORMAT_GITHUB  = 'github';
 
