@@ -55,7 +55,7 @@ class Configuration
     /** @var bool */
     private $warningsAsError = false;
 
-    /** @var string */
+    /** @psalm-var self::OUTPUT_FORMAT_* */
     private $outputFormat = self::OUTPUT_FORMAT_CONSOLE;
 
     /** @var bool */
