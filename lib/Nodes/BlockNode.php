@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\Nodes;
 
-class BlockNode extends Node
+final class BlockNode extends Node
 {
     /** @var string */
     protected $value;

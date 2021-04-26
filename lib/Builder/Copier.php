@@ -10,7 +10,7 @@ use function basename;
 use function dirname;
 use function is_dir;
 
-class Copier
+final class Copier
 {
     /** @var Filesystem */
     private $filesystem;

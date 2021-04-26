@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\Nodes;
 
-class DummyNode extends Node
+final class DummyNode extends Node
 {
     /** @var mixed[] */
     public $data;

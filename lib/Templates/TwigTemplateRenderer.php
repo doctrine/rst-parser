@@ -8,7 +8,7 @@ use Doctrine\RST\Configuration;
 
 use function rtrim;
 
-class TwigTemplateRenderer implements TemplateRenderer
+final class TwigTemplateRenderer implements TemplateRenderer
 {
     /** @var Configuration */
     private $configuration;

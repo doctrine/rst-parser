@@ -12,7 +12,7 @@ use Doctrine\RST\Parser;
 
 use function filemtime;
 
-class ParseQueueProcessor
+final class ParseQueueProcessor
 {
     /** @var Kernel */
     private $kernel;

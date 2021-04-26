@@ -11,7 +11,7 @@ use Twig\Loader\FilesystemLoader;
 use function file_exists;
 use function sprintf;
 
-class TwigEnvironmentFactory
+final class TwigEnvironmentFactory
 {
     public static function createTwigEnvironment(Configuration $configuration): TwigEnvironment
     {

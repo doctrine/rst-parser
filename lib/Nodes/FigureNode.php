@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\Nodes;
 
-class FigureNode extends Node
+final class FigureNode extends Node
 {
     /** @var ImageNode */
-    protected $image;
+    private $image;
 
     /** @var Node|null */
-    protected $document;
+    private $document;
 
     public function __construct(ImageNode $image, ?Node $document = null)
     {

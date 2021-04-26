@@ -7,7 +7,7 @@ namespace Doctrine\RST\Templates;
 use Doctrine\RST\Configuration;
 use Twig\Environment as TwigEnvironment;
 
-class TwigAdapter implements TemplateEngineAdapter
+final class TwigAdapter implements TemplateEngineAdapter
 {
     /** @var Configuration */
     private $configuration;

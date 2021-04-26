@@ -7,7 +7,7 @@ namespace Doctrine\RST\LaTeX\Renderers;
 use Doctrine\RST\Renderers\NodeRenderer;
 use Doctrine\RST\Templates\TemplateRenderer;
 
-class SeparatorNodeRenderer implements NodeRenderer
+final class SeparatorNodeRenderer implements NodeRenderer
 {
     /** @var TemplateRenderer */
     private $templateRenderer;

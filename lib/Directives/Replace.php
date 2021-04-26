@@ -12,7 +12,7 @@ use Doctrine\RST\Parser;
  *
  * .. |test| replace:: The Test String!
  */
-class Replace extends Directive
+final class Replace extends Directive
 {
     public function getName(): string
     {

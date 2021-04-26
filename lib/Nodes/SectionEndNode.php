@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\Nodes;
 
-class SectionEndNode extends Node
+final class SectionEndNode extends Node
 {
     /** @var TitleNode */
     private $titleNode;

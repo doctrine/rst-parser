@@ -11,10 +11,10 @@ use Doctrine\RST\Parser;
 /**
  * Wraps a sub document in a div with a given class
  */
-class Wrap extends SubDirective
+final class Wrap extends SubDirective
 {
     /** @var string */
-    protected $class;
+    private $class;
 
     public function __construct(string $class)
     {

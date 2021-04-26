@@ -19,7 +19,7 @@ use function str_replace;
 use function substr;
 use function time;
 
-class SpanProcessor
+final class SpanProcessor
 {
     /** @var Environment */
     private $environment;

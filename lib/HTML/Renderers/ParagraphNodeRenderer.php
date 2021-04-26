@@ -8,7 +8,7 @@ use Doctrine\RST\Nodes\ParagraphNode;
 use Doctrine\RST\Renderers\NodeRenderer;
 use Doctrine\RST\Templates\TemplateRenderer;
 
-class ParagraphNodeRenderer implements NodeRenderer
+final class ParagraphNodeRenderer implements NodeRenderer
 {
     /** @var ParagraphNode */
     private $paragraphNode;

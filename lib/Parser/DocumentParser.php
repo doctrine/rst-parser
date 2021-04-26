@@ -32,7 +32,7 @@ use function strlen;
 use function substr;
 use function trim;
 
-class DocumentParser
+final class DocumentParser
 {
     /** @var Parser */
     private $parser;

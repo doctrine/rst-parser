@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\RST;
 
-class InvalidLink
+final class InvalidLink
 {
     /** @var string */
     private $name;

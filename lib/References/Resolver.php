@@ -7,7 +7,7 @@ namespace Doctrine\RST\References;
 use Doctrine\RST\Environment;
 use Doctrine\RST\Meta\MetaEntry;
 
-class Resolver
+final class Resolver
 {
     /**
      * @param string[] $attributes

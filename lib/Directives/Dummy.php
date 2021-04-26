@@ -7,7 +7,7 @@ namespace Doctrine\RST\Directives;
 use Doctrine\RST\Nodes\Node;
 use Doctrine\RST\Parser;
 
-class Dummy extends Directive
+final class Dummy extends Directive
 {
     public function getName(): string
     {

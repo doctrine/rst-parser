@@ -24,7 +24,7 @@ class SpanNode extends Node
     protected $environment;
 
     /** @var SpanToken[] */
-    protected $tokens;
+    private $tokens;
 
     /**
      * @param string|string[]|SpanNode $span

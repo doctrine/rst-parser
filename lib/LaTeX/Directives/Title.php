@@ -13,7 +13,7 @@ use Doctrine\RST\Parser;
  *
  * .. title:: Page title
  */
-class Title extends Directive
+final class Title extends Directive
 {
     public function getName(): string
     {
