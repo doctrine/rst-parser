@@ -29,7 +29,7 @@ class Configuration
 {
     public const THEME_DEFAULT = 'default';
     public const OUTPUT_FORMAT_CONSOLE = 'console';
-    public const OUTPUT_FORMAT_GITHUB = 'github';
+    public const OUTPUT_FORMAT_GITHUB  = 'github';
 
     /** @var string */
     private $cacheDir;
