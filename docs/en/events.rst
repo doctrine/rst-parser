@@ -63,40 +63,40 @@ method will be invoked every time a document is parsed:
 Available Events
 ----------------
 
-The events you can listen for are as follows:
+The events you can listen for and their respective handlers:
 
-- ``PreBuildScanEvent::PRE_BUILD_SCAN``
-    ``preBuildScan()`` method will be invoked 
-    before files are scanned, when using the builder.
+.. list-table:: 
+   :widths: 2 1 4
+   :header-rows: 1
+   :stub-columns: 1
 
-- ``PreBuildParseEvent::PRE_BUILD_PARSE`` 
-    ``preBuildParse()`` method will be invoked 
-    after files are scanned and before they are parsed, when using the builder.
-
-- ``PreBuildRenderEvent::PRE_BUILD_RENDER`` 
-    ``preBuildRender()`` method will be invoked 
-    after files are parsed and before they are rendered, when using the builder.
-
-- ``PostBuildRenderEvent::POST_BUILD_RENDER``
-    ``postBuildRender()`` method will be invoked 
-    after files are rendered, when using the builder.
-
-- ``PostNodeCreateEvent::POST_NODE_CREATE``
-    ``postNodeCreate()`` method will be invoked 
-    after a node is created.
-
-- ``PreParseDocumentEvent::PRE_PARSE_DOCUMENT`` 
-    ``preParseDocument()`` method will be invoked 
-    before a node is parsed.
-
-- ``PostParseDocumentEvent::POST_PARSE_DOCUMENT``
-    ``postParseDocument()`` method will be invoked 
-    after a node is parsed.
-
-- ``PreNodeRenderEvent::PRE_NODE_RENDER``
-    ``preNodeRender()`` method will be invoked 
-    before a node is rendered.
-
-- ``PostNodeRenderEvent::POST_NODE_RENDER``
-    ``postNodeRender()`` method will be invoked 
-    after a node is rendered.
+   *  - Event name 
+      - Invoked handler method
+      - Timing of event
+   *  - ``PreBuildScanEvent::PRE_BUILD_SCAN`` 
+      - ``preBuildScan()`` 
+      - before files are scanned, when using the builder.
+   *  - ``PreBuildParseEvent::PRE_BUILD_PARSE``
+      - ``preBuildParse()``
+      - after files are scanned and before they are parsed, when using the builder
+   *  - ``PreBuildRenderEvent::PRE_BUILD_RENDER``
+      - ``preBuildRender()``
+      - after files are parsed and before they are rendered, when using the builder
+   *  - ``PostBuildRenderEvent::POST_BUILD_RENDER``
+      - ``postBuildRender()`` 
+      - after files are rendered, when using the builder
+   *  - ``PostNodeCreateEvent::POST_NODE_CREATE``
+      - ``postNodeCreate()`` 
+      - after a node is created
+   *  - ``PreParseDocumentEvent::PRE_PARSE_DOCUMENT``
+      - ``preParseDocument()``
+      - before a node is parsed
+   *  - ``PostParseDocumentEvent::POST_PARSE_DOCUMENT``
+      - ``postParseDocument()`` 
+      - after a node is parsed
+   *  - ``PreNodeRenderEvent::PRE_NODE_RENDER``
+      - ``preNodeRender()``
+      - before a node is rendered
+   *  - ``PostNodeRenderEvent::POST_NODE_RENDER``
+      - ``postNodeRender()``
+      - after a node is rendered
