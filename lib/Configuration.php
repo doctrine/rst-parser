@@ -27,7 +27,9 @@ use function sys_get_temp_dir;
 
 class Configuration
 {
-    public const THEME_DEFAULT = 'default';
+    public const THEME_DEFAULT         = 'default';
+    public const OUTPUT_FORMAT_CONSOLE = 'console';
+    public const OUTPUT_FORMAT_GITHUB  = 'github';
 
     /** @var string */
     private $cacheDir;
@@ -52,6 +54,9 @@ class Configuration
 
     /** @var bool */
     private $warningsAsError = false;
+
+    /** @psalm-var self::OUTPUT_FORMAT_* */
+    private $outputFormat = self::OUTPUT_FORMAT_CONSOLE;
 
     /** @var bool */
     private $ignoreInvalidReferences = false;
@@ -225,6 +230,22 @@ class Configuration
     public function isWarningsAsError(): bool
     {
         return $this->warningsAsError;
+    }
+
+    /**
+     * @psalm-return self::OUTPUT_FORMAT_*
+     */
+    final public function getOutputFormat(): string
+    {
+        return $this->outputFormat;
+    }
+
+    /**
+     * @psalm-param self::OUTPUT_FORMAT_* $outputFormat
+     */
+    final public function setOutputFormat(string $outputFormat): void
+    {
+        $this->outputFormat = $outputFormat;
     }
 
     public function getIgnoreInvalidReferences(): bool
