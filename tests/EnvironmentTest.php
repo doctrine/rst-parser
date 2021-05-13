@@ -82,7 +82,7 @@ class EnvironmentTest extends TestCase
         ];
 
         yield 'with_current_filename' => [
-            'Unknown reference section "doc" in "current_doc_filename"',
+            'Unknown reference section "doc" in file "current_doc_filename"',
             'current_doc_filename',
         ];
     }

@@ -34,10 +34,10 @@ final class Error
     {
         $output = $this->message;
         if ($this->getFile() !== null) {
-            $output .= sprintf(' in "%s"', $this->file);
+            $output .= sprintf(' in file "%s"', $this->file);
 
             if ($this->line !== null) {
-                $output .= sprintf(' at line "%d"', $this->line);
+                $output .= sprintf(' at line %d', $this->line);
             }
         }
 

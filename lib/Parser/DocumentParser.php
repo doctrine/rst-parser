@@ -590,7 +590,7 @@ final class DocumentParser
                     );
                 } catch (Throwable $e) {
                     $this->environment->getErrorManager()->error(
-                        sprintf('Error while processing "%s" directive: %s', $currentDirective->getName(), $e->getMessage()),
+                        sprintf('Error while processing "%s" directive: "%s"', $currentDirective->getName(), $e->getMessage()),
                         $this->environment->getCurrentFileName(),
                         $this->currentLineNumber ?? null,
                         $e
