@@ -653,7 +653,7 @@ final class DocumentParser
 
         if (! isset($this->directives[$parserDirective->getName()])) {
             $this->environment->getErrorManager()->error(
-                sprintf('Unknown directive "%s": %s', $parserDirective->getName(), $line),
+                sprintf('Unknown directive "%s" for line "%s"', $parserDirective->getName(), $line),
                 $this->environment->getCurrentFileName()
             );
 
