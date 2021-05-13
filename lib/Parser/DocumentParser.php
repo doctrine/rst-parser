@@ -318,7 +318,7 @@ final class DocumentParser
             case State::LIST:
                 if (! $this->lineChecker->isListLine($line, $this->listMarker, $this->listOffset) && ! $this->lineChecker->isBlockLine($line, max(1, $this->listOffset))) {
                     if (trim($this->lines->getPreviousLine()) !== '') {
-                        $this->environment->getErrorManager()->addWarning(
+                        $this->environment->getErrorManager()->warning(
                             'List ends without a blank line; unexpected unindent',
                             $this->environment->getCurrentFileName(),
                             $this->currentLineNumber !== null ? $this->currentLineNumber - 1 : null
@@ -455,7 +455,7 @@ final class DocumentParser
                 break;
 
             default:
-                $this->environment->getErrorManager()->addError('Parser ended in an unexcepted state');
+                $this->environment->getErrorManager()->error('Parser ended in an unexcepted state');
         }
 
         return true;
@@ -589,7 +589,7 @@ final class DocumentParser
                         $this->directive->getOptions()
                     );
                 } catch (Throwable $e) {
-                    $this->environment->getErrorManager()->addError(
+                    $this->environment->getErrorManager()->error(
                         sprintf('Error while processing "%s" directive: %s', $currentDirective->getName(), $e->getMessage()),
                         $this->environment->getCurrentFileName(),
                         $this->currentLineNumber ?? null,
@@ -652,7 +652,7 @@ final class DocumentParser
         }
 
         if (! isset($this->directives[$parserDirective->getName()])) {
-            $this->environment->getErrorManager()->addError(
+            $this->environment->getErrorManager()->error(
                 sprintf('Unknown directive "%s": %s', $parserDirective->getName(), $line),
                 $this->environment->getCurrentFileName()
             );

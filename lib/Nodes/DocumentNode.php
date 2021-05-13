@@ -236,7 +236,7 @@ class DocumentNode extends Node
         $currentFileName = $this->environment->getCurrentFileName();
 
         foreach ($this->environment->getInvalidLinks() as $invalidLink) {
-            $this->errorManager->addError(
+            $this->errorManager->error(
                 sprintf('Found invalid reference "%s"', $invalidLink->getName()),
                 $currentFileName
             );
