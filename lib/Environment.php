@@ -11,7 +11,6 @@ use Doctrine\RST\References\Reference;
 use Doctrine\RST\References\ResolvedReference;
 use Doctrine\RST\Templates\TemplateRenderer;
 use InvalidArgumentException;
-use Throwable;
 
 use function array_shift;
 use function dirname;
@@ -473,16 +472,6 @@ class Environment
         return $this->titleLetters;
     }
 
-    public function addError(string $message, ?Throwable $throwable = null): void
-    {
-        $this->errorManager->error($message, $throwable);
-    }
-
-    public function addWarning(string $message): void
-    {
-        $this->errorManager->warning($message);
-    }
-
     public static function slugify(string $text): string
     {
         // replace non letter or digits by -
@@ -508,10 +497,9 @@ class Environment
 
     private function addMissingReferenceSectionError(string $section): void
     {
-        $this->errorManager->error(sprintf(
-            'Unknown reference section "%s"%s',
-            $section,
-            $this->getCurrentFileName() !== '' ? sprintf(' in "%s" ', $this->getCurrentFileName()) : ''
-        ));
+        $this->errorManager->error(
+            sprintf('Unknown reference section "%s"', $section),
+            $this->getCurrentFileName()
+        );
     }
 }

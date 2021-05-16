@@ -7,12 +7,14 @@ namespace Doctrine\RST;
 use Exception;
 use Throwable;
 
+use function sprintf;
+
 class ErrorManager
 {
     /** @var Configuration */
     private $configuration;
 
-    /** @var string[] */
+    /** @var list<Error> */
     private $errors = [];
 
     public function __construct(Configuration $configuration)
@@ -20,23 +22,33 @@ class ErrorManager
         $this->configuration = $configuration;
     }
 
-    public function error(string $message, ?Throwable $throwable = null): void
+    public function error(string $message, ?string $file = null, ?int $line = null, ?Throwable $throwable = null): void
     {
-        $this->errors[] = $message;
+        $this->errors[] = $error = new Error($message, $file, $line, $throwable);
 
         if (! $this->configuration->isSilentOnError()) {
-            echo '/!\\ ' . $message . "\n";
+            if ($this->configuration->getOutputFormat() === Configuration::OUTPUT_FORMAT_GITHUB) {
+                $file = $error->getFile();
+                echo sprintf(
+                    '::error %s%s::%s',
+                    $file !== null ? 'file=' . $file : '',
+                    $file !== null && $error->getLine() !== null ? ',linefile=' . $error->getLine() : '',
+                    $error->getMessage()
+                );
+            } else {
+                echo '⚠️ ' . $error->asString() . "\n";
+            }
         }
 
         if ($this->configuration->isAbortOnError()) {
-            throw new Exception($message, 0, $throwable);
+            throw new Exception($error->asString(), 0, $error->getThrowable());
         }
     }
 
-    public function warning(string $message): void
+    public function warning(string $message, ?string $file = null, ?int $line = null, ?Throwable $throwable = null): void
     {
         if ($this->configuration->isWarningsAsError()) {
-            $this->error($message);
+            $this->error($message, $file, $line, $throwable);
 
             return;
         }
@@ -45,11 +57,22 @@ class ErrorManager
             return;
         }
 
-        echo $message . "\n";
+        $error = new Error($message, $file, $line, $throwable);
+        if ($this->configuration->getOutputFormat() === Configuration::OUTPUT_FORMAT_GITHUB) {
+            $file = $error->getFile();
+            echo sprintf(
+                '::warning %s%s::%s',
+                $file !== null ? 'file=' . $file : '',
+                $file !== null && $error->getLine() !== null ? ',linefile=' . $error->getLine() : '',
+                $error->getMessage()
+            );
+        } else {
+            echo $error->asString() . "\n";
+        }
     }
 
     /**
-     * @return string[]
+     * @return list<Error>
      */
     public function getErrors(): array
     {

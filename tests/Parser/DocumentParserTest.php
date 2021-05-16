@@ -7,6 +7,7 @@ namespace Doctrine\Tests\RST\Parser;
 use Doctrine\Common\EventManager;
 use Doctrine\RST\Directives\Directive;
 use Doctrine\RST\Environment;
+use Doctrine\RST\ErrorManager;
 use Doctrine\RST\NodeFactory\NodeFactory;
 use Doctrine\RST\Parser;
 use Doctrine\RST\Parser\DocumentParser;
@@ -22,6 +23,7 @@ class DocumentParserTest extends TestCase
         $nodeFactory        = $this->createMock(NodeFactory::class);
         $eventManager       = $this->createMock(EventManager::class);
         $codeBlockDirective = $this->createMock(Directive::class);
+        $errorManager       = $this->createMock(ErrorManager::class);
 
         $docParser = new DocumentParser(
             $parser,
@@ -41,8 +43,12 @@ class DocumentParserTest extends TestCase
             ->willReturn('code-block-name');
 
         $environment->expects(self::once())
-            ->method('addError')
-            ->with('Error while processing "code-block-name" directive: Invalid something something!');
+            ->method('getErrorManager')
+            ->willReturn($errorManager);
+
+        $errorManager->expects(self::once())
+            ->method('error')
+            ->with('Error while processing "code-block-name" directive: "Invalid something something!"');
 
         $docParser->parse('.. code-block:: php');
     }
