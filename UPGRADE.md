@@ -9,6 +9,17 @@ That has now been changed to private.
 
 Many classes have been made final because they were never actually extended.
 
+## Error handling
+
+The `Doctrine\RST\Environment::addError()` and `Doctrine\RST\Environment::addWarning()`
+have been removed.
+
+The `Doctrine\RST\ErrorManager::error()` and `Doctrine\RST\ErrorManager::warning()`
+have an updated signature to support file name and line numbers.
+
+Method `Doctrine\RST\ErrorManager::getErrors()` will return a list of `Doctrine\RST\Error`
+instead of a list of strings.
+
 # Upgrade to 0.4
 
 ## Refactored List Rendering
