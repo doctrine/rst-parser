@@ -1,4 +1,3 @@
-{% apply spaceless %}
 <dl{% if definitionListNode.classes %} class="{{ definitionListNode.classesString }}"{% endif %}>
     {% for definitionListTerm in definitionList.terms %}
         {% if definitionListTerm.classifiers is empty %}
@@ -21,4 +20,3 @@
         </dd>
     {% endfor %}
 </dl>
-{% endapply %}
