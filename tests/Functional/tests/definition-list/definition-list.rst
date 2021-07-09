@@ -33,6 +33,9 @@ term with & : classifier with & : classifier with &
 ``term 5`` : ``classifier``
     Definition 1
 
+**Complex:** ``int``
+    Colon must be surrounded by spaces to be a term identifier
+
 multi-line definition term
     Definition 1 line 1
     Definition 1 line 2
