@@ -20,6 +20,7 @@ use Doctrine\RST\Parser\Directive as ParserDirective;
 use Exception;
 use Throwable;
 
+use function array_reverse;
 use function array_search;
 use function assert;
 use function chr;
@@ -484,9 +485,14 @@ final class DocumentParser
                     );
 
                     if ($this->lastTitleNode !== null) {
-                        // current level is less than previous so we need to end all open sections
+                        // current level is less than previous so we need to
+                        // end previous open sections with a greater or equal level
                         if ($node->getLevel() < $this->lastTitleNode->getLevel()) {
-                            foreach ($this->openTitleNodes as $titleNode) {
+                            foreach (array_reverse($this->openTitleNodes) as $titleNode) {
+                                if ($node->getLevel() > $titleNode->getLevel()) {
+                                    break;
+                                }
+
                                 $this->endOpenSection($titleNode);
                             }
                         // same level as the last so just close the last open section
