@@ -25,6 +25,8 @@ use function array_search;
 use function assert;
 use function chr;
 use function explode;
+use function fwrite;
+use function getenv;
 use function ltrim;
 use function max;
 use function sprintf;
@@ -32,6 +34,8 @@ use function str_replace;
 use function strlen;
 use function substr;
 use function trim;
+
+use const STDERR;
 
 class DocumentParser
 {
@@ -237,6 +241,10 @@ class DocumentParser
      */
     private function parseLine(string $line): bool
     {
+        if (getenv('SHELL_VERBOSITY') >= 3) {
+            fwrite(STDERR, sprintf("Parsing line: %s\n", $line));
+        }
+
         switch ($this->state) {
             case State::BEGIN:
                 if (trim($line) !== '') {
