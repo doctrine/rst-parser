@@ -14,6 +14,7 @@ use RuntimeException;
 
 use function file_exists;
 use function file_get_contents;
+use function fwrite;
 use function getenv;
 use function sprintf;
 
@@ -187,7 +188,7 @@ class Parser
     public function parseFile(string $file): DocumentNode
     {
         if (getenv('SHELL_VERBOSITY') >= 2) {
-            echo sprintf("Parsing file: %s\n", $file);
+            fwrite(STDERR, sprintf("Parsing file: %s\n", $file));
         }
 
         if (! file_exists($file)) {

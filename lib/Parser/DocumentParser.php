@@ -25,6 +25,7 @@ use function array_search;
 use function assert;
 use function chr;
 use function explode;
+use function fwrite;
 use function getenv;
 use function ltrim;
 use function max;
@@ -239,7 +240,7 @@ class DocumentParser
     private function parseLine(string $line): bool
     {
         if (getenv('SHELL_VERBOSITY') >= 3) {
-            echo sprintf("Parsing line: %s\n", $line);
+            fwrite(STDERR, sprintf("Parsing line: %s\n", $line));
         }
 
         switch ($this->state) {
