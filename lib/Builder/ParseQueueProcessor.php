@@ -12,6 +12,7 @@ use Doctrine\RST\Parser;
 
 use function filemtime;
 use function getenv;
+use function sprintf;
 
 class ParseQueueProcessor
 {
