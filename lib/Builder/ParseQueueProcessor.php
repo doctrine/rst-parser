@@ -62,6 +62,10 @@ class ParseQueueProcessor
 
     private function processFile(string $file): void
     {
+        if (getenv('SHELL_VERBOSITY') >= 1) {
+            echo "Processing file: $file\n";
+        }
+
         $fileAbsolutePath = $this->buildFileAbsolutePath($file);
 
         $parser = $this->createFileParser($file);

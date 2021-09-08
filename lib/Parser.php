@@ -185,6 +185,10 @@ class Parser
 
     public function parseFile(string $file): DocumentNode
     {
+        if (getenv('SHELL_VERBOSITY') >= 2) {
+            echo "Parsing file: $file\n";
+        }
+
         if (! file_exists($file)) {
             throw new InvalidArgumentException(sprintf('File at path %s does not exist', $file));
         }

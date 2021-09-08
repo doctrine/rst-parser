@@ -237,6 +237,10 @@ class DocumentParser
      */
     private function parseLine(string $line): bool
     {
+        if (getenv('SHELL_VERBOSITY') >= 3) {
+            echo "Parsing line: $file\n";
+        }
+
         switch ($this->state) {
             case State::BEGIN:
                 if (trim($line) !== '') {
