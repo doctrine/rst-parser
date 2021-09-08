@@ -15,6 +15,8 @@ use function fwrite;
 use function getenv;
 use function sprintf;
 
+use const STDERR;
+
 class ParseQueueProcessor
 {
     /** @var Kernel */

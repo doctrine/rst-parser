@@ -35,6 +35,8 @@ use function strlen;
 use function substr;
 use function trim;
 
+use const STDERR;
+
 class DocumentParser
 {
     /** @var Parser */
