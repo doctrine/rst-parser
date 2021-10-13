@@ -96,7 +96,7 @@ class EnvironmentTest extends TestCase
     }
 
     /**
-     * @return mixed[]
+     * @return iterable<string, array{string, string}>
      */
     public function getTextsAndSlugs(): iterable
     {
