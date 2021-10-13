@@ -10,16 +10,14 @@ use Doctrine\RST\NodeFactory\NodeFactory;
 use Doctrine\RST\References\Reference;
 use Doctrine\RST\References\ResolvedReference;
 use Doctrine\RST\Templates\TemplateRenderer;
-use Symfony\Component\String\Slugger\AsciiSlugger;
 use InvalidArgumentException;
+use Symfony\Component\String\Slugger\AsciiSlugger;
 use Throwable;
 
 use function array_shift;
 use function dirname;
-use function iconv;
 use function implode;
 use function in_array;
-use function preg_replace;
 use function sprintf;
 use function strtolower;
 use function trim;
