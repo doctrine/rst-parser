@@ -10,6 +10,7 @@ use Doctrine\RST\NodeFactory\NodeFactory;
 use Doctrine\RST\References\Reference;
 use Doctrine\RST\References\ResolvedReference;
 use Doctrine\RST\Templates\TemplateRenderer;
+use Symfony\Component\String\Slugger\AsciiSlugger;
 use InvalidArgumentException;
 use Throwable;
 
@@ -485,25 +486,7 @@ class Environment
 
     public static function slugify(string $text): string
     {
-        // replace non letter or digits by -
-        $text = (string) preg_replace('~[^\pL\d]+~u', '-', $text);
-
-        // transliterate
-        $text = (string) iconv('utf-8', 'us-ascii//TRANSLIT', $text);
-
-        // remove unwanted characters
-        $text = (string) preg_replace('~[^-\w]+~', '', $text);
-
-        // trim
-        $text = trim($text, '-');
-
-        // remove duplicate -
-        $text = (string) preg_replace('~-+~', '-', $text);
-
-        // lowercase
-        $text = strtolower($text);
-
-        return $text;
+        return (new AsciiSlugger('en', []))->slug($text)->lower()->toString();
     }
 
     private function addMissingReferenceSectionError(string $section): void
