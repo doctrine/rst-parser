@@ -284,15 +284,17 @@ class DocumentParser
                         $this->buffer = new Buffer();
                         $this->flush();
                         $this->initDirective($line);
-                    } elseif ($this->lineChecker->isIndented($this->lines->getNextLine())) {
-                        $this->setState(State::DEFINITION_LIST);
-                        $this->buffer->push($line);
-
-                        return true;
                     } else {
                         $separatorLineConfig = $this->tableParser->parseTableSeparatorLine($line);
 
                         if ($separatorLineConfig === null) {
+                            if ($this->lineChecker->isIndented($this->lines->getNextLine())) {
+                                $this->setState(State::DEFINITION_LIST);
+                                $this->buffer->push($line);
+
+                                return true;
+                            }
+
                             if ($this->getCurrentDirective() !== null && ! $this->getCurrentDirective()->appliesToNonBlockContent()) {
                                 // If there is a directive set, it means we are the line *after* that directive
                                 // But the state is being set to NORMAL, which means we are a non-indented line.
