@@ -15,6 +15,7 @@ use Doctrine\RST\Renderers\NodeRendererFactory;
 use Doctrine\RST\Renderers\RenderedNode;
 
 use function implode;
+use function ltrim;
 use function strlen;
 use function substr;
 use function trim;
@@ -137,18 +138,25 @@ abstract class Node
     protected function normalizeLines(array $lines): string
     {
         if ($lines !== []) {
-            $firstLine = $lines[0];
+            $indentLevel = null;
 
-            $k = 0;
-
-            for ($k = 0; $k < strlen($firstLine); $k++) {
-                if (trim($firstLine[$k]) !== '') {
-                    break;
+            // find the indentation by locating the line with the fewest preceding whitespace
+            foreach ($lines as $line) {
+                // skip empty lines
+                if (trim($line) === '') {
+                    continue;
                 }
+
+                $startingWhitespace = strlen($line) - strlen(ltrim($line));
+                if ($indentLevel !== null && $startingWhitespace > $indentLevel) {
+                    continue;
+                }
+
+                $indentLevel = $startingWhitespace;
             }
 
             foreach ($lines as &$line) {
-                $line = substr($line, $k);
+                $line = substr($line, $indentLevel);
             }
         }
 
