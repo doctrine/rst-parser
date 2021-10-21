@@ -32,6 +32,7 @@ use const LC_ALL;
 class FunctionalTest extends TestCase
 {
     private const RENDER_DOCUMENT_FILES = ['main-directive'];
+    private const SKIP_INDENTER_FILES   = ['code-block-diff'];
 
     protected function setUp(): void
     {
@@ -47,7 +48,8 @@ class FunctionalTest extends TestCase
         string $renderMethod,
         string $format,
         string $rst,
-        string $expected
+        string $expected,
+        bool $useIndenter = true
     ): void {
         $expectedLines = explode("\n", $expected);
         $firstLine     = $expectedLines[0];
@@ -68,7 +70,7 @@ class FunctionalTest extends TestCase
 
         $rendered = $document->$renderMethod();
 
-        if ($format === Format::HTML) {
+        if ($format === Format::HTML && $useIndenter) {
             $indenter = new Indenter();
             $rendered = $indenter->indent($rendered);
         }
@@ -133,7 +135,9 @@ class FunctionalTest extends TestCase
                     ? 'renderDocument'
                     : 'render';
 
-                $tests[$basename . '_' . $format] = [$basename, $parser, $renderMethod, $format, $rst, trim($expected)];
+                $useIndenter = ! in_array($basename, self::SKIP_INDENTER_FILES, true);
+
+                $tests[$basename . '_' . $format] = [$basename, $parser, $renderMethod, $format, $rst, trim($expected), $useIndenter];
             }
         }
 
