@@ -284,32 +284,12 @@ final class DocumentParser
                         $this->buffer = new Buffer();
                         $this->flush();
                         $this->initDirective($line);
-                    } elseif ($this->lineChecker->isIndented($this->lines->getNextLine())) {
-                        $this->setState(State::DEFINITION_LIST);
-                        $this->buffer->push($line);
 
                         return true;
-                    } else {
-                        $separatorLineConfig = $this->tableParser->parseTableSeparatorLine($line);
+                    }
 
-                        if ($separatorLineConfig === null) {
-                            if ($this->getCurrentDirective() !== null && ! $this->getCurrentDirective()->appliesToNonBlockContent()) {
-                                // If there is a directive set, it means we are the line *after* that directive
-                                // But the state is being set to NORMAL, which means we are a non-indented line.
-                                // Some special directives (like class) allow their content to be non-indented.
-                                // But most do not, which means that our directive is now finished.
-                                // We flush so that the directive can be processed. It will be passed a
-                                // null node (We know because we are currently in a NEW state. If there
-                                // had been legitimately-indented content, that would have matched some
-                                // other state (e.g. BLOCK or CODE) and flushed when it finished.
-                                $this->flush();
-                            }
-
-                            $this->setState(State::NORMAL);
-
-                            return false;
-                        }
-
+                    $separatorLineConfig = $this->tableParser->parseTableSeparatorLine($line);
+                    if ($separatorLineConfig !== null) {
                         $this->setState(State::TABLE);
 
                         $tableNode = $this->nodeFactory->createTableNode(
@@ -319,7 +299,32 @@ final class DocumentParser
                         );
 
                         $this->nodeBuffer = $tableNode;
+
+                        return true;
                     }
+
+                    if ($this->lineChecker->isIndented($this->lines->getNextLine())) {
+                        $this->setState(State::DEFINITION_LIST);
+                        $this->buffer->push($line);
+
+                        return true;
+                    }
+
+                    if ($this->getCurrentDirective() !== null && ! $this->getCurrentDirective()->appliesToNonBlockContent()) {
+                        // If there is a directive set, it means we are the line *after* that directive
+                        // But the state is being set to NORMAL, which means we are a non-indented line.
+                        // Some special directives (like class) allow their content to be non-indented.
+                        // But most do not, which means that our directive is now finished.
+                        // We flush so that the directive can be processed. It will be passed a
+                        // null node (We know because we are currently in a NEW state. If there
+                        // had been legitimately-indented content, that would have matched some
+                        // other state (e.g. BLOCK or CODE) and flushed when it finished.
+                        $this->flush();
+                    }
+
+                    $this->setState(State::NORMAL);
+
+                    return false;
                 }
 
                 break;
