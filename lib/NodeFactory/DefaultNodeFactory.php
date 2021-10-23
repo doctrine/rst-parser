@@ -41,7 +41,7 @@ use InvalidArgumentException;
 use function assert;
 use function sprintf;
 
-class DefaultNodeFactory implements NodeFactory
+final class DefaultNodeFactory implements NodeFactory
 {
     /** @var EventManager */
     private $eventManager;

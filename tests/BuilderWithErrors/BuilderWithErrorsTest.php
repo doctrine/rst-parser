@@ -32,8 +32,8 @@ EOF
             , $bodyHtml);
 
         self::assertEquals(
-            ['Error while processing "note" directive in "no_content_directive" around line 6: Content expected, none found.'],
-            $this->builder->getErrorManager()->getErrors()
+            'Error while processing "note" directive: "Content expected, none found." in file "no_content_directive" at line 6',
+            $this->builder->getErrorManager()->getErrors()[0]->asString()
         );
     }
 

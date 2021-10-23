@@ -11,6 +11,7 @@ use Doctrine\RST\Nodes\SpanNode;
 use Doctrine\RST\Parser;
 
 use function array_map;
+use function array_shift;
 use function count;
 use function explode;
 use function ltrim;
@@ -20,7 +21,7 @@ use function strlen;
 use function substr;
 use function trim;
 
-class LineDataParser
+final class LineDataParser
 {
     /** @var Parser */
     private $parser;
@@ -210,11 +211,8 @@ class LineDataParser
                     $definitionList[] = $createDefinitionTerm($definitionListTerm);
                 }
 
-                $parts = explode(':', trim($line));
-
-                $term = $parts[0];
-                unset($parts[0]);
-
+                $parts       = explode(' : ', trim($line));
+                $term        = array_shift($parts);
                 $classifiers = array_map(function (string $classifier): SpanNode {
                     return $this->parser->createSpanNode($classifier);
                 }, array_map('trim', $parts));

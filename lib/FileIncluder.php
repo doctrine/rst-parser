@@ -15,7 +15,7 @@ use function realpath;
 use function sprintf;
 use function strpos;
 
-class FileIncluder
+final class FileIncluder
 {
     /** @var Environment */
     private $environment;

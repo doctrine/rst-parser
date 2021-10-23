@@ -15,7 +15,7 @@ use function rtrim;
 use function strpos;
 use function substr;
 
-class UrlGenerator
+final class UrlGenerator
 {
     /** @var Configuration */
     private $configuration;

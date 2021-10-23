@@ -13,7 +13,7 @@ use function sprintf;
 use function strlen;
 use function trim;
 
-class TableParser
+final class TableParser
 {
     private const SIMPLE_TABLE_LETTER = '=';
     // "-" is valid as a separator in a simple table, except

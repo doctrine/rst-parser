@@ -11,7 +11,7 @@ use Doctrine\RST\Parser;
 /**
  * Marks the document as LaTeX main
  */
-class LaTeXMain extends Directive
+final class LaTeXMain extends Directive
 {
     public function getName(): string
     {

@@ -82,8 +82,52 @@ class EnvironmentTest extends TestCase
         ];
 
         yield 'with_current_filename' => [
-            'Unknown reference section "doc" in "current_doc_filename"',
+            'Unknown reference section "doc" in file "current_doc_filename"',
             'current_doc_filename',
+        ];
+    }
+
+    /**
+     * @dataProvider getTextsAndSlugs
+     */
+    public function testSlugify(string $text, string $expectedSlug): void
+    {
+        self::assertSame($expectedSlug, Environment::slugify($text));
+    }
+
+    /**
+     * @return iterable<string, array{string, string}>
+     */
+    public function getTextsAndSlugs(): iterable
+    {
+        yield 'empty string' => [
+            '',
+            '',
+        ];
+
+        yield 'string with white spaces only' => [
+            '   ',
+            '',
+        ];
+
+        yield 'already slugged text' => [
+            'setting-up-a-database',
+            'setting-up-a-database',
+        ];
+
+        yield 'English text' => [
+            'Setting up a Database',
+            'setting-up-a-database',
+        ];
+
+        yield 'Japanese text' => [
+            'データベースをセットアップする',
+            'detabesuwosettoappusuru',
+        ];
+
+        yield 'Ukrainian text' => [
+            'Налаштування бази даних',
+            'nalastuvanna-bazi-danih',
         ];
     }
 }

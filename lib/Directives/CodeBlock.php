@@ -19,7 +19,7 @@ use function trim;
  *
  *      echo "Hello world!\n";
  */
-class CodeBlock extends Directive
+final class CodeBlock extends Directive
 {
     public function getName(): string
     {

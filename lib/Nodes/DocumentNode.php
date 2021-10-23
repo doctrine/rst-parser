@@ -22,16 +22,16 @@ class DocumentNode extends Node
     protected $environment;
 
     /** @var Configuration */
-    protected $configuration;
+    private $configuration;
 
     /** @var ErrorManager */
-    protected $errorManager;
+    private $errorManager;
 
     /** @var Node[] */
-    protected $headerNodes = [];
+    private $headerNodes = [];
 
     /** @var Node[] */
-    protected $nodes = [];
+    private $nodes = [];
 
     public function __construct(Environment $environment)
     {
@@ -236,11 +236,10 @@ class DocumentNode extends Node
         $currentFileName = $this->environment->getCurrentFileName();
 
         foreach ($this->environment->getInvalidLinks() as $invalidLink) {
-            $this->errorManager->error(sprintf(
-                'Found invalid reference "%s"%s',
-                $invalidLink->getName(),
-                $currentFileName !== '' ? sprintf(' in file "%s"', $currentFileName) : ''
-            ));
+            $this->errorManager->error(
+                sprintf('Found invalid reference "%s"', $invalidLink->getName()),
+                $currentFileName
+            );
         }
     }
 }

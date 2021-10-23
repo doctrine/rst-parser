@@ -8,7 +8,7 @@ use Doctrine\RST\Nodes\TitleNode;
 use Doctrine\RST\Renderers\NodeRenderer;
 use Doctrine\RST\Templates\TemplateRenderer;
 
-class TitleNodeRenderer implements NodeRenderer
+final class TitleNodeRenderer implements NodeRenderer
 {
     /** @var TitleNode */
     private $titleNode;

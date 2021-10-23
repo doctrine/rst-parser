@@ -24,7 +24,7 @@ use function file_exists;
 use function is_dir;
 use function sprintf;
 
-class Builder
+final class Builder
 {
     /** @var Kernel */
     private $kernel;

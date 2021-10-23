@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\Nodes;
 
-class ImageNode extends Node
+final class ImageNode extends Node
 {
     /** @var string */
-    protected $url;
+    private $url;
 
     /** @var string[] */
-    protected $options;
+    private $options;
 
     /**
      * @param string[] $options

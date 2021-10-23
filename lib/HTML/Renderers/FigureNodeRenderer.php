@@ -8,7 +8,7 @@ use Doctrine\RST\Nodes\FigureNode;
 use Doctrine\RST\Renderers\NodeRenderer;
 use Doctrine\RST\Templates\TemplateRenderer;
 
-class FigureNodeRenderer implements NodeRenderer
+final class FigureNodeRenderer implements NodeRenderer
 {
     /** @var FigureNode */
     private $figureNode;

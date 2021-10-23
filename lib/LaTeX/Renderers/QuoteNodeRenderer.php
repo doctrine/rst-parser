@@ -8,7 +8,7 @@ use Doctrine\RST\Nodes\QuoteNode;
 use Doctrine\RST\Renderers\NodeRenderer;
 use Doctrine\RST\Templates\TemplateRenderer;
 
-class QuoteNodeRenderer implements NodeRenderer
+final class QuoteNodeRenderer implements NodeRenderer
 {
     /** @var QuoteNode */
     private $quoteNode;

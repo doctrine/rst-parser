@@ -11,8 +11,13 @@ use Doctrine\RST\Nodes\DocumentNode;
 use Doctrine\RST\Parser;
 
 use function filemtime;
+use function fwrite;
+use function getenv;
+use function sprintf;
 
-class ParseQueueProcessor
+use const STDERR;
+
+final class ParseQueueProcessor
 {
     /** @var Kernel */
     private $kernel;
@@ -62,6 +67,10 @@ class ParseQueueProcessor
 
     private function processFile(string $file): void
     {
+        if (getenv('SHELL_VERBOSITY') >= 1) {
+            fwrite(STDERR, sprintf("Processing file: %s\n", $file));
+        }
+
         $fileAbsolutePath = $this->buildFileAbsolutePath($file);
 
         $parser = $this->createFileParser($file);

@@ -153,7 +153,7 @@ class TableNode extends Node
         if (count($this->errors) > 0) {
             $parser->getEnvironment()
                 ->getErrorManager()
-                ->error(sprintf("%s\nin file %s\n\n%s", $this->errors[0], $parser->getFilename(), $tableAsString));
+                ->error(sprintf("%s\n\n%s", $this->errors[0], $tableAsString), $parser->getFilename());
 
             $this->data    = [];
             $this->headers = [];
@@ -441,7 +441,7 @@ class TableNode extends Node
                 $prevTargetColumn = $this->findColumnInPreviousRows($columnIndex, $rows, (int) $rowIndex);
                 $columnInRowspan  = $row->getColumn($columnIndex);
                 if ($columnInRowspan === null) {
-                    throw new LogicException('Cannot find column for index "%s"', $columnIndex);
+                    throw new LogicException(sprintf('Cannot find column for index "%s"', $columnIndex));
                 }
 
                 $prevTargetColumn->addContent("\n" . $columnInRowspan->getContent());

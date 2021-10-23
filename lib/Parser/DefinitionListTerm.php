@@ -8,7 +8,7 @@ use Doctrine\RST\Nodes\Node;
 use Doctrine\RST\Nodes\SpanNode;
 use RuntimeException;
 
-class DefinitionListTerm
+final class DefinitionListTerm
 {
     /** @var SpanNode */
     private $term;

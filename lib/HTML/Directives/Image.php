@@ -18,7 +18,7 @@ use function sprintf;
  *      :width: 100
  *      :title: An image
  */
-class Image extends Directive
+final class Image extends Directive
 {
     public function getName(): string
     {

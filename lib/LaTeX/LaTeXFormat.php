@@ -13,7 +13,7 @@ use Doctrine\RST\Renderers\CallableNodeRendererFactory;
 use Doctrine\RST\Renderers\NodeRendererFactory;
 use Doctrine\RST\Templates\TemplateRenderer;
 
-class LaTeXFormat implements Format
+final class LaTeXFormat implements Format
 {
     /** @var TemplateRenderer */
     private $templateRenderer;

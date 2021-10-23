@@ -6,7 +6,7 @@ namespace Doctrine\RST\References;
 
 use Doctrine\RST\Environment;
 
-class Doc extends Reference
+final class Doc extends Reference
 {
     /** @var string */
     private $name;

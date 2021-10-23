@@ -11,7 +11,7 @@ use Doctrine\RST\Parser;
 /**
  * Divs a sub document in a div with a given class
  */
-class Div extends SubDirective
+final class Div extends SubDirective
 {
     public function getName(): string
     {

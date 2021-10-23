@@ -13,7 +13,7 @@ use Doctrine\RST\Templates\TemplateRenderer;
 
 use function count;
 
-class DocumentNodeRenderer implements NodeRenderer, FullDocumentNodeRenderer
+final class DocumentNodeRenderer implements NodeRenderer, FullDocumentNodeRenderer
 {
     /** @var DocumentNode */
     private $document;

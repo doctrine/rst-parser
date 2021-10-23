@@ -7,7 +7,7 @@ namespace Doctrine\RST\Formats;
 use Doctrine\RST\Directives\Directive;
 use Doctrine\RST\Renderers\NodeRendererFactory;
 
-class InternalFormat implements Format
+final class InternalFormat implements Format
 {
     /** @var Format */
     private $format;

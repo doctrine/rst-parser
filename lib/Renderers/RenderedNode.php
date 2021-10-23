@@ -6,7 +6,7 @@ namespace Doctrine\RST\Renderers;
 
 use Doctrine\RST\Nodes\Node;
 
-class RenderedNode
+final class RenderedNode
 {
     /** @var Node */
     private $node;

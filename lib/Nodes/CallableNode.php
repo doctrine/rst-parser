@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\Nodes;
 
-class CallableNode extends Node
+final class CallableNode extends Node
 {
     /** @var callable */
     private $callable;

@@ -9,7 +9,7 @@ use Doctrine\RST\Nodes\TocNode;
 use Doctrine\RST\Renderers\NodeRenderer;
 use Doctrine\RST\Templates\TemplateRenderer;
 
-class TocNodeRenderer implements NodeRenderer
+final class TocNodeRenderer implements NodeRenderer
 {
     /** @var Environment */
     private $environment;

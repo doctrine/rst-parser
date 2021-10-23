@@ -8,7 +8,7 @@ use Doctrine\RST\Nodes\SectionEndNode;
 use Doctrine\RST\Renderers\NodeRenderer;
 use Doctrine\RST\Templates\TemplateRenderer;
 
-class SectionEndNodeRenderer implements NodeRenderer
+final class SectionEndNodeRenderer implements NodeRenderer
 {
     /** @var SectionEndNode */
     private $sectionEndNode;

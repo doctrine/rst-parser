@@ -6,7 +6,7 @@ namespace Doctrine\RST\Nodes;
 
 use Doctrine\RST\Parser\DefinitionList;
 
-class DefinitionListNode extends Node
+final class DefinitionListNode extends Node
 {
     /** @var DefinitionList */
     private $definitionList;

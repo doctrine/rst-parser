@@ -14,13 +14,13 @@ use function uniqid;
 /**
  * Wraps a sub document in a div with a given class
  */
-class Wrap extends SubDirective
+final class Wrap extends SubDirective
 {
     /** @var string */
-    protected $class;
+    private $class;
 
     /** @var bool */
-    protected $uniqid;
+    private $uniqid;
 
     public function __construct(string $class, bool $uniqid = false)
     {

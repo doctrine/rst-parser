@@ -11,7 +11,7 @@ use Doctrine\RST\Renderers\NodeRenderer;
 use Doctrine\RST\Templates\TemplateRenderer;
 use Gajus\Dindent\Indenter;
 
-class DocumentNodeRenderer implements NodeRenderer, FullDocumentNodeRenderer
+final class DocumentNodeRenderer implements NodeRenderer, FullDocumentNodeRenderer
 {
     /** @var DocumentNode */
     private $document;

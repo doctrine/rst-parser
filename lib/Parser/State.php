@@ -7,7 +7,7 @@ namespace Doctrine\RST\Parser;
 /**
  * "States" for DocumentParser as it parses line-by-line.
  */
-class State
+final class State
 {
     /**
      * There is currently no state: the next line will begin a new state

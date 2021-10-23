@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\Parser;
 
-class DefinitionList
+final class DefinitionList
 {
     /** @var DefinitionListTerm[] */
     private $terms = [];

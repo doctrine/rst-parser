@@ -8,7 +8,7 @@ use Doctrine\RST\Nodes\MetaNode;
 use Doctrine\RST\Renderers\NodeRenderer;
 use Doctrine\RST\Templates\TemplateRenderer;
 
-class MetaNodeRenderer implements NodeRenderer
+final class MetaNodeRenderer implements NodeRenderer
 {
     /** @var MetaNode */
     private $metaNode;

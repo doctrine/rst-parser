@@ -20,10 +20,13 @@ use Doctrine\RST\Parser\Directive as ParserDirective;
 use Exception;
 use Throwable;
 
+use function array_reverse;
 use function array_search;
 use function assert;
 use function chr;
 use function explode;
+use function fwrite;
+use function getenv;
 use function ltrim;
 use function max;
 use function sprintf;
@@ -32,7 +35,9 @@ use function strlen;
 use function substr;
 use function trim;
 
-class DocumentParser
+use const STDERR;
+
+final class DocumentParser
 {
     /** @var Parser */
     private $parser;
@@ -236,6 +241,10 @@ class DocumentParser
      */
     private function parseLine(string $line): bool
     {
+        if (getenv('SHELL_VERBOSITY') >= 3) {
+            fwrite(STDERR, sprintf("Parsing line: %s\n", $line));
+        }
+
         switch ($this->state) {
             case State::BEGIN:
                 if (trim($line) !== '') {
@@ -275,32 +284,12 @@ class DocumentParser
                         $this->buffer = new Buffer();
                         $this->flush();
                         $this->initDirective($line);
-                    } elseif ($this->lineChecker->isIndented($this->lines->getNextLine())) {
-                        $this->setState(State::DEFINITION_LIST);
-                        $this->buffer->push($line);
 
                         return true;
-                    } else {
-                        $separatorLineConfig = $this->tableParser->parseTableSeparatorLine($line);
+                    }
 
-                        if ($separatorLineConfig === null) {
-                            if ($this->getCurrentDirective() !== null && ! $this->getCurrentDirective()->appliesToNonBlockContent()) {
-                                // If there is a directive set, it means we are the line *after* that directive
-                                // But the state is being set to NORMAL, which means we are a non-indented line.
-                                // Some special directives (like class) allow their content to be non-indented.
-                                // But most do not, which means that our directive is now finished.
-                                // We flush so that the directive can be processed. It will be passed a
-                                // null node (We know because we are currently in a NEW state. If there
-                                // had been legitimately-indented content, that would have matched some
-                                // other state (e.g. BLOCK or CODE) and flushed when it finished.
-                                $this->flush();
-                            }
-
-                            $this->setState(State::NORMAL);
-
-                            return false;
-                        }
-
+                    $separatorLineConfig = $this->tableParser->parseTableSeparatorLine($line);
+                    if ($separatorLineConfig !== null) {
                         $this->setState(State::TABLE);
 
                         $tableNode = $this->nodeFactory->createTableNode(
@@ -310,7 +299,32 @@ class DocumentParser
                         );
 
                         $this->nodeBuffer = $tableNode;
+
+                        return true;
                     }
+
+                    if ($this->lineChecker->isIndented($this->lines->getNextLine())) {
+                        $this->setState(State::DEFINITION_LIST);
+                        $this->buffer->push($line);
+
+                        return true;
+                    }
+
+                    if ($this->getCurrentDirective() !== null && ! $this->getCurrentDirective()->appliesToNonBlockContent()) {
+                        // If there is a directive set, it means we are the line *after* that directive
+                        // But the state is being set to NORMAL, which means we are a non-indented line.
+                        // Some special directives (like class) allow their content to be non-indented.
+                        // But most do not, which means that our directive is now finished.
+                        // We flush so that the directive can be processed. It will be passed a
+                        // null node (We know because we are currently in a NEW state. If there
+                        // had been legitimately-indented content, that would have matched some
+                        // other state (e.g. BLOCK or CODE) and flushed when it finished.
+                        $this->flush();
+                    }
+
+                    $this->setState(State::NORMAL);
+
+                    return false;
                 }
 
                 break;
@@ -318,11 +332,11 @@ class DocumentParser
             case State::LIST:
                 if (! $this->lineChecker->isListLine($line, $this->listMarker, $this->listOffset) && ! $this->lineChecker->isBlockLine($line, max(1, $this->listOffset))) {
                     if (trim($this->lines->getPreviousLine()) !== '') {
-                        $this->environment->addWarning(sprintf(
-                            'Warning%s%s: List ends without a blank line; unexpected unindent.',
-                            $this->environment->getCurrentFileName() !== '' ? sprintf(' in "%s"', $this->environment->getCurrentFileName()) : '',
-                            $this->currentLineNumber !== null ? ' around line ' . ($this->currentLineNumber - 1) : ''
-                        ));
+                        $this->environment->getErrorManager()->warning(
+                            'List ends without a blank line; unexpected unindent',
+                            $this->environment->getCurrentFileName(),
+                            $this->currentLineNumber !== null ? $this->currentLineNumber - 1 : null
+                        );
                     }
 
                     $this->flush();
@@ -455,7 +469,7 @@ class DocumentParser
                 break;
 
             default:
-                $this->environment->addError('Parser ended in an unexcepted state');
+                $this->environment->getErrorManager()->error('Parser ended in an unexcepted state');
         }
 
         return true;
@@ -484,9 +498,14 @@ class DocumentParser
                     );
 
                     if ($this->lastTitleNode !== null) {
-                        // current level is less than previous so we need to end all open sections
+                        // current level is less than previous so we need to
+                        // end previous open sections with a greater or equal level
                         if ($node->getLevel() < $this->lastTitleNode->getLevel()) {
-                            foreach ($this->openTitleNodes as $titleNode) {
+                            foreach (array_reverse($this->openTitleNodes) as $titleNode) {
+                                if ($node->getLevel() > $titleNode->getLevel()) {
+                                    break;
+                                }
+
                                 $this->endOpenSection($titleNode);
                             }
                         // same level as the last so just close the last open section
@@ -589,15 +608,12 @@ class DocumentParser
                         $this->directive->getOptions()
                     );
                 } catch (Throwable $e) {
-                    $message = sprintf(
-                        'Error while processing "%s" directive%s%s: %s',
-                        $currentDirective->getName(),
-                        $this->environment->getCurrentFileName() !== '' ? sprintf(' in "%s"', $this->environment->getCurrentFileName()) : '',
-                        $this->currentLineNumber !== null ? ' around line ' . $this->currentLineNumber : '',
-                        $e->getMessage()
+                    $this->environment->getErrorManager()->error(
+                        sprintf('Error while processing "%s" directive: "%s"', $currentDirective->getName(), $e->getMessage()),
+                        $this->environment->getCurrentFileName(),
+                        $this->currentLineNumber ?? null,
+                        $e
                     );
-
-                    $this->environment->addError($message, $e);
                 }
             }
 
@@ -655,14 +671,10 @@ class DocumentParser
         }
 
         if (! isset($this->directives[$parserDirective->getName()])) {
-            $message = sprintf(
-                'Unknown directive: "%s" %sfor line "%s"',
-                $parserDirective->getName(),
-                $this->environment->getCurrentFileName() !== '' ? sprintf('in "%s" ', $this->environment->getCurrentFileName()) : '',
-                $line
+            $this->environment->getErrorManager()->error(
+                sprintf('Unknown directive "%s" for line "%s"', $parserDirective->getName(), $line),
+                $this->environment->getCurrentFileName()
             );
-
-            $this->environment->addError($message);
 
             return false;
         }

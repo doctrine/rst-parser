@@ -12,16 +12,16 @@ class TitleNode extends Node
     protected $value;
 
     /** @var int */
-    protected $level;
+    private $level;
 
     /** @var string */
     protected $token;
 
     /** @var string */
-    protected $id;
+    private $id;
 
     /** @var string */
-    protected $target = '';
+    private $target = '';
 
     public function __construct(Node $value, int $level, string $token)
     {

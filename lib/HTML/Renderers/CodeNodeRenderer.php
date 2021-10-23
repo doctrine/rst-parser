@@ -8,7 +8,7 @@ use Doctrine\RST\Nodes\CodeNode;
 use Doctrine\RST\Renderers\NodeRenderer;
 use Doctrine\RST\Templates\TemplateRenderer;
 
-class CodeNodeRenderer implements NodeRenderer
+final class CodeNodeRenderer implements NodeRenderer
 {
     /** @var CodeNode */
     private $codeNode;
