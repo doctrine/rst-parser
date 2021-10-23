@@ -11,16 +11,22 @@
             "upcoming": true
         },
         {
+            "name": "0.6",
+            "branchName": "0.6.x",
+            "slug": "0.6",
+            "upcoming": true
+        },
+        {
             "name": "0.5",
             "branchName": "0.5.x",
             "slug": "0.5",
-            "upcoming": true
+            "current": true
         },
         {
             "name": "0.4",
             "branchName": "0.4.x",
             "slug": "0.4",
-            "current": true
+            "maintained": false
         },
         {
             "name": "0.3",

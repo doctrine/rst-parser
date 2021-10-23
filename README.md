@@ -1,6 +1,6 @@
 # Doctrine RST Parser
 
-[![Build status](https://travis-ci.org/doctrine/rst-parser.svg?branch=master)](https://travis-ci.org/doctrine/rst-parser)
+[![Continuous Integration](https://github.com/doctrine/rst-parser/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/doctrine/rst-parser/actions/workflows/continuous-integration.yml)
 
 PHP library to parse [reStructuredText](https://en.wikipedia.org/wiki/ReStructuredText) documents.
 This library is used to generate documentation for the [Doctrine](https://www.doctrine-project.org)
