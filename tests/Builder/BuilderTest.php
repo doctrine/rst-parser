@@ -400,7 +400,7 @@ class BuilderTest extends BaseBuilderTest
         $contents = $this->getFileContents($this->targetFile('subdir/test.html'));
 
         self::assertStringContainsString(
-            '<a href="subdir/test.html#em">em</a>',
+            '<a href="test.html#em">em</a>',
             $contents
         );
     }
