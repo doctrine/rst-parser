@@ -168,7 +168,11 @@ abstract class SpanNodeRenderer implements NodeRenderer, SpanRenderer
                 $metaEntry = $this->environment->getMetaEntry();
 
                 if ($metaEntry !== null && $metaEntry->hasTitle($link)) {
-                    $url = $metaEntry->getUrl() . '#' . Environment::slugify($link);
+                    // A strangely-complex way to simply get the current relative URL
+                    // For example, if the current page is "reference/page", then
+                    // this would return "page" so the final URL is href="page#some-anchor".
+                    $currentRelativeUrl = $this->environment->relativeUrl('/' . $metaEntry->getUrl());
+                    $url                = $currentRelativeUrl . '#' . Environment::slugify($link);
                 }
             }
 
