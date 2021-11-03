@@ -18,7 +18,7 @@ You can then implement one of the following methods:
 -  ``process()`` if your directive is tweaking the node that just
    follows it
 
-See `Directive.php <https://github.com/doctrine/rst-parser/blob/master/lib/Directives/Directive.php>`_ for more information.
+See `Directive.php <https://github.com/doctrine/rst-parser/blob/HEAD/lib/Directives/Directive.php>`_ for more information.
 
 Example Directive
 -----------------

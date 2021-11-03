@@ -14,7 +14,7 @@ methods:
         '/path/to/custom/templates'
     ]);
 
-The files that you can override can be found `here <https://github.com/doctrine/rst-parser/tree/master/lib/Templates/default>`_.
+The files that you can override can be found `here <https://github.com/doctrine/rst-parser/tree/HEAD/lib/Templates/default>`_.
 
 For example, the file ``default/html/anchor.html.twig`` could be overwritten by creating the same file at
 ``/path/to/custom/templates/default/html/anchor.html.twig``. All of the other templates will still use
