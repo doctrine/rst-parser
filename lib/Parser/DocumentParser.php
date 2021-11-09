@@ -35,8 +35,6 @@ use function strlen;
 use function substr;
 use function trim;
 
-use const STDERR;
-
 final class DocumentParser
 {
     /** @var Parser */
@@ -242,7 +240,7 @@ final class DocumentParser
     private function parseLine(string $line): bool
     {
         if (getenv('SHELL_VERBOSITY') >= 3) {
-            fwrite(STDERR, sprintf("Parsing line: %s\n", $line));
+            fwrite(fopen('php://stderr', 'wb'), sprintf("Parsing line: %s\n", $line));
         }
 
         switch ($this->state) {

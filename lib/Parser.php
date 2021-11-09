@@ -18,8 +18,6 @@ use function fwrite;
 use function getenv;
 use function sprintf;
 
-use const STDERR;
-
 class Parser
 {
     /** @var Configuration */
@@ -190,7 +188,7 @@ class Parser
     public function parseFile(string $file): DocumentNode
     {
         if (getenv('SHELL_VERBOSITY') >= 2) {
-            fwrite(STDERR, sprintf("Parsing file: %s\n", $file));
+            fwrite(fopen('php://stderr', 'wb'), sprintf("Parsing file: %s\n", $file));
         }
 
         if (! file_exists($file)) {
