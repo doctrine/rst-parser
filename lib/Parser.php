@@ -188,8 +188,11 @@ class Parser
 
     public function parseFile(string $file): DocumentNode
     {
-        if (getenv('SHELL_VERBOSITY') >= 2 && $stdErr = fopen('php://stderr', 'wb')) {
-            fwrite($stdErr, sprintf("Parsing file: %s\n", $file));
+        if (getenv('SHELL_VERBOSITY') >= 2) {
+            $stdErr = fopen('php://stderr', 'wb');
+            if (false !== $stdErr) {
+                fwrite($stdErr, sprintf("Parsing file: %s\n", $file));
+            }
         }
 
         if (! file_exists($file)) {

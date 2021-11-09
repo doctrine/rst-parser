@@ -66,8 +66,11 @@ final class ParseQueueProcessor
 
     private function processFile(string $file): void
     {
-        if (getenv('SHELL_VERBOSITY') >= 1 && $stdErr = fopen('php://stderr', 'wb')) {
-            fwrite($stdErr, sprintf("Processing file: %s\n", $file));
+        if (getenv('SHELL_VERBOSITY') >= 1) {
+            $stdErr = fopen('php://stderr', 'wb');
+            if (false !== $stdErr) {
+                fwrite($stdErr, sprintf("Processing file: %s\n", $file));
+            }
         }
 
         $fileAbsolutePath = $this->buildFileAbsolutePath($file);
