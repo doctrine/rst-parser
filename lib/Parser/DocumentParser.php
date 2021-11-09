@@ -240,8 +240,8 @@ final class DocumentParser
      */
     private function parseLine(string $line): bool
     {
-        if (getenv('SHELL_VERBOSITY') >= 3) {
-            fwrite(fopen('php://stderr', 'wb'), sprintf("Parsing line: %s\n", $line));
+        if (getenv('SHELL_VERBOSITY') >= 3 && $stdErr = fopen('php://stderr', 'wb')) {
+            fwrite($stdErr, sprintf("Parsing line: %s\n", $line));
         }
 
         switch ($this->state) {
