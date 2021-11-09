@@ -25,6 +25,7 @@ use function array_search;
 use function assert;
 use function chr;
 use function explode;
+use function fopen;
 use function fwrite;
 use function getenv;
 use function ltrim;

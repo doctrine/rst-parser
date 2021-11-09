@@ -14,6 +14,7 @@ use RuntimeException;
 
 use function file_exists;
 use function file_get_contents;
+use function fopen;
 use function fwrite;
 use function getenv;
 use function sprintf;
