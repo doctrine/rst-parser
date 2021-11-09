@@ -190,7 +190,7 @@ class Parser
     {
         if (getenv('SHELL_VERBOSITY') >= 2) {
             $stdErr = fopen('php://stderr', 'wb');
-            if (false !== $stdErr) {
+            if ($stdErr !== false) {
                 fwrite($stdErr, sprintf("Parsing file: %s\n", $file));
             }
         }

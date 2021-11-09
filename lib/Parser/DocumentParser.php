@@ -242,7 +242,7 @@ final class DocumentParser
     {
         if (getenv('SHELL_VERBOSITY') >= 3) {
             $stdErr = fopen('php://stderr', 'wb');
-            if (false !== $stdErr) {
+            if ($stdErr !== false) {
                 fwrite($stdErr, sprintf("Parsing line: %s\n", $line));
             }
         }

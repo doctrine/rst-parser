@@ -68,7 +68,7 @@ final class ParseQueueProcessor
     {
         if (getenv('SHELL_VERBOSITY') >= 1) {
             $stdErr = fopen('php://stderr', 'wb');
-            if (false !== $stdErr) {
+            if ($stdErr !== false) {
                 fwrite($stdErr, sprintf("Processing file: %s\n", $file));
             }
         }
