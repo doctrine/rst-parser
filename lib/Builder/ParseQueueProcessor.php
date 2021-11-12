@@ -15,6 +15,7 @@ use function fwrite;
 use function getenv;
 use function sprintf;
 
+use const PHP_SAPI;
 use const STDERR;
 
 final class ParseQueueProcessor
@@ -67,7 +68,7 @@ final class ParseQueueProcessor
 
     private function processFile(string $file): void
     {
-        if (getenv('SHELL_VERBOSITY') >= 1) {
+        if (getenv('SHELL_VERBOSITY') >= 1 && PHP_SAPI === 'cli') {
             fwrite(STDERR, sprintf("Processing file: %s\n", $file));
         }
 
