@@ -11,10 +11,12 @@ use Doctrine\RST\Nodes\DocumentNode;
 use Doctrine\RST\Parser;
 
 use function filemtime;
-use function fopen;
 use function fwrite;
 use function getenv;
 use function sprintf;
+
+use const PHP_SAPI;
+use const STDERR;
 
 final class ParseQueueProcessor
 {
@@ -66,11 +68,8 @@ final class ParseQueueProcessor
 
     private function processFile(string $file): void
     {
-        if (getenv('SHELL_VERBOSITY') >= 1) {
-            $stdErr = fopen('php://stderr', 'wb');
-            if ($stdErr !== false) {
-                fwrite($stdErr, sprintf("Processing file: %s\n", $file));
-            }
+        if (getenv('SHELL_VERBOSITY') >= 1 && PHP_SAPI === 'cli') {
+            fwrite(STDERR, sprintf("Processing file: %s\n", $file));
         }
 
         $fileAbsolutePath = $this->buildFileAbsolutePath($file);

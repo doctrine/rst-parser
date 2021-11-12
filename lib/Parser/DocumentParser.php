@@ -25,7 +25,6 @@ use function array_search;
 use function assert;
 use function chr;
 use function explode;
-use function fopen;
 use function fwrite;
 use function getenv;
 use function ltrim;
@@ -35,6 +34,9 @@ use function str_replace;
 use function strlen;
 use function substr;
 use function trim;
+
+use const PHP_SAPI;
+use const STDERR;
 
 final class DocumentParser
 {
@@ -240,11 +242,8 @@ final class DocumentParser
      */
     private function parseLine(string $line): bool
     {
-        if (getenv('SHELL_VERBOSITY') >= 3) {
-            $stdErr = fopen('php://stderr', 'wb');
-            if ($stdErr !== false) {
-                fwrite($stdErr, sprintf("Parsing line: %s\n", $line));
-            }
+        if (getenv('SHELL_VERBOSITY') >= 3 && PHP_SAPI === 'cli') {
+            fwrite(STDERR, sprintf("Parsing line: %s\n", $line));
         }
 
         switch ($this->state) {
