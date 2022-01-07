@@ -35,23 +35,23 @@ final class LineDataParser
         $this->eventManager = $eventManager;
     }
 
-    public function parseLink(string $line): ?Link
+    public function parseLinkTarget(string $line): ?Link
     {
         // Links
         if (preg_match('/^\.\. _`(.+)`: (.+)$/mUsi', $line, $match) > 0) {
-            return $this->createLink($match[1], $match[2], Link::TYPE_LINK);
+            return $this->createLinkTarget($match[1], $match[2], Link::TYPE_LINK);
         }
 
         // anonymous links
         if (preg_match('/^\.\. _(.+): (.+)$/mUsi', $line, $match) > 0) {
-            return $this->createLink($match[1], $match[2], Link::TYPE_LINK);
+            return $this->createLinkTarget($match[1], $match[2], Link::TYPE_LINK);
         }
 
         // Short anonymous links
         if (preg_match('/^__ (.+)$/mUsi', trim($line), $match) > 0) {
             $url = $match[1];
 
-            return $this->createLink('_', $url, Link::TYPE_LINK);
+            return $this->createLinkTarget('_', $url, Link::TYPE_LINK);
         }
 
         // Anchor links - ".. _`anchor-link`:"
@@ -64,13 +64,13 @@ final class LineDataParser
         if (preg_match('/^\.\. _(.+):$/mUsi', trim($line), $match) > 0) {
             $anchor = $match[1];
 
-            return $this->createLink($anchor, '#' . $anchor, Link::TYPE_ANCHOR);
+            return $this->createLinkTarget($anchor, '#' . $anchor, Link::TYPE_ANCHOR);
         }
 
         return null;
     }
 
-    private function createLink(string $name, string $url, string $type): Link
+    private function createLinkTarget(string $name, string $url, string $type): Link
     {
         $this->eventManager->dispatchEvent(
             OnLinkParsedEvent::ON_LINK_PARSED,

@@ -1,3 +1,18 @@
+# Upgrade to 0.6
+
+## Renamed links to link targets
+
+The library has been updated to use "link target" instead of "link":
+
+* Renamed `Environment::setLink()`, `Environment::getLink()` and
+  `Environment::getLinks()` to `Environment::setLinkTarget()`,
+  `Environment::getLinkTarget()` and `Environment::getLinkTargets()`
+* Renamed `Metas::findLinkMetaEntry()` and `Metas::doesLinkExist()` to
+  `Metas::findLinkTargetMetaEntry()` and `Metas::doesLinkTargetExist()`.
+* Renamed `DocumentParser::parseLink()` to `DocumentParser::parseLinkTarget()`.
+* Renamed `LineDataParser::parseLink()` and `LineDataParser::createLink()` to
+  `LineDataParser::parseLinkTarget()` and `LineDataParser::createLinkTarget()`.
+
 # Upgrade to 0.5
 
 ## Property visibility changed from protected to private

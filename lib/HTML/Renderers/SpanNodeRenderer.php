@@ -90,7 +90,7 @@ final class SpanNodeRenderer extends BaseSpanNodeRenderer
 
         // reference to anchor in existing document
         } elseif ($value['url'] !== null) {
-            $url = $this->environment->getLink($value['url']);
+            $url = $this->environment->getLinkTarget($value['url']);
 
             $link = $this->link($url, $text, $reference->getAttributes());
         } else {
