@@ -41,7 +41,7 @@ class MetaEntry
     private $resolvedDependencies = [];
 
     /** @var string[] */
-    private $links;
+    private $linkTargets;
 
     /** @var string|null */
     private $parent;
@@ -50,7 +50,7 @@ class MetaEntry
      * @param string[][]|string[][][] $titles
      * @param mixed[][]               $tocs
      * @param string[]                $depends
-     * @param string[]                $links
+     * @param string[]                $linkTargets
      */
     public function __construct(
         string $file,
@@ -59,17 +59,17 @@ class MetaEntry
         array $titles,
         array $tocs,
         array $depends,
-        array $links,
+        array $linkTargets,
         int $mtime
     ) {
-        $this->file    = $file;
-        $this->url     = $url;
-        $this->title   = $title;
-        $this->titles  = $titles;
-        $this->tocs    = $tocs;
-        $this->depends = $depends;
-        $this->links   = $links;
-        $this->mtime   = $mtime;
+        $this->file        = $file;
+        $this->url         = $url;
+        $this->title       = $title;
+        $this->titles      = $titles;
+        $this->tocs        = $tocs;
+        $this->depends     = $depends;
+        $this->linkTargets = $linkTargets;
+        $this->mtime       = $mtime;
     }
 
     public function getFile(): string
@@ -164,9 +164,9 @@ class MetaEntry
     /**
      * @return string[]
      */
-    public function getLinks(): array
+    public function getLinkTargets(): array
     {
-        return $this->links;
+        return $this->linkTargets;
     }
 
     public function getMtime(): int

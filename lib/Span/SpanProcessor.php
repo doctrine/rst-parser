@@ -193,7 +193,7 @@ final class SpanProcessor
                 $link = $m[1];
                 $url  = $m[2];
 
-                $this->environment->setLink($link, $url);
+                $this->environment->setLinkTarget($link, $url);
             }
 
             // extract the url if the link was in this format: `<https://www.google.com>`_
@@ -201,7 +201,7 @@ final class SpanProcessor
                 $link = $m[1];
                 $url  = $m[1];
 
-                $this->environment->setLink($link, $url);
+                $this->environment->setLinkTarget($link, $url);
             }
 
             $id = $this->generateId();

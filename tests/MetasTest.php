@@ -45,9 +45,9 @@ class MetasTest extends TestCase
             $entry2,
         ]);
 
-        self::assertSame($entry1, $metas->findLinkMetaEntry('link1'));
-        self::assertSame($entry1, $metas->findLinkMetaEntry('link2'));
-        self::assertSame($entry2, $metas->findLinkMetaEntry('link3'));
-        self::assertSame($entry2, $metas->findLinkMetaEntry('link4'));
+        self::assertSame($entry1, $metas->findLinkTargetMetaEntry('link1'));
+        self::assertSame($entry1, $metas->findLinkTargetMetaEntry('link2'));
+        self::assertSame($entry2, $metas->findLinkTargetMetaEntry('link3'));
+        self::assertSame($entry2, $metas->findLinkTargetMetaEntry('link4'));
     }
 }

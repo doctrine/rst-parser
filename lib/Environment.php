@@ -69,7 +69,7 @@ class Environment
     private $variables = [];
 
     /** @var string[] */
-    private $links = [];
+    private $linkTargets = [];
 
     /** @var int[] */
     private $levels = [];
@@ -259,7 +259,13 @@ class Environment
         return $default;
     }
 
-    public function setLink(string $name, string $url): void
+    /**
+     * Adds a link target to the environment.
+     *
+     * https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#explicit-hyperlink-targets
+     * https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#implicit-hyperlink-targets
+     */
+    public function setLinkTarget(string $name, string $url): void
     {
         $name = trim(strtolower($name));
 
@@ -267,7 +273,7 @@ class Environment
             $name = array_shift($this->anonymous);
         }
 
-        $this->links[$name] = trim($url);
+        $this->linkTargets[$name] = trim($url);
     }
 
     public function resetAnonymousStack(): void
@@ -283,17 +289,17 @@ class Environment
     /**
      * @return string[]
      */
-    public function getLinks(): array
+    public function getLinkTargets(): array
     {
-        return $this->links;
+        return $this->linkTargets;
     }
 
-    public function getLink(string $name, bool $relative = true): string
+    public function getLinkTarget(string $name, bool $relative = true): string
     {
         $name = trim(strtolower($name));
 
-        if (isset($this->links[$name])) {
-            $link = $this->links[$name];
+        if (isset($this->linkTargets[$name])) {
+            $link = $this->linkTargets[$name];
 
             if ($relative) {
                 return (string) $this->relativeUrl($link);

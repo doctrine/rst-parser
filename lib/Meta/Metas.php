@@ -24,15 +24,15 @@ class Metas
         $this->entries = $entries;
     }
 
-    public function findLinkMetaEntry(string $link): ?MetaEntry
+    public function findLinkTargetMetaEntry(string $linkTarget): ?MetaEntry
     {
         foreach ($this->entries as $entry) {
-            if ($this->doesLinkExist($entry->getLinks(), $link)) {
+            if ($this->doesLinkTargetExist($entry->getLinkTargets(), $linkTarget)) {
                 return $entry;
             }
         }
 
-        return $this->findByTitle($link);
+        return $this->findByTitle($linkTarget);
     }
 
     /**
@@ -47,7 +47,7 @@ class Metas
      * @param string[][] $titles
      * @param mixed[][]  $tocs
      * @param string[]   $depends
-     * @param string[]   $links
+     * @param string[]   $linkTargets
      */
     public function set(
         string $file,
@@ -57,7 +57,7 @@ class Metas
         array $tocs,
         int $mtime,
         array $depends,
-        array $links
+        array $linkTargets
     ): void {
         foreach ($tocs as $toc) {
             foreach ($toc as $child) {
@@ -78,7 +78,7 @@ class Metas
             $titles,
             $tocs,
             $depends,
-            $links,
+            $linkTargets,
             $mtime
         );
 
@@ -107,12 +107,12 @@ class Metas
     }
 
     /**
-     * @param string[] $links
+     * @param string[] $linkTargets
      */
-    private function doesLinkExist(array $links, string $link): bool
+    private function doesLinkTargetExist(array $linkTargets, string $target): bool
     {
-        foreach ($links as $name => $url) {
-            if ($name === strtolower($link)) {
+        foreach ($linkTargets as $name => $url) {
+            if ($name === strtolower($target)) {
                 return true;
             }
         }

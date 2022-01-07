@@ -4,6 +4,11 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\Parser;
 
+/**
+ * An explicit link *target* (internal or external).
+ *
+ * https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#hyperlink-targets
+ */
 final class Link
 {
     public const TYPE_LINK   = 'link';

@@ -162,7 +162,7 @@ abstract class SpanNodeRenderer implements NodeRenderer, SpanRenderer
         $link = $spanToken->get('link');
 
         if ($url === '') {
-            $url = $this->environment->getLink($link);
+            $url = $this->environment->getLinkTarget($link);
 
             if ($url === '') {
                 $metaEntry = $this->environment->getMetaEntry();
