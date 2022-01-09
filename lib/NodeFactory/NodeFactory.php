@@ -45,7 +45,7 @@ interface NodeFactory
      */
     public function createTocNode(Environment $environment, array $files, array $options): TocNode;
 
-    public function createTitleNode(Node $value, int $level, string $token): TitleNode;
+    public function createTitleNode(Node $value, int $level, string $token, string $id): TitleNode;
 
     public function createSeparatorNode(int $level): SeparatorNode;
 

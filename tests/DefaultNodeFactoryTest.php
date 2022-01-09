@@ -92,12 +92,12 @@ class DefaultNodeFactoryTest extends TestCase
 
         $nodeInstantiator->expects(self::once())
             ->method('create')
-            ->with([$node, 1, 'test'])
+            ->with([$node, 1, 'test', 'test'])
             ->willReturn($expectedReturn);
 
         $defaultNodeFactory = $this->createDefaultNodeFactory($nodeInstantiator);
 
-        self::assertSame($expectedReturn, $defaultNodeFactory->createTitleNode($node, 1, 'test'));
+        self::assertSame($expectedReturn, $defaultNodeFactory->createTitleNode($node, 1, 'test', 'test'));
     }
 
     public function testCreateSeparator(): void

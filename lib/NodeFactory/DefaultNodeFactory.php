@@ -78,9 +78,9 @@ final class DefaultNodeFactory implements NodeFactory
         return $tocNode;
     }
 
-    public function createTitleNode(Node $value, int $level, string $token): TitleNode
+    public function createTitleNode(Node $value, int $level, string $token, string $id): TitleNode
     {
-        $titleNode = $this->create(NodeTypes::TITLE, [$value, $level, $token]);
+        $titleNode = $this->create(NodeTypes::TITLE, [$value, $level, $token, $id]);
         assert($titleNode instanceof TitleNode);
 
         return $titleNode;

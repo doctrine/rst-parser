@@ -490,11 +490,13 @@ final class DocumentParser
                     $level = $this->environment->getConfiguration()->getInitialHeaderLevel() + $level - 1;
 
                     $token = $this->environment->createTitle($level);
+                    $id    = $this->document->createImplicitLinkTarget(Environment::slugify($data));
 
                     $node = $this->nodeFactory->createTitleNode(
                         $this->parser->createSpanNode($data),
                         $level,
-                        $token
+                        $token,
+                        $id
                     );
 
                     if ($this->lastTitleNode !== null) {

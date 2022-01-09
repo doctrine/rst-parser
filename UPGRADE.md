@@ -1,3 +1,11 @@
+# Upgrade to 0.6
+
+## TitleNode requires an id
+
+The TitleNode constructor is changed to require an ID as 4th argument.
+Similarly, `Doctrine\RST\NodeFactory::createTitleNode()` has been
+updated with an ID as 4th argument.
+
 # Upgrade to 0.5
 
 ## Property visibility changed from protected to private

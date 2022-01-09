@@ -13,6 +13,7 @@ use Exception;
 use function array_unshift;
 use function assert;
 use function count;
+use function in_array;
 use function is_string;
 use function sprintf;
 
@@ -32,6 +33,9 @@ class DocumentNode extends Node
 
     /** @var Node[] */
     private $nodes = [];
+
+    /** @var string[] */
+    private $implicitLinkTargets = [];
 
     public function __construct(Environment $environment)
     {
@@ -89,6 +93,24 @@ class DocumentNode extends Node
         }
 
         return $nodes;
+    }
+
+    /**
+     * Creates an implicit hyperlink target for this document.
+     *
+     * @param string $preferredId The preferred ID of the hyperlink target, the actual ID is returned by the method (this avoids duplicates)
+     */
+    public function createImplicitLinkTarget(string $preferredId): string
+    {
+        $i        = 1;
+        $actualId = $preferredId;
+        while (in_array($actualId, $this->implicitLinkTargets, true)) {
+            $actualId = $preferredId . '-' . ($i++);
+        }
+
+        $this->implicitLinkTargets[] = $actualId;
+
+        return $actualId;
     }
 
     public function getTitle(): ?string
