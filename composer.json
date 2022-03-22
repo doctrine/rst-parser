@@ -19,10 +19,10 @@
     "require": {
         "php": "^7.2 || ^8.0",
         "doctrine/event-manager": "^1.0",
-        "symfony/filesystem": "^4.1 || ^5.0",
-        "symfony/finder": "^4.1 || ^5.0",
+        "symfony/filesystem": "^4.1 || ^5.0 || ^6.0",
+        "symfony/finder": "^4.1 || ^5.0 || ^6.0",
         "symfony/polyfill-mbstring": "^1.0",
-        "symfony/string": "^5.3",
+        "symfony/string": "^5.3 || ^6.0",
         "symfony/translation-contracts": "^1.1 || ^2.0",
         "twig/twig": "^2.9 || ^3.3"
     },
@@ -34,8 +34,8 @@
         "phpstan/phpstan-phpunit": "^0.12",
         "phpstan/phpstan-strict-rules": "^0.12",
         "phpunit/phpunit": "^7.5 || ^8.0 || ^9.0",
-        "symfony/css-selector": "4.4 || ^5.2",
-        "symfony/dom-crawler": "4.4 || ^5.2"
+        "symfony/css-selector": "4.4 || ^5.2 || ^6.0",
+        "symfony/dom-crawler": "4.4 || ^5.2 || ^6.0"
     },
     "autoload": {
         "psr-4": {
@@ -48,6 +48,9 @@
         }
     },
     "config": {
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
     }
 }
