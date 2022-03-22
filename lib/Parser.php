@@ -18,6 +18,7 @@ use function fwrite;
 use function getenv;
 use function sprintf;
 
+use const PHP_SAPI;
 use const STDERR;
 
 class Parser
@@ -189,7 +190,7 @@ class Parser
 
     public function parseFile(string $file): DocumentNode
     {
-        if (getenv('SHELL_VERBOSITY') >= 2) {
+        if (getenv('SHELL_VERBOSITY') >= 2 && PHP_SAPI === 'cli') {
             fwrite(STDERR, sprintf("Parsing file: %s\n", $file));
         }
 
