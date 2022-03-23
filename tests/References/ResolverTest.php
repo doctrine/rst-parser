@@ -78,7 +78,7 @@ class ResolverTest extends TestCase
             ->willReturn(null);
 
         $this->metas->expects(self::once())
-            ->method('findLinkMetaEntry')
+            ->method('findLinkTargetMetaEntry')
             ->willReturn($this->metaEntry);
 
         $this->environment->expects(self::once())
@@ -98,7 +98,7 @@ class ResolverTest extends TestCase
             ->willReturn(null);
 
         $this->metas->expects(self::once())
-            ->method('findLinkMetaEntry')
+            ->method('findLinkTargetMetaEntry')
             ->willReturn(null);
 
         self::assertNull($this->resolver->resolve($this->environment, 'invalid-reference'));
@@ -115,7 +115,7 @@ class ResolverTest extends TestCase
             ->willReturn(null);
 
         $this->metas->expects(self::once())
-            ->method('findLinkMetaEntry')
+            ->method('findLinkTargetMetaEntry')
             ->willReturn(null);
 
         self::assertNull($this->resolver->resolve($this->environment, 'invalid-reference'));

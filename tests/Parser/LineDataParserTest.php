@@ -32,7 +32,7 @@ class LineDataParserTest extends TestCase
         $this->eventManager->expects(self::exactly($expected instanceof Link ? 1 : 0))
             ->method('dispatchEvent');
 
-        self::assertEquals($expected, $this->lineDataParser->parseLink($line));
+        self::assertEquals($expected, $this->lineDataParser->parseLinkTarget($line));
     }
 
     /**

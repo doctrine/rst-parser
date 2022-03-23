@@ -276,7 +276,7 @@ final class DocumentParser
                         return false;
                     }
 
-                    if ($this->parseLink($line)) {
+                    if ($this->parseLinkTarget($line)) {
                         return true;
                     }
 
@@ -714,9 +714,9 @@ final class DocumentParser
         return false;
     }
 
-    private function parseLink(string $line): bool
+    private function parseLinkTarget(string $line): bool
     {
-        $link = $this->lineDataParser->parseLink($line);
+        $link = $this->lineDataParser->parseLinkTarget($line);
 
         if ($link === null) {
             return false;
@@ -729,7 +729,7 @@ final class DocumentParser
             $this->document->addNode($anchorNode);
         }
 
-        $this->environment->setLink($link->getName(), $link->getUrl());
+        $this->environment->setLinkTarget($link->getName(), $link->getUrl());
 
         return true;
     }

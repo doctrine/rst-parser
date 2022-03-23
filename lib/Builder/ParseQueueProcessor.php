@@ -92,7 +92,7 @@ final class ParseQueueProcessor
             $document->getTocs(),
             (int) filemtime($fileAbsolutePath),
             $environment->getDependencies(),
-            $environment->getLinks()
+            $environment->getLinkTargets()
         );
     }
 
