@@ -122,6 +122,11 @@ class LineChecker
         return preg_match('/^\.\. (\|(.+)\| |)([^\s]+)::( (.*)|)$/mUsi', $line) > 0;
     }
 
+    public function isFieldOption(string $line, int $offset = 0): bool
+    {
+        return preg_match('/^\s*:(?:\\\\:\s|[^:]|:\S)+:(?: .+|$)/', $line) > 0;
+    }
+
     /**
      * Check if line is an indented one.
      *

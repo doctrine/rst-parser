@@ -13,6 +13,11 @@ The library has been updated to use "link target" instead of "link":
 * Renamed `LineDataParser::parseLink()` and `LineDataParser::createLink()` to
   `LineDataParser::parseLinkTarget()` and `LineDataParser::createLinkTarget()`.
 
+## Refactored Directive Options
+
+* Removed `DirectiveOption` in favor of `FieldOption` (with a different signature)
+* Removed `LineDataParser::parseDirectiveOption()` in favor of `LineDataParser::parseFieldOption()`
+
 # Upgrade to 0.5
 
 ## Property visibility changed from protected to private
