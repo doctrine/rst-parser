@@ -80,21 +80,6 @@ final class LineDataParser
         return new Link($name, $url, $type);
     }
 
-    public function parseDirectiveOption(string $line): ?DirectiveOption
-    {
-        if (preg_match('/^(\s+):(.+): (.*)$/mUsi', $line, $match) > 0) {
-            return new DirectiveOption($match[2], trim($match[3]));
-        }
-
-        if (preg_match('/^(\s+):(.+):(\s*)$/mUsi', $line, $match) > 0) {
-            $value = trim($match[3]);
-
-            return new DirectiveOption($match[2], true);
-        }
-
-        return null;
-    }
-
     public function parseDirective(string $line): ?Directive
     {
         if (preg_match('/^\.\. (\|(.+)\| |)([^\s]+)::( (.*)|)$/mUsi', $line, $match) > 0) {
@@ -230,5 +215,14 @@ final class LineDataParser
         }
 
         return new DefinitionList($definitionList);
+    }
+
+    public function parseFieldOption(string $line): ?FieldOption
+    {
+        if (preg_match('/^(?P<offset>\s*):(?P<name>(?:\\\\:\s|[^:]|:\S)+):(?: +(?P<body>.+)|)$/', $line, $match) > 0) {
+            return new FieldOption($match['name'], strlen($match['offset']), $match['body'] ?? '');
+        }
+
+        return null;
     }
 }

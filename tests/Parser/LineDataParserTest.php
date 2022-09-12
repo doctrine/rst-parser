@@ -50,6 +50,37 @@ class LineDataParserTest extends TestCase
         ];
     }
 
+    /**
+     * @param true|string $body
+     *
+     * @dataProvider getTestFieldOptions
+     */
+    public function testParseFieldOptions(string $line, ?string $name, $body = null): void
+    {
+        $actual = $this->lineDataParser->parseFieldOption($line);
+        if ($name === null) {
+            self::assertNull($actual);
+        } else {
+            self::assertNotNull($actual);
+            self::assertSame($name, $actual->getName(), 'Incorrect field option name');
+            self::assertSame($body, $actual->getBody(), 'Incorrect field option body');
+        }
+    }
+
+    /**
+     * @return array{string, string|null, true|string}[]
+     */
+    public function getTestFieldOptions(): array
+    {
+        return [
+            [':glob:', 'glob', true],
+            [':alt: Some text', 'alt', 'Some text'],
+            [':date:published: 2022-09-20', 'date:published', '2022-09-20'],
+            [':date\: published: 2022-09-20', 'date: published', '2022-09-20'],
+            [':date: published: 2022-09-20', 'date', 'published: 2022-09-20'],
+        ];
+    }
+
     protected function setUp(): void
     {
         $this->parser = $this->createMock(Parser::class);
