@@ -109,6 +109,9 @@ final class DocumentParser
     /** @var string|null */
     private $listMarker = null;
 
+    /** @var FieldOption|null */
+    private $fieldOption = null;
+
     /**
      * @param Directive[] $directives
      */
@@ -454,20 +457,34 @@ final class DocumentParser
                 break;
 
             case State::DIRECTIVE:
-                if (! $this->isDirectiveOption($line)) {
-                    if (! $this->lineChecker->isDirective($line)) {
-                        $directive    = $this->getCurrentDirective();
-                        $this->isCode = $directive !== null ? $directive->wantCode() : false;
-                        $this->setState(State::BEGIN);
-
-                        return false;
-                    }
-
+                if ($this->lineChecker->isDirective($line) && $this->directive === null) {
                     $this->flush();
                     $this->initDirective($line);
+
+                    break;
                 }
 
-                break;
+                if ($this->fieldOption !== null && $this->lineChecker->isBlockLine($line, $this->fieldOption->getOffset())) {
+                    $this->fieldOption->appendLine($line);
+
+                    break;
+                }
+
+                if ($this->lineChecker->isFieldOption($line)) {
+                    if ($this->fieldOption !== null) {
+                        $this->directive->setOption($this->fieldOption->getName(), $this->fieldOption->getBody());
+                    }
+
+                    $this->fieldOption = $this->lineDataParser->parseFieldOption($line);
+
+                    break;
+                }
+
+                $directive    = $this->getCurrentDirective();
+                $this->isCode = $directive !== null ? $directive->wantCode() : false;
+                $this->setState(State::BEGIN);
+
+                return false;
 
             default:
                 $this->environment->getErrorManager()->error('Parser ended in an unexcepted state');
@@ -599,6 +616,11 @@ final class DocumentParser
         if ($this->directive !== null) {
             $currentDirective = $this->getCurrentDirective();
 
+            if ($this->fieldOption !== null) {
+                $this->directive->setOption($this->fieldOption->getName(), $this->fieldOption->getBody());
+                $this->fieldOption = null;
+            }
+
             if ($currentDirective !== null) {
                 try {
                     $currentDirective->process(
@@ -644,23 +666,6 @@ final class DocumentParser
         $name = $this->directive->getName();
 
         return $this->directives[$name];
-    }
-
-    private function isDirectiveOption(string $line): bool
-    {
-        if ($this->directive === null) {
-            return false;
-        }
-
-        $directiveOption = $this->lineDataParser->parseDirectiveOption($line);
-
-        if ($directiveOption === null) {
-            return false;
-        }
-
-        $this->directive->setOption($directiveOption->getName(), $directiveOption->getValue());
-
-        return true;
     }
 
     private function initDirective(string $line): bool

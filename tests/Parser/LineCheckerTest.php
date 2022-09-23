@@ -91,4 +91,16 @@ class LineCheckerTest extends TestCase
         self::assertFalse($this->lineChecker->isDefinitionListEnded('Term', '    Definition'));
         self::assertFalse($this->lineChecker->isDefinitionListEnded('', '    Definition'));
     }
+
+    public function testIsFieldList(): void
+    {
+        self::assertTrue($this->lineChecker->isFieldOption(':glob:'));
+        self::assertTrue($this->lineChecker->isFieldOption(':Date: 2001-08-16'));
+        self::assertTrue($this->lineChecker->isFieldOption('    :Date: 2001-08-16'));
+        self::assertTrue($this->lineChecker->isFieldOption(':Date published: 2001-08-16'));
+        self::assertTrue($this->lineChecker->isFieldOption(':Date:published: 2001-08-16'));
+        self::assertTrue($this->lineChecker->isFieldOption(':Date\: published: 2001-08-16'));
+        self::assertTrue($this->lineChecker->isFieldOption(':Date: published: 2001-08-16'));
+        self::assertFalse($this->lineChecker->isFieldOption('Date: 2001-08-16'));
+    }
 }
