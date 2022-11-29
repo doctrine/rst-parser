@@ -13,6 +13,8 @@ use Doctrine\RST\Templates\TemplateRenderer;
 use function htmlspecialchars;
 use function trim;
 
+use const ENT_COMPAT;
+
 final class SpanNodeRenderer extends BaseSpanNodeRenderer
 {
     /** @var TemplateRenderer */
@@ -69,7 +71,7 @@ final class SpanNodeRenderer extends BaseSpanNodeRenderer
 
     public function escape(string $span): string
     {
-        return htmlspecialchars($span);
+        return htmlspecialchars($span, ENT_COMPAT);
     }
 
     /**
