@@ -34,12 +34,15 @@ class GlobSearcher
         } else {
             $globPatternPath = $currentFilePath . '/' . $globPattern;
         }
+        $pos = strrpos($globPatternPath, '/');
+        $globPatternFile = $pos === false ? $globPatternPath : substr($globPatternPath, $pos + 1);
+        $globPatternPath = substr($globPatternPath, 0, $pos);
 
         $allFiles = [];
 
         $finder = new Finder();
-        $finder->in(rtrim($globPatternPath, '*'))
-            ->name('*.rst')
+        $finder->in($globPatternPath)
+            ->name($globPatternFile . '.rst')
             ->files();
 
         foreach ($finder as $file) {
