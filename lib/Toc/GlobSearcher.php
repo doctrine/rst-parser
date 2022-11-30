@@ -39,7 +39,7 @@ class GlobSearcher
 
         $pos             = strrpos($globPatternPath, '/');
         $globPatternFile = $pos === false ? $globPatternPath : substr($globPatternPath, $pos + 1);
-        $globPatternPath = substr($globPatternPath, 0, $pos);
+        $globPatternPath = $pos === false ? '' : substr($globPatternPath, 0, $pos);
 
         $allFiles = [];
 
