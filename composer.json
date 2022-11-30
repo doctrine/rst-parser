@@ -1,9 +1,15 @@
 {
     "name": "doctrine/rst-parser",
     "description": "PHP library to parse reStructuredText documents and generate HTML or LaTeX documents.",
-    "keywords": ["rst", "markup", "parser", "restructuredtext", "html", "latex"],
-    "homepage": "https://github.com/doctrine/rst-parser",
     "license": "MIT",
+    "keywords": [
+        "rst",
+        "markup",
+        "parser",
+        "restructuredtext",
+        "html",
+        "latex"
+    ],
     "authors": [
         {
             "name": "Grégoire Passault",
@@ -16,6 +22,7 @@
             "homepage": "https://jwage.com"
         }
     ],
+    "homepage": "https://github.com/doctrine/rst-parser",
     "require": {
         "php": "^7.2 || ^8.0",
         "doctrine/event-manager": "^1.0",
@@ -48,9 +55,9 @@
         }
     },
     "config": {
-        "sort-packages": true,
         "allow-plugins": {
             "dealerdirect/phpcodesniffer-composer-installer": true
-        }
+        },
+        "sort-packages": true
     }
 }
