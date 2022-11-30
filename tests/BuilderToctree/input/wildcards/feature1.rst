@@ -1,13 +1,4 @@
-Toctree
-=======
+Feature 1
+=========
 
-.. toctree::
-    :glob:
-
-    *
-
-.. toctree::
-    :glob:
-
-    /subdir/*
-
+Lorem Ispusm dolor
