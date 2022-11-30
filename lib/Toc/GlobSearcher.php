@@ -36,6 +36,9 @@ class GlobSearcher
         } else {
             $globPatternPath = $currentFilePath . '/' . $globPattern;
         }
+        $pos = strrpos($globPatternPath, '/');
+        $globPatternFile = $pos === false ? $globPatternPath : substr($globPatternPath, $pos + 1);
+        $globPatternPath = substr($globPatternPath, 0, $pos);
 
         $pos             = strrpos($globPatternPath, '/');
         $globPatternFile = $pos === false ? $globPatternPath : substr($globPatternPath, $pos + 1);
