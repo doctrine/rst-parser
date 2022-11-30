@@ -45,6 +45,12 @@ class Admonition extends SubDirective
         string $data,
         array $options
     ): ?Node {
-        return new WrapperNode($document, sprintf('<div class="alert %s-admonition %s %s border"><table width="100%%"><tr><td width="10" class="align-top"><i class="%s mr-2"></i></td><td>', $this->name, $this->backgroundColor, $this->textColor, $this->icon), '</td></tr></table></div>');
+        return new WrapperNode($document, sprintf(
+            '<div class="alert %s-admonition %s %s border"><table width="100%%"><tr><td width="10" class="align-top"><i class="%s mr-2"></i></td><td>',
+            $this->name,
+            $this->backgroundColor,
+            $this->textColor,
+            $this->icon
+        ), '</td></tr></table></div>');
     }
 }
