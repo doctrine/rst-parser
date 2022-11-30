@@ -38,6 +38,7 @@ class Kernel
             new Directives\CodeBlock(),
             new Directives\Raw(),
             new Directives\Replace(),
+            new Directives\Tip(),
             new Directives\Toctree(),
         ], $this->configuration->getFormat()->getDirectives(), $directives);
 
