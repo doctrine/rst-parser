@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\Tests\RST\Functional;
 
+use Doctrine\RST\Builder;
 use Doctrine\RST\Configuration;
 use Doctrine\RST\Formats\Format;
 use Doctrine\RST\Kernel;
@@ -15,11 +16,13 @@ use Symfony\Component\Finder\Finder;
 use Throwable;
 
 use function array_map;
+use function assert;
 use function explode;
 use function file_exists;
 use function file_get_contents;
 use function implode;
 use function in_array;
+use function is_string;
 use function rtrim;
 use function setlocale;
 use function sprintf;
@@ -33,6 +36,7 @@ class FunctionalTest extends TestCase
 {
     private const RENDER_DOCUMENT_FILES = ['main-directive'];
     private const SKIP_INDENTER_FILES   = ['code-block-diff'];
+    private const RENDER_ALL            = ['toctree'];
 
     protected function setUp(): void
     {
@@ -66,19 +70,41 @@ class FunctionalTest extends TestCase
             $this->expectExceptionMessage($expectedExceptionMessage);
         }
 
-        $document = $parser->parse($rst);
+        if ($renderMethod === 'renderAll') {
+            $configuration = new Configuration();
+            $configuration->setFileExtension(Format::HTML);
+            $builder = new Builder();
 
-        $rendered = $document->$renderMethod();
+            $builder->build(__DIR__ . '/tests/' . $file, __DIR__ . '/output/' . $file);
 
-        if ($format === Format::HTML && $useIndenter) {
-            $indenter = new Indenter();
-            $rendered = $indenter->indent($rendered);
+            $outputFileFinder = new Finder();
+            $outputFileFinder
+                ->files()
+                ->in(__DIR__ . '/output/' . $file)
+                ->name('index.html');
+
+            foreach ($outputFileFinder as $outputFile) {
+                $rendered = $outputFile->getContents();
+                self::assertSame(
+                    $this->trimTrailingWhitespace($expected),
+                    $this->trimTrailingWhitespace($rendered)
+                );
+            }
+        } else {
+            $document = $parser->parse($rst);
+
+            $rendered = $document->$renderMethod();
+
+            if ($format === Format::HTML && $useIndenter) {
+                $indenter = new Indenter();
+                $rendered = $indenter->indent($rendered);
+            }
+
+            self::assertSame(
+                $this->trimTrailingWhitespace($expected),
+                $this->trimTrailingWhitespace($rendered)
+            );
         }
-
-        self::assertSame(
-            $this->trimTrailingWhitespace($expected),
-            $this->trimTrailingWhitespace($rendered)
-        );
     }
 
     /**
@@ -94,12 +120,18 @@ class FunctionalTest extends TestCase
         $tests = [];
 
         foreach ($finder as $dir) {
-            $rstFilename = $dir->getPathname() . '/' . $dir->getFilename() . '.rst';
-            if (! file_exists($rstFilename)) {
-                throw new Exception(sprintf('Could not find functional test file "%s"', $rstFilename));
+            $rstFilename   = $dir->getPathname() . '/' . $dir->getFilename() . '.rst';
+            $indexFilename = $dir->getPathname() . '/index.rst';
+            if (file_exists($rstFilename)) {
+                $rst = file_get_contents($rstFilename);
+            } elseif (file_exists($indexFilename)) {
+                $rst = file_get_contents($indexFilename);
+            } else {
+                throw new Exception(sprintf('Could not find functional test file "%s" or "%s"', $rstFilename, $indexFilename));
             }
 
-            $rst      = file_get_contents($rstFilename);
+            assert(is_string($rst));
+
             $basename = $dir->getFilename();
 
             $formats = [Format::HTML, Format::LATEX];
@@ -115,8 +147,11 @@ class FunctionalTest extends TestCase
                     throw new Exception(sprintf('Unexpected file extension in "%s"', $file->getPathname()));
                 }
 
-                if (strpos($file->getFilename(), $dir->getFilename()) !== 0) {
-                    throw new Exception(sprintf('Test filename "%s" does not match directory name', $file->getPathname()));
+                if (
+                    strpos($file->getFilename(), $dir->getFilename()) !== 0
+                    && strpos($file->getFilename(), 'index') !== 0
+                ) {
+                    throw new Exception(sprintf('Test filename "%s" does not match directory name or index', $file->getPathname()));
                 }
 
                 $expected = $file->getContents();
@@ -135,7 +170,18 @@ class FunctionalTest extends TestCase
                     ? 'renderDocument'
                     : 'render';
 
+                $renderMethod = in_array($basename, self::RENDER_ALL, true)
+                    ? 'renderAll'
+                    : $renderMethod;
+
                 $useIndenter = ! in_array($basename, self::SKIP_INDENTER_FILES, true);
+
+                if (
+                    ($renderMethod === 'renderAll' && ! file_exists($indexFilename))
+                    || ($renderMethod !== 'renderAll' && ! file_exists($rstFilename))
+                ) {
+                    throw new Exception(sprintf('The rendering method "%s" expects file "%s" to exist', $renderMethod, $renderMethod === 'renderAll' ? $indexFilename : $rstFilename));
+                }
 
                 $tests[$basename . '_' . $format] = [$basename, $parser, $renderMethod, $format, $rst, trim($expected), $useIndenter];
             }
