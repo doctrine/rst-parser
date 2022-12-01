@@ -109,8 +109,8 @@ final class SpanProcessor
     private function replaceTitleLetters(string $span): string
     {
         foreach ($this->environment->getTitleLetters() as $level => $letter) {
-            $span = (string) preg_replace_callback('/\#\\' . $letter . '/mUsi', function (array $match) use ($level): int {
-                return $this->environment->getNumber($level);
+            $span = (string) preg_replace_callback('/\#\\' . $letter . '/mUsi', function (array $match) use ($level): string {
+                return (string) $this->environment->getNumber($level);
             }, $span);
         }
 
