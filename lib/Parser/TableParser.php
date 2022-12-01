@@ -74,7 +74,6 @@ final class TableParser
         $parts            = [];
         $currentPartStart = null;
 
-        $i = 0;
         for ($i = 0; $i < strlen($line); $i++) {
             // we found the "line char": "-" or "="
             if ($line[$i] === $chars[0]) {
