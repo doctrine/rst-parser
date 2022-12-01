@@ -20,7 +20,7 @@ class TableParserTest extends TestCase
         self::assertEquals($expectedConfig, $actualSeparatorConfig);
     }
 
-    /** @return mixed[] */
+    /** @return list<array{string, Parser\TableSeparatorLineConfig|null}> */
     public function getLineSeparatorsData(): array
     {
         return [

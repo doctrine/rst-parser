@@ -28,7 +28,7 @@ class ResolvedReferenceTest extends TestCase
         self::assertSame($attributes, $resolvedReference->getAttributes());
     }
 
-    /** @return string[][]|string[][][] */
+    /** @return array<string, array{attributes: array<string, string>}> */
     public function attributesValid(): array
     {
         return [
@@ -69,7 +69,7 @@ class ResolvedReferenceTest extends TestCase
         new ResolvedReference('file', 'title', 'url', [], $attributes);
     }
 
-    /** @return string[][]|string[][][] */
+    /** @return array<string, array{attributes: array<string|int, string>}> */
     public function attributesInvalid(): array
     {
         return [
