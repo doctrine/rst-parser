@@ -109,9 +109,7 @@ final class DocumentParser
     /** @var string|null */
     private $listMarker = null;
 
-    /**
-     * @param Directive[] $directives
-     */
+    /** @param Directive[] $directives */
     public function __construct(
         Parser $parser,
         Environment $environment,

@@ -12,9 +12,7 @@ final class ImageNode extends Node
     /** @var string[] */
     private $options;
 
-    /**
-     * @param string[] $options
-     */
+    /** @param string[] $options */
     public function __construct(string $url, array $options = [])
     {
         parent::__construct();
@@ -28,9 +26,7 @@ final class ImageNode extends Node
         return $this->url;
     }
 
-    /**
-     * @return string[]
-     */
+    /** @return string[] */
     public function getOptions(): array
     {
         return $this->options;

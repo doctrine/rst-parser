@@ -37,9 +37,7 @@ abstract class Node
     /** @var string[] */
     private $classes = [];
 
-    /**
-     * @param Node|string|null $value
-     */
+    /** @param Node|string|null $value */
     public function __construct($value = null)
     {
         $this->value = $value;
@@ -82,25 +80,19 @@ abstract class Node
         return $renderedNode->getRendered();
     }
 
-    /**
-     * @return Node|string|null
-     */
+    /** @return Node|string|null */
     public function getValue()
     {
         return $this->value;
     }
 
-    /**
-     * @param Node|string|null $value
-     */
+    /** @param Node|string|null $value */
     public function setValue($value): void
     {
         $this->value = $value;
     }
 
-    /**
-     * @return string[]
-     */
+    /** @return string[] */
     public function getClasses(): array
     {
         return $this->classes;
@@ -111,9 +103,7 @@ abstract class Node
         return implode(' ', $this->classes);
     }
 
-    /**
-     * @param string[] $classes
-     */
+    /** @param string[] $classes */
     public function setClasses(array $classes): void
     {
         $this->classes = $classes;
@@ -132,9 +122,7 @@ abstract class Node
         return $this->value;
     }
 
-    /**
-     * @param string[] $lines
-     */
+    /** @param string[] $lines */
     protected function normalizeLines(array $lines): string
     {
         if ($lines !== []) {

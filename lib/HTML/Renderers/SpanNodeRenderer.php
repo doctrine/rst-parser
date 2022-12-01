@@ -55,9 +55,7 @@ final class SpanNodeRenderer extends BaseSpanNodeRenderer
         return $this->templateRenderer->render('literal.html.twig', ['text' => $text]);
     }
 
-    /**
-     * @param mixed[] $attributes
-     */
+    /** @param mixed[] $attributes */
     public function link(?string $url, string $title, array $attributes = []): string
     {
         $url = (string) $url;
@@ -74,9 +72,7 @@ final class SpanNodeRenderer extends BaseSpanNodeRenderer
         return htmlspecialchars($span, ENT_COMPAT);
     }
 
-    /**
-     * @param mixed[] $value
-     */
+    /** @param mixed[] $value */
     public function reference(ResolvedReference $reference, array $value): string
     {
         $text = (bool) $value['text'] ? $value['text'] : ($reference->getTitle() ?? '');

@@ -63,9 +63,7 @@ final class SpanProcessor
         return $span;
     }
 
-    /**
-     * @return SpanToken[]
-     */
+    /** @return SpanToken[] */
     public function getTokens(): array
     {
         return $this->tokens;
@@ -80,9 +78,7 @@ final class SpanProcessor
         return $value;
     }
 
-    /**
-     * @param string[] $tokenData
-     */
+    /** @param string[] $tokenData */
     private function addToken(string $type, string $id, array $tokenData): void
     {
         $this->tokens[$id] = new SpanToken($type, $id, $tokenData);

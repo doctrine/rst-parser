@@ -37,17 +37,13 @@ class TocNode extends Node
         return $this->environment;
     }
 
-    /**
-     * @return string[]
-     */
+    /** @return string[] */
     public function getFiles(): array
     {
         return $this->files;
     }
 
-    /**
-     * @return string[]
-     */
+    /** @return string[] */
     public function getOptions(): array
     {
         return $this->options;

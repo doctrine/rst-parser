@@ -25,7 +25,7 @@ class BuilderWithErrorsTest extends BaseBuilderTest
         $bodyHtml = trim($crawler->filter('body')->html());
 
         // the note is simply left out
-        self::assertSame(<<<EOF
+        self::assertSame(<<<'EOF'
 <p>Testing wrapper node at end of file</p>
 <p>And here is more text.</p>
 EOF

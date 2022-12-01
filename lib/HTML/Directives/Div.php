@@ -18,9 +18,7 @@ final class Div extends SubDirective
         return 'div';
     }
 
-    /**
-     * @param string[] $options
-     */
+    /** @param string[] $options */
     public function processSub(
         Parser $parser,
         ?Node $document,

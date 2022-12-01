@@ -22,9 +22,7 @@ final class TableRow
         $this->columns[] = new TableColumn($content, $colSpan);
     }
 
-    /**
-     * @return TableColumn[]
-     */
+    /** @return TableColumn[] */
     public function getColumns(): array
     {
         return $this->columns;

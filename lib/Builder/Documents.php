@@ -32,9 +32,7 @@ class Documents
         $this->metas      = $metas;
     }
 
-    /**
-     * @return DocumentNode[]
-     */
+    /** @return DocumentNode[] */
     public function getAll(): array
     {
         return $this->documents;

@@ -42,9 +42,7 @@ abstract class BaseBuilderTest extends TestCase
         return __DIR__ . '/' . $this->getFixturesDirectory() . '/output/' . $file;
     }
 
-    /**
-     * @throws Exception
-     */
+    /** @throws Exception */
     protected function getFileContents(string $path): string
     {
         $contents = file_get_contents($path);

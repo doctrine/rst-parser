@@ -67,9 +67,7 @@ class TwigEnvironmentFactoryTest extends TestCase
         );
     }
 
-    /**
-     * @param string[] $expectedPaths
-     */
+    /** @param string[] $expectedPaths */
     private static function assertLoaderPaths(array $expectedPaths, Environment $twig): void
     {
         $loader = $twig->getLoader();

@@ -25,9 +25,7 @@ class CodeNode extends Node
     /** @var string[] */
     private $options = [];
 
-    /**
-     * @param string[] $lines
-     */
+    /** @param string[] $lines */
     public function __construct(array $lines)
     {
         parent::__construct($this->normalizeLines($lines));
@@ -58,17 +56,13 @@ class CodeNode extends Node
         return $this->raw;
     }
 
-    /**
-     * @param string[] $options
-     */
+    /** @param string[] $options */
     public function setOptions(array $options = []): void
     {
         $this->options = $options;
     }
 
-    /**
-     * @return string[]
-     */
+    /** @return string[] */
     public function getOptions(): array
     {
         return $this->options;

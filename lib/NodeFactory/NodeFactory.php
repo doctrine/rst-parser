@@ -49,14 +49,10 @@ interface NodeFactory
 
     public function createSeparatorNode(int $level): SeparatorNode;
 
-    /**
-     * @param string[] $lines
-     */
+    /** @param string[] $lines */
     public function createBlockNode(array $lines): BlockNode;
 
-    /**
-     * @param string[] $lines
-     */
+    /** @param string[] $lines */
     public function createCodeNode(array $lines): CodeNode;
 
     public function createQuoteNode(DocumentNode $documentNode): QuoteNode;
@@ -65,16 +61,12 @@ interface NodeFactory
 
     public function createAnchorNode(?string $value = null): AnchorNode;
 
-    /**
-     * @param ListItem[] $items
-     */
+    /** @param ListItem[] $items */
     public function createListNode(array $items, bool $ordered): ListNode;
 
     public function createTableNode(TableSeparatorLineConfig $separatorLineConfig, string $type, LineChecker $lineChecker): TableNode;
 
-    /**
-     * @param string|string[]|SpanNode $span
-     */
+    /** @param string|string[]|SpanNode $span */
     public function createSpanNode(Parser $parser, $span): SpanNode;
 
     public function createDefinitionListNode(DefinitionList $definitionList): DefinitionListNode;
@@ -83,18 +75,14 @@ interface NodeFactory
 
     public function createFigureNode(ImageNode $image, ?Node $document = null): FigureNode;
 
-    /**
-     * @param string[] $options
-     */
+    /** @param string[] $options */
     public function createImageNode(string $url, array $options = []): ImageNode;
 
     public function createMetaNode(string $key, string $value): MetaNode;
 
     public function createRawNode(string $value): RawNode;
 
-    /**
-     * @param mixed[] $data
-     */
+    /** @param mixed[] $data */
     public function createDummyNode(array $data): DummyNode;
 
     public function createMainNode(): MainNode;

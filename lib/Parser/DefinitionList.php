@@ -9,17 +9,13 @@ final class DefinitionList
     /** @var DefinitionListTerm[] */
     private $terms = [];
 
-    /**
-     * @param DefinitionListTerm[] $terms
-     */
+    /** @param DefinitionListTerm[] $terms */
     public function __construct(array $terms)
     {
         $this->terms = $terms;
     }
 
-    /**
-     * @return DefinitionListTerm[]
-     */
+    /** @return DefinitionListTerm[] */
     public function getTerms(): array
     {
         return $this->terms;

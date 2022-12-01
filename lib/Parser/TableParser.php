@@ -16,6 +16,7 @@ use function trim;
 final class TableParser
 {
     private const SIMPLE_TABLE_LETTER = '=';
+
     // "-" is valid as a separator in a simple table, except
     // on the first and last lines
     private const SIMPLE_TABLE_LETTER_ALT = '-';
@@ -129,7 +130,6 @@ final class TableParser
      * or it's malformed in any way.
      *
      * @return string[]|null
-     *
      * @psalm-return array{string, ?string}
      */
     private function findTableChars(string $line): ?array

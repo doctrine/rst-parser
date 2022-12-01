@@ -71,9 +71,7 @@ class ErrorManager
         }
     }
 
-    /**
-     * @return list<Error>
-     */
+    /** @return list<Error> */
     public function getErrors(): array
     {
         return $this->errors;

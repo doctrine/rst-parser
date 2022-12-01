@@ -22,9 +22,7 @@ final class Raw extends Directive
         return 'raw';
     }
 
-    /**
-     * @param string[] $options
-     */
+    /** @param string[] $options */
     public function process(
         Parser $parser,
         ?Node $node,
