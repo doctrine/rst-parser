@@ -36,10 +36,10 @@
     "require-dev": {
         "doctrine/coding-standard": "^8.0",
         "gajus/dindent": "^2.0.2",
-        "phpstan/phpstan": "^0.12",
-        "phpstan/phpstan-deprecation-rules": "^0.12",
-        "phpstan/phpstan-phpunit": "^0.12",
-        "phpstan/phpstan-strict-rules": "^0.12",
+        "phpstan/phpstan": "^1.9",
+        "phpstan/phpstan-deprecation-rules": "^1.0",
+        "phpstan/phpstan-phpunit": "^1.2",
+        "phpstan/phpstan-strict-rules": "^1.4",
         "phpunit/phpunit": "^7.5 || ^8.0 || ^9.0",
         "symfony/css-selector": "4.4 || ^5.2 || ^6.0",
         "symfony/dom-crawler": "4.4 || ^5.2 || ^6.0"
