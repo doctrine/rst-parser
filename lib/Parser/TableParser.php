@@ -130,7 +130,6 @@ final class TableParser
      * or it's malformed in any way.
      *
      * @return string[]|null
-     *
      * @psalm-return array{string, ?string}
      */
     private function findTableChars(string $line): ?array
