@@ -69,7 +69,7 @@ class EnvironmentTest extends TestCase
         $environment->resolve('doc', '/path/to/unknown/doc');
     }
 
-    /** @return mixed[] */
+    /** @return iterable<string, array{string, string|null}> */
     public function getMissingSectionTests(): iterable
     {
         yield 'no_current_filename' => [

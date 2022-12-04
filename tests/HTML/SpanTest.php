@@ -44,7 +44,14 @@ class SpanTest extends TestCase
         );
     }
 
-    /** @return string[][]|string[][][] */
+    /**
+     * @return array<string, array{
+     *     url: string,
+     *     title: string,
+     *     attributes: array<string, string>,
+     *     expectedLink: string
+     * }>
+     */
     public function linkProvider(): array
     {
         return [

@@ -15,11 +15,13 @@ use Symfony\Component\Finder\Finder;
 use Throwable;
 
 use function array_map;
+use function assert;
 use function explode;
 use function file_exists;
 use function file_get_contents;
 use function implode;
 use function in_array;
+use function is_string;
 use function rtrim;
 use function setlocale;
 use function sprintf;
@@ -79,7 +81,7 @@ class FunctionalTest extends TestCase
         );
     }
 
-    /** @return mixed[] */
+    /** @return array<string, array{string, Parser, string, string, string, string, bool}> */
     public function getFunctionalTests(): array
     {
         $finder = new Finder();
@@ -95,7 +97,8 @@ class FunctionalTest extends TestCase
                 throw new Exception(sprintf('Could not find functional test file "%s"', $rstFilename));
             }
 
-            $rst      = file_get_contents($rstFilename);
+            $rst = file_get_contents($rstFilename);
+            assert(is_string($rst));
             $basename = $dir->getFilename();
 
             $formats = [Format::HTML, Format::LATEX];

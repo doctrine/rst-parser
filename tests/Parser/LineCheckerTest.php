@@ -30,7 +30,7 @@ class LineCheckerTest extends TestCase
         self::assertSame($specialCharacter, $this->lineChecker->isSpecialLine(str_repeat($specialCharacter, 3)));
     }
 
-    /** @return string[][] */
+    /** @return list<array{string}> */
     public function getSpecialCharacters(): array
     {
         return [['='], ['-'], ['~'], ['*'], ['+'], ['^'], ['"'], ['.'], ['`'], ["'"], ['_'], ['#'], [':']];
