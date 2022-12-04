@@ -125,6 +125,7 @@ class FunctionalTest extends TestCase
             } else {
                 throw new Exception(sprintf('Could not find functional test file "%s" or "%s"', $rstFilename, $indexFilename));
             }
+
             assert(is_string($rst));
             $basename = $dir->getFilename();
 
