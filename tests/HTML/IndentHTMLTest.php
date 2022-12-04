@@ -24,7 +24,7 @@ class IndentHTMLTest extends TestCase
 
         $rendered = $document->renderDocument();
 
-        $expected = <<<HTML
+        $expected = <<<'HTML'
 <!DOCTYPE html>
 <html>
     <head>

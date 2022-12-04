@@ -44,9 +44,7 @@ final class ParseQueue
         return $this->fileStatuses[$filename];
     }
 
-    /**
-     * @return string[]
-     */
+    /** @return string[] */
     public function getAllFilesThatRequireParsing(): array
     {
         return array_keys(array_filter($this->fileStatuses, static function (bool $parseNeeded): bool {

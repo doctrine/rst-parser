@@ -18,9 +18,7 @@ class VersionAddedDirective extends SubDirective
         return 'versionadded';
     }
 
-    /**
-     * @param string[] $options
-     */
+    /** @param string[] $options */
     public function processSub(
         Parser $parser,
         ?Node $document,

@@ -63,9 +63,7 @@ class NodeInstantiator
         return $this->type;
     }
 
-    /**
-     * @param mixed[] $arguments
-     */
+    /** @param mixed[] $arguments */
     public function create(array $arguments): Node
     {
         $node = new $this->className(...$arguments);

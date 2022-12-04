@@ -94,9 +94,7 @@ class TableNode extends Node
         return count($this->data);
     }
 
-    /**
-     * @return TableRow[]
-     */
+    /** @return TableRow[] */
     public function getData(): array
     {
         if ($this->isCompiled === false) {
@@ -511,9 +509,7 @@ class TableNode extends Node
         $this->errors[] = $message;
     }
 
-    /**
-     * @param TableRow[] $rows
-     */
+    /** @param TableRow[] $rows */
     private function findColumnInPreviousRows(int $columnIndex, array $rows, int $currentRowIndex): TableColumn
     {
         /** @var TableRow[] $reversedRows */

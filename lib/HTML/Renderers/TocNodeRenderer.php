@@ -129,9 +129,7 @@ final class TocNodeRenderer implements NodeRenderer
         return [$title, $target];
     }
 
-    /**
-     * @param string[]|string $title
-     */
+    /** @param string[]|string $title */
     private function generateAnchorFromTitle($title): string
     {
         $slug = is_array($title)

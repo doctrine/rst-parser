@@ -12,9 +12,7 @@ final class DirectiveOption
     /** @var mixed */
     private $value;
 
-    /**
-     * @param mixed $value
-     */
+    /** @param mixed $value */
     public function __construct(string $name, $value)
     {
         $this->name  = $name;
@@ -26,9 +24,7 @@ final class DirectiveOption
         return $this->name;
     }
 
-    /**
-     * @return mixed
-     */
+    /** @return mixed */
     public function getValue()
     {
         return $this->value;

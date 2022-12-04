@@ -18,9 +18,7 @@ final class LaTeXMain extends Directive
         return 'latex-main';
     }
 
-    /**
-     * @param string[] $options
-     */
+    /** @param string[] $options */
     public function processNode(
         Parser $parser,
         string $variable,

@@ -19,9 +19,7 @@ final class Replace extends Directive
         return 'replace';
     }
 
-    /**
-     * @param string[] $options
-     */
+    /** @param string[] $options */
     public function processNode(
         Parser $parser,
         string $variable,

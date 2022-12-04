@@ -24,9 +24,7 @@ final class Toctree extends Directive
         return 'toctree';
     }
 
-    /**
-     * @param string[] $options
-     */
+    /** @param string[] $options */
     public function process(
         Parser $parser,
         ?Node $node,

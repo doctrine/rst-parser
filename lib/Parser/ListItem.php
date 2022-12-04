@@ -23,9 +23,7 @@ final class ListItem
     /** @var Node[] */
     private $contents;
 
-    /**
-     * @param Node[] $contents
-     */
+    /** @param Node[] $contents */
     public function __construct(string $prefix, bool $ordered, array $contents)
     {
         $this->prefix   = $prefix;
@@ -43,9 +41,7 @@ final class ListItem
         return $this->ordered;
     }
 
-    /**
-     * @return Node[]
-     */
+    /** @return Node[] */
     public function getContents(): array
     {
         return $this->contents;

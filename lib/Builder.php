@@ -16,7 +16,6 @@ use Doctrine\RST\Event\PreBuildScanEvent;
 use Doctrine\RST\Meta\CachedMetasLoader;
 use Doctrine\RST\Meta\Metas;
 use InvalidArgumentException;
-use LogicException;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 
@@ -46,9 +45,6 @@ final class Builder
 
     /** @var Documents */
     private $documents;
-
-    /** @var ParseQueue|null */
-    private $parseQueue;
 
     /** @var Copier */
     private $copier;
@@ -130,15 +126,6 @@ final class Builder
     public function getMetas(): Metas
     {
         return $this->metas;
-    }
-
-    public function getParseQueue(): ParseQueue
-    {
-        if ($this->parseQueue === null) {
-            throw new LogicException('The ParseQueue is not set until after the build is complete');
-        }
-
-        return $this->parseQueue;
     }
 
     public function build(

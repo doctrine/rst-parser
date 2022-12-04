@@ -43,9 +43,7 @@ class FunctionalTest extends TestCase
         setlocale(LC_ALL, 'en_US.utf8');
     }
 
-    /**
-     * @dataProvider getFunctionalTests
-     */
+    /** @dataProvider getFunctionalTests */
     public function testFunctional(
         string $file,
         Parser $parser,
@@ -107,9 +105,7 @@ class FunctionalTest extends TestCase
         }
     }
 
-    /**
-     * @return mixed[]
-     */
+    /** @return array<string, array{string, Parser, string, string, string, string, bool}> */
     public function getFunctionalTests(): array
     {
         $finder = new Finder();
@@ -129,9 +125,7 @@ class FunctionalTest extends TestCase
             } else {
                 throw new Exception(sprintf('Could not find functional test file "%s" or "%s"', $rstFilename, $indexFilename));
             }
-
             assert(is_string($rst));
-
             $basename = $dir->getFilename();
 
             $formats = [Format::HTML, Format::LATEX];

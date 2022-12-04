@@ -29,9 +29,7 @@ final class TwigAdapter implements TemplateEngineAdapter
         return $this->twigEnvironment;
     }
 
-    /**
-     * @param mixed[] $parameters
-     */
+    /** @param mixed[] $parameters */
     public function render(string $template, array $parameters = []): string
     {
         return $this->getTemplateEngine()->render($template, $parameters);

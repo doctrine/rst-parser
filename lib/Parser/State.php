@@ -13,11 +13,13 @@ final class State
      * There is currently no state: the next line will begin a new state
      */
     public const BEGIN = 'begin';
+
     /**
      * Normal, non-indented, non-table lines
      */
     public const NORMAL    = 'normal';
     public const DIRECTIVE = 'directive';
+
     /**
      * Indented lines
      */

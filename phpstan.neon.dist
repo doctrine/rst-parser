@@ -7,6 +7,8 @@ parameters:
     paths:
       - lib
       - tests
+    polluteScopeWithLoopInitialAssignments: true
+    reportMaybesInPropertyPhpDocTypes: false
 
     ignoreErrors:
       - '#Variable method call on Doctrine\\RST\\Nodes\\DocumentNode\.#'
