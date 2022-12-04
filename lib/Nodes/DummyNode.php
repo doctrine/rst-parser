@@ -9,9 +9,7 @@ final class DummyNode extends Node
     /** @var mixed[] */
     public $data;
 
-    /**
-     * @param mixed[] $data
-     */
+    /** @param mixed[] $data */
     public function __construct(array $data)
     {
         parent::__construct();

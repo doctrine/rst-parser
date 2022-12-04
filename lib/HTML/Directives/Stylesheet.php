@@ -20,9 +20,7 @@ final class Stylesheet extends Directive
         return 'stylesheet';
     }
 
-    /**
-     * @param string[] $options
-     */
+    /** @param string[] $options */
     public function process(
         Parser $parser,
         ?Node $node,

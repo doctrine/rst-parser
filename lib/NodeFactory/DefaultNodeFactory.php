@@ -94,9 +94,7 @@ final class DefaultNodeFactory implements NodeFactory
         return $separatorNode;
     }
 
-    /**
-     * @param string[] $lines
-     */
+    /** @param string[] $lines */
     public function createBlockNode(array $lines): BlockNode
     {
         $blockNode = $this->create(NodeTypes::BLOCK, [$lines]);
@@ -105,9 +103,7 @@ final class DefaultNodeFactory implements NodeFactory
         return $blockNode;
     }
 
-    /**
-     * @param string[] $lines
-     */
+    /** @param string[] $lines */
     public function createCodeNode(array $lines): CodeNode
     {
         $codeNode = $this->create(NodeTypes::CODE, [$lines]);
@@ -140,9 +136,7 @@ final class DefaultNodeFactory implements NodeFactory
         return $anchorNode;
     }
 
-    /**
-     * @param ListItem[] $items
-     */
+    /** @param ListItem[] $items */
     public function createListNode(array $items, bool $ordered): ListNode
     {
         $listNode = $this->create(NodeTypes::LIST, [$items, $ordered]);
@@ -159,9 +153,7 @@ final class DefaultNodeFactory implements NodeFactory
         return $tableNode;
     }
 
-    /**
-     * @param string|string[]|SpanNode $span
-     */
+    /** @param string|string[]|SpanNode $span */
     public function createSpanNode(Parser $parser, $span): SpanNode
     {
         $span = $this->create(NodeTypes::SPAN, [$parser, $span]);
@@ -194,9 +186,7 @@ final class DefaultNodeFactory implements NodeFactory
         return $figureNode;
     }
 
-    /**
-     * @param string[] $options
-     */
+    /** @param string[] $options */
     public function createImageNode(string $url, array $options = []): ImageNode
     {
         $imageNode = $this->create(NodeTypes::IMAGE, [$url, $options]);
@@ -221,9 +211,7 @@ final class DefaultNodeFactory implements NodeFactory
         return $rawNode;
     }
 
-    /**
-     * @param mixed[] $data
-     */
+    /** @param mixed[] $data */
     public function createDummyNode(array $data): DummyNode
     {
         $dummyNode = $this->create(NodeTypes::DUMMY, [$data]);
@@ -264,9 +252,7 @@ final class DefaultNodeFactory implements NodeFactory
         return $sectionEndNode;
     }
 
-    /**
-     * @param mixed[] $arguments
-     */
+    /** @param mixed[] $arguments */
     private function create(string $type, array $arguments): Node
     {
         $node = $this->getNodeInstantiator($type)->create($arguments);

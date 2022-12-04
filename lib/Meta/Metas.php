@@ -16,9 +16,7 @@ class Metas
     /** @var string[] */
     private $parents = [];
 
-    /**
-     * @param MetaEntry[] $entries
-     */
+    /** @param MetaEntry[] $entries */
     public function __construct(array $entries = [])
     {
         $this->entries = $entries;
@@ -35,9 +33,7 @@ class Metas
         return $this->findByTitle($link);
     }
 
-    /**
-     * @return MetaEntry[]
-     */
+    /** @return MetaEntry[] */
     public function getAll(): array
     {
         return $this->entries;
@@ -98,17 +94,13 @@ class Metas
         return null;
     }
 
-    /**
-     * @param MetaEntry[] $metaEntries
-     */
+    /** @param MetaEntry[] $metaEntries */
     public function setMetaEntries(array $metaEntries): void
     {
         $this->entries = $metaEntries;
     }
 
-    /**
-     * @param string[] $links
-     */
+    /** @param string[] $links */
     private function doesLinkExist(array $links, string $link): bool
     {
         foreach ($links as $name => $url) {

@@ -73,9 +73,7 @@ class Parser
         return $this->configuration->getNodeFactory($this->environment);
     }
 
-    /**
-     * @param mixed[] $parameters
-     */
+    /** @param mixed[] $parameters */
     public function renderTemplate(string $template, array $parameters = []): string
     {
         return $this->configuration->getTemplateRenderer()->render($template, $parameters);
@@ -149,9 +147,7 @@ class Parser
         return $this;
     }
 
-    /**
-     * @param string|string[]|SpanNode $span
-     */
+    /** @param string|string[]|SpanNode $span */
     public function createSpanNode($span): SpanNode
     {
         return $this->getNodeFactory()->createSpanNode($this, $span);

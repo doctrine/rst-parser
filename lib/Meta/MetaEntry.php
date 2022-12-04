@@ -87,9 +87,7 @@ class MetaEntry
         return $this->title;
     }
 
-    /**
-     * @return string[][]|string[][][]
-     */
+    /** @return string[][]|string[][][] */
     public function getTitles(): array
     {
         return $this->titles;
@@ -110,17 +108,13 @@ class MetaEntry
         return false;
     }
 
-    /**
-     * @return mixed[][]
-     */
+    /** @return mixed[][] */
     public function getTocs(): array
     {
         return $this->tocs;
     }
 
-    /**
-     * @return string[]
-     */
+    /** @return string[] */
     public function getDepends(): array
     {
         return $this->depends;
@@ -161,9 +155,7 @@ class MetaEntry
         unset($this->depends[$key]);
     }
 
-    /**
-     * @return string[]
-     */
+    /** @return string[] */
     public function getLinks(): array
     {
         return $this->links;

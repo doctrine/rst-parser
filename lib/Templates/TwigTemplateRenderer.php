@@ -18,9 +18,7 @@ final class TwigTemplateRenderer implements TemplateRenderer
         $this->configuration = $configuration;
     }
 
-    /**
-     * @param mixed[] $parameters
-     */
+    /** @param mixed[] $parameters */
     public function render(string $template, array $parameters = []): string
     {
         return rtrim($this->configuration->getTemplateEngine()->render($template, $parameters), "\n");

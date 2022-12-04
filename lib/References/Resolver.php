@@ -9,9 +9,7 @@ use Doctrine\RST\Meta\MetaEntry;
 
 final class Resolver
 {
-    /**
-     * @param string[] $attributes
-     */
+    /** @param string[] $attributes */
     public function resolve(
         Environment $environment,
         string $data,
@@ -32,9 +30,7 @@ final class Resolver
         return null;
     }
 
-    /**
-     * @param string[] $attributes
-     */
+    /** @param string[] $attributes */
     private function resolveFileReference(
         Environment $environment,
         string $data,
@@ -55,9 +51,7 @@ final class Resolver
         return $this->createResolvedReference($file, $environment, $entry, $attributes);
     }
 
-    /**
-     * @param string[] $attributes
-     */
+    /** @param string[] $attributes */
     private function resolveAnchorReference(
         Environment $environment,
         string $data,
@@ -72,9 +66,7 @@ final class Resolver
         return null;
     }
 
-    /**
-     * @param string[] $attributes
-     */
+    /** @param string[] $attributes */
     private function createResolvedReference(
         ?string $file,
         Environment $environment,

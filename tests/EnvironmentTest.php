@@ -54,9 +54,7 @@ class EnvironmentTest extends TestCase
         self::assertSame($environment->canonicalUrl('../../index.rst'), 'index.rst');
     }
 
-    /**
-     * @dataProvider getMissingSectionTests
-     */
+    /** @dataProvider getMissingSectionTests */
     public function testResolveForMissingSection(string $expectedMessage, ?string $currentFilename): void
     {
         $this->expectException(Throwable::class);
@@ -71,9 +69,7 @@ class EnvironmentTest extends TestCase
         $environment->resolve('doc', '/path/to/unknown/doc');
     }
 
-    /**
-     * @return mixed[]
-     */
+    /** @return mixed[] */
     public function getMissingSectionTests(): iterable
     {
         yield 'no_current_filename' => [
@@ -87,17 +83,13 @@ class EnvironmentTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider getTextsAndSlugs
-     */
+    /** @dataProvider getTextsAndSlugs */
     public function testSlugify(string $text, string $expectedSlug): void
     {
         self::assertSame($expectedSlug, Environment::slugify($text));
     }
 
-    /**
-     * @return iterable<string, array{string, string}>
-     */
+    /** @return iterable<string, array{string, string}> */
     public function getTextsAndSlugs(): iterable
     {
         yield 'empty string' => [

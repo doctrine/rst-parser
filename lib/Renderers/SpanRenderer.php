@@ -18,15 +18,11 @@ interface SpanRenderer
 
     public function literal(string $text): string;
 
-    /**
-     * @param mixed[] $attributes
-     */
+    /** @param mixed[] $attributes */
     public function link(?string $url, string $title, array $attributes = []): string;
 
     public function escape(string $span): string;
 
-    /**
-     * @param string[] $value
-     */
+    /** @param string[] $value */
     public function reference(ResolvedReference $reference, array $value): string;
 }

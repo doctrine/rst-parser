@@ -14,13 +14,9 @@ interface Format
 
     public function getFileExtension(): string;
 
-    /**
-     * @return Directive[]
-     */
+    /** @return Directive[] */
     public function getDirectives(): array;
 
-    /**
-     * @return NodeRendererFactory[]
-     */
+    /** @return NodeRendererFactory[] */
     public function getNodeRendererFactories(): array;
 }

@@ -10,9 +10,7 @@ use PHPUnit\Framework\TestCase;
 
 class TableParserTest extends TestCase
 {
-    /**
-     * @dataProvider getLineSeparatorsData
-     */
+    /** @dataProvider getLineSeparatorsData */
     public function testParseTableLineSeparator(string $inputLine, ?Parser\TableSeparatorLineConfig $expectedConfig): void
     {
         $tableParser           = new Parser\TableParser();
@@ -22,9 +20,7 @@ class TableParserTest extends TestCase
         self::assertEquals($expectedConfig, $actualSeparatorConfig);
     }
 
-    /**
-     * @return mixed[]
-     */
+    /** @return mixed[] */
     public function getLineSeparatorsData(): array
     {
         return [

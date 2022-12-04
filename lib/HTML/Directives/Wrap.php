@@ -33,9 +33,7 @@ final class Wrap extends SubDirective
         return $this->class;
     }
 
-    /**
-     * @param string[] $options
-     */
+    /** @param string[] $options */
     public function processSub(
         Parser $parser,
         ?Node $document,

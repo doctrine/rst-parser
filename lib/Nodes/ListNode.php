@@ -14,9 +14,7 @@ class ListNode extends Node
     /** @var ListItem[] */
     private $items;
 
-    /**
-     * @param ListItem[] $items
-     */
+    /** @param ListItem[] $items */
     public function __construct(array $items, bool $ordered)
     {
         parent::__construct();
@@ -25,9 +23,7 @@ class ListNode extends Node
         $this->ordered = $ordered;
     }
 
-    /**
-     * @return ListItem[]
-     */
+    /** @return ListItem[] */
     public function getItems(): array
     {
         return $this->items;

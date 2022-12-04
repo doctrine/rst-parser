@@ -19,9 +19,7 @@ final class SpanToken
     /** @var string[] */
     private $token;
 
-    /**
-     * @param string[] $token
-     */
+    /** @param string[] $token */
     public function __construct(string $type, string $id, array $token)
     {
         $this->type          = $type;
@@ -45,9 +43,7 @@ final class SpanToken
         return $this->token[$key] ?? '';
     }
 
-    /**
-     * @return string[]
-     */
+    /** @return string[] */
     public function getTokenData(): array
     {
         return $this->token;

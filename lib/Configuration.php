@@ -126,25 +126,19 @@ class Configuration
         $this->templateRenderer = $templateRenderer;
     }
 
-    /**
-     * @return mixed|TwigEnvironment
-     */
+    /** @return mixed|TwigEnvironment */
     public function getTemplateEngine()
     {
         return $this->templateEngineAdapter->getTemplateEngine();
     }
 
-    /**
-     * @return string[]
-     */
+    /** @return string[] */
     public function getCustomTemplateDirs(): array
     {
         return $this->customTemplateDirs;
     }
 
-    /**
-     * @param string[] $customTemplateDirs
-     */
+    /** @param string[] $customTemplateDirs */
     public function setCustomTemplateDirs(array $customTemplateDirs): void
     {
         $this->customTemplateDirs = $customTemplateDirs;
@@ -232,17 +226,13 @@ class Configuration
         return $this->warningsAsError;
     }
 
-    /**
-     * @psalm-return self::OUTPUT_FORMAT_*
-     */
+    /** @psalm-return self::OUTPUT_FORMAT_* */
     final public function getOutputFormat(): string
     {
         return $this->outputFormat;
     }
 
-    /**
-     * @psalm-param self::OUTPUT_FORMAT_* $outputFormat
-     */
+    /** @psalm-param self::OUTPUT_FORMAT_* $outputFormat */
     final public function setOutputFormat(string $outputFormat): void
     {
         $this->outputFormat = $outputFormat;

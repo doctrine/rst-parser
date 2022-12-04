@@ -28,7 +28,7 @@ class LinkParserTest extends TestCase
 
     public function testLinkWithUnderscore(): void
     {
-        $rst = <<<EOF
+        $rst = <<<'EOF'
 has_underscore_
 
 .. _has_underscore: https://www.google.com
@@ -44,7 +44,7 @@ EOF;
         $this->configuration->setIgnoreInvalidReferences(true);
         $this->configuration->abortOnError(false);
 
-        $rst = <<<EOF
+        $rst = <<<'EOF'
 does_not_exist_
 
 `Does Not Exist1`_
@@ -61,7 +61,7 @@ EOF;
 
     public function testLinkWithParenthesis(): void
     {
-        $rst = <<<EOF
+        $rst = <<<'EOF'
 Example_, `Example Web Site`_, Example (`Web Site`_), and Example (Link_)
 
 .. _Example: http://www.example.com/

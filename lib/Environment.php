@@ -184,17 +184,13 @@ class Environment
         $this->invalidLinks[] = $invalidLink;
     }
 
-    /**
-     * @return InvalidLink[]
-     */
+    /** @return InvalidLink[] */
     public function getInvalidLinks(): array
     {
         return $this->invalidLinks;
     }
 
-    /**
-     * @return string[]|null
-     */
+    /** @return string[]|null */
     public function found(string $section, string $data): ?array
     {
         if (isset($this->references[$section])) {
@@ -210,9 +206,7 @@ class Environment
         return null;
     }
 
-    /**
-     * @param mixed $value
-     */
+    /** @param mixed $value */
     public function setVariable(string $variable, $value): void
     {
         $this->variables[$variable] = $value;
@@ -280,9 +274,7 @@ class Environment
         $this->anonymous[] = trim(strtolower($name));
     }
 
-    /**
-     * @return string[]
-     */
+    /** @return string[] */
     public function getLinks(): array
     {
         return $this->links;
@@ -337,9 +329,7 @@ class Environment
         $this->dependencies[] = $dependencyName;
     }
 
-    /**
-     * @return string[]
-     */
+    /** @return string[] */
     public function getDependencies(): array
     {
         return $this->dependencies;
@@ -463,9 +453,7 @@ class Environment
         return $this->currentTitleLevel;
     }
 
-    /**
-     * @return string[]
-     */
+    /** @return string[] */
     public function getTitleLetters(): array
     {
         return $this->titleLetters;

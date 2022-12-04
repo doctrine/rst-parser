@@ -9,19 +9,12 @@
     <!-- Ignore warnings, show progress of the run and show sniff names -->
     <arg value="nps"/>
 
+    <config name="php_version" value="70200"/>
+
     <file>lib</file>
     <file>tests</file>
 
     <exclude-pattern>tests/*/output/metas.php</exclude-pattern>
 
-    <rule ref="Doctrine">
-        <exclude name="SlevomatCodingStandard.ControlStructures.RequireNullCoalesceEqualOperator.RequiredNullCoalesceEqualOperator"/>
-    </rule>
-
-    <!-- Disable the rules that will require PHP 7.4 -->
-    <rule ref="SlevomatCodingStandard.TypeHints.PropertyTypeHint">
-        <properties>
-            <property name="enableNativeTypeHint" value="false"/>
-        </properties>
-    </rule>
+    <rule ref="Doctrine" />
 </ruleset>

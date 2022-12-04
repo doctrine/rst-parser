@@ -26,9 +26,7 @@ final class CodeBlock extends Directive
         return 'code-block';
     }
 
-    /**
-     * @param string[] $options
-     */
+    /** @param string[] $options */
     public function process(
         Parser $parser,
         ?Node $node,

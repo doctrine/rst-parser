@@ -39,9 +39,7 @@ class FunctionalTest extends TestCase
         setlocale(LC_ALL, 'en_US.utf8');
     }
 
-    /**
-     * @dataProvider getFunctionalTests
-     */
+    /** @dataProvider getFunctionalTests */
     public function testFunctional(
         string $file,
         Parser $parser,
@@ -81,9 +79,7 @@ class FunctionalTest extends TestCase
         );
     }
 
-    /**
-     * @return mixed[]
-     */
+    /** @return mixed[] */
     public function getFunctionalTests(): array
     {
         $finder = new Finder();

@@ -216,9 +216,7 @@ class ScannerTest extends TestCase
         $this->scanner = new Scanner('rst', '/directory', $this->metas, $this->finder);
     }
 
-    /**
-     * @return MockObject|SplFileInfo
-     */
+    /** @return MockObject|SplFileInfo */
     private function addFileMockToFinder(string $relativePath)
     {
         $fileInfo = $this->createMock(SplFileInfo::class);
@@ -231,9 +229,7 @@ class ScannerTest extends TestCase
         return $fileInfo;
     }
 
-    /**
-     * @return MockObject|MetaEntry
-     */
+    /** @return MockObject|MetaEntry */
     private function createMetaEntryMock(string $filename)
     {
         $meta = $this->createMock(MetaEntry::class);

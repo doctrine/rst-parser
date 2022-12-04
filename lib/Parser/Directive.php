@@ -18,9 +18,7 @@ final class Directive
     /** @var mixed[] */
     private $options = [];
 
-    /**
-     * @param mixed[] $options
-     */
+    /** @param mixed[] $options */
     public function __construct(string $variable, string $name, string $data, array $options = [])
     {
         $this->variable = $variable;
@@ -44,17 +42,13 @@ final class Directive
         return $this->data;
     }
 
-    /**
-     * @return mixed[]
-     */
+    /** @return mixed[] */
     public function getOptions(): array
     {
         return $this->options;
     }
 
-    /**
-     * @param mixed $value
-     */
+    /** @param mixed $value */
     public function setOption(string $key, $value): void
     {
         $this->options[$key] = $value;
