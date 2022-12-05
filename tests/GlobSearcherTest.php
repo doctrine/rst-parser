@@ -32,7 +32,7 @@ class GlobSearcherTest extends TestCase
 
         $files = $this->globSearcher->globSearch($environment, '*');
 
-        self::assertCount(7, $files);
+        self::assertCount(15, $files);
 
         $expected = [
             '/orphaned/file',
@@ -42,6 +42,14 @@ class GlobSearcherTest extends TestCase
             '/wildcards/feature1',
             '/wildcards/feature2',
             '/wildcards/index',
+            '/level1-1/index',
+            '/level1-2/index',
+            '/level1-1/level2-1/index',
+            '/level1-1/level2-2/index',
+            '/level1-1/level2-1/level3-1/index',
+            '/level1-1/level2-1/level3-2/index',
+            '/level1-1/level2-1/level3-1/level4-1/index',
+            '/level1-1/level2-1/level3-1/level4-2/index',
         ];
 
         sort($expected);
