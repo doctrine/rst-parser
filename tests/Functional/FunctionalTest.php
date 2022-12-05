@@ -52,7 +52,7 @@ class FunctionalTest extends TestCase
         string $file,
         Parser $parser,
         string $format,
-        string $expected,
+        string $expected
     ): void {
         $configuration = new Configuration();
         $configuration->setFileExtension(Format::HTML);
