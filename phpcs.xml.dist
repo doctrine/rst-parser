@@ -15,6 +15,7 @@
     <file>tests</file>
 
     <exclude-pattern>tests/*/output/metas.php</exclude-pattern>
+    <exclude-pattern>tests/*/output/*/metas.php</exclude-pattern>
 
     <rule ref="Doctrine" />
 </ruleset>

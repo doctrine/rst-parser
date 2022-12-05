@@ -13,6 +13,7 @@ use Exception;
 use Gajus\Dindent\Indenter;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 use Throwable;
 
 use function array_map;
@@ -36,15 +37,51 @@ class FunctionalTest extends TestCase
 {
     private const RENDER_DOCUMENT_FILES = ['main-directive'];
     private const SKIP_INDENTER_FILES   = ['code-block-diff'];
-    private const RENDER_ALL            = ['toctree'];
 
     protected function setUp(): void
     {
         setlocale(LC_ALL, 'en_US.utf8');
     }
 
-    /** @dataProvider getFunctionalTests */
-    public function testFunctional(
+    /**
+     * @param Format::* $format
+     *
+     * @dataProvider getBuildTests
+     */
+    public function testBuild(
+        string $file,
+        Parser $parser,
+        string $format,
+        string $expected,
+    ): void {
+        $configuration = new Configuration();
+        $configuration->setFileExtension(Format::HTML);
+        $builder = new Builder();
+
+        $builder->build(__DIR__ . '/tests/build/' . $file, __DIR__ . '/output/build/' . $file);
+
+        $outputFileFinder = new Finder();
+        $outputFileFinder
+            ->files()
+            ->in(__DIR__ . '/output/build/' . $file)
+            ->name('index.html');
+
+        foreach ($outputFileFinder as $outputFile) {
+            $rendered = $outputFile->getContents();
+            self::assertSame(
+                $this->trimTrailingWhitespace($expected),
+                $this->trimTrailingWhitespace($rendered)
+            );
+        }
+    }
+
+    /**
+     * @param 'render'|'renderAll' $renderMethod
+     * @param Format::*            $format
+     *
+     * @dataProvider getRenderTests
+     */
+    public function testRender(
         string $file,
         Parser $parser,
         string $renderMethod,
@@ -68,121 +105,129 @@ class FunctionalTest extends TestCase
             $this->expectExceptionMessage($expectedExceptionMessage);
         }
 
-        if ($renderMethod === 'renderAll') {
-            $configuration = new Configuration();
-            $configuration->setFileExtension(Format::HTML);
-            $builder = new Builder();
+        $document = $parser->parse($rst);
 
-            $builder->build(__DIR__ . '/tests/' . $file, __DIR__ . '/output/' . $file);
+        $rendered = $document->$renderMethod();
 
-            $outputFileFinder = new Finder();
-            $outputFileFinder
-                ->files()
-                ->in(__DIR__ . '/output/' . $file)
-                ->name('index.html');
-
-            foreach ($outputFileFinder as $outputFile) {
-                $rendered = $outputFile->getContents();
-                self::assertSame(
-                    $this->trimTrailingWhitespace($expected),
-                    $this->trimTrailingWhitespace($rendered)
-                );
-            }
-        } else {
-            $document = $parser->parse($rst);
-
-            $rendered = $document->$renderMethod();
-
-            if ($format === Format::HTML && $useIndenter) {
-                $indenter = new Indenter();
-                $rendered = $indenter->indent($rendered);
-            }
-
-            self::assertSame(
-                $this->trimTrailingWhitespace($expected),
-                $this->trimTrailingWhitespace($rendered)
-            );
+        if ($format === Format::HTML && $useIndenter) {
+            $indenter = new Indenter();
+            $rendered = $indenter->indent($rendered);
         }
+
+        self::assertSame(
+            $this->trimTrailingWhitespace($expected),
+            $this->trimTrailingWhitespace($rendered)
+        );
     }
 
-    /** @return array<string, array{string, Parser, string, string, string, string, bool}> */
-    public function getFunctionalTests(): array
+    /** @return iterable<string, array{string, Parser, 'render'|'renderDocument', Format::*, string, string, bool}> */
+    public function getRenderTests(): iterable
     {
-        $finder = new Finder();
-        $finder
-            ->directories()
-            ->in(__DIR__ . '/tests');
-
         $tests = [];
 
-        foreach ($finder as $dir) {
-            $rstFilename   = $dir->getPathname() . '/' . $dir->getFilename() . '.rst';
-            $indexFilename = $dir->getPathname() . '/index.rst';
-            if (file_exists($rstFilename)) {
-                $rst = file_get_contents($rstFilename);
-            } elseif (file_exists($indexFilename)) {
-                $rst = file_get_contents($indexFilename);
-            } else {
-                throw new Exception(sprintf('Could not find functional test file "%s" or "%s"', $rstFilename, $indexFilename));
+        foreach ($this->findSubDirectories(__DIR__ . '/tests/render') as $dir) {
+            $rstFilename = $dir->getPathname() . '/' . $dir->getFilename() . '.rst';
+            if (! file_exists($rstFilename)) {
+                throw new Exception(sprintf('Could not find functional test file "%s"', $rstFilename));
             }
 
+            $rst = file_get_contents($rstFilename);
             assert(is_string($rst));
             $basename = $dir->getFilename();
 
-            $formats = [Format::HTML, Format::LATEX];
-
-            $fileFinder = new Finder();
-            $fileFinder
-                ->files()
-                ->in($dir->getPathname())
-                ->notName('*.rst');
-            foreach ($fileFinder as $file) {
+            foreach ($this->findRstFiles($dir) as $file) {
                 $format = $file->getExtension();
-                if (! in_array($format, $formats, true)) {
+                if (! in_array($format, [Format::HTML, Format::LATEX], true)) {
                     throw new Exception(sprintf('Unexpected file extension in "%s"', $file->getPathname()));
                 }
 
-                if (
-                    strpos($file->getFilename(), $dir->getFilename()) !== 0
-                    && strpos($file->getFilename(), 'index') !== 0
-                ) {
-                    throw new Exception(sprintf('Test filename "%s" does not match directory name or index', $file->getPathname()));
+                if (strpos($file->getFilename(), $dir->getFilename()) !== 0) {
+                    throw new Exception(sprintf('Test filename "%s" does not match directory name', $file->getPathname()));
                 }
-
-                $expected = $file->getContents();
-
-                $configuration = new Configuration();
-                $configuration->setFileExtension($format);
-                $configuration->silentOnError(true);
-
-                $kernel = new Kernel($configuration);
-                $parser = new Parser($kernel);
-
-                $environment = $parser->getEnvironment();
-                $environment->setCurrentDirectory(__DIR__ . '/tests/' . $basename);
 
                 $renderMethod = in_array($basename, self::RENDER_DOCUMENT_FILES, true)
                     ? 'renderDocument'
                     : 'render';
 
-                $renderMethod = in_array($basename, self::RENDER_ALL, true)
-                    ? 'renderAll'
-                    : $renderMethod;
-
-                $useIndenter = ! in_array($basename, self::SKIP_INDENTER_FILES, true);
-
-                if (
-                    ($renderMethod === 'renderAll' && ! file_exists($indexFilename))
-                    || ($renderMethod !== 'renderAll' && ! file_exists($rstFilename))
-                ) {
-                    throw new Exception(sprintf('The rendering method "%s" expects file "%s" to exist', $renderMethod, $renderMethod === 'renderAll' ? $indexFilename : $rstFilename));
-                }
-
-                $tests[$basename . '_' . $format] = [$basename, $parser, $renderMethod, $format, $rst, trim($expected), $useIndenter];
+                yield $basename . '_' . $format => [
+                    $basename,
+                    $this->getParser($format, __DIR__ . '/tests/render/' . $basename),
+                    $renderMethod,
+                    $format,
+                    $rst,
+                    trim($file->getContents()),
+                    ! in_array($basename, self::SKIP_INDENTER_FILES, true),
+                ];
             }
         }
+    }
 
-        return $tests;
+    /** @return iterable<string, array{string, Parser, Format::*, string}> */
+    public function getBuildTests(): iterable
+    {
+        foreach ($this->findSubDirectories(__DIR__ . '/tests/build') as $dir) {
+            $rstFilename = $dir->getPathname() . '/index.rst';
+            if (! file_exists($rstFilename)) {
+                throw new Exception(sprintf('Could not find functional test file "%s"', $rstFilename));
+            }
+
+            $basename = $dir->getFilename();
+
+            foreach ($this->findRstFiles($dir) as $file) {
+                $format = $file->getExtension();
+                if (! in_array($format, [Format::HTML, Format::LATEX], true)) {
+                    throw new Exception(sprintf('Unexpected file extension in "%s"', $file->getPathname()));
+                }
+
+                if (strpos($file->getFilename(), 'index') !== 0) {
+                    throw new Exception(sprintf('Test filename "%s" does not match index', $file->getPathname()));
+                }
+
+                yield $basename . '_' . $format => [
+                    $basename,
+                    $this->getParser($format, __DIR__ . '/tests/build/' . $basename),
+                    $format,
+                    trim($file->getContents()),
+                ];
+            }
+        }
+    }
+
+    /** @return iterable<SplFileInfo> */
+    private function findSubDirectories(string $directory): iterable
+    {
+        $finder = new Finder();
+
+        return $finder
+            ->directories()
+            ->in($directory);
+    }
+
+    /** @return iterable<SplFileInfo> */
+    private function findRstFiles(SplFileInfo $dir): iterable
+    {
+        $fileFinder = new Finder();
+
+        return $fileFinder
+            ->files()
+            ->in($dir->getPathname())
+            ->notName('*.rst');
+    }
+
+    /** @param Format::* $format */
+    private function getParser(string $format, string $currentDirectory): Parser
+    {
+        $configuration = new Configuration();
+        $configuration->setFileExtension($format);
+        $configuration->silentOnError(true);
+
+        $kernel = new Kernel($configuration);
+        $parser =  new Parser($kernel);
+
+        $environment = $parser->getEnvironment();
+        $environment->setCurrentDirectory($currentDirectory);
+
+        return $parser;
     }
 
     private function trimTrailingWhitespace(string $string): string
