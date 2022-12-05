@@ -1,6 +1,8 @@
 Title
 =====
 
+
+
 .. toctree::
 
     subdir/toctree
@@ -19,25 +21,36 @@ maxdepth 1 TOC:
 .. toctree::
     :depth: 1
 
-    index
+    level1-1/index
+    level1-2/index
 
 maxdepth 2 TOC:
 
 .. toctree::
     :maxdepth: 2
 
-    index
+    level1-1/index
+    level1-2/index
 
 maxdepth 3 TOC:
 
 .. toctree::
     :maxdepth: 3
 
-    index
+    level1-1/index
+    level1-2/index
 
 maxdepth 4 TOC:
 
 .. toctree::
     :maxdepth: 4
 
-    index
+    level1-1/index
+    level1-2/index
+
+no maxdepth TOC:
+
+.. toctree::
+
+    level1-1/index
+    level1-2/index
