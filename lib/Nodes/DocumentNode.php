@@ -52,9 +52,7 @@ class DocumentNode extends Node
         return $this->configuration;
     }
 
-    /**
-     * @return Node[]
-     */
+    /** @return Node[] */
     public function getHeaderNodes(): array
     {
         return $this->headerNodes;
@@ -69,9 +67,7 @@ class DocumentNode extends Node
         return $renderedDocument;
     }
 
-    /**
-     * @return Node[]
-     */
+    /** @return Node[] */
     public function getNodes(?callable $function = null): array
     {
         $nodes = [];
@@ -102,9 +98,7 @@ class DocumentNode extends Node
         return null;
     }
 
-    /**
-     * @return mixed[]
-     */
+    /** @return mixed[] */
     public function getTocs(): array
     {
         $tocs = [];
@@ -127,9 +121,7 @@ class DocumentNode extends Node
         return $tocs;
     }
 
-    /**
-     * @return string[][]
-     */
+    /** @return string[][] */
     public function getTitles(): array
     {
         $titles = [];
@@ -158,9 +150,7 @@ class DocumentNode extends Node
         return $titles;
     }
 
-    /**
-     * @param string|Node $node
-     */
+    /** @param string|Node $node */
     public function addNode($node): void
     {
         if (is_string($node)) {

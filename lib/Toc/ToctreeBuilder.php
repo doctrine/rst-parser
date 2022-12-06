@@ -74,9 +74,7 @@ final class ToctreeBuilder
         return $toctreeFiles;
     }
 
-    /**
-     * @return string[]
-     */
+    /** @return string[] */
     private function parseToctreeFiles(Node $node): array
     {
         return array_filter(array_map('trim', explode(
@@ -87,9 +85,7 @@ final class ToctreeBuilder
         });
     }
 
-    /**
-     * @param mixed[] $options
-     */
+    /** @param mixed[] $options */
     private function isGlob(array $options, string $file): bool
     {
         return isset($options['glob']) && strpos($file, '*') !== false;

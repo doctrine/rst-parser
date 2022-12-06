@@ -24,9 +24,7 @@ final class TwigEnvironmentFactory
         ]);
     }
 
-    /**
-     * @return string[]
-     */
+    /** @return string[] */
     private static function getTemplateDirs(Configuration $configuration): array
     {
         $themeDirs     = [];

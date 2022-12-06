@@ -28,9 +28,7 @@ final class LaTeXFormat implements Format
         return Format::LATEX;
     }
 
-    /**
-     * @return Directive[]
-     */
+    /** @return Directive[] */
     public function getDirectives(): array
     {
         return [
@@ -44,9 +42,7 @@ final class LaTeXFormat implements Format
         ];
     }
 
-    /**
-     * @return NodeRendererFactory[]
-     */
+    /** @return NodeRendererFactory[] */
     public function getNodeRendererFactories(): array
     {
         return [

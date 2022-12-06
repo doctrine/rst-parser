@@ -27,9 +27,7 @@ final class TableSeparatorLineConfig
     /** @var string */
     private $rawContent;
 
-    /**
-     * @param int[][] $partRanges
-     */
+    /** @param int[][] $partRanges */
     public function __construct(bool $isHeader, string $tableType, array $partRanges, string $lineCharacter, string $rawContent)
     {
         if (! in_array($tableType, [TableNode::TYPE_SIMPLE, TableNode::TYPE_PRETTY], true)) {

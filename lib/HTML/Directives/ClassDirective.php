@@ -20,9 +20,7 @@ final class ClassDirective extends SubDirective
         return 'class';
     }
 
-    /**
-     * @param string[] $options
-     */
+    /** @param string[] $options */
     public function processSub(
         Parser $parser,
         ?Node $document,

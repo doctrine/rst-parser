@@ -20,9 +20,7 @@ use Doctrine\RST\Parser;
  */
 abstract class SubDirective extends Directive
 {
-    /**
-     * @param string[] $options
-     */
+    /** @param string[] $options */
     final public function process(
         Parser $parser,
         ?Node $node,
@@ -73,9 +71,7 @@ abstract class SubDirective extends Directive
         }
     }
 
-    /**
-     * @param string[] $options
-     */
+    /** @param string[] $options */
     public function processSub(
         Parser $parser,
         ?Node $document,

@@ -54,9 +54,7 @@ final class FieldOption
         return $this->offset;
     }
 
-    /**
-     * @return true|string
-     */
+    /** @return true|string */
     public function getBody()
     {
         return trim($this->body) === '' ? true : $this->body;

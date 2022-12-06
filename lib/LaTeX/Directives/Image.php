@@ -25,9 +25,7 @@ final class Image extends Directive
         return 'image';
     }
 
-    /**
-     * @param string[] $options
-     */
+    /** @param string[] $options */
     public function processNode(
         Parser $parser,
         string $variable,

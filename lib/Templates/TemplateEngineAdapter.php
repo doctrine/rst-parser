@@ -6,13 +6,9 @@ namespace Doctrine\RST\Templates;
 
 interface TemplateEngineAdapter
 {
-    /**
-     * @return mixed
-     */
+    /** @return mixed */
     public function getTemplateEngine();
 
-    /**
-     * @param mixed[] $parameters
-     */
+    /** @param mixed[] $parameters */
     public function render(string $template, array $parameters = []): string;
 }

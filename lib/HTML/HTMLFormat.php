@@ -28,9 +28,7 @@ final class HTMLFormat implements Format
         return Format::HTML;
     }
 
-    /**
-     * @return Directive[]
-     */
+    /** @return Directive[] */
     public function getDirectives(): array
     {
         return [
@@ -46,9 +44,7 @@ final class HTMLFormat implements Format
         ];
     }
 
-    /**
-     * @return NodeRendererFactory[]
-     */
+    /** @return NodeRendererFactory[] */
     public function getNodeRendererFactories(): array
     {
         return [

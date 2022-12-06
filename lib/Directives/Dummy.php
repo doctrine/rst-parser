@@ -14,9 +14,7 @@ final class Dummy extends Directive
         return 'dummy';
     }
 
-    /**
-     * @param string[] $options
-     */
+    /** @param string[] $options */
     public function processNode(
         Parser $parser,
         string $variable,

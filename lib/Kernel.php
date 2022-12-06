@@ -38,6 +38,7 @@ class Kernel
             new Directives\CodeBlock(),
             new Directives\Raw(),
             new Directives\Replace(),
+            new Directives\Tip(),
             new Directives\Toctree(),
         ], $this->configuration->getFormat()->getDirectives(), $directives);
 
@@ -52,17 +53,13 @@ class Kernel
         return $this->configuration;
     }
 
-    /**
-     * @return Directive[]
-     */
+    /** @return Directive[] */
     public function getDirectives(): array
     {
         return $this->directives;
     }
 
-    /**
-     * @return Reference[]
-     */
+    /** @return Reference[] */
     public function getReferences(): array
     {
         return $this->references;
@@ -76,9 +73,7 @@ class Kernel
     {
     }
 
-    /**
-     * @return Doc[]
-     */
+    /** @return Doc[] */
     protected function createReferences(): array
     {
         return [];

@@ -112,9 +112,7 @@ final class DocumentParser
     /** @var FieldOption|null */
     private $fieldOption = null;
 
-    /**
-     * @param Directive[] $directives
-     */
+    /** @param Directive[] $directives */
     public function __construct(
         Parser $parser,
         Environment $environment,
