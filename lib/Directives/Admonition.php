@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace Doctrine\RST\Directives;
 
 use Doctrine\RST\Nodes\Node;
-use Doctrine\RST\Nodes\WrapperNode;
 use Doctrine\RST\Parser;
+use RuntimeException;
 
-use function sprintf;
+use function count;
+use function explode;
 
 class Admonition extends SubDirective
 {
@@ -16,20 +17,12 @@ class Admonition extends SubDirective
     private $name;
 
     /** @var string */
-    private $backgroundColor;
+    private $text;
 
-    /** @var string */
-    private $textColor;
-
-    /** @var string */
-    private $icon;
-
-    public function __construct(string $name, string $backgroundColor, string $textColor, string $icon)
+    public function __construct(string $name, string $text)
     {
-        $this->name            = $name;
-        $this->backgroundColor = $backgroundColor;
-        $this->textColor       = $textColor;
-        $this->icon            = $icon;
+        $this->name = $name;
+        $this->text = $text;
     }
 
     public function getName(): string
@@ -45,12 +38,25 @@ class Admonition extends SubDirective
         string $data,
         array $options
     ): ?Node {
-        return new WrapperNode($document, sprintf(
-            '<div class="alert %s-admonition %s %s border"><table width="100%%"><tr><td width="10" class="align-top"><i class="%s mr-2"></i></td><td>',
-            $this->name,
-            $this->backgroundColor,
-            $this->textColor,
-            $this->icon
-        ), '</td></tr></table></div>');
+        if ($document === null) {
+            throw new RuntimeException('Content expected, none found.');
+        }
+
+        $wrapperDiv = $parser->renderTemplate(
+            'directives/admonition.html.twig',
+            [
+                'name' => $this->name,
+                'text' => $this->text,
+                'class' => $options['class'] ?? null,
+            ]
+        );
+
+        $wrapper = explode('|||', $wrapperDiv, 2);
+
+        if (count($wrapper) < 2) {
+            throw new RuntimeException('Template did not contain a mark for the wrapping position split (|||)');
+        }
+
+        return $parser->getNodeFactory()->createWrapperNode($document, $wrapper[0], $wrapper[1]);
     }
 }

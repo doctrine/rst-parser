@@ -8,6 +8,6 @@ class Tip extends Admonition
 {
     public function __construct()
     {
-        parent::__construct('tip', 'bg-success', 'text-light', 'fas fa-question-circle');
+        parent::__construct('tip', 'Tip');
     }
 }
