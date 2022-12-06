@@ -299,6 +299,7 @@ class Configuration
             $this->createNodeInstantiator($environment, NodeTypes::DOCUMENT, Nodes\DocumentNode::class),
             $this->createNodeInstantiator($environment, NodeTypes::SPAN, Nodes\SpanNode::class),
             $this->createNodeInstantiator($environment, NodeTypes::TOC, Nodes\TocNode::class),
+            $this->createNodeInstantiator($environment, NodeTypes::CONTENTS, Nodes\ContentsNode::class),
             $this->createNodeInstantiator($environment, NodeTypes::TITLE, Nodes\TitleNode::class),
             $this->createNodeInstantiator($environment, NodeTypes::SEPARATOR, Nodes\SeparatorNode::class),
             $this->createNodeInstantiator($environment, NodeTypes::CODE, Nodes\CodeNode::class),

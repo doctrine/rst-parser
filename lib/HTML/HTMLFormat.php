@@ -152,6 +152,15 @@ final class HTMLFormat implements Format
                     );
                 }
             ),
+            Nodes\ContentsNode::class => new CallableNodeRendererFactory(
+                function (Nodes\ContentsNode $node): HTML\Renderers\ContentsNodeRenderer {
+                    return new HTML\Renderers\ContentsNodeRenderer(
+                        $node->getEnvironment(),
+                        $node,
+                        $this->templateRenderer
+                    );
+                }
+            ),
             Nodes\DocumentNode::class => new CallableNodeRendererFactory(
                 function (Nodes\DocumentNode $node): HTML\Renderers\DocumentNodeRenderer {
                     return new HTML\Renderers\DocumentNodeRenderer(

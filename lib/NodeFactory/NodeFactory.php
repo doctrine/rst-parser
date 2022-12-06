@@ -9,6 +9,7 @@ use Doctrine\RST\Nodes\AnchorNode;
 use Doctrine\RST\Nodes\BlockNode;
 use Doctrine\RST\Nodes\CallableNode;
 use Doctrine\RST\Nodes\CodeNode;
+use Doctrine\RST\Nodes\ContentsNode;
 use Doctrine\RST\Nodes\DefinitionListNode;
 use Doctrine\RST\Nodes\DocumentNode;
 use Doctrine\RST\Nodes\DummyNode;
@@ -44,6 +45,9 @@ interface NodeFactory
      * @param string[] $options
      */
     public function createTocNode(Environment $environment, array $files, array $options): TocNode;
+
+    /** @param string[] $options */
+    public function createContentsNode(Environment $environment, array $options): ContentsNode;
 
     public function createTitleNode(Node $value, int $level, string $token): TitleNode;
 
