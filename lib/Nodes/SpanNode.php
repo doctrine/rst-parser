@@ -26,9 +26,7 @@ class SpanNode extends Node
     /** @var SpanToken[] */
     private $tokens;
 
-    /**
-     * @param string|string[]|SpanNode $span
-     */
+    /** @param string|string[]|SpanNode $span */
     public function __construct(Parser $parser, $span)
     {
         parent::__construct();
@@ -55,9 +53,7 @@ class SpanNode extends Node
         return $this->value;
     }
 
-    /**
-     * @return SpanToken[]
-     */
+    /** @return SpanToken[] */
     public function getTokens(): array
     {
         return $this->tokens;

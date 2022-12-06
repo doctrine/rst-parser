@@ -35,17 +35,13 @@ final class DefinitionListTerm
         return $this->term;
     }
 
-    /**
-     * @return SpanNode[]
-     */
+    /** @return SpanNode[] */
     public function getClassifiers(): array
     {
         return $this->classifiers;
     }
 
-    /**
-     * @return Node[]
-     */
+    /** @return Node[] */
     public function getDefinitions(): array
     {
         return $this->definitions;

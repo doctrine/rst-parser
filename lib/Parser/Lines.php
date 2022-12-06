@@ -6,9 +6,7 @@ namespace Doctrine\RST\Parser;
 
 use Iterator;
 
-/**
- * @template-implements Iterator<array-key, string>
- */
+/** @template-implements Iterator<array-key, string> */
 final class Lines implements Iterator
 {
     /** @var string[] */
@@ -17,9 +15,7 @@ final class Lines implements Iterator
     /** @var int */
     private $position = 0;
 
-    /**
-     * @param string[] $lines
-     */
+    /** @param string[] $lines */
     public function __construct(array $lines)
     {
         $this->lines = $lines;

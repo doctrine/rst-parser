@@ -146,9 +146,7 @@ final class LineDataParser
         return $list;
     }
 
-    /**
-     * @param string[] $lines
-     */
+    /** @param string[] $lines */
     public function parseDefinitionList(array $lines): DefinitionList
     {
         /** @var array{term: SpanNode, classifiers: list<SpanNode>, definition: string}|null $definitionListTerm */

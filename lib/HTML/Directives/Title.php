@@ -20,9 +20,7 @@ final class Title extends Directive
         return 'title';
     }
 
-    /**
-     * @param string[] $options
-     */
+    /** @param string[] $options */
     public function process(
         Parser $parser,
         ?Node $node,

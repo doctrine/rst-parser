@@ -11,6 +11,8 @@ use function array_merge;
 use function realpath;
 use function rtrim;
 use function str_replace;
+use function strrpos;
+use function substr;
 
 class GlobSearcher
 {
@@ -35,11 +37,15 @@ class GlobSearcher
             $globPatternPath = $currentFilePath . '/' . $globPattern;
         }
 
+        $pos             = strrpos($globPatternPath, '/');
+        $globPatternFile = $pos === false ? $globPatternPath : substr($globPatternPath, $pos + 1);
+        $globPatternPath = $pos === false ? '' : substr($globPatternPath, 0, $pos);
+
         $allFiles = [];
 
         $finder = new Finder();
-        $finder->in(rtrim($globPatternPath, '*'))
-            ->name('*.rst')
+        $finder->in($globPatternPath)
+            ->name($globPatternFile . '.rst')
             ->files();
 
         foreach ($finder as $file) {

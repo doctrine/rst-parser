@@ -35,9 +35,7 @@ class LineDataParserTest extends TestCase
         self::assertEquals($expected, $this->lineDataParser->parseLinkTarget($line));
     }
 
-    /**
-     * @return mixed[]
-     */
+    /** @return list<array{string, mixed}> */
     public function getTestLinks(): array
     {
         return [
@@ -69,9 +67,7 @@ class LineDataParserTest extends TestCase
         }
     }
 
-    /**
-     * @return array{string, string|null, true|string}[]
-     */
+    /** @return array{string, string|null, true|string}[] */
     public function getTestFieldOptions(): array
     {
         return [

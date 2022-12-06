@@ -4,4 +4,4 @@ Test the inclusion policy:
 
 .. include:: inclusion-scope-include.rst
 
-.. include:: ../../Functional/tests/include-external/include-external.rst
+.. include:: ../../Functional/tests/render/include-external/include-external.rst

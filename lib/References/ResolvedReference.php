@@ -57,25 +57,19 @@ final class ResolvedReference
         return $this->url;
     }
 
-    /**
-     * @return string[][]|string[][][]
-     */
+    /** @return string[][]|string[][][] */
     public function getTitles(): array
     {
         return $this->titles;
     }
 
-    /**
-     * @return string[]
-     */
+    /** @return string[] */
     public function getAttributes(): array
     {
         return $this->attributes;
     }
 
-    /**
-     * @param string[] $attributes
-     */
+    /** @param string[] $attributes */
     private function validateAttributes(array $attributes): void
     {
         foreach ($attributes as $attribute => $value) {

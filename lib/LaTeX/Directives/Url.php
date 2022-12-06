@@ -19,9 +19,7 @@ final class Url extends Directive
         return 'url';
     }
 
-    /**
-     * @param string[] $options
-     */
+    /** @param string[] $options */
     public function processAction(
         Parser $parser,
         string $variable,

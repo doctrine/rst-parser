@@ -1,9 +1,15 @@
 {
     "name": "doctrine/rst-parser",
     "description": "PHP library to parse reStructuredText documents and generate HTML or LaTeX documents.",
-    "keywords": ["rst", "markup", "parser", "restructuredtext", "html", "latex"],
-    "homepage": "https://github.com/doctrine/rst-parser",
     "license": "MIT",
+    "keywords": [
+        "rst",
+        "markup",
+        "parser",
+        "restructuredtext",
+        "html",
+        "latex"
+    ],
     "authors": [
         {
             "name": "Grégoire Passault",
@@ -16,6 +22,7 @@
             "homepage": "https://jwage.com"
         }
     ],
+    "homepage": "https://github.com/doctrine/rst-parser",
     "require": {
         "php": "^7.2 || ^8.0",
         "doctrine/event-manager": "^1.0",
@@ -27,12 +34,12 @@
         "twig/twig": "^2.9 || ^3.3"
     },
     "require-dev": {
-        "doctrine/coding-standard": "^8.0",
+        "doctrine/coding-standard": "^10.0",
         "gajus/dindent": "^2.0.2",
-        "phpstan/phpstan": "^0.12",
-        "phpstan/phpstan-deprecation-rules": "^0.12",
-        "phpstan/phpstan-phpunit": "^0.12",
-        "phpstan/phpstan-strict-rules": "^0.12",
+        "phpstan/phpstan": "^1.9",
+        "phpstan/phpstan-deprecation-rules": "^1.0",
+        "phpstan/phpstan-phpunit": "^1.2",
+        "phpstan/phpstan-strict-rules": "^1.4",
         "phpunit/phpunit": "^7.5 || ^8.0 || ^9.0",
         "symfony/css-selector": "4.4 || ^5.2 || ^6.0",
         "symfony/dom-crawler": "4.4 || ^5.2 || ^6.0"
@@ -48,9 +55,9 @@
         }
     },
     "config": {
-        "sort-packages": true,
         "allow-plugins": {
             "dealerdirect/phpcodesniffer-composer-installer": true
-        }
+        },
+        "sort-packages": true
     }
 }

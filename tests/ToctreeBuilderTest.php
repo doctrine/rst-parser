@@ -27,7 +27,7 @@ class ToctreeBuilderTest extends TestCase
         $node        = $this->createMock(Node::class);
         $options     = ['glob' => true];
 
-        $toc = <<<EOF
+        $toc = <<<'EOF'
 test1
 *
 test4

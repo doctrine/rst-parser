@@ -8,8 +8,6 @@ interface FormatListRenderer
 {
     public function createElement(string $text, string $prefix): string;
 
-    /**
-     * @return string[]
-     */
+    /** @return string[] */
     public function createList(bool $ordered): array;
 }

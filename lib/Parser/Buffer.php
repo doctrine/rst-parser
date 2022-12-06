@@ -13,9 +13,7 @@ final class Buffer
     /** @var string[] */
     private $lines = [];
 
-    /**
-     * @param string[] $lines
-     */
+    /** @param string[] $lines */
     public function __construct(array $lines = [])
     {
         $this->lines = $lines;
@@ -51,9 +49,7 @@ final class Buffer
         $this->lines[$key] = $line;
     }
 
-    /**
-     * @return string[]
-     */
+    /** @return string[] */
     public function getLines(): array
     {
         return $this->lines;

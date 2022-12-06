@@ -21,9 +21,7 @@ final class Meta extends Directive
         return 'meta';
     }
 
-    /**
-     * @param string[] $options
-     */
+    /** @param string[] $options */
     public function process(
         Parser $parser,
         ?Node $node,

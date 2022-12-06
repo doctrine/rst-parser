@@ -28,9 +28,7 @@ final class InternalFormat implements Format
         return $this->format->getFileExtension();
     }
 
-    /**
-     * @return Directive[]
-     */
+    /** @return Directive[] */
     public function getDirectives(): array
     {
         if ($this->directives === null) {
@@ -40,9 +38,7 @@ final class InternalFormat implements Format
         return $this->directives;
     }
 
-    /**
-     * @return NodeRendererFactory[]
-     */
+    /** @return NodeRendererFactory[] */
     public function getNodeRendererFactories(): array
     {
         if ($this->nodeRendererFactories === null) {
