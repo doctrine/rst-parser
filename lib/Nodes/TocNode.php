@@ -61,4 +61,9 @@ class TocNode extends Node
 
         return self::DEFAULT_DEPTH;
     }
+
+    public function isTitlesOnly(): bool
+    {
+        return isset($this->options['titlesonly']);
+    }
 }

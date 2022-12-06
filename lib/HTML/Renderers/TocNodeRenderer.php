@@ -88,7 +88,7 @@ final class TocNodeRenderer implements NodeRenderer
             ];
 
             // render children until we hit the configured maxdepth
-            if (count($children) > 0 && $level < $this->tocNode->getDepth()) {
+            if (count($children) > 0 && ! $this->tocNode->isTitlesOnly() && $level < $this->tocNode->getDepth()) {
                 $this->buildLevel($url, $children, $level + 1, $tocItem['children'], $file);
             }
 
