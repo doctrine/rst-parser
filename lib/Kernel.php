@@ -36,6 +36,7 @@ class Kernel
         $this->directives = array_merge([
             new Directives\Dummy(),
             new Directives\CodeBlock(),
+            new Directives\Contents(),
             new Directives\Raw(),
             new Directives\Replace(),
             new Directives\Tip(),
