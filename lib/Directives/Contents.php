@@ -9,10 +9,6 @@ use Doctrine\RST\Parser;
 
 final class Contents extends Directive
 {
-    public function __construct()
-    {
-    }
-
     public function getName(): string
     {
         return 'contents';
