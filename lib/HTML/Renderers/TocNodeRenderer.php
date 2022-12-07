@@ -38,7 +38,7 @@ final class TocNodeRenderer implements NodeRenderer
 
         $tocItems = [];
 
-        $titleLinkUtility = new TitleLinkUtility($this->environment, $this->tocNode->getDepth());
+        $titleLinkUtility = new TitleLinkUtility($this->environment, $this->tocNode->isTitlesOnly()?1:$this->tocNode->getDepth());
 
         foreach ($this->tocNode->getFiles() as $file) {
             $reference = $this->environment->resolve('doc', $file);
