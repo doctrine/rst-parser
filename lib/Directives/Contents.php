@@ -6,12 +6,9 @@ namespace Doctrine\RST\Directives;
 
 use Doctrine\RST\Nodes\Node;
 use Doctrine\RST\Parser;
-use Doctrine\RST\Toc\GlobSearcher;
-use Doctrine\RST\Toc\ToctreeBuilder;
 
 final class Contents extends Directive
 {
-
     public function __construct()
     {
     }
@@ -29,9 +26,10 @@ final class Contents extends Directive
         string $data,
         array $options
     ): void {
-        $environment = $parser->getEnvironment();
+        $environment  = $parser->getEnvironment();
+        $documentNode = $parser->getDocument();
         $contentsNode = $parser->getNodeFactory()
-            ->createContentsNode($environment, $options);
+            ->createContentsNode($environment, $documentNode, $options);
         $parser->getDocument()->addNode($contentsNode);
     }
 }

@@ -121,7 +121,7 @@ class DocumentNode extends Node
         return $tocs;
     }
 
-    /** @return string[][] */
+    /** @return mixed[][] */
     public function getTitles(): array
     {
         $titles = [];
