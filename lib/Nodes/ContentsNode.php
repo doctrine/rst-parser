@@ -8,30 +8,35 @@ use Doctrine\RST\Environment;
 
 class ContentsNode extends Node
 {
-
     private const DEFAULT_DEPTH = 999;
 
     /** @var Environment */
     protected $environment;
 
+    /** @var DocumentNode */
+    protected $documentNode;
+
     /** @var string[] */
     private $options;
 
-    /**
-     * @param string[] $files
-     * @param string[] $options
-     */
-    public function __construct(Environment $environment, array $options)
+    /** @param string[] $options */
+    public function __construct(Environment $environment, DocumentNode $documentNode, array $options)
     {
         parent::__construct();
 
-        $this->environment = $environment;
-        $this->options     = $options;
+        $this->environment  = $environment;
+        $this->documentNode = $documentNode;
+        $this->options      = $options;
     }
 
     public function getEnvironment(): Environment
     {
         return $this->environment;
+    }
+
+    public function getDocumentNode(): DocumentNode
+    {
+        return $this->documentNode;
     }
 
     /** @return string[] */

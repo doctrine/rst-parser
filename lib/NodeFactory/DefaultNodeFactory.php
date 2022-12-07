@@ -275,12 +275,13 @@ final class DefaultNodeFactory implements NodeFactory
         return $this->nodeInstantiators[$type];
     }
 
+    /** @param mixed[] $options */
     public function createContentsNode(
         Environment $environment,
+        DocumentNode $documentNode,
         array $options
     ): ContentsNode {
-
-        $node = $this->create(NodeTypes::CONTENTS, [$environment, $options]);
+        $node = $this->create(NodeTypes::CONTENTS, [$environment, $documentNode, $options]);
         assert($node instanceof ContentsNode);
 
         return $node;

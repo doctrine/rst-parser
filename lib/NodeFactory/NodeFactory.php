@@ -47,7 +47,7 @@ interface NodeFactory
     public function createTocNode(Environment $environment, array $files, array $options): TocNode;
 
     /** @param string[] $options */
-    public function createContentsNode(Environment $environment, array $options): ContentsNode;
+    public function createContentsNode(Environment $environment, DocumentNode $documentNode, array $options): ContentsNode;
 
     public function createTitleNode(Node $value, int $level, string $token): TitleNode;
 
