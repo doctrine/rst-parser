@@ -11,6 +11,7 @@ use Doctrine\RST\Nodes\AnchorNode;
 use Doctrine\RST\Nodes\BlockNode;
 use Doctrine\RST\Nodes\CallableNode;
 use Doctrine\RST\Nodes\CodeNode;
+use Doctrine\RST\Nodes\ContentsNode;
 use Doctrine\RST\Nodes\DefinitionListNode;
 use Doctrine\RST\Nodes\DocumentNode;
 use Doctrine\RST\Nodes\DummyNode;
@@ -272,5 +273,17 @@ final class DefaultNodeFactory implements NodeFactory
         }
 
         return $this->nodeInstantiators[$type];
+    }
+
+    /** @param mixed[] $options */
+    public function createContentsNode(
+        Environment $environment,
+        DocumentNode $documentNode,
+        array $options
+    ): ContentsNode {
+        $node = $this->create(NodeTypes::CONTENTS, [$environment, $documentNode, $options]);
+        assert($node instanceof ContentsNode);
+
+        return $node;
     }
 }

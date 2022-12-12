@@ -8,6 +8,7 @@ final class NodeTypes
 {
     public const DOCUMENT        = 'document';
     public const DOCUMENT_NODE   = 'document_node';
+    public const CONTENTS        = 'contents';
     public const TOC             = 'toc';
     public const TITLE           = 'title';
     public const SEPARATOR       = 'separator';
@@ -34,6 +35,7 @@ final class NodeTypes
     public const NODES = [
         self::DOCUMENT,
         self::DOCUMENT_NODE,
+        self::CONTENTS,
         self::TOC,
         self::TITLE,
         self::SEPARATOR,

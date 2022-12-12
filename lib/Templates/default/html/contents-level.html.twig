@@ -1,0 +1,7 @@
+{% apply spaceless %}
+    <ul>
+        {% for contentsItem in contentsItems %}
+            {% include "contents-item.html.twig" %}
+        {% endfor %}
+    </ul>
+{% endapply %}

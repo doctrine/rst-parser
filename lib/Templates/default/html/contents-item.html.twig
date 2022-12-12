@@ -1,0 +1,9 @@
+<li class="contents-item">
+    <a href="{{ contentsItem.targetUrl }}">{{ contentsItem.title|raw }}</a>
+
+    {% if contentsItem.children|length %}
+        {% include "contents-level.html.twig" with {
+            contentsItems:contentsItem.children
+        } %}
+    {% endif %}
+</li>
