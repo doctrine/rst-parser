@@ -2,6 +2,15 @@
 name: "Continuous Integration"
 
 on:
+  push:
+    branches:
+      - "*.x"
+    paths:
+      - ".github/workflows/continuous-integration.yml"
+      - "composer.*"
+      - "lib/**"
+      - "phpunit.xml.dist"
+      - "tests/**"
   pull_request:
     branches:
       - "*.x"
