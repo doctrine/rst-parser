@@ -23,7 +23,7 @@ class TitleLinkUtilityTest extends TestCase
         $this->titleLinkUtility = new TitleLinkUtility($this->environment, 999);
     }
 
-    public function testBuildEmptyTitleLinksCreateEmptyTocItemArray(): void
+    public function testBuildEmptyTitleLinksCreatesEmptyTocItemArray(): void
     {
         $this->titleLinkUtility = new TitleLinkUtility($this->environment, 999);
         $tocItems               = [];
