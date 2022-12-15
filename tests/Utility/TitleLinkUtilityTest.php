@@ -25,8 +25,7 @@ class TitleLinkUtilityTest extends TestCase
 
     public function testBuildEmptyTitleLinksCreatesEmptyTocItemArray(): void
     {
-        $this->titleLinkUtility = new TitleLinkUtility($this->environment, 999);
-        $tocItems               = [];
+        $tocItems = [];
         $this->titleLinkUtility->buildLevel('', [], 1, $tocItems, 'index');
 
         self::assertEquals($tocItems, []);
@@ -34,12 +33,11 @@ class TitleLinkUtilityTest extends TestCase
 
     public function testBuildTitleLinks1Level(): void
     {
-        $this->titleLinkUtility = new TitleLinkUtility($this->environment, 999);
-        $tocItems               = [];
-        $titles                 = [
+        $tocItems = [];
+        $titles   = [
             ['My Title', []],
         ];
-        $expected               = [
+        $expected = [
             0 => [
                 'targetId' => '',
                 'targetUrl' => '',
@@ -55,9 +53,8 @@ class TitleLinkUtilityTest extends TestCase
 
     public function testBuildTitleLinks2Level(): void
     {
-        $this->titleLinkUtility = new TitleLinkUtility($this->environment, 999);
-        $tocItems               = [];
-        $titles                 = [
+        $tocItems = [];
+        $titles   = [
             [
                 'My Title',
                 [
@@ -72,7 +69,7 @@ class TitleLinkUtilityTest extends TestCase
                 ],
             ],
         ];
-        $expected               = [
+        $expected = [
             0 => [
                 'targetId' => '',
                 'targetUrl' => '',
@@ -103,9 +100,8 @@ class TitleLinkUtilityTest extends TestCase
 
     public function testBuildTitleLinks3Level(): void
     {
-        $this->titleLinkUtility = new TitleLinkUtility($this->environment, 999);
-        $tocItems               = [];
-        $titles                 = [
+        $tocItems = [];
+        $titles   = [
             [
                 'My Title',
                 [
@@ -129,7 +125,7 @@ class TitleLinkUtilityTest extends TestCase
                 ],
             ],
         ];
-        $expected               = [
+        $expected = [
             0 => [
                 'targetId' => '',
                 'targetUrl' => '',
@@ -175,9 +171,9 @@ class TitleLinkUtilityTest extends TestCase
 
     public function testBuildTitleLinks3LevelMaxdepth2(): void
     {
-        $this->titleLinkUtility = new TitleLinkUtility($this->environment, 2);
-        $tocItems               = [];
-        $titles                 = [
+        $titleLinkUtilityMaxDepth2 = new TitleLinkUtility($this->environment, 2);
+        $tocItems                  = [];
+        $titles                    = [
             [
                 'My Title',
                 [
@@ -201,7 +197,7 @@ class TitleLinkUtilityTest extends TestCase
                 ],
             ],
         ];
-        $expected               = [
+        $expected                  = [
             0 => [
                 'targetId' => '',
                 'targetUrl' => '',
@@ -225,7 +221,7 @@ class TitleLinkUtilityTest extends TestCase
                 ],
             ],
         ];
-        $this->titleLinkUtility->buildLevel('', $titles, 1, $tocItems, 'index');
+        $titleLinkUtilityMaxDepth2->buildLevel('', $titles, 1, $tocItems, 'index');
 
         self::assertEquals($tocItems, $expected);
     }
@@ -235,9 +231,8 @@ class TitleLinkUtilityTest extends TestCase
         $this->environment->expects(self::atLeastOnce())
             ->method('generateUrl')
             ->willReturn('generated_url');
-        $this->titleLinkUtility = new TitleLinkUtility($this->environment, 999);
-        $tocItems               = [];
-        $titles                 = [
+        $tocItems = [];
+        $titles   = [
             [
                 'My Title',
                 [
@@ -252,7 +247,7 @@ class TitleLinkUtilityTest extends TestCase
                 ],
             ],
         ];
-        $expected               = [
+        $expected = [
             0 => [
                 'targetId' => 'index',
                 'targetUrl' => 'generated_url',
