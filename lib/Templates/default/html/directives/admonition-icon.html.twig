@@ -1,0 +1,15 @@
+{% apply spaceless %}
+    {% if name in ['admonition'] %}<i class="far fa-comment"></i>{% endif %}
+    {% if name in ['attention'] %}<i class="far fa-hand-point-right"></i>{% endif %}
+    {% if name in ['caution'] %}<i class="fas fa-exclamation-triangle text-danger"></i>{% endif %}
+    {% if name in ['danger'] %}<i class="fas fa-user-secret"></i>{% endif %}
+    {% if name in ['error'] %}<i class="fas fa-bug"></i>{% endif %}
+    {% if name in ['hint'] %}<i class="fas fa-hand-point-right"></i>{% endif %}
+    {% if name in ['important'] %}<i class="fas fa-exclamation"></i>{% endif %}
+    {% if name in ['note'] %}<i class="fas fa-sticky-note text-primary"></i>{% endif %}
+    {% if name in ['notice'] %}<i class="fas fa-bell"></i>{% endif %}
+    {% if name in ['seealso'] %}<i class="far fa-flag"></i>{% endif %}
+    {% if name in ['sidebar'] %}<i class="fas fa-arrow-alt-circle-right"></i>{% endif %}
+    {% if name in ['tip'] %}<i class="fas fa-question-circle mr-2"></i>{% endif %}
+    {% if name in ['warning'] %}<i class="fas fa-exclamation-circle text-warning"></i>{% endif %}
+{% endapply %}
