@@ -72,3 +72,7 @@ The events you can listen for are as follows:
 - ``PostParseDocumentEvent::POST_PARSE_DOCUMENT`` - Dispatches a method named ``postParseDocument()`` after a node is parsed.
 - ``PreNodeRenderEvent::PRE_NODE_RENDER`` - Dispatches a method named ``preNodeRender()`` before a node is rendered.
 - ``PostNodeRenderEvent::POST_NODE_RENDER`` - Dispatches a method named ``postNodeRender()`` after a node is rendered.
+- `PreReferenceResolvedEvent::PRE_REFERENCED_RESOVED` - Dispatches a method named
+  ``preReferenceResolved()`` before a reference is resolved. If the ``$resolvedReference``
+  of the event is set to any non null value, resolving of references is stopped
+  and the ``$resolvedReference`` of the event is used instead.

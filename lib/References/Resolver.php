@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\RST\References;
 
 use Doctrine\RST\Environment;
+use Doctrine\RST\Event\PreReferenceResolvedEvent;
 use Doctrine\RST\Meta\MetaEntry;
 
 final class Resolver
@@ -15,6 +16,19 @@ final class Resolver
         string $data,
         array $attributes = []
     ): ?ResolvedReference {
+        $eventManager = $environment->getConfiguration()->getEventManager();
+
+        $preReferenceResolvedEvent = new PreReferenceResolvedEvent($environment, $data, $attributes);
+
+        $eventManager->dispatchEvent(
+            PreReferenceResolvedEvent::PRE_REFERENCED_RESOVED,
+            $preReferenceResolvedEvent
+        );
+
+        if ($preReferenceResolvedEvent->getResolvedReference() !== null) {
+            return $preReferenceResolvedEvent->getResolvedReference();
+        }
+
         $resolvedFileReference = $this->resolveFileReference($environment, $data, $attributes);
 
         if ($resolvedFileReference !== null) {
