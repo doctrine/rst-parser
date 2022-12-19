@@ -19,10 +19,14 @@ class Admonition extends SubDirective
     /** @var string */
     private $text;
 
-    public function __construct(string $name, string $text)
+    /** @var string */
+    private $template;
+
+    public function __construct(string $name, string $text, string $template = 'directives/admonition.html.twig')
     {
-        $this->name = $name;
-        $this->text = $text;
+        $this->name     = $name;
+        $this->text     = $text;
+        $this->template = $template;
     }
 
     public function getName(): string
@@ -43,10 +47,10 @@ class Admonition extends SubDirective
         }
 
         $wrapperDiv = $parser->renderTemplate(
-            'directives/admonition.html.twig',
+            $this->template,
             [
                 'name' => $this->name,
-                'text' => $this->text,
+                'text' => $data !== '' ? $data : $this->text,
                 'class' => $options['class'] ?? null,
             ]
         );

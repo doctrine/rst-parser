@@ -1,0 +1,9 @@
+{% apply spaceless %}
+{{ name }}-admonition
+    {% if name in ['admonition', 'seealso', 'sidebar'] %}bg-light text-dark{% endif %}
+    {% if name in ['attention', 'caution', 'note', 'important', 'warning'] %}bg-light-yellow text-dark{% endif %}
+    {% if name in ['danger', 'error'] %}bg-danger text-dark{% endif %}
+    {% if name in ['hint'] %}bg-primary text-white{% endif %}
+    {% if name in ['notice'] %}bg-secondary text-white{% endif %}
+    {% if name in ['tip'] %}bg-success text-light{% endif %}
+{% endapply %}

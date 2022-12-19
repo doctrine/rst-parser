@@ -34,12 +34,24 @@ class Kernel
         $this->configuration = $configuration ?? new Configuration();
 
         $this->directives = array_merge([
+            new Directives\Admonition('admonition', ''),
+            new Directives\Admonition('attention', 'Attention'),
+            new Directives\Admonition('caution', 'Caution'),
+            new Directives\Admonition('danger', 'Danger'),
+            new Directives\Admonition('error', 'Error'),
+            new Directives\Admonition('hint', 'Hint'),
+            new Directives\Admonition('important', 'Important'),
+            new Directives\Admonition('note', 'Note'),
+            new Directives\Admonition('notice', 'Notice'),
+            new Directives\Admonition('seealso', 'See also'),
+            new Directives\Admonition('sidebar', 'sidebar'),
+            new Directives\Admonition('tip', 'Tip'),
+            new Directives\Admonition('warning', 'Warning'),
             new Directives\Dummy(),
             new Directives\CodeBlock(),
             new Directives\Contents(),
             new Directives\Raw(),
             new Directives\Replace(),
-            new Directives\Tip(),
             new Directives\Toctree(),
         ], $this->configuration->getFormat()->getDirectives(), $directives);
 
