@@ -10,6 +10,7 @@ use Doctrine\RST\NodeFactory\NodeFactory;
 use Doctrine\RST\References\Reference;
 use Doctrine\RST\References\ResolvedReference;
 use Doctrine\RST\Templates\TemplateRenderer;
+use Doctrine\RST\TextRoles\TextRole;
 use InvalidArgumentException;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 
@@ -52,6 +53,9 @@ class Environment
 
     /** @var Reference[] */
     private $references = [];
+
+    /** @var TextRole[] */
+    private $textRoles = [];
 
     /** @var Metas */
     private $metas;
@@ -143,10 +147,31 @@ class Environment
         $this->references[$reference->getName()] = $reference;
     }
 
+    public function registerTextRole(TextRole $textRole): void
+    {
+        $this->textRoles[$textRole->getName()] = $textRole;
+    }
+
+    public function isReference(string $section): bool
+    {
+        return isset($this->references[$section]);
+    }
+
+    public function getTextRole(string $section): ?TextRole
+    {
+        if (! isset($this->textRoles[$section])) {
+            $this->addMissingTextRoleSectionError($section, 'text role');
+
+            return null;
+        }
+
+        return $this->textRoles[$section];
+    }
+
     public function resolve(string $section, string $data): ?ResolvedReference
     {
         if (! isset($this->references[$section])) {
-            $this->addMissingReferenceSectionError($section);
+            $this->addMissingTextRoleSectionError($section, 'reference');
 
             return null;
         }
@@ -201,7 +226,7 @@ class Environment
             return null;
         }
 
-        $this->addMissingReferenceSectionError($section);
+        $this->addMissingTextRoleSectionError($section, 'reference');
 
         return null;
     }
@@ -470,10 +495,10 @@ class Environment
         return (new AsciiSlugger('en', []))->slug($text)->lower()->toString();
     }
 
-    private function addMissingReferenceSectionError(string $section): void
+    private function addMissingTextRoleSectionError(string $section, string $type): void
     {
         $this->errorManager->error(
-            sprintf('Unknown reference section "%s"', $section),
+            sprintf('Unknown ' . $type . ' section "%s"', $section),
             $this->getCurrentFileName()
         );
     }

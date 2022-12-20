@@ -60,6 +60,7 @@ class Parser
         $this->environment   = $environment ??  new Environment($this->configuration);
 
         $this->initDirectives();
+        $this->initTextRoles();
         $this->initReferences();
     }
 
@@ -85,6 +86,15 @@ class Parser
 
         foreach ($directives as $directive) {
             $this->registerDirective($directive);
+        }
+    }
+
+    public function initTextRoles(): void
+    {
+        $textRoles = $this->kernel->getTextRoles();
+
+        foreach ($textRoles as $textRole) {
+            $this->environment->registerTextRole($textRole);
         }
     }
 

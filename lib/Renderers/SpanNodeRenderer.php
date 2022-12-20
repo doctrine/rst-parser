@@ -122,8 +122,8 @@ abstract class SpanNodeRenderer implements NodeRenderer, SpanRenderer
             case SpanToken::TYPE_LITERAL:
                 return $this->renderLiteral($spanToken, $span);
 
-            case SpanToken::TYPE_REFERENCE:
-                return $this->renderReference($spanToken, $span);
+            case SpanToken::TYPE_TEXT_ROLE:
+                return $this->renderTextNode($spanToken, $span);
 
             case SpanToken::TYPE_LINK:
                 return $this->renderLink($spanToken, $span);
@@ -139,6 +139,17 @@ abstract class SpanNodeRenderer implements NodeRenderer, SpanRenderer
             $this->literal($spanToken->get('text')),
             $span
         );
+    }
+
+    private function renderTextNode(SpanToken $spanToken, string $span): string
+    {
+        if ($this->environment->isReference($spanToken->get('section'))) {
+            return $this->renderReference($spanToken, $span);
+        }
+
+        $textRole = $this->environment->getTextRole($spanToken->get('section'));
+
+        return $textRole->process($spanToken->get('url'));
     }
 
     private function renderReference(SpanToken $spanToken, string $span): string
