@@ -54,7 +54,7 @@ class Environment
     /** @var Reference[] */
     private $references = [];
 
-    /** @var TextRole[] */
+    /** @var array<string, TextRole> */
     private $textRoles = [];
 
     /** @var Metas */

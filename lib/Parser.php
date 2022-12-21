@@ -91,9 +91,7 @@ class Parser
 
     public function initTextRoles(): void
     {
-        $textRoles = $this->kernel->getTextRoles();
-
-        foreach ($textRoles as $textRole) {
+        foreach ($this->kernel->getTextRoles() as $textRole) {
             $this->environment->registerTextRole($textRole);
         }
     }
