@@ -72,7 +72,10 @@ The events you can listen for are as follows:
 - ``PostParseDocumentEvent::POST_PARSE_DOCUMENT`` - Dispatches a method named ``postParseDocument()`` after a node is parsed.
 - ``PreNodeRenderEvent::PRE_NODE_RENDER`` - Dispatches a method named ``preNodeRender()`` before a node is rendered.
 - ``PostNodeRenderEvent::POST_NODE_RENDER`` - Dispatches a method named ``postNodeRender()`` after a node is rendered.
-- ``PreReferenceResolvedEvent::PRE_REFERENCED_RESOVED`` - Dispatches a method named
-  ``preReferenceResolved()`` before a reference is resolved. If the ``$resolvedReference``
-  of the event is set to any non null value, resolving of references is stopped
-  and the ``$resolvedReference`` of the event is used instead.
+- ``MissingReferenceResolverEvent::PRE_REFERENCED_RESOVED`` - Dispatches a method named
+  ``resolveMissingReference()`` if a reference cannot be resolved by the build-in methods. This event can
+  be used to override the ``ResolvedReference`` returned by ``Resolver->resolve`` and thereby implement
+  other means of references, like for example intersphinx links. The event can be listened to
+  in implementing projects or extending packages. See
+  `Package Intersphinx, provided by the TYPO3 Documentation Team <https://github.com/TYPO3-Documentation/intersphinx>`__
+  for an example implementation.

@@ -8,9 +8,9 @@ use Doctrine\Common\EventArgs;
 use Doctrine\RST\Environment;
 use Doctrine\RST\References\ResolvedReference;
 
-final class PreReferenceResolvedEvent extends EventArgs
+final class MissingReferenceResolverEvent extends EventArgs
 {
-    public const PRE_REFERENCED_RESOVED = 'preReferenceResolved';
+    public const MISSING_REFERENCE_RESOLVER = 'resolveMissingReference';
 
     /** @var Environment */
     private $environment;

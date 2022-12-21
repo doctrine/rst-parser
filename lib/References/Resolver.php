@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\RST\References;
 
 use Doctrine\RST\Environment;
-use Doctrine\RST\Event\PreReferenceResolvedEvent;
+use Doctrine\RST\Event\MissingReferenceResolverEvent;
 use Doctrine\RST\Meta\MetaEntry;
 
 final class Resolver
@@ -18,17 +18,6 @@ final class Resolver
     ): ?ResolvedReference {
         $eventManager = $environment->getConfiguration()->getEventManager();
 
-        $preReferenceResolvedEvent = new PreReferenceResolvedEvent($environment, $data, $attributes);
-
-        $eventManager->dispatchEvent(
-            PreReferenceResolvedEvent::PRE_REFERENCED_RESOVED,
-            $preReferenceResolvedEvent
-        );
-
-        if ($preReferenceResolvedEvent->getResolvedReference() !== null) {
-            return $preReferenceResolvedEvent->getResolvedReference();
-        }
-
         $resolvedFileReference = $this->resolveFileReference($environment, $data, $attributes);
 
         if ($resolvedFileReference !== null) {
@@ -39,6 +28,17 @@ final class Resolver
 
         if ($resolvedAnchorReference !== null) {
             return $resolvedAnchorReference;
+        }
+
+        $missingReferenceResolverEvent = new MissingReferenceResolverEvent($environment, $data, $attributes);
+
+        $eventManager->dispatchEvent(
+            MissingReferenceResolverEvent::MISSING_REFERENCE_RESOLVER,
+            $missingReferenceResolverEvent
+        );
+
+        if ($missingReferenceResolverEvent->getResolvedReference() !== null) {
+            return $missingReferenceResolverEvent->getResolvedReference();
         }
 
         return null;
