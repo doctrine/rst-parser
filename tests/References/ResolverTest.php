@@ -132,7 +132,7 @@ class ResolverTest extends TestCase
 
     public function testMissingReferenceResolverEventDispatched(): void
     {
-        $this->environment->expects(self::any())
+        $this->environment
             ->method('getConfiguration')
             ->willReturn($this->configuration);
         $eventManager = new EventManager();
@@ -140,7 +140,7 @@ class ResolverTest extends TestCase
             [MissingReferenceResolverEvent::MISSING_REFERENCE_RESOLVER],
             new SimpleMissingReferenceResolverListener()
         );
-        $this->configuration->expects(self::any())
+        $this->configuration
             ->method('getEventManager')
             ->willReturn($eventManager);
         self::assertEquals(
