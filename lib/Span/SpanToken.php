@@ -7,7 +7,7 @@ namespace Doctrine\RST\Span;
 final class SpanToken
 {
     public const TYPE_LITERAL   = 'literal';
-    public const TYPE_REFERENCE = 'reference';
+    public const TYPE_TEXT_ROLE = 'textrole';
     public const TYPE_LINK      = 'link';
 
     /** @var string */

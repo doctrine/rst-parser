@@ -50,7 +50,7 @@ final class SpanProcessor
 
         $span = $this->replaceTitleLetters($span);
 
-        $span = $this->replaceReferences($span);
+        $span = $this->replaceTextRoles($span);
 
         $span = $this->replaceLinks($span);
 
@@ -113,7 +113,7 @@ final class SpanProcessor
         return $span;
     }
 
-    private function replaceReferences(string $span): string
+    private function replaceTextRoles(string $span): string
     {
         return (string) preg_replace_callback('/:([a-z0-9]+):`(.+)`/mUsi', function ($match): string {
             $section = $match[1];
@@ -133,14 +133,16 @@ final class SpanProcessor
                 $anchor = $match[2];
             }
 
-            $this->addToken(SpanToken::TYPE_REFERENCE, $id, [
+            $this->addToken(SpanToken::TYPE_TEXT_ROLE, $id, [
                 'section' => $section,
                 'url' => $url,
                 'text' => $text,
                 'anchor' => $anchor,
             ]);
 
-            $this->environment->found($section, $url);
+            if ($this->environment->isReference($section)) {
+                $this->environment->found($section, $url);
+            }
 
             return $id;
         }, $span);

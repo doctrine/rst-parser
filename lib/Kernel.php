@@ -8,6 +8,7 @@ use Doctrine\RST\Directives\Directive;
 use Doctrine\RST\Nodes\DocumentNode;
 use Doctrine\RST\References\Doc;
 use Doctrine\RST\References\Reference;
+use Doctrine\RST\TextRoles\TextRole;
 
 use function array_merge;
 
@@ -22,14 +23,19 @@ class Kernel
     /** @var Reference[] */
     private $references;
 
+    /** @var TextRole[] */
+    private $textRoles;
+
     /**
      * @param Directive[] $directives
      * @param Reference[] $references
+     * @param TextRole[]  $textRoles
      */
     public function __construct(
         ?Configuration $configuration = null,
         array $directives = [],
-        array $references = []
+        array $references = [],
+        array $textRoles = []
     ) {
         $this->configuration = $configuration ?? new Configuration();
 
@@ -55,6 +61,10 @@ class Kernel
             new Directives\Toctree(),
         ], $this->configuration->getFormat()->getDirectives(), $directives);
 
+        $this->textRoles = array_merge([
+            new TextRoles\CodeRole(),
+        ], $this->createTextRoles(), $textRoles);
+
         $this->references = array_merge([
             new References\Doc(),
             new References\Doc('ref', true),
@@ -78,6 +88,12 @@ class Kernel
         return $this->references;
     }
 
+    /** @return TextRole[] */
+    public function getTextRoles(): array
+    {
+        return $this->textRoles;
+    }
+
     public function postParse(DocumentNode $document): void
     {
     }
@@ -88,6 +104,12 @@ class Kernel
 
     /** @return Doc[] */
     protected function createReferences(): array
+    {
+        return [];
+    }
+
+    /** @return TextRole[] */
+    protected function createTextRoles(): array
     {
         return [];
     }
