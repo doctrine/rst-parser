@@ -4,11 +4,15 @@ declare(strict_types=1);
 
 namespace Doctrine\Tests\RST\References;
 
+use Doctrine\Common\EventManager;
+use Doctrine\RST\Configuration;
 use Doctrine\RST\Environment;
+use Doctrine\RST\Event\MissingReferenceResolverEvent;
 use Doctrine\RST\Meta\MetaEntry;
 use Doctrine\RST\Meta\Metas;
 use Doctrine\RST\References\ResolvedReference;
 use Doctrine\RST\References\Resolver;
+use Doctrine\Tests\RST\References\Listener\SimpleMissingReferenceResolverListener;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -22,6 +26,9 @@ class ResolverTest extends TestCase
 
     /** @var MetaEntry|MockObject */
     private $metaEntry;
+
+    /** @var Configuration|MockObject */
+    private $configuration;
 
     /** @var Resolver */
     private $resolver;
@@ -47,6 +54,8 @@ class ResolverTest extends TestCase
         $this->metaEntry->expects(self::any())
             ->method('getTitles')
             ->willReturn([]);
+
+        $this->configuration = $this->createMock(Configuration::class);
 
         $this->resolver = new Resolver();
     }
@@ -119,5 +128,24 @@ class ResolverTest extends TestCase
             ->willReturn(null);
 
         self::assertNull($this->resolver->resolve($this->environment, 'invalid-reference'));
+    }
+
+    public function testMissingReferenceResolverEventDispatched(): void
+    {
+        $this->environment
+            ->method('getConfiguration')
+            ->willReturn($this->configuration);
+        $eventManager = new EventManager();
+        $eventManager->addEventListener(
+            [MissingReferenceResolverEvent::MISSING_REFERENCE_RESOLVER],
+            new SimpleMissingReferenceResolverListener()
+        );
+        $this->configuration
+            ->method('getEventManager')
+            ->willReturn($eventManager);
+        self::assertEquals(
+            new ResolvedReference(null, 'example', 'https://example.com/', [], []),
+            $this->resolver->resolve($this->environment, 'unknown-reference')
+        );
     }
 }
