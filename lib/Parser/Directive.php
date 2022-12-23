@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\Parser;
 
+use function strtolower;
+
 final class Directive
 {
     /** @var string */
@@ -22,9 +24,10 @@ final class Directive
     public function __construct(string $variable, string $name, string $data, array $options = [])
     {
         $this->variable = $variable;
-        $this->name     = $name;
-        $this->data     = $data;
-        $this->options  = $options;
+        // Directive names are case-insensitive
+        $this->name    = strtolower($name);
+        $this->data    = $data;
+        $this->options = $options;
     }
 
     public function getVariable(): string
