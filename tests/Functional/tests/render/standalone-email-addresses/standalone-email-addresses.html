@@ -1,50 +1,35 @@
 <p>Addressing examples taken from <a href="https://tools.ietf.org/html/rfc5322">https://tools.ietf.org/html/rfc5322</a>.</p>
 <p>Appendix A.1.1. A Message from One Person to Another with Simple Addressing</p>
 <blockquote>
-    <hr />
     <p>From: John Doe &lt;<a href="mailto:jdoe@machine1.example">jdoe@machine1.example</a>&gt;
 Sender: Michael Jones &lt;<a href="mailto:mjones@machine1.example">mjones@machine1.example</a>&gt;
 To: Mary Smith &lt;<a href="mailto:mary@example1.net">mary@example1.net</a>&gt;
 Subject: Saying Hello
 Date: Fri, 21 Nov 1997 09:55:06 -0600
 Message-ID: &lt;<a href="mailto:1234@local.machine.example">1234@local.machine.example</a>&gt;</p>
-    <div class="section" id="so-hello">
-        <h1>
-            So, &quot;Hello&quot;.
-        </h1>
-    </div>
+    <p>This is a message just to say hello.
+So, &quot;Hello&quot;.</p>
 </blockquote>
 <p>Appendix A.1.2. Different Types of Mailboxes</p>
 <blockquote>
-    <hr />
     <p>From: &quot;Joe Q. Public&quot; &lt;<a href="mailto:john.q.public@example.com">john.q.public@example.com</a>&gt;
 To: Mary Smith &lt;<a href="mailto:mary@x.test">mary@x.test</a>&gt;, <a href="mailto:jdoe@example.org">jdoe@example.org</a>, Who? &lt;<a href="mailto:one@y.test">one@y.test</a>&gt;
 Cc: &lt;<a href="mailto:boss@nil.test">boss@nil.test</a>&gt;, &quot;Giant; &quot;Big&quot; Box&quot; &lt;<a href="mailto:sysservices@example.net">sysservices@example.net</a>&gt;
 Date: Tue, 1 Jul 2003 10:52:37 +0200
 Message-ID: &lt;<a href="mailto:5678.21-Nov-1997@example.com">5678.21-Nov-1997@example.com</a>&gt;</p>
-    <div class="section" id="hi-everyone">
-        <h1>
-            Hi everyone.
-        </h1>
-    </div>
+    <p>Hi everyone.</p>
 </blockquote>
 <p>Appendix A.1.3. Group Addresses</p>
 <blockquote>
-    <hr />
     <p>From: Pete &lt;<a href="mailto:pete@silly.example">pete@silly.example</a>&gt;
 To: A Group:Ed Jones &lt;<a href="mailto:c@a.test">c@a.test</a>&gt;,<a href="mailto:joe@where.test">joe@where.test</a>,John &lt;<a href="mailto:jdoe@one1.test">jdoe@one1.test</a>&gt;;
 Cc: Undisclosed recipients:;
 Date: Thu, 13 Feb 1969 23:32:54 -0330
 Message-ID: &lt;<a href="mailto:testabcd.1234@silly.example">testabcd.1234@silly.example</a>&gt;</p>
-    <div class="section" id="testing">
-        <h1>
-            Testing.
-        </h1>
-    </div>
+    <p>Testing.</p>
 </blockquote>
 <p>Appendix A.2. Reply Messages</p>
 <blockquote>
-    <hr />
     <p>To: &quot;Mary Smith: Personal Account&quot; &lt;<a href="mailto:smith@home.example">smith@home.example</a>&gt;
 From: John Doe &lt;<a href="mailto:jdoe@machine2.example">jdoe@machine2.example</a>&gt;
 Subject: Re: Saying Hello
@@ -52,15 +37,10 @@ Date: Fri, 21 Nov 1997 11:00:00 -0600
 Message-ID: &lt;<a href="mailto:abcd.1234@local.machine.test">abcd.1234@local.machine.test</a>&gt;
 In-Reply-To: &lt;<a href="mailto:3456@example.net">3456@example.net</a>&gt;
 References: &lt;<a href="mailto:1235@local.machine.example">1235@local.machine.example</a>&gt; &lt;<a href="mailto:3457@example.net">3457@example.net</a>&gt;</p>
-    <div class="section" id="this-is-a-reply-to-your-reply">
-        <h1>
-            This is a reply to your reply.
-        </h1>
-    </div>
+    <p>This is a reply to your reply.</p>
 </blockquote>
 <p>Appendix A.3. Resent Messages</p>
 <blockquote>
-    <hr />
     <p>Resent-From: Mary Smith &lt;<a href="mailto:mary@example2.net">mary@example2.net</a>&gt;
 Resent-To: Jane Brown &lt;<a href="mailto:j-brown@other.example">j-brown@other.example</a>&gt;
 Resent-Date: Mon, 24 Nov 1997 14:22:01 -0800
@@ -70,15 +50,11 @@ To: Mary Smith &lt;<a href="mailto:mary@example3.net">mary@example3.net</a>&gt;
 Subject: Saying Hello
 Date: Fri, 21 Nov 1997 09:55:06 -0600
 Message-ID: &lt;<a href="mailto:1236@local.machine.example">1236@local.machine.example</a>&gt;</p>
-    <div class="section" id="so-hello">
-        <h1>
-            So, &quot;Hello&quot;.
-        </h1>
-    </div>
+    <p>This is a message just to say hello.
+So, &quot;Hello&quot;.</p>
 </blockquote>
 <p>Appendix A.4. Messages with Trace Fields</p>
 <blockquote>
-    <hr />
     <dl>
         <dt>Received: from x.y.test</dt>
         <dd> by example.net
@@ -93,27 +69,19 @@ To: Mary Smith &lt;<a href="mailto:mary@example5.net">mary@example5.net</a>&gt;
 Subject: Saying Hello
 Date: Fri, 21 Nov 1997 09:55:06 -0600
 Message-ID: &lt;<a href="mailto:1236@local.node.example">1236@local.node.example</a>&gt;</p>
-    <div class="section" id="so-hello">
-        <h1>
-            So, &quot;Hello&quot;.
-        </h1>
-    </div>
+    <p>This is a message just to say hello.
+So, &quot;Hello&quot;.</p>
 </blockquote>
 <p>Appendix A.5. White Space, Comments, and Other Oddities</p>
 <p>The addresses here are perfectly legal, according to RFC 5322, but we're not
 going to support all these formats.</p>
 <blockquote>
-    <hr />
     <p>From: Pete(A nice ) chap) &lt;pete(his account)@silly.test(his host)&gt;
 To:A Group(Some people) :Chris Jones &lt;c@(Chris's host.)public.example&gt;, <a href="mailto:joe@example.org">joe@example.org</a>, John &lt;<a href="mailto:jdoe@one2.test">jdoe@one2.test</a>&gt; (my dear friend); (the end of the group)
 Cc:(Empty list)(start)Hidden recipients :(nobody(that I know)) ;
 Date: Thu, 13 Feb 1969 23:32 -0330 (Newfoundland Time)
 Message-ID: &lt;<a href="mailto:testabcd.1234@silly.test">testabcd.1234@silly.test</a>&gt;</p>
-    <div class="section" id="testing">
-        <h1>
-            Testing.
-        </h1>
-    </div>
+    <p>Testing.</p>
 </blockquote>
 <p>More addresses that should be matched:</p>
 <blockquote>

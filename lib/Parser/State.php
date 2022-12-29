@@ -21,6 +21,11 @@ final class State
     public const DIRECTIVE = 'directive';
 
     /**
+     * Repeated special char found. Might be a title or separator
+     */
+    public const SPECIAL = 'special';
+
+    /**
      * Indented lines
      */
     public const BLOCK           = 'block';

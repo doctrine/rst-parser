@@ -64,8 +64,8 @@ final class DocumentParser
     /** @var DocumentNode */
     private $document;
 
-    /** @var false|string|null */
-    private $specialLetter;
+    /** @var String */
+    private $specialLetter = '';
 
     /** @var ParserDirective|null */
     private $directive;
@@ -169,7 +169,7 @@ final class DocumentParser
 
     private function init(): void
     {
-        $this->specialLetter = false;
+        $this->specialLetter = '';
         $this->buffer        = new Buffer();
         $this->nodeBuffer    = null;
         $this->listOffset    = 0;
@@ -396,17 +396,18 @@ final class DocumentParser
                     $specialLetter = $this->lineChecker->isSpecialLine($line);
 
                     if ($specialLetter !== null) {
-                        $this->specialLetter = $specialLetter;
+                        $this->specialLetter .= $specialLetter;
 
                         $lastLine = $this->buffer->pop();
 
-                        if ($lastLine !== null) {
-                            $this->buffer = new Buffer([$lastLine]);
-                            $this->setState(State::TITLE);
-                        } else {
-                            $this->buffer->push($line);
-                            $this->setState(State::SEPARATOR);
+                        if ($lastLine === null) {
+                            $this->setState(State::SPECIAL);
+
+                            return true;
                         }
+
+                        $this->buffer = new Buffer([$lastLine]);
+                        $this->setState(State::TITLE);
 
                         $this->flush();
                         $this->setState(State::BEGIN);
@@ -424,6 +425,28 @@ final class DocumentParser
                 } else {
                     $this->flush();
                     $this->setState(State::BEGIN);
+                }
+
+                break;
+
+            case State::SPECIAL:
+                // One special line was found initially. This might be a separator or title
+                if (trim($line) === '') {
+                    $this->buffer->push($line);
+                    $this->setState(State::SEPARATOR);
+
+                    $this->flush();
+                    $this->setState(State::BEGIN);
+                } else {
+                    $specialLetter = $this->lineChecker->isSpecialLine($line);
+                    if ($specialLetter !== null) {
+                        $this->specialLetter .= $specialLetter;
+                        $this->setState(State::TITLE);
+                        $this->flush();
+                        $this->setState(State::BEGIN);
+                    } else {
+                        $this->buffer->push($line);
+                    }
                 }
 
                 break;
@@ -502,7 +525,7 @@ final class DocumentParser
                 case State::TITLE:
                     $data = $this->buffer->getLinesString();
 
-                    $level = $this->environment->getLevel((string) $this->specialLetter);
+                    $level = $this->environment->getLevel($this->specialLetter);
                     $level = $this->environment->getConfiguration()->getInitialHeaderLevel() + $level - 1;
 
                     $token = $this->environment->createTitle($level);
@@ -541,7 +564,7 @@ final class DocumentParser
                     break;
 
                 case State::SEPARATOR:
-                    $level = $this->environment->getLevel((string) $this->specialLetter);
+                    $level = $this->environment->getLevel($this->specialLetter);
 
                     $node = $this->nodeFactory->createSeparatorNode($level);
 
