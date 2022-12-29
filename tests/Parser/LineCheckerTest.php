@@ -56,7 +56,15 @@ class LineCheckerTest extends TestCase
     public function testIsComment(): void
     {
         self::assertTrue($this->lineChecker->isComment('.. Test'));
+        self::assertTrue($this->lineChecker->isComment('..'));
+        self::assertTrue($this->lineChecker->isComment('.. with _ underscore'));
+        self::assertTrue($this->lineChecker->isComment('.. with : colon'));
+        self::assertTrue($this->lineChecker->isComment('.. can finish with colon:'));
+
         self::assertFalse($this->lineChecker->isComment('Test'));
+        self::assertFalse($this->lineChecker->isComment('.. _should not start with underscore'));
+        self::assertFalse($this->lineChecker->isComment('.. should not finish with double colon::'));
+        self::assertFalse($this->lineChecker->isComment('.. should contain::double colon'));
     }
 
     public function testIsDirective(): void

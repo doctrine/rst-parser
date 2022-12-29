@@ -274,6 +274,13 @@ final class DocumentParser
                         return false;
                     }
 
+                    if ($this->lineChecker->isComment($line)) {
+                        $this->flush();
+                        $this->setState(State::COMMENT);
+
+                        return false;
+                    }
+
                     if ($this->parseLink($line)) {
                         return true;
                     }
@@ -426,8 +433,6 @@ final class DocumentParser
                 break;
 
             case State::COMMENT:
-                $isComment = false;
-
                 if (! $this->lineChecker->isComment($line) && (trim($line) === '' || $line[0] !== ' ')) {
                     $this->setState(State::BEGIN);
 
