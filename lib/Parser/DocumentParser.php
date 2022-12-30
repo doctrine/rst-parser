@@ -64,7 +64,7 @@ final class DocumentParser
     /** @var DocumentNode */
     private $document;
 
-    /** @var String */
+    /** @var string */
     private $specialLetter = '';
 
     /** @var ParserDirective|null */
