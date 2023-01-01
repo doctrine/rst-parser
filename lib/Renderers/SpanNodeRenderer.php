@@ -149,6 +149,10 @@ abstract class SpanNodeRenderer implements NodeRenderer, SpanRenderer
 
         $textRole = $this->environment->getTextRole($spanToken->get('section'));
 
+        if ($textRole === null) {
+            return $spanToken->get('url');
+        }
+
         return $textRole->process($spanToken->get('url'));
     }
 
