@@ -92,7 +92,7 @@ class DefaultNodeFactoryTest extends TestCase
 
         $nodeInstantiator->expects(self::once())
             ->method('create')
-            ->with([$node, 1, 'test'])
+            ->with([$node, 1, 'test', null])
             ->willReturn($expectedReturn);
 
         $defaultNodeFactory = $this->createDefaultNodeFactory($nodeInstantiator);

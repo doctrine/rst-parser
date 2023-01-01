@@ -23,13 +23,13 @@ class TitleNode extends Node
     /** @var string */
     private $target = '';
 
-    public function __construct(Node $value, int $level, string $token)
+    public function __construct(Node $value, int $level, string $token, ?string $id = null)
     {
         parent::__construct($value);
 
         $this->level = $level;
         $this->token = $token;
-        $this->id    = Environment::slugify($this->value->getText());
+        $this->id    = $id ?? Environment::slugify($this->value->getText());
     }
 
     public function getValue(): SpanNode

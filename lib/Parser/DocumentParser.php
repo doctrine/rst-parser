@@ -10,6 +10,7 @@ use Doctrine\RST\Environment;
 use Doctrine\RST\Event\PostParseDocumentEvent;
 use Doctrine\RST\Event\PreParseDocumentEvent;
 use Doctrine\RST\FileIncluder;
+use Doctrine\RST\Meta\LinkTarget;
 use Doctrine\RST\NodeFactory\NodeFactory;
 use Doctrine\RST\Nodes\DocumentNode;
 use Doctrine\RST\Nodes\Node;
@@ -82,6 +83,9 @@ final class DocumentParser
     /** @var Buffer */
     private $buffer;
 
+    /** @var Buffer */
+    private $anchorBuffer;
+
     /** @var Node|null */
     private $nodeBuffer;
 
@@ -133,6 +137,7 @@ final class DocumentParser
         $this->lineChecker    = new LineChecker();
         $this->tableParser    = new TableParser();
         $this->buffer         = new Buffer();
+        $this->anchorBuffer   = new Buffer();
     }
 
     public function getDocument(): DocumentNode
@@ -171,6 +176,7 @@ final class DocumentParser
     {
         $this->specialLetter = '';
         $this->buffer        = new Buffer();
+        $this->anchorBuffer  = new Buffer();
         $this->nodeBuffer    = null;
         $this->listOffset    = 0;
         $this->listMarker    = null;
@@ -284,7 +290,9 @@ final class DocumentParser
                         return false;
                     }
 
-                    if ($this->parseLinkTarget($line)) {
+                    if ($this->lineDataParser->parseLinkTarget($line) !== null) {
+                        $this->anchorBuffer->push($line);
+
                         return true;
                     }
 
@@ -525,6 +533,12 @@ final class DocumentParser
 
         $this->isCode = false;
 
+        if (! $this->anchorBuffer->isEmpty() && $this->state !== State::TITLE) {
+            foreach ($this->anchorBuffer->getLines() as $anchorLine) {
+                $this->createAnchorNode($anchorLine);
+            }
+        }
+
         if ($this->hasBuffer()) {
             switch ($this->state) {
                 case State::TITLE:
@@ -535,10 +549,24 @@ final class DocumentParser
 
                     $token = $this->environment->createTitle($level);
 
+                    $titleAnchor = Environment::slugify($data);
+                    foreach ($this->anchorBuffer->getLines() as $anchorLine) {
+                        $link = $this->lineDataParser->parseLinkTarget($anchorLine);
+                        if ($link === null) {
+                            continue;
+                        }
+
+                        $url        = Environment::slugify($link->getUrl());
+                        $linkTarget = new LinkTarget($link->getName(), $url, $data);
+                        $this->environment->setLinkTarget($linkTarget);
+                        $titleAnchor = Environment::slugify($url);
+                    }
+
                     $node = $this->nodeFactory->createTitleNode(
                         $this->parser->createSpanNode($data),
                         $level,
-                        $token
+                        $token,
+                        $titleAnchor
                     );
 
                     if ($this->lastTitleNode !== null) {
@@ -745,7 +773,7 @@ final class DocumentParser
         return false;
     }
 
-    private function parseLinkTarget(string $line): bool
+    private function createAnchorNode(string $line): bool
     {
         $link = $this->lineDataParser->parseLinkTarget($line);
 
@@ -760,7 +788,8 @@ final class DocumentParser
             $this->document->addNode($anchorNode);
         }
 
-        $this->environment->setLinkTarget($link->getName(), $link->getUrl());
+        $linkTarget = new LinkTarget($link->getName(), $link->getUrl());
+        $this->environment->setLinkTarget($linkTarget);
 
         return true;
     }
