@@ -24,7 +24,6 @@ use function file_get_contents;
 use function implode;
 use function in_array;
 use function is_string;
-use function rtrim;
 use function setlocale;
 use function sprintf;
 use function str_replace;
@@ -235,7 +234,7 @@ class FunctionalTest extends TestCase
         $lines = explode("\n", $string);
 
         $lines = array_map(static function (string $line): string {
-            return rtrim($line);
+            return trim($line);
         }, $lines);
 
         return trim(implode("\n", $lines));
