@@ -8,7 +8,6 @@ use Doctrine\RST\Directives\Data;
 use Doctrine\RST\Directives\Directive;
 use Doctrine\RST\Directives\DirectiveFactory;
 use Doctrine\RST\Directives\Wrapper;
-use Doctrine\RST\TextRoles\Reference;
 use Doctrine\RST\TextRoles\DefinitionTextRole;
 use Doctrine\RST\TextRoles\TextRole;
 use Doctrine\RST\TextRoles\WrapperTextRole;

@@ -189,17 +189,19 @@ Example Directive
         }
     }
 
-Now you can register your directive by passing it to the 2nd argument of the ``Doctrine\RST\Kernel`` class:
+Now you can register your directive by registering it in a custom directive
+factory in your :file:`Configuration.php`:
 
 .. code-block:: php
 
-    use App\RST\Directives\ExampleDirective;
+    $configuration = new Configuration();
 
-    $kernel = new Kernel($configuration, [
-        new ExampleDirective()
-    ]);
+    $configuration->addDirectiveFactory(new CustomDirectiveFactory(
+        [new ExampleDirective()]
+    ));
 
-    $builder = new Builder($kernel);
+    return $configuration;
+
 
 SubDirective Class
 ------------------

@@ -30,7 +30,6 @@ final class HTMLFormat implements Format
     {
         $this->templateRenderer  = $templateRenderer;
         $this->directiveFactory  = new FormatDirectiveFactory();
-        $this->templateRenderer  = $templateRenderer;
         $this->rendererFactories = [
             Renderers\LinkRenderer::class => new HTML\Renderers\LinkRendererFactory(),
         ];

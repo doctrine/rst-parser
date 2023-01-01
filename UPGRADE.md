@@ -1,5 +1,11 @@
 # Upgrade to 0.6
 
+## Refactored reference handling
+
+* References are now treated as text roles. They can extend 
+  ``Doctrine\RST\TextRoles\ReferenceRole`` for convenience. 
+* ``Doctrine\RST\References\Reference`` has been removed. Use a text role instead.
+
 ## Added methods to NodeFactory
 
 * Added `NodeFactory::createFieldListNode()`.

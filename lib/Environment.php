@@ -455,7 +455,7 @@ class Environment
         }
 
         $this->getMetaEntry()->resolveDependency(
-        // use the unique, unresolved name
+            // use the unique, unresolved name
             $this->unresolvedDependencies[$data],
             $resolvedReference->getFile()
         );
