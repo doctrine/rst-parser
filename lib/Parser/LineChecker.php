@@ -109,12 +109,12 @@ class LineChecker
      */
     public function isBlockLine(string $line, int $minIndent = 1): bool
     {
-        return trim($line) === '' || $this->isIndented($line, $minIndent);
+        return (trim($line) === '' || $this->isIndented($line, $minIndent)) && ! $this->isComment($line);
     }
 
     public function isComment(string $line): bool
     {
-        return preg_match('/^\.\. (.*)$/mUsi', $line) > 0;
+        return preg_match('/^\.\.(?: [^_]((?:(?!::).)*))?$/mUsi', $line) > 0;
     }
 
     public function isDirective(string $line): bool
