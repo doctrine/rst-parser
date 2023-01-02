@@ -54,7 +54,7 @@ final class TableColumn
 
     public function addContent(string $content): void
     {
-        $this->content = trim($this->content . utf8_encode($content));
+        $this->content = trim($this->content . $content);
     }
 
     public function incrementRowSpan(): void
