@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\RST;
 
+use Doctrine\RST\Meta\LinkTarget;
 use Doctrine\RST\Meta\MetaEntry;
 use Doctrine\RST\Meta\Metas;
 use Doctrine\RST\NodeFactory\NodeFactory;
@@ -72,7 +73,7 @@ class Environment
     /** @var string[] */
     private $variables = [];
 
-    /** @var string[] */
+    /** @var array<string, LinkTarget> */
     private $linkTargets = [];
 
     /** @var int[] */
@@ -284,15 +285,14 @@ class Environment
      * https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#explicit-hyperlink-targets
      * https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#implicit-hyperlink-targets
      */
-    public function setLinkTarget(string $name, string $url): void
+    public function setLinkTarget(LinkTarget $linkTarget): void
     {
-        $name = trim(strtolower($name));
-
-        if ($name === '_') {
+        $name = $linkTarget->getName();
+        if ($linkTarget->isAnonymous()) {
             $name = array_shift($this->anonymous);
         }
 
-        $this->linkTargets[$name] = trim($url);
+        $this->linkTargets[$name] = $linkTarget;
     }
 
     public function resetAnonymousStack(): void
@@ -305,13 +305,13 @@ class Environment
         $this->anonymous[] = trim(strtolower($name));
     }
 
-    /** @return string[] */
+    /** @return array<string, LinkTarget> */
     public function getLinkTargets(): array
     {
         return $this->linkTargets;
     }
 
-    public function getLinkTarget(string $name, bool $relative = true): string
+    public function getLinkTarget(string $name, bool $relative = true): ?LinkTarget
     {
         $name = trim(strtolower($name));
 
@@ -319,13 +319,21 @@ class Environment
             $link = $this->linkTargets[$name];
 
             if ($relative) {
-                return (string) $this->relativeUrl($link);
+                return $this->makeLinkTargetRelative($link);
             }
 
             return $link;
         }
 
-        return '';
+        return null;
+    }
+
+    public function makeLinkTargetRelative(LinkTarget $linkTarget): LinkTarget
+    {
+        $url = $this->urlGenerator->relativeUrl($linkTarget->getUrl(), $this->currentFileName);
+        $linkTarget->setUrl($url);
+
+        return $linkTarget;
     }
 
     public function addDependency(string $dependency, bool $requiresResolving = false): void

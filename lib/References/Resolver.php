@@ -62,7 +62,7 @@ final class Resolver
             return null;
         }
 
-        return $this->createResolvedReference($file, $environment, $entry, $attributes);
+        return $this->createResolvedReference($file, $environment, $entry, null, $attributes);
     }
 
     /** @param string[] $attributes */
@@ -72,12 +72,17 @@ final class Resolver
         array $attributes = []
     ): ?ResolvedReference {
         $entry = $environment->getMetas()->findLinkTargetMetaEntry($data);
-
-        if ($entry !== null) {
-            return $this->createResolvedReference($entry->getFile(), $environment, $entry, $attributes, $data);
+        if ($entry === null) {
+            return null;
         }
 
-        return null;
+        $linkTarget = $entry->getLinkTarget($data);
+        $title      = null;
+        if ($linkTarget !== null) {
+            $title = $linkTarget->getTitle();
+        }
+
+        return $this->createResolvedReference($entry->getFile(), $environment, $entry, $title, $attributes, $data);
     }
 
     /** @param string[] $attributes */
@@ -85,6 +90,7 @@ final class Resolver
         ?string $file,
         Environment $environment,
         MetaEntry $entry,
+        ?string $title = null,
         array $attributes = [],
         ?string $anchor = null
     ): ResolvedReference {
@@ -96,7 +102,7 @@ final class Resolver
 
         return new ResolvedReference(
             $file,
-            $entry->getTitle(),
+            $title ?? $entry->getTitle(),
             $url,
             $entry->getTitles(),
             $attributes

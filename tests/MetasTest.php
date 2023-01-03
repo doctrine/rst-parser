@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\Tests\RST;
 
+use Doctrine\RST\Meta\LinkTarget;
 use Doctrine\RST\Meta\MetaEntry;
 use Doctrine\RST\Meta\Metas;
 use PHPUnit\Framework\TestCase;
@@ -20,8 +21,8 @@ class MetasTest extends TestCase
             [],
             [],
             [
-                'link1' => '/link1',
-                'link2' => '/link2',
+                'link1' => new LinkTarget('link1', '/link1'),
+                'link2' => new LinkTarget('link2', '/link2'),
             ],
             0
         );
@@ -34,8 +35,8 @@ class MetasTest extends TestCase
             [],
             [],
             [
-                'link3' => '/link3',
-                'link4' => '/link4',
+                'link3' => new LinkTarget('link3', '/link3'),
+                'link4' => new LinkTarget('link4', '/link4'),
             ],
             0
         );

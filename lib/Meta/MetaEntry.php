@@ -13,6 +13,7 @@ use function in_array;
 use function is_array;
 use function is_string;
 use function sprintf;
+use function strtolower;
 
 class MetaEntry
 {
@@ -40,17 +41,17 @@ class MetaEntry
     /** @var string[] */
     private $resolvedDependencies = [];
 
-    /** @var string[] */
+    /** @var array<string, LinkTarget> */
     private $linkTargets;
 
     /** @var string|null */
     private $parent;
 
     /**
-     * @param string[][]|string[][][] $titles
-     * @param mixed[][]               $tocs
-     * @param string[]                $depends
-     * @param string[]                $linkTargets
+     * @param string[][]|string[][][]   $titles
+     * @param mixed[][]                 $tocs
+     * @param string[]                  $depends
+     * @param array<string, LinkTarget> $linkTargets
      */
     public function __construct(
         string $file,
@@ -155,10 +156,17 @@ class MetaEntry
         unset($this->depends[$key]);
     }
 
-    /** @return string[] */
+    /** @return array<string, LinkTarget> */
     public function getLinkTargets(): array
     {
         return $this->linkTargets;
+    }
+
+    public function getLinkTarget(string $key): ?LinkTarget
+    {
+        $key = strtolower($key);
+
+        return $this->linkTargets[$key] ?? null;
     }
 
     public function getMtime(): int

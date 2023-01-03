@@ -55,7 +55,9 @@ class FunctionalTest extends TestCase
     ): void {
         $configuration = new Configuration();
         $configuration->setFileExtension(Format::HTML);
-        $builder = new Builder();
+        $configuration->setUseCachedMetas(false);
+        $kernel  = new Kernel($configuration);
+        $builder = new Builder($kernel);
 
         $builder->build(__DIR__ . '/tests/build/' . $file, __DIR__ . '/output/build/' . $file);
 

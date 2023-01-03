@@ -40,10 +40,10 @@ class Metas
     }
 
     /**
-     * @param string[][] $titles
-     * @param mixed[][]  $tocs
-     * @param string[]   $depends
-     * @param string[]   $linkTargets
+     * @param string[][]                $titles
+     * @param mixed[][]                 $tocs
+     * @param string[]                  $depends
+     * @param array<string, LinkTarget> $linkTargets
      */
     public function set(
         string $file,
@@ -100,10 +100,10 @@ class Metas
         $this->entries = $metaEntries;
     }
 
-    /** @param string[] $linkTargets */
+    /** @param array<string, LinkTarget> $linkTargets */
     private function doesLinkTargetExist(array $linkTargets, string $target): bool
     {
-        foreach ($linkTargets as $name => $url) {
+        foreach ($linkTargets as $name => $linkTarget) {
             if ($name === strtolower($target)) {
                 return true;
             }

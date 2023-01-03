@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\RST\Span;
 
 use Doctrine\RST\Environment;
+use Doctrine\RST\Meta\LinkTarget;
 
 use function assert;
 use function htmlspecialchars;
@@ -190,8 +191,7 @@ final class SpanProcessor
             if (preg_match('/^(.+)[ \n]<(.+)>$/mUsi', $link, $m) > 0) {
                 $link = $m[1];
                 $url  = $m[2];
-
-                $this->environment->setLinkTarget($link, $url);
+                $this->environment->setLinkTarget(new LinkTarget($link, $url));
             }
 
             // extract the url if the link was in this format: `<https://www.google.com>`_
@@ -199,7 +199,7 @@ final class SpanProcessor
                 $link = $m[1];
                 $url  = $m[1];
 
-                $this->environment->setLinkTarget($link, $url);
+                $this->environment->setLinkTarget(new LinkTarget($link, $url));
             }
 
             $id = $this->generateId();

@@ -49,7 +49,7 @@ interface NodeFactory
     /** @param string[] $options */
     public function createContentsNode(Environment $environment, DocumentNode $documentNode, array $options): ContentsNode;
 
-    public function createTitleNode(Node $value, int $level, string $token): TitleNode;
+    public function createTitleNode(Node $value, int $level, string $token, ?string $id = null): TitleNode;
 
     public function createSeparatorNode(int $level): SeparatorNode;
 
