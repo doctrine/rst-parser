@@ -88,10 +88,10 @@ class Environment
     /** @var InvalidLink[] */
     private $invalidLinks = [];
 
-    public function __construct(Configuration $configuration)
+    public function __construct(Configuration $configuration, ?ErrorManager $errorManager = null)
     {
         $this->configuration = $configuration;
-        $this->errorManager  = new ErrorManager($this->configuration);
+        $this->errorManager  = $errorManager ?? new ErrorManager($this->configuration);
         $this->urlGenerator  = new UrlGenerator(
             $this->configuration
         );
