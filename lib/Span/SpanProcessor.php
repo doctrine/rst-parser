@@ -182,7 +182,7 @@ final class SpanProcessor
         return $span;
     }
 
-    /** @param String[] $match */
+    /** @param string[] $match */
     private function registerAnonymousLinkFromMatches(array $match): string
     {
         return $this->registerLinkFromMatches($match, true);
