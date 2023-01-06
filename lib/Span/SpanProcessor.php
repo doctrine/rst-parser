@@ -7,9 +7,7 @@ namespace Doctrine\RST\Span;
 use Doctrine\RST\Environment;
 use Doctrine\RST\Meta\LinkTarget;
 
-use function assert;
 use function htmlspecialchars;
-use function is_string;
 use function mt_rand;
 use function preg_match;
 use function preg_match_all;
@@ -167,66 +165,76 @@ final class SpanProcessor
             }
         }
 
-        $linkCallback = function (array $match): string {
-            $link = $match[3] ? $match[3] : $match[5];
-            assert(is_string($link));
-
-            // a link starting with _ is not a link - return original string
-            if (substr($link, 0, 1) === '_') {
-                return $match[0];
-            }
-
-            // the link may have a new line in it so we need to strip it
-            // before setting the link and adding a token to be replaced
-            $link = str_replace("\n", ' ', $link);
-            $link = (string) preg_replace('/\s+/', ' ', $link);
-
-            // we need to maintain the characters before and after the link
-            $prev = $match[1]; // previous character before the link
-            $next = $match[6]; // next character after the link
-
-            $url = '';
-
-            // extract the url if the link was in this format: `test link <https://www.google.com>`_
-            if (preg_match('/^(.+)[ \n]<(.+)>$/mUsi', $link, $m) > 0) {
-                $link = $m[1];
-                $url  = $m[2];
-                $this->environment->setLinkTarget(new LinkTarget($link, $url));
-            }
-
-            // extract the url if the link was in this format: `<https://www.google.com>`_
-            if (preg_match('/^<(.+)>$/mUsi', $link, $m) > 0) {
-                $link = $m[1];
-                $url  = $m[1];
-
-                $this->environment->setLinkTarget(new LinkTarget($link, $url));
-            }
-
-            $id = $this->generateId();
-
-            $this->addToken(SpanToken::TYPE_LINK, $id, [
-                'link' => $link,
-                'url' => $url,
-            ]);
-
-            return $prev . $id . $next;
-        };
-
-        // Replacing anonymous links
+        // Replacing anonymous links  `here <http://google.com>`__
         $span = (string) preg_replace_callback(
             '/(^|[ \(])(([a-z0-9_-]+)|(`(.+)`))__([^a-z0-9]{1}|$)/mUsi',
-            $linkCallback,
+            [$this, 'registerAnonymousLinkFromMatches'],
             $span
         );
 
-        // Replacing links
+        // Replacing other links  `Google <http://google.com>`_
         $span = (string) preg_replace_callback(
-            '/(^|[ \(])(([a-z0-9_-]+)|(`(.+)`))_([^a-z0-9]{1}|$)/mUsi',
-            $linkCallback,
+            '/(^|[ \(])(([a-z0-9_-]+)|(`(.+)`))_([^a-z0-9_]{1}|$)/mUsi',
+            [$this, 'registerLinkFromMatches'],
             $span
         );
 
         return $span;
+    }
+
+    /** @param String[] $match */
+    private function registerAnonymousLinkFromMatches(array $match): string
+    {
+        return $this->registerLinkFromMatches($match, true);
+    }
+
+    /** @param String[] $match */
+    private function registerLinkFromMatches(array $match, bool $anonymous = false): string
+    {
+        $link = $match[3] !== '' ? $match[3] : $match[5];
+
+        // a link starting with _ is not a link - return original string
+        if (substr($link, 0, 1) === '_') {
+            return $match[0];
+        }
+
+        // the link may have a new line in it so we need to strip it
+        // before setting the link and adding a token to be replaced
+        $link = str_replace("\n", ' ', $link);
+        $link = (string) preg_replace('/\s+/', ' ', $link);
+
+        // we need to maintain the characters before and after the link
+        $prev = $match[1]; // previous character before the link
+        $next = $match[6]; // next character after the link
+
+        $url = '';
+
+        // extract the url if the link was in this format: `test link <https://www.google.com>`_
+        if (preg_match('/^(.+)[ \n]<(.+)>$/mUsi', $link, $m) > 0) {
+            $link = $m[1];
+            $url  = $m[2];
+            if (! $anonymous) {
+                $this->environment->setLinkTarget(new LinkTarget($link, $url));
+            }
+        }
+
+        // extract the url if the link was in this format: `<https://www.google.com>`_
+        if (preg_match('/^<(.+)>$/mUsi', $link, $m) > 0) {
+            $link = $m[1];
+            $url  = $m[1];
+            if (! $anonymous) {
+                $this->environment->setLinkTarget(new LinkTarget($link, $url));
+            }
+        }
+
+        $id = $this->generateId();
+
+        $this->addToken(SpanToken::TYPE_LINK, $id, [
+            'link' => $link,
+            'url' => $url,
+        ]);
+
+        return $prev . $id . $next;
     }
 
     private function replaceStandaloneHyperlinks(string $span): string
