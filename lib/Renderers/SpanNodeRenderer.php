@@ -153,7 +153,9 @@ abstract class SpanNodeRenderer implements NodeRenderer, SpanRenderer
             return $spanToken->get('url');
         }
 
-        return $textRole->process($spanToken->get('url'));
+        $resolvedTextRole = $textRole->process($spanToken->get('url'));
+
+        return str_replace($spanToken->getId(), $resolvedTextRole, $span);
     }
 
     private function renderReference(SpanToken $spanToken, string $span): string
