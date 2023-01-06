@@ -13,6 +13,7 @@ class LinkTarget
     private string $url;
     private ?string $title;
     private bool $anonymous = false;
+    private bool $duplicate = false;
 
     public function __construct(
         string $name,
@@ -28,6 +29,21 @@ class LinkTarget
     public function getName(): string
     {
         return $this->name;
+    }
+
+    public function setName(string $name): void
+    {
+        $this->name = $name;
+    }
+
+    public function isDuplicate(): bool
+    {
+        return $this->duplicate;
+    }
+
+    public function setDuplicate(bool $duplicate): void
+    {
+        $this->duplicate = $duplicate;
     }
 
     public function getUrl(): string

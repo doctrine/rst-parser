@@ -4,13 +4,23 @@ declare(strict_types=1);
 
 namespace Doctrine\Tests\RST;
 
+use Doctrine\RST\ErrorManager;
 use Doctrine\RST\Meta\LinkTarget;
 use Doctrine\RST\Meta\MetaEntry;
 use Doctrine\RST\Meta\Metas;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class MetasTest extends TestCase
 {
+    /** @var ErrorManager|MockObject */
+    private ErrorManager $errorManager;
+
+    protected function setUp(): void
+    {
+        $this->errorManager = $this->createMock(ErrorManager::class);
+    }
+
     public function testFindLinkMetaEntry(): void
     {
         $entry1 = new MetaEntry(
@@ -41,10 +51,13 @@ class MetasTest extends TestCase
             0
         );
 
-        $metas = new Metas([
-            $entry1,
-            $entry2,
-        ]);
+        $metas = new Metas(
+            $this->errorManager,
+            [
+                $entry1,
+                $entry2,
+            ]
+        );
 
         self::assertSame($entry1, $metas->findLinkTargetMetaEntry('link1'));
         self::assertSame($entry1, $metas->findLinkTargetMetaEntry('link2'));

@@ -20,7 +20,7 @@ class EnvironmentTest extends TestCase
     {
         $configuration      = new Configuration();
         $this->errorManager = $this->createMock(ErrorManager::class);
-        $this->environment  = new Environment($configuration, $this->errorManager);
+        $this->environment  = new Environment($configuration, null, $this->errorManager);
     }
 
     public function testRegisterTextRole(): void

@@ -55,17 +55,17 @@ final class Builder
     /** @var string */
     private $indexName = 'index';
 
-    public function __construct(?Kernel $kernel = null)
+    public function __construct(?Kernel $kernel = null, ?ErrorManager $errorManager = null)
     {
         $this->kernel = $kernel ?? new Kernel();
 
         $this->configuration = $this->kernel->getConfiguration();
 
-        $this->errorManager = new ErrorManager($this->configuration);
+        $this->errorManager = $errorManager ?? new ErrorManager($this->configuration);
 
         $this->filesystem = new Filesystem();
 
-        $this->metas = new Metas();
+        $this->metas = new Metas($this->errorManager);
 
         $this->cachedMetasLoader = new CachedMetasLoader();
 

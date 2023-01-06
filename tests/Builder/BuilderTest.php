@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Doctrine\Tests\RST\Builder;
 
 use Doctrine\RST\Builder;
-use Doctrine\RST\Meta\MetaEntry;
 use Doctrine\Tests\RST\BaseBuilderTest;
 use Symfony\Component\DomCrawler\Crawler;
 
@@ -56,10 +55,15 @@ class BuilderTest extends BaseBuilderTest
         // check that metas were cached
         self::assertTrue(file_exists($this->targetFile('metas.php')));
         $cachedContents = (string) file_get_contents($this->targetFile('metas.php'));
-        /** @var MetaEntry[] $metaEntries */
-        $metaEntries = unserialize($cachedContents);
+        $metas          = unserialize($cachedContents);
+        self::assertArrayHasKey('entries', $metas);
+        $metaEntries = $metas['entries'];
         self::assertArrayHasKey('index', $metaEntries);
         self::assertSame('Summary', $metaEntries['index']->getTitle());
+        self::assertArrayHasKey('linkTargets', $metas);
+        $linkTargets = $metas['linkTargets'];
+        self::assertArrayHasKey('toc', $linkTargets);
+        self::assertSame('toc', $linkTargets['toc']->getName());
 
         // look at all the other documents this document depends
         // on, like :doc: and :ref:
@@ -363,7 +367,7 @@ class BuilderTest extends BaseBuilderTest
         );
 
         self::assertStringContainsString(
-            '<p>see <a href="magic-link.html#test">test</a></p>',
+            '<p>see <a href="http://absolute/">test</a></p>',
             $contents
         );
 
