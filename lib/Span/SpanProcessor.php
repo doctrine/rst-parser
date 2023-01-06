@@ -188,7 +188,7 @@ final class SpanProcessor
         return $this->registerLinkFromMatches($match, true);
     }
 
-    /** @param String[] $match */
+    /** @param string[] $match */
     private function registerLinkFromMatches(array $match, bool $anonymous = false): string
     {
         $link = $match[3] !== '' ? $match[3] : $match[5];
