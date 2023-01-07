@@ -49,6 +49,8 @@ final class SpanProcessor
     {
         $span = $this->replaceLiterals($this->span);
 
+        $span = $this->replaceInterpretedText($span);
+
         $span = $this->replaceTitleLetters($span);
 
         $span = $this->replaceTextRoles($span);
@@ -94,6 +96,24 @@ final class SpanProcessor
 
                 $this->addToken(SpanToken::TYPE_LITERAL, $id, [
                     'type' => 'literal',
+                    'text' => htmlspecialchars($match[1]),
+                ]);
+
+                return $id;
+            },
+            $span
+        );
+    }
+
+    private function replaceInterpretedText(string $span): string
+    {
+        return (string) preg_replace_callback(
+            '/(?<=^|\s)`(\S|\S\S|\S[^`]+\S)`(?!(:.+:|[_]))/mUsi',
+            function (array $match): string {
+                $id = $this->generateId();
+
+                $this->addToken(SpanToken::TYPE_INTERPRETED, $id, [
+                    'type' => SpanToken::TYPE_INTERPRETED,
                     'text' => htmlspecialchars($match[1]),
                 ]);
 
