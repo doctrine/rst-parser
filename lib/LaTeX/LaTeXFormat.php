@@ -12,6 +12,7 @@ use Doctrine\RST\Renderers;
 use Doctrine\RST\Renderers\CallableNodeRendererFactory;
 use Doctrine\RST\Renderers\NodeRendererFactory;
 use Doctrine\RST\Templates\TemplateRenderer;
+use Doctrine\RST\TextRoles\TextRole;
 
 final class LaTeXFormat implements Format
 {
@@ -40,6 +41,12 @@ final class LaTeXFormat implements Format
             new LaTeX\Directives\Url(),
             new LaTeX\Directives\Wrap('note'),
         ];
+    }
+
+    /** @return TextRole[] */
+    public function getTextRoles(): array
+    {
+        return [];
     }
 
     /** @return NodeRendererFactory[] */

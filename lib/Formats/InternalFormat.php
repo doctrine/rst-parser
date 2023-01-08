@@ -6,6 +6,7 @@ namespace Doctrine\RST\Formats;
 
 use Doctrine\RST\Directives\Directive;
 use Doctrine\RST\Renderers\NodeRendererFactory;
+use Doctrine\RST\TextRoles\TextRole;
 
 final class InternalFormat implements Format
 {
@@ -17,6 +18,9 @@ final class InternalFormat implements Format
 
     /** @var NodeRendererFactory[]|null */
     private $nodeRendererFactories;
+
+    /** @var TextRole[]|null */
+    private ?array $textRoles = null;
 
     public function __construct(Format $format)
     {
@@ -36,6 +40,16 @@ final class InternalFormat implements Format
         }
 
         return $this->directives;
+    }
+
+    /** @return TextRole[] */
+    public function getTextRoles(): array
+    {
+        if ($this->textRoles === null) {
+            $this->textRoles = $this->format->getTextRoles();
+        }
+
+        return $this->textRoles;
     }
 
     /** @return NodeRendererFactory[] */
