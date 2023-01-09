@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\Tests\RST\Builder;
 
 use Doctrine\RST\Builder;
+use Doctrine\RST\Configuration;
 use Doctrine\Tests\RST\BaseBuilderTest;
 use Symfony\Component\DomCrawler\Crawler;
 
@@ -104,7 +105,7 @@ class BuilderTest extends BaseBuilderTest
         );
 
         // new builder, which will use cached metas
-        $builder = new Builder();
+        $builder = new Builder(new Configuration());
         $builder->build($this->sourceFile(), $this->targetFile());
 
         $contents = $this->getFileContents($this->targetFile('link-to-index.html'));

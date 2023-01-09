@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\RST\Parser;
 
 use Doctrine\Common\EventManager;
+use Doctrine\RST\Configuration;
 use Doctrine\RST\Directives\Directive;
 use Doctrine\RST\Environment;
 use Doctrine\RST\Event\PostParseDocumentEvent;
@@ -41,6 +42,8 @@ use const STDERR;
 
 final class DocumentParser
 {
+    private Configuration $configuration;
+
     /** @var Parser */
     private $parser;
 
@@ -118,6 +121,7 @@ final class DocumentParser
 
     /** @param Directive[] $directives */
     public function __construct(
+        Configuration $configuration,
         Parser $parser,
         Environment $environment,
         NodeFactory $nodeFactory,
@@ -126,6 +130,7 @@ final class DocumentParser
         bool $includeAllowed,
         string $includeRoot
     ) {
+        $this->configuration  = $configuration;
         $this->parser         = $parser;
         $this->environment    = $environment;
         $this->nodeFactory    = $nodeFactory;
@@ -349,7 +354,7 @@ final class DocumentParser
             case State::LIST:
                 if (! $this->lineChecker->isListLine($line, $this->listMarker, $this->listOffset) && ! $this->lineChecker->isBlockLine($line, max(1, $this->listOffset))) {
                     if (trim($this->lines->getPreviousLine()) !== '') {
-                        $this->environment->getErrorManager()->warning(
+                        $this->configuration->getErrorManager()->warning(
                             'List ends without a blank line; unexpected unindent',
                             $this->environment->getCurrentFileName(),
                             $this->currentLineNumber !== null ? $this->currentLineNumber - 1 : null
@@ -521,7 +526,7 @@ final class DocumentParser
                 return false;
 
             default:
-                $this->environment->getErrorManager()->error('Parser ended in an unexcepted state');
+                $this->configuration->getErrorManager()->error('Parser ended in an unexcepted state');
         }
 
         return true;
@@ -685,7 +690,7 @@ final class DocumentParser
                         $this->directive->getOptions()
                     );
                 } catch (Throwable $e) {
-                    $this->environment->getErrorManager()->error(
+                    $this->configuration->getErrorManager()->error(
                         sprintf('Error while processing "%s" directive: "%s"', $currentDirective->getName(), $e->getMessage()),
                         $this->environment->getCurrentFileName(),
                         $this->currentLineNumber ?? null,
@@ -731,7 +736,7 @@ final class DocumentParser
         }
 
         if (! isset($this->directives[$parserDirective->getName()])) {
-            $this->environment->getErrorManager()->error(
+            $this->configuration->getErrorManager()->error(
                 sprintf('Unknown directive "%s" for line "%s"', $parserDirective->getName(), $line),
                 $this->environment->getCurrentFileName()
             );

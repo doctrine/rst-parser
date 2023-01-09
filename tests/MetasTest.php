@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Doctrine\Tests\RST;
 
+use Doctrine\RST\Configuration;
 use Doctrine\RST\ErrorManager;
+use Doctrine\RST\ErrorManager\ErrorManagerFactory;
 use Doctrine\RST\Meta\LinkTarget;
 use Doctrine\RST\Meta\MetaEntry;
 use Doctrine\RST\Meta\Metas;
@@ -13,12 +15,20 @@ use PHPUnit\Framework\TestCase;
 
 class MetasTest extends TestCase
 {
+    private Configuration $configuration;
     /** @var ErrorManager|MockObject */
     private ErrorManager $errorManager;
 
     protected function setUp(): void
     {
-        $this->errorManager = $this->createMock(ErrorManager::class);
+        $this->configuration = new Configuration();
+        $this->configuration->setUseCachedMetas(false);
+        $this->errorManager  = $this->createMock(ErrorManager::class);
+        $errorManagerFactory = $this->createMock(ErrorManagerFactory::class);
+        $this->configuration->setErrorManagerFactory($errorManagerFactory);
+        $errorManagerFactory->method('getErrorManager')->willReturn($this->errorManager);
+        $this->errorManager->expects(self::never())->method('warning');
+        $this->errorManager->expects(self::never())->method('error');
     }
 
     public function testFindLinkMetaEntry(): void
@@ -52,7 +62,7 @@ class MetasTest extends TestCase
         );
 
         $metas = new Metas(
-            $this->errorManager,
+            $this->configuration,
             [
                 $entry1,
                 $entry2,

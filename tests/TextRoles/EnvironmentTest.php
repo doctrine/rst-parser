@@ -7,6 +7,7 @@ namespace Doctrine\Tests\RST\TextRoles;
 use Doctrine\RST\Configuration;
 use Doctrine\RST\Environment;
 use Doctrine\RST\ErrorManager;
+use Doctrine\RST\ErrorManager\ErrorManagerFactory;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -18,9 +19,12 @@ class EnvironmentTest extends TestCase
 
     protected function setUp(): void
     {
-        $configuration      = new Configuration();
-        $this->errorManager = $this->createMock(ErrorManager::class);
-        $this->environment  = new Environment($configuration, null, $this->errorManager);
+        $configuration       = new Configuration();
+        $errorManagerFactory = $this->createMock(ErrorManagerFactory::class);
+        $this->errorManager  = $this->createMock(ErrorManager::class);
+        $configuration->setErrorManagerFactory($errorManagerFactory);
+        $errorManagerFactory->method('getErrorManager')->willReturn($this->errorManager);
+        $this->environment = new Environment($configuration);
     }
 
     public function testRegisterTextRole(): void

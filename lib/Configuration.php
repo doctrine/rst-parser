@@ -6,6 +6,8 @@ namespace Doctrine\RST;
 
 use Doctrine\Common\EventArgs;
 use Doctrine\Common\EventManager;
+use Doctrine\RST\ErrorManager\DefaultErrorManagerFactory;
+use Doctrine\RST\ErrorManager\ErrorManagerFactory;
 use Doctrine\RST\Formats\Format;
 use Doctrine\RST\Formats\InternalFormat;
 use Doctrine\RST\HTML\HTMLFormat;
@@ -91,6 +93,8 @@ class Configuration
     /** @var TemplateEngineAdapter */
     private $templateEngineAdapter;
 
+    private ErrorManagerFactory $errorManagerFactory;
+
     public function __construct()
     {
         $this->cacheDir = sys_get_temp_dir() . '/doctrine-rst-parser';
@@ -99,6 +103,7 @@ class Configuration
 
         $this->templateEngineAdapter = new TwigAdapter($this);
         $this->templateRenderer      = new TwigTemplateRenderer($this);
+        $this->errorManagerFactory   = new DefaultErrorManagerFactory($this);
 
         $this->formats = [
             Format::HTML => new InternalFormat(new HTMLFormat($this->templateRenderer)),
@@ -378,5 +383,20 @@ class Configuration
     private function getNodeRendererFactory(string $nodeClassName): ?NodeRendererFactory
     {
         return $this->getFormat()->getNodeRendererFactories()[$nodeClassName] ?? null;
+    }
+
+    public function getErrorManagerFactory(): ErrorManagerFactory
+    {
+        return $this->errorManagerFactory;
+    }
+
+    public function setErrorManagerFactory(ErrorManagerFactory $errorManagerFactory): void
+    {
+        $this->errorManagerFactory = $errorManagerFactory;
+    }
+
+    public function getErrorManager(): ErrorManager
+    {
+        return $this->errorManagerFactory->getErrorManager();
     }
 }

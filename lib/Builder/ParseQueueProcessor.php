@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\Builder;
 
-use Doctrine\RST\ErrorManager;
+use Doctrine\RST\Configuration;
 use Doctrine\RST\Kernel;
 use Doctrine\RST\Meta\Metas;
 use Doctrine\RST\Nodes\DocumentNode;
@@ -20,11 +20,10 @@ use const STDERR;
 
 final class ParseQueueProcessor
 {
+    private Configuration $configuration;
+
     /** @var Kernel */
     private $kernel;
-
-    /** @var ErrorManager */
-    private $errorManager;
 
     /** @var Metas */
     private $metas;
@@ -42,16 +41,16 @@ final class ParseQueueProcessor
     private $fileExtension;
 
     public function __construct(
+        Configuration $configuration,
         Kernel $kernel,
-        ErrorManager $errorManager,
         Metas $metas,
         Documents $documents,
         string $directory,
         string $targetDirectory,
         string $fileExtension
     ) {
+        $this->configuration   = $configuration;
         $this->kernel          = $kernel;
-        $this->errorManager    = $errorManager;
         $this->metas           = $metas;
         $this->documents       = $documents;
         $this->directory       = $directory;
@@ -98,14 +97,13 @@ final class ParseQueueProcessor
 
     private function createFileParser(string $file): Parser
     {
-        $parser = new Parser($this->kernel);
+        $parser = new Parser($this->configuration, $this->kernel);
 
         $environment = $parser->getEnvironment();
         $environment->setMetas($this->metas);
         $environment->setCurrentFileName($file);
         $environment->setCurrentDirectory($this->directory);
         $environment->setTargetDirectory($this->targetDirectory);
-        $environment->setErrorManager($this->errorManager);
 
         return $parser;
     }

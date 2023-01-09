@@ -4,30 +4,28 @@ declare(strict_types=1);
 
 namespace Doctrine\Tests\RST\BuilderMalformedReference;
 
-use Doctrine\RST\Builder;
-use Doctrine\RST\Configuration;
-use Doctrine\RST\Kernel;
 use Doctrine\Tests\RST\BaseBuilderTest;
 
 class BuilderMalformedReferenceTest extends BaseBuilderTest
 {
-    /** @var Configuration */
-    private $configuration;
-
-    protected function setUp(): void
+    protected function configureExpectedErrors(): void
     {
-        $this->configuration = new Configuration();
-        $this->configuration->setUseCachedMetas(false);
-        $this->configuration->abortOnError(false);
-        $this->configuration->setIgnoreInvalidReferences(true);
-
-        $this->builder = new Builder(new Kernel($this->configuration));
+        $this->errorManager->expects(self::atLeastOnce())
+            ->method('error')
+            ->with('Found invalid reference "_test_reference"', 'subdir/another', null, null);
     }
 
-    public function testMalformedReference(): void
+    public function testMalformedReferenceLogsError(): void
     {
-        // test that invalid references can be ignored and no exception gets thrown
+        $this->configureExpectedErrors();
+        $this->builder->build($this->sourceFile(), $this->targetFile());
+    }
 
+    public function testMalformedReferenceWithIgnoredInvalidReferences(): void
+    {
+        $this->configuration->setIgnoreInvalidReferences(true);
+        // test that invalid references can be ignored and no exception gets thrown
+        $this->errorManager->expects(self::never())->method('error');
         $this->builder->build($this->sourceFile(), $this->targetFile());
 
         $contents = $this->getFileContents($this->targetFile('subdir/another.html'));

@@ -4,37 +4,28 @@ declare(strict_types=1);
 
 namespace Doctrine\Tests\RST\BuilderInvalidReferences;
 
-use Doctrine\RST\Builder;
-use Doctrine\RST\Configuration;
-use Doctrine\RST\Kernel;
 use Doctrine\Tests\RST\BaseBuilderTest;
-use Throwable;
 
 class BuilderInvalidReferencesTest extends BaseBuilderTest
 {
-    /** @var Configuration */
-    private $configuration;
-
-    protected function setUp(): void
-    {
-        $this->configuration = new Configuration();
-        $this->configuration->setUseCachedMetas(false);
-        $this->configuration->silentOnError(true);
-
-        $this->builder = new Builder(new Kernel($this->configuration));
-    }
-
     public function testInvalidReference(): void
     {
-        $this->expectException(Throwable::class);
-        $this->expectExceptionMessage('Found invalid reference "does_not_exist" in file "index"');
-
+        $this->configureExpectedErrors();
         $this->builder->build($this->sourceFile(), $this->targetFile());
+    }
+
+    protected function configureExpectedErrors(): void
+    {
+        $this->errorManager->expects(self::atLeastOnce())
+            ->method('error')
+            ->with('Found invalid reference "does_not_exist"', 'index', null, null);
     }
 
     public function testInvalidReferenceIgnored(): void
     {
         $this->configuration->setIgnoreInvalidReferences(true);
+
+        $this->errorManager->expects(self::never())->method('error');
 
         $this->builder->build($this->sourceFile(), $this->targetFile());
 

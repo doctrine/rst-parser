@@ -85,14 +85,14 @@ class Environment
     /** @var InvalidLink[] */
     private $invalidLinks = [];
 
-    public function __construct(Configuration $configuration, ?Metas $metas = null, ?ErrorManager $errorManager = null)
+    public function __construct(Configuration $configuration, ?Metas $metas = null)
     {
         $this->configuration = $configuration;
-        $this->errorManager  = $errorManager ?? new ErrorManager($this->configuration);
+        $this->errorManager  = $configuration->getErrorManager();
         $this->urlGenerator  = new UrlGenerator(
             $this->configuration
         );
-        $this->metas         = $metas ?? new Metas($this->errorManager);
+        $this->metas         = $metas ?? new Metas($this->configuration);
 
         $this->reset();
     }
@@ -113,16 +113,6 @@ class Environment
     public function getConfiguration(): Configuration
     {
         return $this->configuration;
-    }
-
-    public function getErrorManager(): ErrorManager
-    {
-        return $this->errorManager;
-    }
-
-    public function setErrorManager(ErrorManager $errorManager): void
-    {
-        $this->errorManager = $errorManager;
     }
 
     public function setMetas(Metas $metas): void

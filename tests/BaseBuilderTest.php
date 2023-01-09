@@ -6,25 +6,23 @@ namespace Doctrine\Tests\RST;
 
 use Doctrine\RST\Builder;
 use Exception;
-use PHPUnit\Framework\TestCase;
 
 use function file_get_contents;
 use function shell_exec;
 
-abstract class BaseBuilderTest extends TestCase
+abstract class BaseBuilderTest extends BaseTest
 {
-    /** @var Builder */
-    protected $builder;
+    protected Builder $builder;
 
     abstract protected function getFixturesDirectory(): string;
 
     protected function setUp(): void
     {
+        parent::setUp();
         shell_exec('rm -rf ' . $this->targetFile());
-
-        $this->builder = new Builder();
-        $this->builder->getConfiguration()->setUseCachedMetas(false);
+        $this->builder = new Builder($this->configuration);
         $this->configureBuilder($this->builder);
+        // build must be executed
         $this->builder->build($this->sourceFile(), $this->targetFile());
     }
 

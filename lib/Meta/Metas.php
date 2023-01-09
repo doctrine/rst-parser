@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\Meta;
 
+use Doctrine\RST\Configuration;
 use Doctrine\RST\Environment;
 use Doctrine\RST\ErrorManager;
 use Doctrine\RST\UrlGenerator;
@@ -26,17 +27,19 @@ class Metas
     /** @var array<string, LinkTarget> */
     private array $linkTargets = [];
 
+    private Configuration $configuration;
     private ErrorManager $errorManager;
 
     /**
      * @param MetaEntry[]               $entries
      * @param array<string, LinkTarget> $linkTargets
      */
-    public function __construct(ErrorManager $errorManager, array $entries = [], array $linkTargets = [])
+    public function __construct(Configuration $configuration, array $entries = [], array $linkTargets = [])
     {
-        $this->errorManager = $errorManager;
-        $this->entries      = $entries;
-        $this->linkTargets  = $linkTargets;
+        $this->configuration = $configuration;
+        $this->errorManager  = $this->configuration->getErrorManager();
+        $this->entries       = $entries;
+        $this->linkTargets   = $linkTargets;
     }
 
     public function findLinkTargetMetaEntry(string $linkTarget): ?MetaEntry
