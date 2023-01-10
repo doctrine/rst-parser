@@ -212,7 +212,8 @@ class FunctionalTest extends TestCase
         return $fileFinder
             ->files()
             ->in($dir->getPathname())
-            ->notName('*.rst');
+            ->notName('*.rst')
+            ->notName('*.rst.txt');
     }
 
     /** @param Format::* $format */
