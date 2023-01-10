@@ -114,12 +114,12 @@ class LineChecker
 
     public function isComment(string $line): bool
     {
-        return preg_match('/^\.\.(?: [^_]((?:(?!::).)*))?$/mUsi', $line) > 0;
+        return preg_match('/^\.\.(?:\s+[^_ \t]((?:(?!::).)*))?$/mUsi', $line) > 0;
     }
 
     public function isDirective(string $line): bool
     {
-        return preg_match('/^\.\. (\|(.+)\| |)([^\s]+)::( (.*)|)$/mUsi', $line) > 0;
+        return preg_match('/^\.\.\s+(\|(.+)\| |)([^\s]+)::( (.*)|)$/mUsi', $line) > 0;
     }
 
     public function isFieldOption(string $line, int $offset = 0): bool
