@@ -39,7 +39,7 @@ final class FileIncluder
     public function includeFiles(string $document): string
     {
         return (string) preg_replace_callback(
-            '/^\.\. include:: (.+)$/m',
+            '/^\.\.\s+include:: (.+)$/m',
             function ($match): string {
                 $path = $this->environment->absoluteRelativePath($match[1]);
 
