@@ -14,7 +14,7 @@ use function sprintf;
 /**
  * This event is called in the DocumentNodeRenderer after the content of
  * the document got rendered and before the HTML is returned. It can be used
- * to postprocess or exchange the HTML that will be written to the file.
+ * to postprocess or change the HTML that will be written to the file.
  */
 final class PostDocumentRenderEvent extends EventArgs
 {
