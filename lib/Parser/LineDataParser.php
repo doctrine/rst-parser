@@ -38,30 +38,30 @@ final class LineDataParser
     public function parseLinkTarget(string $line): ?Link
     {
         // Links
-        if (preg_match('/^\.\. _`(.+)`: (.+)$/mUsi', $line, $match) > 0) {
+        if (preg_match('/^\.\.\s+_`(.+)`: (.+)$/mUsi', $line, $match) > 0) {
             return $this->createLinkTarget($match[1], $match[2], Link::TYPE_LINK);
         }
 
         // anonymous links
-        if (preg_match('/^\.\. _(.+): (.+)$/mUsi', $line, $match) > 0) {
+        if (preg_match('/^\.\.\s+_(.+): (.+)$/mUsi', $line, $match) > 0) {
             return $this->createLinkTarget($match[1], $match[2], Link::TYPE_LINK);
         }
 
         // Short anonymous links
-        if (preg_match('/^__ (.+)$/mUsi', trim($line), $match) > 0) {
+        if (preg_match('/^__\s+(.+)$/mUsi', trim($line), $match) > 0) {
             $url = $match[1];
 
             return $this->createLinkTarget('_', $url, Link::TYPE_LINK);
         }
 
         // Anchor links - ".. _`anchor-link`:"
-        if (preg_match('/^\.\. _`(.+)`:$/mUsi', trim($line), $match) > 0) {
+        if (preg_match('/^\.\.\s+_`(.+)`:$/mUsi', trim($line), $match) > 0) {
             $anchor = $match[1];
 
             return new Link($anchor, '#' . $anchor, Link::TYPE_ANCHOR);
         }
 
-        if (preg_match('/^\.\. _(.+):$/mUsi', trim($line), $match) > 0) {
+        if (preg_match('/^\.\.\s+_(.+):$/mUsi', trim($line), $match) > 0) {
             $anchor = $match[1];
 
             return $this->createLinkTarget($anchor, '#' . $anchor, Link::TYPE_ANCHOR);
@@ -82,7 +82,7 @@ final class LineDataParser
 
     public function parseDirective(string $line): ?Directive
     {
-        if (preg_match('/^\.\. (\|(.+)\| |)([^\s]+)::( (.*)|)$/mUsi', $line, $match) > 0) {
+        if (preg_match('/^\.\.\s+(\|(.+)\| |)([^\s]+)::( (.*)|)$/mUsi', $line, $match) > 0) {
             return new Directive(
                 $match[2],
                 $match[3],
