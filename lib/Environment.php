@@ -73,9 +73,6 @@ class Environment
     /** @var string[] */
     private $variables = [];
 
-    /** @var array<string, LinkTarget> */
-    private $linkTargets = [];
-
     /** @var int[] */
     private $levels = [];
 
@@ -88,14 +85,14 @@ class Environment
     /** @var InvalidLink[] */
     private $invalidLinks = [];
 
-    public function __construct(Configuration $configuration, ?ErrorManager $errorManager = null)
+    public function __construct(Configuration $configuration, ?Metas $metas = null, ?ErrorManager $errorManager = null)
     {
         $this->configuration = $configuration;
         $this->errorManager  = $errorManager ?? new ErrorManager($this->configuration);
         $this->urlGenerator  = new UrlGenerator(
             $this->configuration
         );
-        $this->metas         = new Metas();
+        $this->metas         = $metas ?? new Metas($this->errorManager);
 
         $this->reset();
     }
@@ -292,7 +289,7 @@ class Environment
             $name = array_shift($this->anonymous);
         }
 
-        $this->linkTargets[$name] = $linkTarget;
+        $this->metas->setLinkTarget($name, $linkTarget);
     }
 
     public function resetAnonymousStack(): void
@@ -308,32 +305,12 @@ class Environment
     /** @return array<string, LinkTarget> */
     public function getLinkTargets(): array
     {
-        return $this->linkTargets;
+        return $this->getMetas()->getLinkTargets();
     }
 
     public function getLinkTarget(string $name, bool $relative = true): ?LinkTarget
     {
-        $name = trim(strtolower($name));
-
-        if (isset($this->linkTargets[$name])) {
-            $link = $this->linkTargets[$name];
-
-            if ($relative) {
-                return $this->makeLinkTargetRelative($link);
-            }
-
-            return $link;
-        }
-
-        return null;
-    }
-
-    public function makeLinkTargetRelative(LinkTarget $linkTarget): LinkTarget
-    {
-        $url = $this->urlGenerator->relativeUrl($linkTarget->getUrl(), $this->currentFileName);
-        $linkTarget->setUrl($url);
-
-        return $linkTarget;
+        return $this->metas->getLinkTarget($this->urlGenerator, $this->currentFileName, $name, $relative = true);
     }
 
     public function addDependency(string $dependency, bool $requiresResolving = false): void

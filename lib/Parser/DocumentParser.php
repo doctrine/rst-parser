@@ -559,7 +559,7 @@ final class DocumentParser
                         $url        = Environment::slugify($link->getUrl());
                         $linkTarget = new LinkTarget($link->getName(), $url, $data);
                         $this->environment->setLinkTarget($linkTarget);
-                        $titleAnchor = Environment::slugify($url);
+                        $titleAnchor = Environment::slugify($linkTarget->getName());
                     }
 
                     $node = $this->nodeFactory->createTitleNode(
