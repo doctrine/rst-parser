@@ -79,3 +79,11 @@ The events you can listen for are as follows:
   in implementing projects or extending packages. See
   `Package Intersphinx, provided by the TYPO3 Documentation Team <https://github.com/TYPO3-Documentation/intersphinx>`__
   for an example implementation.
+- ``PreDocumentRenderEvent``: This event is called in the `DocumentNodeRenderer`
+  before the document Node is rendered. The event can be used to influence the
+  parameters sent to the template and or the name of the template to be used
+  during rendering.
+- ``PostDocumentRenderEvent``: This event is called in the `DocumentNodeRenderer`
+  after the content of the document got rendered and before the HTML is
+  returned. It can be used to postprocess or exchange the HTML that will be
+  written to the file.

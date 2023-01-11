@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\HTML\Renderers;
 
+use Doctrine\Common\EventManager;
+use Doctrine\RST\Event\PostDocumentRenderEvent;
+use Doctrine\RST\Event\PreDocumentRenderEvent;
 use Doctrine\RST\Nodes\DocumentNode;
 use Doctrine\RST\Renderers\DocumentNodeRenderer as BaseDocumentRender;
 use Doctrine\RST\Renderers\FullDocumentNodeRenderer;
@@ -13,16 +16,15 @@ use Gajus\Dindent\Indenter;
 
 final class DocumentNodeRenderer implements NodeRenderer, FullDocumentNodeRenderer
 {
-    /** @var DocumentNode */
-    private $document;
+    private DocumentNode $document;
+    private TemplateRenderer $templateRenderer;
+    private EventManager $eventManager;
 
-    /** @var TemplateRenderer */
-    private $templateRenderer;
-
-    public function __construct(DocumentNode $document, TemplateRenderer $templateRenderer)
+    public function __construct(DocumentNode $document, TemplateRenderer $templateRenderer, ?EventManager $eventManager = null)
     {
         $this->document         = $document;
         $this->templateRenderer = $templateRenderer;
+        $this->eventManager     = $eventManager ?? $this->document->getConfiguration()->getEventManager();
     }
 
     public function render(): string
@@ -38,16 +40,39 @@ final class DocumentNodeRenderer implements NodeRenderer, FullDocumentNodeRender
             $headerNodes .= $node->render() . "\n";
         }
 
-        $html = $this->templateRenderer->render('document.html.twig', [
-            'headerNodes' => $headerNodes,
-            'bodyNodes' => $this->render(),
-        ]);
+        $preDocumentRenderEvent = new PreDocumentRenderEvent(
+            $this->document->getConfiguration(),
+            $this->document,
+            [
+                'headerNodes' => $headerNodes,
+                'bodyNodes' => $this->render(),
+            ],
+            'document.%s.twig'
+        );
+        $this->eventManager->dispatchEvent(
+            PreDocumentRenderEvent::PRE_DOCUMENT_RENDER,
+            $preDocumentRenderEvent
+        );
+        $html = $this->templateRenderer->render($preDocumentRenderEvent->getTemplateName(), $preDocumentRenderEvent->getParameters());
 
         if ($this->document->getConfiguration()->getIndentHTML()) {
-            return $this->indentHTML($html);
+            $html =  $this->indentHTML($html);
         }
 
-        return $html;
+        $postDocumentRenderEvent = new PostDocumentRenderEvent(
+            $this->document->getConfiguration(),
+            $this->document,
+            $this->templateRenderer,
+            $html,
+            $preDocumentRenderEvent->getParameters(),
+            $preDocumentRenderEvent->getTemplateName()
+        );
+        $this->eventManager->dispatchEvent(
+            PostDocumentRenderEvent::POST_DOCUMENT_RENDER,
+            $postDocumentRenderEvent
+        );
+
+        return $postDocumentRenderEvent->getHtml();
     }
 
     private function indentHTML(string $html): string
