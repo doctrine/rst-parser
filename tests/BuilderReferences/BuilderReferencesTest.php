@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Doctrine\Tests\RST\BuilderReferences;
 
-use Doctrine\RST\Builder;
 use Doctrine\Tests\RST\BaseBuilderTest;
 use Gajus\Dindent\Indenter;
 use Symfony\Component\Finder\Finder;
@@ -13,10 +12,11 @@ use function rtrim;
 
 class BuilderReferencesTest extends BaseBuilderTest
 {
-    protected function configureBuilder(Builder $builder): void
+    protected function configureExpectedErrors(): void
     {
-        $builder->getConfiguration()->abortOnError(false);
-        $builder->getConfiguration()->silentOnError();
+        $this->errorManager->expects(self::atLeastOnce())
+            ->method('error')
+            ->with('Found invalid reference "Some Sub Section"', 'index', null, null);
     }
 
     public function test(): void

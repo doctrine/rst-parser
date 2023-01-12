@@ -19,13 +19,14 @@ class BuilderTest extends BaseBuilderTest
     protected function setUp(): void
     {
         shell_exec('rm -rf ' . $this->targetFile());
+        $configuration = new Configuration();
 
         $kernel = new Kernel(
-            new Configuration(),
+            $configuration,
             [new TipDirective()]
         );
 
-        $this->builder = new Builder($kernel);
+        $this->builder = new Builder($configuration, $kernel);
         $this->builder->getConfiguration()->setUseCachedMetas(false);
 
         $this->builder->build($this->sourceFile(), $this->targetFile());

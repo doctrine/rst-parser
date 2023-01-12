@@ -28,11 +28,7 @@ final class Builder
     /** @var Kernel */
     private $kernel;
 
-    /** @var Configuration */
-    private $configuration;
-
-    /** @var ErrorManager */
-    private $errorManager;
+    private Configuration $configuration;
 
     /** @var Filesystem */
     private $filesystem;
@@ -55,17 +51,15 @@ final class Builder
     /** @var string */
     private $indexName = 'index';
 
-    public function __construct(?Kernel $kernel = null, ?ErrorManager $errorManager = null)
+    public function __construct(Configuration $configuration, ?Kernel $kernel = null)
     {
-        $this->kernel = $kernel ?? new Kernel();
+        $this->configuration = $configuration;
 
-        $this->configuration = $this->kernel->getConfiguration();
-
-        $this->errorManager = $errorManager ?? new ErrorManager($this->configuration);
+        $this->kernel = $kernel ?? new Kernel($this->configuration);
 
         $this->filesystem = new Filesystem();
 
-        $this->metas = new Metas($this->errorManager);
+        $this->metas = new Metas($this->configuration);
 
         $this->cachedMetasLoader = new CachedMetasLoader();
 
@@ -81,7 +75,7 @@ final class Builder
 
     public function recreate(): Builder
     {
-        return new Builder($this->kernel);
+        return new Builder($this->configuration, $this->kernel);
     }
 
     public function getKernel(): Kernel
@@ -97,11 +91,6 @@ final class Builder
     public function getDocuments(): Documents
     {
         return $this->documents;
-    }
-
-    public function getErrorManager(): ErrorManager
-    {
-        return $this->errorManager;
     }
 
     public function setIndexName(string $name): self
@@ -202,8 +191,8 @@ final class Builder
         );
 
         $parseQueueProcessor = new ParseQueueProcessor(
+            $this->configuration,
             $this->kernel,
-            $this->errorManager,
             $this->metas,
             $this->documents,
             $directory,

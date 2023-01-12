@@ -10,6 +10,11 @@ use function sprintf;
 
 final class Error
 {
+    public const LEVEL_ERROR   = 'error';
+    public const LEVEL_WARNING = 'warning';
+
+    private string $level;
+
     /** @var string */
     private $message;
 
@@ -22,8 +27,9 @@ final class Error
     /** @var Throwable|null */
     private $throwable;
 
-    public function __construct(string $message, ?string $file = null, ?int $line = null, ?Throwable $throwable = null)
+    public function __construct(string $level, string $message, ?string $file = null, ?int $line = null, ?Throwable $throwable = null)
     {
+        $this->level     = $level;
         $this->message   = $message;
         $this->file      = $file;
         $this->line      = $line;
@@ -42,6 +48,16 @@ final class Error
         }
 
         return $output;
+    }
+
+    public function getLevel(): string
+    {
+        return $this->level;
+    }
+
+    public function setLevel(string $level): void
+    {
+        $this->level = $level;
     }
 
     public function getMessage(): string

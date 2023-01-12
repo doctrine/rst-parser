@@ -4,18 +4,12 @@ declare(strict_types=1);
 
 namespace Doctrine\Tests\RST\BuilderUrl;
 
-use Doctrine\RST\Builder;
-use Doctrine\RST\Configuration;
-use Doctrine\RST\Kernel;
 use Doctrine\Tests\RST\BaseBuilderTest;
 
 use function strpos;
 
 class BuilderUrlTest extends BaseBuilderTest
 {
-    /** @var Configuration */
-    private $configuration;
-
     public function testBaseUrl(): void
     {
         $this->configuration->setBaseUrl('https://www.domain.com/directory');
@@ -137,9 +131,8 @@ class BuilderUrlTest extends BaseBuilderTest
 
     protected function setUp(): void
     {
-        $this->configuration = new Configuration();
+        parent::setUp();
         $this->configuration->setUseCachedMetas(false);
-        $this->builder = new Builder(new Kernel($this->configuration));
     }
 
     protected function getFixturesDirectory(): string

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\Tests\RST\RefInsideDirective;
 
 use Doctrine\RST\Builder;
+use Doctrine\RST\Configuration;
 use Doctrine\RST\Kernel;
 use PHPUnit\Framework\TestCase;
 
@@ -15,8 +16,9 @@ class BuilderTest extends TestCase
 {
     public function testRefInsideDirective(): void
     {
-        $kernel  = new Kernel(null, [new VersionAddedDirective()]);
-        $builder = new Builder($kernel);
+        $configuration = new Configuration();
+        $kernel        = new Kernel($configuration, [new VersionAddedDirective()]);
+        $builder       = new Builder($configuration, $kernel);
         $builder->getConfiguration()->setUseCachedMetas(false);
 
         $builder->build(

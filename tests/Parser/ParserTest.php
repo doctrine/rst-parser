@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\Tests\RST\Parser;
 
+use Doctrine\RST\Configuration;
 use Doctrine\RST\Nodes\CodeNode;
 use Doctrine\RST\Nodes\DocumentNode;
 use Doctrine\RST\Nodes\DummyNode;
@@ -30,6 +31,7 @@ use function trim;
  */
 class ParserTest extends TestCase
 {
+    private Configuration $configuration;
     /** @var Parser $parser */
     protected $parser;
 
@@ -37,8 +39,9 @@ class ParserTest extends TestCase
     {
         parent::setUp();
 
-        $directory = __DIR__ . '/files/';
-        $parser    = new Parser();
+        $this->configuration = new Configuration();
+        $directory           = __DIR__ . '/files/';
+        $parser              = new Parser($this->configuration);
 
         $parser->getEnvironment()->setCurrentDirectory($directory);
 
@@ -47,7 +50,7 @@ class ParserTest extends TestCase
 
     public function testGetSubParserPassesConfiguration(): void
     {
-        $parser = new Parser();
+        $parser = new Parser($this->configuration);
 
         $configuration = $parser->getEnvironment()->getConfiguration();
 
@@ -278,7 +281,7 @@ class ParserTest extends TestCase
 
     public function testThrowExceptionOnInvalidFileInclude(): void
     {
-        $parser      = new Parser();
+        $parser      = new Parser($this->configuration);
         $environment = $parser->getEnvironment();
 
         $data = file_get_contents(__DIR__ . '/files/inclusion-bad.rst');
@@ -319,7 +322,7 @@ class ParserTest extends TestCase
     {
         $directory = __DIR__ . '/files';
 
-        $parser = new Parser();
+        $parser = new Parser($this->configuration);
         $parser->getEnvironment()->setCurrentDirectory($directory);
 
         /** @var TitleNode[] $nodes1 */
@@ -384,7 +387,7 @@ class ParserTest extends TestCase
     public function testIncludesPolicy(): void
     {
         $directory   = __DIR__ . '/files/';
-        $parser      = new Parser();
+        $parser      = new Parser($this->configuration);
         $environment = $parser->getEnvironment();
         $environment->setCurrentDirectory($directory);
 
@@ -418,7 +421,7 @@ class ParserTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('File at path does-not-exist.rst does not exist');
 
-        $parser = new Parser();
+        $parser = new Parser($this->configuration);
         $parser->parseFile('does-not-exist.rst');
     }
 

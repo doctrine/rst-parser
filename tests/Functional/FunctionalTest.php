@@ -57,7 +57,7 @@ class FunctionalTest extends TestCase
         $configuration->setFileExtension(Format::HTML);
         $configuration->setUseCachedMetas(false);
         $kernel  = new Kernel($configuration);
-        $builder = new Builder($kernel);
+        $builder = new Builder($configuration, $kernel);
 
         $builder->build(__DIR__ . '/tests/build/' . $file, __DIR__ . '/output/build/' . $file);
 
@@ -224,7 +224,7 @@ class FunctionalTest extends TestCase
         $configuration->silentOnError(true);
 
         $kernel = new Kernel($configuration);
-        $parser =  new Parser($kernel);
+        $parser =  new Parser($configuration, $kernel);
 
         $environment = $parser->getEnvironment();
         $environment->setCurrentDirectory($currentDirectory);

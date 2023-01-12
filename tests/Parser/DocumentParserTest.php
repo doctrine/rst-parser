@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\Tests\RST\Parser;
 
 use Doctrine\Common\EventManager;
+use Doctrine\RST\Configuration;
 use Doctrine\RST\Directives\Directive;
 use Doctrine\RST\Environment;
 use Doctrine\RST\ErrorManager;
@@ -20,12 +21,14 @@ class DocumentParserTest extends TestCase
     {
         $parser             = $this->createMock(Parser::class);
         $environment        = $this->createMock(Environment::class);
+        $configuration      = $this->createMock(Configuration::class);
         $nodeFactory        = $this->createMock(NodeFactory::class);
         $eventManager       = $this->createMock(EventManager::class);
         $codeBlockDirective = $this->createMock(Directive::class);
         $errorManager       = $this->createMock(ErrorManager::class);
 
         $docParser = new DocumentParser(
+            $configuration,
             $parser,
             $environment,
             $nodeFactory,
@@ -42,7 +45,11 @@ class DocumentParserTest extends TestCase
             ->method('getName')
             ->willReturn('code-block-name');
 
-        $environment->expects(self::once())
+        $environment
+            ->method('getConfiguration')
+            ->willReturn($configuration);
+
+        $configuration->expects(self::once())
             ->method('getErrorManager')
             ->willReturn($errorManager);
 

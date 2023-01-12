@@ -23,8 +23,7 @@ use const STDERR;
 
 class Parser
 {
-    /** @var Configuration */
-    private $configuration;
+    private Configuration $configuration;
 
     /** @var Kernel */
     private $kernel;
@@ -48,6 +47,7 @@ class Parser
     private $documentParser;
 
     public function __construct(
+        Configuration $configuration,
         ?Kernel $kernel = null,
         ?Environment $environment = null
     ) {
@@ -55,7 +55,7 @@ class Parser
             $kernel = new Kernel();
         }
 
-        $this->configuration = $kernel->getConfiguration();
+        $this->configuration = $configuration;
         $this->kernel        = $kernel;
         $this->environment   = $environment ??  new Environment($this->configuration);
 
@@ -66,7 +66,7 @@ class Parser
 
     public function getSubParser(): Parser
     {
-        return new Parser($this->kernel, $this->environment);
+        return new Parser($this->configuration, $this->kernel, $this->environment);
     }
 
     public function getNodeFactory(): NodeFactory
@@ -216,6 +216,7 @@ class Parser
     private function createDocumentParser(): DocumentParser
     {
         return new DocumentParser(
+            $this->configuration,
             $this,
             $this->environment,
             $this->getNodeFactory(),

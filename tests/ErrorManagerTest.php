@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\Tests\RST;
 
 use Doctrine\RST\Configuration;
-use Doctrine\RST\ErrorManager;
+use Doctrine\RST\ErrorManager\DefaultErrorManager;
 use PHPUnit\Framework\TestCase;
 
 class ErrorManagerTest extends TestCase
@@ -20,7 +20,7 @@ class ErrorManagerTest extends TestCase
             ->method('isSilentOnError')
             ->willReturn(true);
 
-        $errorManager = new ErrorManager($configuration);
+        $errorManager = new DefaultErrorManager($configuration);
         $errorManager->error('ERROR FOO');
         $errorManager->error('ERROR BAR');
 

@@ -39,7 +39,7 @@ class DocumentNode extends Node
 
         $this->environment   = $environment;
         $this->configuration = $environment->getConfiguration();
-        $this->errorManager  = $environment->getErrorManager();
+        $this->errorManager  = $this->configuration->getErrorManager();
     }
 
     public function getEnvironment(): Environment

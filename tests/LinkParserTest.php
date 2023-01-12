@@ -79,6 +79,6 @@ EOF;
     {
         $this->configuration = new Configuration();
 
-        $this->parser = new Parser(new Kernel($this->configuration));
+        $this->parser = new Parser($this->configuration, new Kernel($this->configuration));
     }
 }

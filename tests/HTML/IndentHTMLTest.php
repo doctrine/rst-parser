@@ -18,7 +18,7 @@ class IndentHTMLTest extends TestCase
 
         $kernel = new Kernel($configuration);
 
-        $parser = new Parser($kernel);
+        $parser = new Parser($configuration, $kernel);
 
         $document = $parser->parse('Test paragraph.');
 

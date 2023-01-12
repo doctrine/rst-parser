@@ -4,25 +4,15 @@ declare(strict_types=1);
 
 namespace Doctrine\Tests\RST\BuilderReferenceDoesNotExist;
 
-use Doctrine\RST\Builder;
-use Doctrine\RST\Configuration;
-use Doctrine\RST\Kernel;
 use Doctrine\Tests\RST\BaseBuilderTest;
 
 class BuilderReferenceDoesNotExistTest extends BaseBuilderTest
 {
-    /** @var Configuration */
-    private $configuration;
-
-    protected function setUp(): void
+    protected function configureExpectedErrors(): void
     {
-        $this->configuration = new Configuration();
-        $this->configuration->setUseCachedMetas(false);
-        $this->configuration->abortOnError(false);
-        $this->configuration->silentOnError(true);
-        $this->configuration->setIgnoreInvalidReferences(false);
-
-        $this->builder = new Builder(new Kernel($this->configuration));
+        $this->errorManager->expects(self::atLeastOnce())
+            ->method('error')
+            ->with('Found invalid reference "does-not-exist"', 'subdir/index', null, null);
     }
 
     public function testReferenceDoesNotExist(): void
