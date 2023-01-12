@@ -510,7 +510,7 @@ final class DocumentParser
                 }
 
                 if ($this->lineChecker->isFieldOption($line)) {
-                    if ($this->fieldOption !== null) {
+                    if ($this->directive !== null && $this->fieldOption !== null) {
                         $this->directive->setOption($this->fieldOption->getName(), $this->fieldOption->getBody());
                     }
 
