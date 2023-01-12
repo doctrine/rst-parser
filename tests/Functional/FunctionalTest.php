@@ -201,7 +201,8 @@ class FunctionalTest extends TestCase
 
         return $finder
             ->directories()
-            ->in($directory);
+            ->in($directory)
+            ->notName('_*');
     }
 
     /** @return iterable<SplFileInfo> */
@@ -213,7 +214,8 @@ class FunctionalTest extends TestCase
             ->files()
             ->in($dir->getPathname())
             ->notName('*.rst')
-            ->notName('*.rst.txt');
+            ->notName('*.rst.txt')
+            ->notName('_*.*');
     }
 
     /** @param Format::* $format */

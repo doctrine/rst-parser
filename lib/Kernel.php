@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\RST;
 
 use Doctrine\RST\Directives\Directive;
+use Doctrine\RST\Directives\Literalinclude;
 use Doctrine\RST\Nodes\DocumentNode;
 use Doctrine\RST\References\Doc;
 use Doctrine\RST\References\Reference;
@@ -56,6 +57,7 @@ class Kernel
             new Directives\Dummy(),
             new Directives\CodeBlock(),
             new Directives\Contents(),
+            new Literalinclude(),
             new Directives\Raw(),
             new Directives\Replace(),
             new Directives\Toctree(),
