@@ -55,6 +55,11 @@ final class SpanNodeRenderer extends BaseSpanNodeRenderer
         return $this->templateRenderer->render('literal.html.twig', ['text' => $text]);
     }
 
+    public function interpretedText(string $text): string
+    {
+        return $this->templateRenderer->render('interpreted-text.html.twig', ['text' => $text]);
+    }
+
     /** @param mixed[] $attributes */
     public function link(?string $url, string $title, array $attributes = []): string
     {

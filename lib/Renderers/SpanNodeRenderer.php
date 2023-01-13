@@ -122,6 +122,9 @@ abstract class SpanNodeRenderer implements NodeRenderer, SpanRenderer
             case SpanToken::TYPE_LITERAL:
                 return $this->renderLiteral($spanToken, $span);
 
+            case SpanToken::TYPE_INTERPRETED:
+                return $this->renderInterpretedText($spanToken, $span);
+
             case SpanToken::TYPE_TEXT_ROLE:
                 return $this->renderTextNode($spanToken, $span);
 
@@ -137,6 +140,15 @@ abstract class SpanNodeRenderer implements NodeRenderer, SpanRenderer
         return str_replace(
             $spanToken->getId(),
             $this->literal($spanToken->get('text')),
+            $span
+        );
+    }
+
+    private function renderInterpretedText(SpanToken $spanToken, string $span): string
+    {
+        return str_replace(
+            $spanToken->getId(),
+            $this->interpretedText($spanToken->get('text')),
             $span
         );
     }
