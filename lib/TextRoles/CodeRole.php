@@ -4,15 +4,10 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\TextRoles;
 
-class CodeRole extends TextRole
+class CodeRole extends WrapperTextRole
 {
-    public function getName(): string
+    public function __construct()
     {
-        return 'code';
-    }
-
-    public function process(string $text): string
-    {
-        return '<code>' . $text . '</code>';
+        parent::__construct('code', '<code>%s</code>');
     }
 }

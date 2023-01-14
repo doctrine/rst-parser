@@ -12,6 +12,9 @@ use Doctrine\RST\Renderers;
 use Doctrine\RST\Renderers\CallableNodeRendererFactory;
 use Doctrine\RST\Renderers\NodeRendererFactory;
 use Doctrine\RST\Templates\TemplateRenderer;
+use Doctrine\RST\TextRoles\DefinitionTextRole;
+use Doctrine\RST\TextRoles\TextRole;
+use Doctrine\RST\TextRoles\WrapperTextRole;
 
 final class HTMLFormat implements Format
 {
@@ -41,6 +44,28 @@ final class HTMLFormat implements Format
             new HTML\Directives\Div(),
             new HTML\Directives\Wrap('note'),
             new HTML\Directives\ClassDirective(),
+        ];
+    }
+
+    /** @return TextRole[] */
+    public function getTextRoles(): array
+    {
+        return [
+            new WrapperTextRole('aspect', '<em class="aspect">%s</em>'),
+            new WrapperTextRole('command', '<strong class="command">%s</strong>'),
+            new WrapperTextRole('dfn', '<em class="dfn">%s</em>'),
+            new WrapperTextRole('file', '<span class="pre file">%s</span>'),
+            new WrapperTextRole('guilabel', '<span class="guilabel">%s</span>'),
+            new WrapperTextRole('kbd', '<kbd class="kbd docutils literal notranslate">%s</kbd>'),
+            new WrapperTextRole('mailheader', '<em class="mailheader">%s</em>'),
+            new WrapperTextRole('math', '<math>%s</math>'),
+            new WrapperTextRole('emphasis', '<em>%s</em>'),
+            new WrapperTextRole('literal', '<span class="pre">%s</span>'),
+            new WrapperTextRole('strong', '<strong>%s</strong>'),
+            new WrapperTextRole('subscript', '<sub>%s</sub>', ['sub']),
+            new WrapperTextRole('superscript', '<sup>%s</sup>', ['sup']),
+            new WrapperTextRole('title-reference', '<cite>%s</cite>', ['t', 'title']),
+            new DefinitionTextRole('abbreviation', '<abbr title="%2$s">%1$s</abbr>', ['abbr']),
         ];
     }
 

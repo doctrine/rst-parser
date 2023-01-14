@@ -63,7 +63,7 @@ class Kernel
 
         $this->textRoles = array_merge([
             new TextRoles\CodeRole(),
-        ], $this->createTextRoles(), $textRoles);
+        ], $this->configuration->getFormat()->getTextRoles(), $this->createTextRoles(), $textRoles);
 
         $this->references = array_merge([
             new References\Doc(),

@@ -6,6 +6,7 @@ namespace Doctrine\RST\Formats;
 
 use Doctrine\RST\Directives\Directive;
 use Doctrine\RST\Renderers\NodeRendererFactory;
+use Doctrine\RST\TextRoles\TextRole;
 
 interface Format
 {
@@ -16,6 +17,9 @@ interface Format
 
     /** @return Directive[] */
     public function getDirectives(): array;
+
+    /** @return TextRole[] */
+    public function getTextRoles(): array;
 
     /** @return NodeRendererFactory[] */
     public function getNodeRendererFactories(): array;

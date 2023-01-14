@@ -15,6 +15,21 @@ namespace Doctrine\RST\TextRoles;
  */
 abstract class TextRole
 {
+    /** @var String[] */
+    protected array $aliases = [];
+
+    /** @return String[] */
+    public function getAliases(): array
+    {
+        return $this->aliases;
+    }
+
+    /** @param String[] $aliases */
+    public function setAliases(array $aliases): void
+    {
+        $this->aliases = $aliases;
+    }
+
     /**
      * The name of the reference, i.e the :something:
      */

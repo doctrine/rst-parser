@@ -138,6 +138,9 @@ class Environment
     public function registerTextRole(TextRole $textRole): void
     {
         $this->textRoles[$textRole->getName()] = $textRole;
+        foreach ($textRole->getAliases() as $alias) {
+            $this->textRoles[trim(strtolower($alias))] = $textRole;
+        }
     }
 
     public function isReference(string $section): bool
