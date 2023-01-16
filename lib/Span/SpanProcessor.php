@@ -7,7 +7,6 @@ namespace Doctrine\RST\Span;
 use Doctrine\RST\Environment;
 use Doctrine\RST\Meta\LinkTarget;
 
-use function htmlspecialchars;
 use function mt_rand;
 use function preg_match;
 use function preg_match_all;
@@ -94,7 +93,7 @@ final class SpanProcessor
 
                 $this->addToken(SpanToken::TYPE_LITERAL, $id, [
                     'type' => 'literal',
-                    'text' => htmlspecialchars($match[1]),
+                    'text' => $match[1],
                 ]);
 
                 return $id;
@@ -112,7 +111,7 @@ final class SpanProcessor
 
                 $this->addToken(SpanToken::TYPE_INTERPRETED, $id, [
                     'type' => SpanToken::TYPE_INTERPRETED,
-                    'text' => htmlspecialchars($match[1]),
+                    'text' => $match[1],
                 ]);
 
                 return $id;

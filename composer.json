@@ -31,7 +31,7 @@
         "symfony/polyfill-mbstring": "^1.0",
         "symfony/string": "^5.3 || ^6.0",
         "symfony/translation-contracts": "^1.1 || ^2.0",
-        "twig/twig": "^2.15.3 || ^3.4.3"
+        "twig/twig": "^3.5.0"
     },
     "require-dev": {
         "doctrine/coding-standard": "^10.0",
