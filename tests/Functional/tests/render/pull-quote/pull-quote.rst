@@ -1,0 +1,11 @@
+
+
+.. pull-quote::
+
+   "On the web, however, most of us scan information, jumping
+   from one point of interest to the next, hoping to trip over
+   some relevant facts. In fact, according to a study by the Norman
+   Nielsen Group, your visitors will only ready between 20 and 28%
+   of the words on your site."
+
+   -- `"8 Tips for Better Readability" by Roby Collinge <https://usabilla.com/blog/8-guidelines-for-better-readability-on-the-web/>`__

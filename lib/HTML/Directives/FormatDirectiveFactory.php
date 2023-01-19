@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\HTML\Directives;
 
+use Doctrine\RST\Directives\Data;
 use Doctrine\RST\Directives\Directive;
 use Doctrine\RST\Directives\DirectiveFactory;
+use Doctrine\RST\Directives\Wrapper;
 use Doctrine\RST\References\Reference;
 use Doctrine\RST\TextRoles\DefinitionTextRole;
 use Doctrine\RST\TextRoles\TextRole;
@@ -17,6 +19,13 @@ class FormatDirectiveFactory implements DirectiveFactory
     public function getDirectives(): array
     {
         return [
+            new Wrapper('pull-quote'),
+            new Wrapper('container'),
+            new Wrapper('versionadded'),
+            new Wrapper('deprecated'),
+            new Wrapper('versionchanged'),
+            new Data('rubric'),
+            new Data('youtube'),
             new Image(),
             new Figure(),
             new Meta(),
