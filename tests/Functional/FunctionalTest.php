@@ -9,8 +9,8 @@ use Doctrine\RST\Configuration;
 use Doctrine\RST\Formats\Format;
 use Doctrine\RST\Kernel;
 use Doctrine\RST\Parser;
+use DOMDocument;
 use Exception;
-use Gajus\Dindent\Indenter;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
@@ -24,6 +24,7 @@ use function file_get_contents;
 use function implode;
 use function in_array;
 use function is_string;
+use function preg_replace;
 use function setlocale;
 use function sprintf;
 use function str_replace;
@@ -110,15 +111,43 @@ class FunctionalTest extends TestCase
 
         $rendered = $document->$renderMethod();
 
-        if ($format === Format::HTML && $useIndenter) {
-            $indenter = new Indenter();
-            $rendered = $indenter->indent($rendered);
-        }
+        if ($format === Format::HTML) {
+            $rendered = $this->removeRedundantWhitespaceFromHtml($rendered);
+            $expected = $this->removeRedundantWhitespaceFromHtml($expected);
+            try {
+                // try to compare as HTML
+                $expectedDom = new DomDocument();
+                $expectedDom->loadHTML($expected);
+                $expectedDom->preserveWhiteSpace = false;
 
-        self::assertSame(
-            $this->trimTrailingWhitespace($expected),
-            $this->trimTrailingWhitespace($rendered)
-        );
+                $actualDom = new DomDocument();
+                $actualDom->loadHTML($rendered);
+                $actualDom->preserveWhiteSpace = false;
+
+                $expectedHtml = $expectedDom->saveHTML();
+                $actualHtml   = $actualDom->saveHTML();
+
+                self::assertIsString($expectedHtml);
+                self::assertIsString($actualHtml);
+
+                self::assertXmlStringEqualsXmlString($expectedHtml, $actualHtml);
+            } catch (Throwable $e) {
+                // if this fails compare as string
+                self::assertEquals(trim($expected), trim($rendered));
+            }
+        } else {
+            self::assertEquals(trim($expected), trim($rendered));
+        }
+    }
+
+    private function removeRedundantWhitespaceFromHtml(string $html): string
+    {
+        $html = implode("\n", array_map('trim', explode("\n", $html)));
+        $html = preg_replace('#\s+#', ' ', $html);
+        $html = preg_replace('#\s<#', '<', $html);
+        $html = preg_replace('#>\s#', '>', $html);
+
+        return $html;
     }
 
     /** @return iterable<string, array{string, Parser, 'render'|'renderDocument', Format::*, string, string, bool}> */

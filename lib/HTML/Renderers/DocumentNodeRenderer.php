@@ -12,7 +12,6 @@ use Doctrine\RST\Renderers\DocumentNodeRenderer as BaseDocumentRender;
 use Doctrine\RST\Renderers\FullDocumentNodeRenderer;
 use Doctrine\RST\Renderers\NodeRenderer;
 use Doctrine\RST\Templates\TemplateRenderer;
-use Gajus\Dindent\Indenter;
 
 final class DocumentNodeRenderer implements NodeRenderer, FullDocumentNodeRenderer
 {
@@ -55,10 +54,6 @@ final class DocumentNodeRenderer implements NodeRenderer, FullDocumentNodeRender
         );
         $html = $this->templateRenderer->render($preDocumentRenderEvent->getTemplateName(), $preDocumentRenderEvent->getParameters());
 
-        if ($this->document->getConfiguration()->getIndentHTML()) {
-            $html =  $this->indentHTML($html);
-        }
-
         $postDocumentRenderEvent = new PostDocumentRenderEvent(
             $this->document->getConfiguration(),
             $this->document,
@@ -73,10 +68,5 @@ final class DocumentNodeRenderer implements NodeRenderer, FullDocumentNodeRender
         );
 
         return $postDocumentRenderEvent->getHtml();
-    }
-
-    private function indentHTML(string $html): string
-    {
-        return (new Indenter())->indent($html);
     }
 }
