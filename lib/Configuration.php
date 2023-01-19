@@ -63,9 +63,6 @@ class Configuration
     /** @var bool */
     private $ignoreInvalidReferences = false;
 
-    /** @var bool */
-    private $indentHTML = false;
-
     /** @var int */
     private $initialHeaderLevel = 1;
 
@@ -251,16 +248,6 @@ class Configuration
     public function setIgnoreInvalidReferences(bool $ignoreInvalidReferences): void
     {
         $this->ignoreInvalidReferences = $ignoreInvalidReferences;
-    }
-
-    public function setIndentHTML(bool $indentHTML): void
-    {
-        $this->indentHTML = $indentHTML;
-    }
-
-    public function getIndentHTML(): bool
-    {
-        return $this->indentHTML;
     }
 
     public function setInitialHeaderLevel(int $initialHeaderLevel): void
