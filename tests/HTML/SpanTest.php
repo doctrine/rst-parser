@@ -23,6 +23,9 @@ class SpanTest extends TestCase
         $parser      = $this->createMock(Parser::class);
         $environment = $this->createMock(Environment::class);
 
+        $configuration    = new Configuration();
+        $templateRenderer = $configuration->getTemplateRenderer();
+
         $parser->expects(self::once())
             ->method('getEnvironment')
             ->willReturn($environment);
@@ -32,8 +35,9 @@ class SpanTest extends TestCase
             ->with($url)
             ->willReturn($url);
 
-        $configuration    = new Configuration();
-        $templateRenderer = $configuration->getTemplateRenderer();
+        $environment->expects(self::once())
+            ->method('getTemplateRenderer')
+            ->willReturn($templateRenderer);
 
         $span         = new SpanNode($parser, 'span');
         $spanRenderer = new SpanNodeRenderer($environment, $span, $templateRenderer);

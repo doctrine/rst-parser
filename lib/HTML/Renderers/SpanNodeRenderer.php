@@ -6,12 +6,10 @@ namespace Doctrine\RST\HTML\Renderers;
 
 use Doctrine\RST\Environment;
 use Doctrine\RST\Nodes\SpanNode;
-use Doctrine\RST\References\ResolvedReference;
 use Doctrine\RST\Renderers\SpanNodeRenderer as BaseSpanNodeRenderer;
 use Doctrine\RST\Templates\TemplateRenderer;
 
 use function htmlspecialchars;
-use function trim;
 
 use const ENT_COMPAT;
 
@@ -25,7 +23,7 @@ final class SpanNodeRenderer extends BaseSpanNodeRenderer
         SpanNode $span,
         TemplateRenderer $templateRenderer
     ) {
-        parent::__construct($environment, $span);
+        parent::__construct($environment, $span, new LinkRenderer($environment));
 
         $this->templateRenderer = $templateRenderer;
     }
@@ -60,48 +58,8 @@ final class SpanNodeRenderer extends BaseSpanNodeRenderer
         return $this->templateRenderer->render('interpreted-text.html.twig', ['text' => $text]);
     }
 
-    /** @param mixed[] $attributes */
-    public function link(?string $url, string $title, array $attributes = []): string
-    {
-        $url = (string) $url;
-
-        return $this->templateRenderer->render('link.html.twig', [
-            'url' => $this->environment->generateUrl($url),
-            'title' => $title,
-            'attributes' => $attributes,
-        ]);
-    }
-
     public function escape(string $span): string
     {
         return htmlspecialchars($span, ENT_COMPAT);
-    }
-
-    /** @param mixed[] $value */
-    public function reference(ResolvedReference $reference, array $value): string
-    {
-        $text = (bool) $value['text'] ? $value['text'] : ($reference->getTitle() ?? '');
-        $text = trim($text);
-
-        // reference to another document
-        if ($reference->getUrl() !== null) {
-            $url = $reference->getUrl();
-
-            if ($value['anchor'] !== null) {
-                $url .= '#' . $value['anchor'];
-            }
-
-            $link = $this->link($url, $text, $reference->getAttributes());
-
-        // reference to anchor in existing document
-        } elseif ($value['url'] !== null) {
-            $linkTarget = $this->environment->getLinkTarget($value['url']);
-
-            $link = $this->link($linkTarget->getUrl(), $text, $reference->getAttributes());
-        } else {
-            $link = $this->link('#', $text . ' (unresolved reference)', $reference->getAttributes());
-        }
-
-        return $link;
     }
 }
