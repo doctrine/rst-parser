@@ -43,7 +43,6 @@ class BuilderTest extends BaseBuilderTest
     {
         $builder = $this->builder->recreate();
 
-        self::assertSame($this->builder->getKernel(), $builder->getKernel());
         self::assertSame($this->builder->getConfiguration(), $builder->getConfiguration());
     }
 

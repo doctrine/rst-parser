@@ -6,7 +6,7 @@ namespace Doctrine\Tests\RST\LiteralNestedInDirective;
 
 use Doctrine\RST\Builder;
 use Doctrine\RST\Configuration;
-use Doctrine\RST\Kernel;
+use Doctrine\RST\Directives\CustomDirectiveFactory;
 use Doctrine\Tests\RST\BaseBuilderTest;
 
 use function shell_exec;
@@ -21,12 +21,9 @@ class BuilderTest extends BaseBuilderTest
         shell_exec('rm -rf ' . $this->targetFile());
         $configuration = new Configuration();
 
-        $kernel = new Kernel(
-            $configuration,
-            [new TipDirective()]
-        );
+        $configuration->addDirectiveFactory(new CustomDirectiveFactory([new TipDirective()]));
 
-        $this->builder = new Builder($configuration, $kernel);
+        $this->builder = new Builder($configuration);
         $this->builder->getConfiguration()->setUseCachedMetas(false);
 
         $this->builder->build($this->sourceFile(), $this->targetFile());

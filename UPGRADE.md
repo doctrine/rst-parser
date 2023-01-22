@@ -1,5 +1,12 @@
 # Upgrade to 0.6
 
+## Removed the class Kernel
+
+* Directives and TextRoles can now be registered by adding a DirectiveFactory to
+  the configuration.
+* Use the `PostBuilderInitEvent` instead of overriding `Kernel::initBuilder()`.
+* Use the `PostProcessFileEvent` instead of overriding `Kernel::postParse()`.
+
 ## Renamed links to link targets
 
 The library has been updated to use "link target" instead of "link":

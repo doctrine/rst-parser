@@ -25,21 +25,18 @@ use function is_dir;
 use function sprintf;
 
 /**
- * Builds a complete manual or book containing of multiple `.rst` documents
+ * Builds a complete manual or book containing multiple `.rst` documents
  * and additional sources.
  *
  * Usage:
  *
  * .. code-block:: php
  *
- *    $builder = new Builder($configuration, $kernel);
+ *    $builder = new Builder($configuration);
  *    $builder->build('Documentation', 'output');
  */
 final class Builder
 {
-    /** @var Kernel */
-    private $kernel;
-
     private Configuration $configuration;
 
     /** @var Filesystem */
@@ -60,11 +57,9 @@ final class Builder
     /** @var Finder|null */
     private $scannerFinder;
 
-    public function __construct(Configuration $configuration, ?Kernel $kernel = null)
+    public function __construct(Configuration $configuration)
     {
         $this->configuration = $configuration;
-
-        $this->kernel = $kernel ?? new Kernel($this->configuration);
 
         $this->filesystem = new Filesystem();
 
@@ -119,12 +114,7 @@ final class Builder
 
     public function recreate(): Builder
     {
-        return new Builder($this->configuration, $this->kernel);
-    }
-
-    public function getKernel(): Kernel
-    {
-        return $this->kernel;
+        return new Builder($this->configuration);
     }
 
     public function getConfiguration(): Configuration
@@ -190,7 +180,6 @@ final class Builder
 
         $parseQueueProcessor = new ParseQueueProcessor(
             $this->configuration,
-            $this->kernel,
             $this->metas,
             $this->documents,
             $directory,

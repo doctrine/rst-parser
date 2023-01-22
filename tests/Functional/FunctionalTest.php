@@ -7,7 +7,6 @@ namespace Doctrine\Tests\RST\Functional;
 use Doctrine\RST\Builder;
 use Doctrine\RST\Configuration;
 use Doctrine\RST\Formats\Format;
-use Doctrine\RST\Kernel;
 use Doctrine\RST\Parser;
 use DOMDocument;
 use Exception;
@@ -57,8 +56,7 @@ class FunctionalTest extends TestCase
         $configuration = new Configuration();
         $configuration->setFileExtension(Format::HTML);
         $configuration->setUseCachedMetas(false);
-        $kernel  = new Kernel($configuration);
-        $builder = new Builder($configuration, $kernel);
+        $builder = new Builder($configuration);
 
         $builder->build(__DIR__ . '/tests/build/' . $file, __DIR__ . '/output/build/' . $file);
 
@@ -257,8 +255,7 @@ class FunctionalTest extends TestCase
         $configuration->setFileExtension($format);
         $configuration->silentOnError(true);
 
-        $kernel = new Kernel($configuration);
-        $parser =  new Parser($configuration, $kernel);
+        $parser =  new Parser($configuration);
 
         $environment = $parser->getEnvironment();
         $environment->setCurrentDirectory($currentDirectory);

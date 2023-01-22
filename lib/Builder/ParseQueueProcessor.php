@@ -6,7 +6,6 @@ namespace Doctrine\RST\Builder;
 
 use Doctrine\RST\Configuration;
 use Doctrine\RST\Event\PostProcessFileEvent;
-use Doctrine\RST\Kernel;
 use Doctrine\RST\Meta\Metas;
 use Doctrine\RST\Nodes\DocumentNode;
 use Doctrine\RST\Parser;
@@ -22,9 +21,6 @@ use const STDERR;
 final class ParseQueueProcessor
 {
     private Configuration $configuration;
-
-    /** @var Kernel */
-    private $kernel;
 
     /** @var Metas */
     private $metas;
@@ -43,7 +39,6 @@ final class ParseQueueProcessor
 
     public function __construct(
         Configuration $configuration,
-        Kernel $kernel,
         Metas $metas,
         Documents $documents,
         string $directory,
@@ -51,7 +46,6 @@ final class ParseQueueProcessor
         string $fileExtension
     ) {
         $this->configuration   = $configuration;
-        $this->kernel          = $kernel;
         $this->metas           = $metas;
         $this->documents       = $documents;
         $this->directory       = $directory;
@@ -101,7 +95,7 @@ final class ParseQueueProcessor
 
     private function createFileParser(string $file): Parser
     {
-        $parser = new Parser($this->configuration, $this->kernel);
+        $parser = new Parser($this->configuration);
 
         $environment = $parser->getEnvironment();
         $environment->setMetas($this->metas);

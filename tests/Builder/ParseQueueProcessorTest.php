@@ -12,7 +12,6 @@ use Doctrine\RST\Configuration;
 use Doctrine\RST\Event\PostParseDocumentEvent;
 use Doctrine\RST\Event\PostProcessFileEvent;
 use Doctrine\RST\Event\PreParseDocumentEvent;
-use Doctrine\RST\Kernel;
 use Doctrine\RST\Meta\Metas;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -24,9 +23,6 @@ class ParseQueueProcessorTest extends TestCase
 {
     /** @var Configuration|MockObject */
     private $configuration;
-
-    /** @var Kernel|MockObject */
-    private $kernel;
 
     /** @var Metas|MockObject */
     private $metas;
@@ -78,7 +74,6 @@ class ParseQueueProcessorTest extends TestCase
     protected function setUp(): void
     {
         $this->configuration   = $this->createMock(Configuration::class);
-        $this->kernel          = $this->createMock(Kernel::class);
         $this->metas           = $this->createMock(Metas::class);
         $this->documents       = $this->createMock(Documents::class);
         $this->eventManager    = $this->createMock(EventManager::class);
@@ -90,7 +85,6 @@ class ParseQueueProcessorTest extends TestCase
 
         $this->parseQueueProcessor = new ParseQueueProcessor(
             $this->configuration,
-            $this->kernel,
             $this->metas,
             $this->documents,
             $this->directory,

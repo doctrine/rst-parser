@@ -11,8 +11,6 @@ use Doctrine\RST\Configuration;
 /**
  * This event is called after the Builders initialization is finished,
  * before the actual build starts.
- *
- * It replaces the former method Kernel::initBuilder()
  */
 class PostBuilderInitEvent extends EventArgs
 {

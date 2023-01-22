@@ -11,8 +11,6 @@ use Doctrine\RST\Nodes\DocumentNode;
 /**
  * This event is called in the ParseQueueProcessor after the file has been
  * processed.
- *
- * It replaces Kernel::postParse()
  */
 class PostProcessFileEvent extends EventArgs
 {

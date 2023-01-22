@@ -6,7 +6,7 @@ namespace Doctrine\Tests\RST\RefInsideDirective;
 
 use Doctrine\RST\Builder;
 use Doctrine\RST\Configuration;
-use Doctrine\RST\Kernel;
+use Doctrine\RST\Directives\CustomDirectiveFactory;
 use PHPUnit\Framework\TestCase;
 
 use function assert;
@@ -17,9 +17,9 @@ class BuilderTest extends TestCase
     public function testRefInsideDirective(): void
     {
         $configuration = new Configuration();
-        $kernel        = new Kernel($configuration, [new VersionAddedDirective()]);
-        $builder       = new Builder($configuration, $kernel);
+        $builder       = new Builder($configuration);
         $builder->getConfiguration()->setUseCachedMetas(false);
+        $builder->getConfiguration()->addDirectiveFactory(new CustomDirectiveFactory([new VersionAddedDirective()]));
 
         $builder->build(
             __DIR__ . '/input',
