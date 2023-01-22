@@ -23,6 +23,17 @@ use function file_exists;
 use function is_dir;
 use function sprintf;
 
+/**
+ * Builds a complete manual or book containing of multiple `.rst` documents
+ * and additional sources.
+ *
+ * Usage:
+ *
+ * .. code-block:: php
+ *
+ *    $builder = new Builder($configuration, $kernel);
+ *    $builder->build('Documentation', 'output');
+ */
 final class Builder
 {
     /** @var Kernel */
@@ -48,8 +59,6 @@ final class Builder
     /** @var Finder|null */
     private $scannerFinder;
 
-    /** @var string */
-    private $indexName = 'index';
 
     public function __construct(Configuration $configuration, ?Kernel $kernel = null)
     {
@@ -73,6 +82,38 @@ final class Builder
         $this->kernel->initBuilder($this);
     }
 
+    /**
+     * Main method to build `.rst` files from the $directory into the
+     * $targetDirectory. Output format and other settings are used from the
+     * Configuration passed to the Builders constructor.
+     */
+    public function build(
+        string $directory,
+        string $targetDirectory = 'output'
+    ): void {
+        // Creating output directory if doesn't exists
+        if (! is_dir($targetDirectory)) {
+            $this->filesystem->mkdir($targetDirectory, 0755);
+        }
+
+        $indexFilename = $this->getConfiguration()->getIndexFileName();
+        if (! file_exists($directory . '/' . $indexFilename)) {
+            throw new InvalidArgumentException(sprintf('Could not find index file "%s" in "%s"', $indexFilename, $directory));
+        }
+
+        if ($this->configuration->getUseCachedMetas()) {
+            $this->cachedMetasLoader->loadCachedMetaEntries($targetDirectory, $this->metas);
+        }
+
+        $parseQueue = $this->scan($directory, $targetDirectory);
+
+        $this->parse($directory, $targetDirectory, $parseQueue);
+
+        $this->render($directory, $targetDirectory);
+
+        $this->cachedMetasLoader->cacheMetaEntries($targetDirectory, $this->metas);
+    }
+
     public function recreate(): Builder
     {
         return new Builder($this->configuration, $this->kernel);
@@ -93,55 +134,9 @@ final class Builder
         return $this->documents;
     }
 
-    public function setIndexName(string $name): self
-    {
-        $this->indexName = $name;
-
-        return $this;
-    }
-
-    /**
-     * Returns the "master document" name (e.g. index).
-     *
-     * This is the first document whose toctree should be read
-     * when building the table of contents. It is usually "index",
-     * which means index.rst is read first.
-     */
-    public function getIndexName(): string
-    {
-        return $this->indexName;
-    }
-
     public function getMetas(): Metas
     {
         return $this->metas;
-    }
-
-    public function build(
-        string $directory,
-        string $targetDirectory = 'output'
-    ): void {
-        // Creating output directory if doesn't exists
-        if (! is_dir($targetDirectory)) {
-            $this->filesystem->mkdir($targetDirectory, 0755);
-        }
-
-        $indexFilename = sprintf('%s.%s', $this->indexName, $this->configuration->getSourceFileExtension());
-        if (! file_exists($directory . '/' . $indexFilename)) {
-            throw new InvalidArgumentException(sprintf('Could not find index file "%s" in "%s"', $indexFilename, $directory));
-        }
-
-        if ($this->configuration->getUseCachedMetas()) {
-            $this->cachedMetasLoader->loadCachedMetaEntries($targetDirectory, $this->metas);
-        }
-
-        $parseQueue = $this->scan($directory, $targetDirectory);
-
-        $this->parse($directory, $targetDirectory, $parseQueue);
-
-        $this->render($directory, $targetDirectory);
-
-        $this->cachedMetasLoader->cacheMetaEntries($targetDirectory, $this->metas);
     }
 
     public function copy(string $source, ?string $destination = null): self

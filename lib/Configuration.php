@@ -42,6 +42,8 @@ class Configuration
     /** @var string */
     private $theme = self::THEME_DEFAULT;
 
+    private string $indexName = 'index';
+
     /** @var string */
     private $baseUrl = '';
 
@@ -386,4 +388,27 @@ class Configuration
     {
         return $this->errorManagerFactory->getErrorManager();
     }
+
+    public function getIndexName(): string
+    {
+        return $this->indexName;
+    }
+
+    public function setIndexName(string $indexName): void
+    {
+        $this->indexName = $indexName;
+    }
+
+    /**
+     * Returns the "master document" name (e.g. index).
+     *
+     * This is the first document whose toctree should be read
+     * when building the table of contents. It is usually "index.rst",
+     * which means index.rst is read first.
+     */
+    public function getIndexFileName(): string
+    {
+        return sprintf('%s.%s', $this->getIndexName(), $this->getSourceFileExtension());
+    }
+
 }
