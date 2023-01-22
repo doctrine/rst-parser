@@ -182,6 +182,7 @@ class FunctionalTest extends TestCase
     private function removeRedundantWhitespaceFromHtml(string $html): string
     {
         $html = implode("\n", array_map('trim', explode("\n", $html)));
+        $html = preg_replace('#\n+#', "\n", $html);
         $html = preg_replace('#\s+#', ' ', $html);
         $html = preg_replace('#\s<#', '<', $html);
         $html = preg_replace('#>\s#', '>', $html);
