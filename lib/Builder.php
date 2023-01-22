@@ -9,6 +9,7 @@ use Doctrine\RST\Builder\Documents;
 use Doctrine\RST\Builder\ParseQueue;
 use Doctrine\RST\Builder\ParseQueueProcessor;
 use Doctrine\RST\Builder\Scanner;
+use Doctrine\RST\Event\PostBuilderInitEvent;
 use Doctrine\RST\Event\PostBuildRenderEvent;
 use Doctrine\RST\Event\PreBuildParseEvent;
 use Doctrine\RST\Event\PreBuildRenderEvent;
@@ -78,7 +79,10 @@ final class Builder
 
         $this->copier = new Builder\Copier($this->filesystem);
 
-        $this->kernel->initBuilder($this);
+        $this->configuration->dispatchEvent(
+            PostBuilderInitEvent::POST_BUILDER_INIT,
+            new PostBuilderInitEvent($this->configuration, $this)
+        );
     }
 
     /**

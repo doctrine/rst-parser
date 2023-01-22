@@ -95,10 +95,6 @@ class Kernel
         return $this->textRoles;
     }
 
-    public function initBuilder(Builder $builder): void
-    {
-    }
-
     /** @return Doc[] */
     protected function createReferences(): array
     {
