@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\RST\Builder;
 
 use Doctrine\RST\Configuration;
+use Doctrine\RST\Event\PostProcessFileEvent;
 use Doctrine\RST\Kernel;
 use Doctrine\RST\Meta\Metas;
 use Doctrine\RST\Nodes\DocumentNode;
@@ -81,7 +82,10 @@ final class ParseQueueProcessor
 
         $this->documents->addDocument($file, $document);
 
-        $this->kernel->postParse($document);
+        $this->configuration->getEventManager()->dispatchEvent(
+            PostProcessFileEvent::POST_PROCESS_FILE,
+            new PostProcessFileEvent($this->configuration, $document)
+        );
 
         $this->metas->set(
             $file,

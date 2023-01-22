@@ -410,5 +410,4 @@ class Configuration
     {
         return sprintf('%s.%s', $this->getIndexName(), $this->getSourceFileExtension());
     }
-
 }

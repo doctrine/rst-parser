@@ -59,7 +59,6 @@ final class Builder
     /** @var Finder|null */
     private $scannerFinder;
 
-
     public function __construct(Configuration $configuration, ?Kernel $kernel = null)
     {
         $this->configuration = $configuration;

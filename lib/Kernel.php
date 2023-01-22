@@ -6,7 +6,6 @@ namespace Doctrine\RST;
 
 use Doctrine\RST\Directives\Directive;
 use Doctrine\RST\Directives\Literalinclude;
-use Doctrine\RST\Nodes\DocumentNode;
 use Doctrine\RST\References\Doc;
 use Doctrine\RST\References\Reference;
 use Doctrine\RST\TextRoles\TextRole;
@@ -94,10 +93,6 @@ class Kernel
     public function getTextRoles(): array
     {
         return $this->textRoles;
-    }
-
-    public function postParse(DocumentNode $document): void
-    {
     }
 
     public function initBuilder(Builder $builder): void
