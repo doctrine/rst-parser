@@ -70,10 +70,7 @@ class FunctionalTest extends TestCase
 
         foreach ($outputFileFinder as $outputFile) {
             $rendered = $outputFile->getContents();
-            self::assertSame(
-                $this->trimTrailingWhitespace($expected),
-                $this->trimTrailingWhitespace($rendered)
-            );
+            $this->compareHtml($expected, $rendered);
         }
     }
 
@@ -112,30 +109,35 @@ class FunctionalTest extends TestCase
         $rendered = $document->$renderMethod();
 
         if ($format === Format::HTML) {
-            $rendered = $this->removeRedundantWhitespaceFromHtml($rendered);
-            $expected = $this->removeRedundantWhitespaceFromHtml($expected);
-            try {
-                // try to compare as HTML
-                $expectedDom = new DomDocument();
-                $expectedDom->loadHTML($expected);
-                $expectedDom->preserveWhiteSpace = false;
-
-                $actualDom = new DomDocument();
-                $actualDom->loadHTML($rendered);
-                $actualDom->preserveWhiteSpace = false;
-
-                $expectedHtml = $expectedDom->saveHTML();
-                $actualHtml   = $actualDom->saveHTML();
-
-                self::assertIsString($expectedHtml);
-                self::assertIsString($actualHtml);
-
-                self::assertXmlStringEqualsXmlString($expectedHtml, $actualHtml);
-            } catch (Throwable $e) {
-                // if this fails compare as string
-                self::assertEquals(trim($expected), trim($rendered));
-            }
+            $this->compareHtml($expected, $rendered);
         } else {
+            self::assertEquals(trim($expected), trim($rendered));
+        }
+    }
+
+    private function compareHtml(string $expected, string $rendered): void
+    {
+        $rendered = $this->removeRedundantWhitespaceFromHtml($rendered);
+        $expected = $this->removeRedundantWhitespaceFromHtml($expected);
+        try {
+            // try to compare as HTML
+            $expectedDom = new DomDocument();
+            $expectedDom->loadHTML($expected);
+            $expectedDom->preserveWhiteSpace = false;
+
+            $actualDom = new DomDocument();
+            $actualDom->loadHTML($rendered);
+            $actualDom->preserveWhiteSpace = false;
+
+            $expectedHtml = $expectedDom->saveHTML();
+            $actualHtml   = $actualDom->saveHTML();
+
+            self::assertIsString($expectedHtml);
+            self::assertIsString($actualHtml);
+
+            self::assertXmlStringEqualsXmlString($expectedHtml, $actualHtml);
+        } catch (Throwable $e) {
+            // if this fails compare as string
             self::assertEquals(trim($expected), trim($rendered));
         }
     }
@@ -146,6 +148,7 @@ class FunctionalTest extends TestCase
         $html = preg_replace('#\s+#', ' ', $html);
         $html = preg_replace('#\s<#', '<', $html);
         $html = preg_replace('#>\s#', '>', $html);
+        $html = preg_replace('#\s/>#', '/>', $html);
 
         return $html;
     }
@@ -261,16 +264,5 @@ class FunctionalTest extends TestCase
         $environment->setCurrentDirectory($currentDirectory);
 
         return $parser;
-    }
-
-    private function trimTrailingWhitespace(string $string): string
-    {
-        $lines = explode("\n", $string);
-
-        $lines = array_map(static function (string $line): string {
-            return trim($line);
-        }, $lines);
-
-        return trim(implode("\n", $lines));
     }
 }
