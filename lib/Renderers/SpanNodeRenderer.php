@@ -8,6 +8,7 @@ use Doctrine\RST\Environment;
 use Doctrine\RST\InvalidLink;
 use Doctrine\RST\Nodes\Node;
 use Doctrine\RST\Nodes\SpanNode;
+use Doctrine\RST\References\ResolvedReference;
 use Doctrine\RST\Span\SpanToken;
 use InvalidArgumentException;
 
@@ -22,15 +23,19 @@ abstract class SpanNodeRenderer implements NodeRenderer, SpanRenderer
     /** @var Environment */
     protected $environment;
 
+    protected LinkRenderer $linkRenderer;
+
     /** @var SpanNode */
     protected $span;
 
     public function __construct(
         Environment $environment,
-        SpanNode $span
+        SpanNode $span,
+        LinkRenderer $linkRenderer
     ) {
-        $this->environment = $environment;
-        $this->span        = $span;
+        $this->environment  = $environment;
+        $this->span         = $span;
+        $this->linkRenderer = $linkRenderer;
     }
 
     public function render(): string
@@ -218,5 +223,17 @@ abstract class SpanNodeRenderer implements NodeRenderer, SpanRenderer
         $link = $this->link($url, $this->renderSyntaxes($link));
 
         return str_replace($spanToken->getId(), $link, $span);
+    }
+
+    /** @param mixed[] $attributes */
+    public function link(?string $url, string $title, array $attributes = []): string
+    {
+        return $this->linkRenderer->renderUrl($url, $title, $attributes);
+    }
+
+    /** @param mixed[] $value */
+    public function reference(ResolvedReference $reference, array $value): string
+    {
+        return $this->linkRenderer->renderReference($reference, $value);
     }
 }

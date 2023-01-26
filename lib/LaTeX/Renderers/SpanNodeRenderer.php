@@ -6,25 +6,19 @@ namespace Doctrine\RST\LaTeX\Renderers;
 
 use Doctrine\RST\Environment;
 use Doctrine\RST\Nodes\SpanNode;
-use Doctrine\RST\References\ResolvedReference;
 use Doctrine\RST\Renderers\SpanNodeRenderer as BaseSpanNodeRenderer;
 use Doctrine\RST\Templates\TemplateRenderer;
 
-use function is_string;
-use function substr;
-use function trim;
-
 final class SpanNodeRenderer extends BaseSpanNodeRenderer
 {
-    /** @var TemplateRenderer */
-    private $templateRenderer;
+    private TemplateRenderer $templateRenderer;
 
     public function __construct(
         Environment $environment,
         SpanNode $span,
         TemplateRenderer $templateRenderer
     ) {
-        parent::__construct($environment, $span);
+        parent::__construct($environment, $span, new LinkRenderer($environment));
 
         $this->templateRenderer = $templateRenderer;
     }
@@ -59,50 +53,8 @@ final class SpanNodeRenderer extends BaseSpanNodeRenderer
         return $this->templateRenderer->render('interpreted-text.tex.twig', ['text' => $text]);
     }
 
-    /** @param mixed[] $attributes */
-    public function link(?string $url, string $title, array $attributes = []): string
-    {
-        $type = 'href';
-
-        if (is_string($url) && $url !== '' && $url[0] === '#') {
-            $type = 'ref';
-
-            $url = substr($url, 1);
-            $url = $url !== '' ? '#' . $url : '';
-            $url = $this->environment->getUrl() . $url;
-        }
-
-        return $this->templateRenderer->render('link.tex.twig', [
-            'type' => $type,
-            'url' => $url,
-            'title' => $title,
-            'attributes' => $attributes,
-        ]);
-    }
-
     public function escape(string $span): string
     {
         return $span;
-    }
-
-    /** @param mixed[] $value */
-    public function reference(ResolvedReference $reference, array $value): string
-    {
-        $text = (bool) $value['text'] ? $value['text'] : $reference->getTitle();
-        $url  = $reference->getUrl();
-
-        if ($value['anchor'] !== '') {
-            $url .= $value['anchor'];
-        }
-
-        if ($text === null) {
-            $text = '';
-        }
-
-        if ($url === null) {
-            $url = '';
-        }
-
-        return $this->link($url, trim($text));
     }
 }
