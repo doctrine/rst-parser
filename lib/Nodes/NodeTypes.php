@@ -19,6 +19,7 @@ final class NodeTypes
     public const LIST            = 'list';
     public const TABLE           = 'table';
     public const SPAN            = 'span';
+    public const FIELD_LIST      = 'field_list';
     public const DEFINITION_LIST = 'definition_list';
     public const WRAPPER         = 'wrapper';
     public const FIGURE          = 'figure';
@@ -46,6 +47,7 @@ final class NodeTypes
         self::LIST,
         self::TABLE,
         self::SPAN,
+        self::FIELD_LIST,
         self::DEFINITION_LIST,
         self::WRAPPER,
         self::FIGURE,

@@ -11,6 +11,8 @@ use Doctrine\RST\Parser\Link;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
+use function explode;
+
 class LineDataParserTest extends TestCase
 {
     /** @var Parser */
@@ -71,12 +73,32 @@ class LineDataParserTest extends TestCase
     public function getTestFieldOptions(): array
     {
         return [
-            [':glob:', 'glob', true],
+            [':glob:', 'glob', ''],
             [':alt: Some text', 'alt', 'Some text'],
             [':date:published: 2022-09-20', 'date:published', '2022-09-20'],
             [':date\: published: 2022-09-20', 'date: published', '2022-09-20'],
             [':date: published: 2022-09-20', 'date', 'published: 2022-09-20'],
         ];
+    }
+
+    public function testParseFieldList(): void
+    {
+        $data         = <<<'EOD'
+:what:  Field lists map field names to field bodies, like
+        database records.  They are often part of an extension
+        syntax.
+
+:how:   The field marker is a colon, the field name, and a
+        colon.
+
+        The field body may contain one or more body elements,
+        indented relative to the field marker.
+EOD;
+        $lines        = explode("\n", $data);
+        $fieldOptions = $this->lineDataParser->parseFieldList($lines);
+        self::assertCount(2, $fieldOptions);
+        self::assertEquals('what', $fieldOptions[0]->getName());
+        self::assertEquals('how', $fieldOptions[1]->getName());
     }
 
     protected function setUp(): void

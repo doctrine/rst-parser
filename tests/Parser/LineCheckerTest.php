@@ -107,4 +107,14 @@ class LineCheckerTest extends TestCase
         self::assertTrue($this->lineChecker->isFieldOption(':Date: published: 2001-08-16'));
         self::assertFalse($this->lineChecker->isFieldOption('Date: 2001-08-16'));
     }
+
+    public function testIsFieldListEnded(): void
+    {
+        self::assertFalse($this->lineChecker->isFieldListEnded(':what:'), 'Field definition continues field list');
+        self::assertFalse($this->lineChecker->isFieldListEnded(':what: Is this?'), 'Field definition with text continues field list');
+        self::assertFalse($this->lineChecker->isFieldListEnded('    And that?'), 'Indentation continues field list');
+        self::assertFalse($this->lineChecker->isFieldListEnded(''), 'Empty line continues field list');
+        self::assertFalse($this->lineChecker->isFieldListEnded('    '), 'Empty line (trimmed) continues field list');
+        self::assertTrue($this->lineChecker->isFieldListEnded('Just another unindented line'), 'Field list must end on unindented line');
+    }
 }

@@ -15,6 +15,7 @@ use Doctrine\RST\Nodes\ContentsNode;
 use Doctrine\RST\Nodes\DefinitionListNode;
 use Doctrine\RST\Nodes\DocumentNode;
 use Doctrine\RST\Nodes\DummyNode;
+use Doctrine\RST\Nodes\FieldListNode;
 use Doctrine\RST\Nodes\FigureNode;
 use Doctrine\RST\Nodes\ImageNode;
 use Doctrine\RST\Nodes\ListNode;
@@ -35,6 +36,7 @@ use Doctrine\RST\Nodes\TocNode;
 use Doctrine\RST\Nodes\WrapperNode;
 use Doctrine\RST\Parser;
 use Doctrine\RST\Parser\DefinitionList;
+use Doctrine\RST\Parser\FieldOption;
 use Doctrine\RST\Parser\LineChecker;
 use Doctrine\RST\Parser\ListItem;
 use InvalidArgumentException;
@@ -169,6 +171,15 @@ final class DefaultNodeFactory implements NodeFactory
         assert($definitionListNode instanceof DefinitionListNode);
 
         return $definitionListNode;
+    }
+
+    /** @param FieldOption[] $items */
+    public function createFieldListNode(array $items): FieldListNode
+    {
+        $fieldListNode = $this->create(NodeTypes::FIELD_LIST, [$items]);
+        assert($fieldListNode instanceof FieldListNode);
+
+        return $fieldListNode;
     }
 
     public function createWrapperNode(?Node $node, string $before = '', string $after = ''): WrapperNode

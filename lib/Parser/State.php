@@ -36,4 +36,5 @@ final class State
     public const TABLE           = 'table';
     public const COMMENT         = 'comment';
     public const DEFINITION_LIST = 'definition_list';
+    public const FIELD_LIST      = 'field_list';
 }
