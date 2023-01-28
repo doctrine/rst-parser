@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\TextRoles;
 
+use Doctrine\RST\Environment;
+
 /**
  * A text role is a string that is styled in a certain way
  *
@@ -31,9 +33,9 @@ abstract class TextRole
     }
 
     /**
-     * The name of the reference, i.e the :something:
+     * The name of the text-role, i.e the :something:
      */
     abstract public function getName(): string;
 
-    abstract public function process(string $text): string;
+    abstract public function process(Environment $environment, string $text): string;
 }

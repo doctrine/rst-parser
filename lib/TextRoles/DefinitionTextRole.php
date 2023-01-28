@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\TextRoles;
 
+use Doctrine\RST\Environment;
 use function preg_match;
 use function sprintf;
 use function trim;
@@ -35,7 +36,7 @@ class DefinitionTextRole extends TextRole
         return $this->name;
     }
 
-    public function process(string $text): string
+    public function process(Environment $environment, string $text): string
     {
         $definition = '';
         if (preg_match('/(.+)\(([^\)]+)\)$/', $text, $matches) !== 0) {

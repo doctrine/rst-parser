@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\TextRoles;
 
+use Doctrine\RST\Environment;
 use function htmlspecialchars;
 use function sprintf;
 
@@ -28,7 +29,7 @@ class WrapperTextRole extends TextRole
         return $this->name;
     }
 
-    public function process(string $text): string
+    public function process(Environment $environment, string $text): string
     {
         return sprintf($this->wrap, htmlspecialchars($text));
     }
