@@ -60,6 +60,19 @@ class ResolverTest extends TestCase
         $this->resolver = new Resolver();
     }
 
+    public function testResolveForMissingSection(): void
+    {
+        $configuration = $this->createMock(Configuration::class);
+        $eventManager  = $this->createMock(EventManager::class);
+        $configuration->expects(self::atLeastOnce())->method('getEventManager')
+            ->willReturn($eventManager);
+        $eventManager->expects(self::atLeastOnce())->method('dispatchEvent')
+            ->with(MissingReferenceResolverEvent::MISSING_REFERENCE_RESOLVER);
+        $environment = new Environment($configuration);
+
+        self::assertNull($this->resolver->resolve($environment, 'doc', '/path/to/unknown/doc'));
+    }
+
     public function testResolveFileReference(): void
     {
         $this->environment->expects(self::once())
