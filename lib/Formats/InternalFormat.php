@@ -7,7 +7,6 @@ namespace Doctrine\RST\Formats;
 use Doctrine\RST\Directives\DirectiveFactory;
 use Doctrine\RST\Renderers\NodeRendererFactory;
 use Doctrine\RST\Renderers\RendererFactory;
-use Doctrine\RST\TextRoles\TextRole;
 
 final class InternalFormat implements Format
 {

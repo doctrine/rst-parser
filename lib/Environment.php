@@ -15,6 +15,7 @@ use Doctrine\RST\Renderers\LinkRendererFactory;
 use Doctrine\RST\Templates\TemplateRenderer;
 use Doctrine\RST\TextRoles\TextRole;
 use InvalidArgumentException;
+use RuntimeException;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 
 use function array_shift;
@@ -53,9 +54,6 @@ class Environment
 
     /** @var string|null */
     private $url = null;
-
-    /** @var Reference[] */
-    private $references = [];
 
     /** @var array<string, TextRole> */
     private $textRoles = [];
@@ -132,11 +130,6 @@ class Environment
         return $this->configuration->getTemplateRenderer();
     }
 
-    public function registerReference(Reference $reference): void
-    {
-        $this->references[$reference->getName()] = $reference;
-    }
-
     public function registerTextRole(TextRole $textRole): void
     {
         $this->textRoles[$textRole->getName()] = $textRole;
@@ -147,7 +140,7 @@ class Environment
 
     public function isReference(string $section): bool
     {
-        return isset($this->references[$section]);
+        return ($this->textRoles[$section] ?? null) instanceof Reference;
     }
 
     public function getTextRole(string $section): ?TextRole
@@ -163,13 +156,17 @@ class Environment
 
     public function resolve(string $section, string $data): ?ResolvedReference
     {
-        if (! isset($this->references[$section])) {
+        if (! isset($this->textRoles[$section])) {
             $this->addMissingTextRoleSectionError($section, 'reference');
 
             return null;
         }
 
-        $reference = $this->references[$section];
+        $reference = $this->textRoles[$section];
+
+        if (! $reference instanceof Reference) {
+            throw new RuntimeException('No valid Reference role found. ');
+        }
 
         $resolvedReference = $reference->resolve($this, $data);
 
@@ -211,8 +208,8 @@ class Environment
     /** @return string[]|null */
     public function found(string $section, string $data): ?array
     {
-        if (isset($this->references[$section])) {
-            $reference = $this->references[$section];
+        if (($this->textRoles[$section] ?? null) instanceof Reference) {
+            $reference = $this->textRoles[$section];
 
             $reference->found($this, $data);
 
@@ -483,12 +480,13 @@ class Environment
         );
     }
 
-    public function getLinkRenderer() : LinkRenderer
+    public function getLinkRenderer(): LinkRenderer
     {
         $factories = $this->getConfiguration()->getFormat()->getRendererFactories();
-        if (!isset($factories[LinkRenderer::class]) || !$factories[LinkRenderer::class] instanceof LinkRendererFactory) {
-            throw new \RuntimeException('No LinkRendererFactory found for ' . LinkRenderer::class);
+        if (! isset($factories[LinkRenderer::class]) || ! $factories[LinkRenderer::class] instanceof LinkRendererFactory) {
+            throw new RuntimeException('No LinkRendererFactory found for ' . LinkRenderer::class);
         }
+
         return $factories[LinkRenderer::class]->create($this);
     }
 }

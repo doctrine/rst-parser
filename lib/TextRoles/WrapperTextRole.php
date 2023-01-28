@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\RST\TextRoles;
 
 use Doctrine\RST\Environment;
+
 use function htmlspecialchars;
 use function sprintf;
 

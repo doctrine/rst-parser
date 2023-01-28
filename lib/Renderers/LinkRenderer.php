@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\Renderers;
 
-use Doctrine\RST\Environment;
 use Doctrine\RST\References\ResolvedReference;
 
 use function trim;
@@ -17,7 +16,7 @@ abstract class LinkRenderer extends Renderer
     /** @param mixed[] $value */
     public function renderReference(ResolvedReference $reference, array $value): string
     {
-        $text = $value['text'] ? $value['text'] : ($reference->getTitle() ?? '');
+        $text = $value['text'] ?? ($reference->getTitle() ?? '');
         $text = trim($text);
         // reference to another document
         if ($reference->getUrl() !== null) {

@@ -21,8 +21,8 @@ class SpanTest extends TestCase
      */
     public function testLink(string $url, string $title, array $attributes, string $expectedLink): void
     {
-        $parser      = $this->createMock(Parser::class);
-        $environment = $this->createMock(Environment::class);
+        $parser       = $this->createMock(Parser::class);
+        $environment  = $this->createMock(Environment::class);
         $linkRenderer = new LinkRenderer($environment);
 
         $configuration    = new Configuration();

@@ -28,8 +28,8 @@ final class HTMLFormat implements Format
 
     public function __construct(TemplateRenderer $templateRenderer)
     {
-        $this->templateRenderer = $templateRenderer;
-        $this->directiveFactory = new FormatDirectiveFactory();
+        $this->templateRenderer  = $templateRenderer;
+        $this->directiveFactory  = new FormatDirectiveFactory();
         $this->templateRenderer  = $templateRenderer;
         $this->rendererFactories = [
             Renderers\LinkRenderer::class => new HTML\Renderers\LinkRendererFactory(),

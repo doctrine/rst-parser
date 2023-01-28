@@ -25,10 +25,10 @@ abstract class Reference extends TextRole
      */
     abstract public function resolve(Environment $environment, string $data): ?ResolvedReference;
 
-
     final public function process(Environment $environment, string $text): string
     {
         $resolvedReference = $this->resolve($environment, $text);
+
         return '';
     }
 

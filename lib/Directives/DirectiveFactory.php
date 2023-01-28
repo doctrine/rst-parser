@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\Directives;
 
-use Doctrine\RST\References\Reference;
 use Doctrine\RST\TextRoles\TextRole;
 
 interface DirectiveFactory
@@ -14,7 +13,4 @@ interface DirectiveFactory
 
     /** @return TextRole[] */
     public function getTextRoles(): array;
-
-    /** @return Reference[] */
-    public function getReferences(): array;
 }

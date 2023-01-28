@@ -28,11 +28,10 @@ abstract class SpanNodeRenderer implements NodeRenderer, SpanRenderer
 
     public function __construct(
         Environment $environment,
-        SpanNode $span,
-        LinkRenderer $linkRenderer
+        SpanNode $span
     ) {
-        $this->environment  = $environment;
-        $this->span         = $span;
+        $this->environment = $environment;
+        $this->span        = $span;
     }
 
     public function render(): string
