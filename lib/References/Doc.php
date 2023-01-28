@@ -37,7 +37,16 @@ final class Doc extends Reference
 
     public function resolve(Environment $environment, string $data): ?ResolvedReference
     {
-        return $this->resolver->resolve($environment, $data);
+        $resolvedReference = $this->resolver->resolve($environment, $data);
+        if ($resolvedReference === null) {
+            $environment->addInvalidReference($data);
+
+            return null;
+        }
+
+        $environment->resolveDependency($data, $resolvedReference);
+
+        return $resolvedReference;
     }
 
     public function found(Environment $environment, string $data): void

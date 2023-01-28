@@ -168,30 +168,7 @@ class Environment
             throw new RuntimeException('No valid Reference role found. ');
         }
 
-        $resolvedReference = $reference->resolve($this, $data);
-
-        if ($resolvedReference === null) {
-            $this->addInvalidLink(new InvalidLink($data));
-
-            if ($this->getMetaEntry() !== null) {
-                $this->getMetaEntry()->removeDependency(
-                    // use the original name
-                    $this->originalDependencyNames[$data] ?? $data
-                );
-            }
-
-            return null;
-        }
-
-        if (isset($this->unresolvedDependencies[$data]) && $this->getMetaEntry() !== null) {
-            $this->getMetaEntry()->resolveDependency(
-                // use the unique, unresolved name
-                $this->unresolvedDependencies[$data],
-                $resolvedReference->getFile()
-            );
-        }
-
-        return $resolvedReference;
+        return $reference->resolve($this, $data);
     }
 
     public function addInvalidLink(InvalidLink $invalidLink): void
@@ -488,5 +465,32 @@ class Environment
         }
 
         return $factories[LinkRenderer::class]->create($this);
+    }
+
+    public function addInvalidReference(string $data): void
+    {
+        $this->addInvalidLink(new InvalidLink($data));
+
+        if ($this->getMetaEntry() === null) {
+            return;
+        }
+
+        $this->getMetaEntry()->removeDependency(
+        // use the original name
+            $this->originalDependencyNames[$data] ?? $data
+        );
+    }
+
+    public function resolveDependency(string $data, ResolvedReference $resolvedReference): void
+    {
+        if (! isset($this->unresolvedDependencies[$data]) || $this->getMetaEntry() === null) {
+            return;
+        }
+
+        $this->getMetaEntry()->resolveDependency(
+        // use the unique, unresolved name
+            $this->unresolvedDependencies[$data],
+            $resolvedReference->getFile()
+        );
     }
 }
