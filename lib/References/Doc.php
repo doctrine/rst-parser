@@ -37,7 +37,7 @@ final class Doc extends Reference
 
     public function resolve(Environment $environment, string $data): ?ResolvedReference
     {
-        $resolvedReference = $this->resolver->resolve($environment, $data);
+        $resolvedReference = $this->resolver->resolve($environment, $this->getName(), $data);
         if ($resolvedReference === null) {
             $environment->addInvalidReference($data);
 

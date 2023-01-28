@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\RST\Utility;
 
 use Doctrine\RST\Environment;
+use Doctrine\RST\References\Resolver;
 
 use function count;
 use function is_array;
@@ -72,7 +73,8 @@ final class TitleLinkUtility
      */
     private function generateTarget(?string $url, $title, bool $withAnchor): array
     {
-        $target = $url;
+        $target   = $url;
+        $resolver = new Resolver();
         if ($withAnchor) {
             $anchor  = $this->generateAnchorFromTitle($title);
             $target .= '#' . $anchor;
@@ -81,7 +83,7 @@ final class TitleLinkUtility
         if (is_array($title)) {
             [$title, $target] = $title;
 
-            $reference = $this->environment->resolve('doc', $target);
+            $reference = $resolver->resolve($this->environment, 'doc', $target);
 
             if ($reference === null) {
                 return [$title, $target];

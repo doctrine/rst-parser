@@ -17,6 +17,9 @@ use Doctrine\RST\TextRoles\TextRole;
  */
 abstract class Reference extends TextRole
 {
+    public const TYPE_REFEENCE = 'ref';
+    public const TYPE_DOCUMENT = 'doc';
+
     /**
      * Resolve the reference and returns an array
      *
