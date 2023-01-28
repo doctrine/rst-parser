@@ -25,9 +25,6 @@ class Parser
 {
     private Configuration $configuration;
 
-    /** @var Kernel */
-    private $kernel;
-
     /** @var Environment */
     private $environment;
 
@@ -48,15 +45,9 @@ class Parser
 
     public function __construct(
         Configuration $configuration,
-        ?Kernel $kernel = null,
         ?Environment $environment = null
     ) {
-        if ($kernel === null) {
-            $kernel = new Kernel();
-        }
-
         $this->configuration = $configuration;
-        $this->kernel        = $kernel;
         $this->environment   = $environment ??  new Environment($this->configuration);
 
         $this->initDirectives();
@@ -66,7 +57,7 @@ class Parser
 
     public function getSubParser(): Parser
     {
-        return new Parser($this->configuration, $this->kernel, $this->environment);
+        return new Parser($this->configuration, $this->environment);
     }
 
     public function getNodeFactory(): NodeFactory
@@ -82,7 +73,7 @@ class Parser
 
     public function initDirectives(): void
     {
-        $directives = $this->kernel->getDirectives();
+        $directives = $this->configuration->getDirectives();
 
         foreach ($directives as $directive) {
             $this->registerDirective($directive);
@@ -91,14 +82,14 @@ class Parser
 
     public function initTextRoles(): void
     {
-        foreach ($this->kernel->getTextRoles() as $textRole) {
+        foreach ($this->configuration->getTextRoles() as $textRole) {
             $this->environment->registerTextRole($textRole);
         }
     }
 
     public function initReferences(): void
     {
-        $references = $this->kernel->getReferences();
+        $references = $this->configuration->getReferences();
 
         foreach ($references as $reference) {
             $this->environment->registerReference($reference);
@@ -108,11 +99,6 @@ class Parser
     public function getEnvironment(): Environment
     {
         return $this->environment;
-    }
-
-    public function getKernel(): Kernel
-    {
-        return $this->kernel;
     }
 
     public function registerDirective(Directive $directive): void

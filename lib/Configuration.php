@@ -6,6 +6,9 @@ namespace Doctrine\RST;
 
 use Doctrine\Common\EventArgs;
 use Doctrine\Common\EventManager;
+use Doctrine\RST\Directives\BasicDirectiveFactory;
+use Doctrine\RST\Directives\Directive;
+use Doctrine\RST\Directives\DirectiveFactory;
 use Doctrine\RST\ErrorManager\DefaultErrorManagerFactory;
 use Doctrine\RST\ErrorManager\ErrorManagerFactory;
 use Doctrine\RST\Formats\Format;
@@ -16,14 +19,17 @@ use Doctrine\RST\NodeFactory\DefaultNodeFactory;
 use Doctrine\RST\NodeFactory\NodeFactory;
 use Doctrine\RST\NodeFactory\NodeInstantiator;
 use Doctrine\RST\Nodes\NodeTypes;
+use Doctrine\RST\References\Reference;
 use Doctrine\RST\Renderers\NodeRendererFactory;
 use Doctrine\RST\Templates\TemplateEngineAdapter;
 use Doctrine\RST\Templates\TemplateRenderer;
 use Doctrine\RST\Templates\TwigAdapter;
 use Doctrine\RST\Templates\TwigTemplateRenderer;
+use Doctrine\RST\TextRoles\TextRole;
 use RuntimeException;
 use Twig\Environment as TwigEnvironment;
 
+use function array_merge;
 use function sprintf;
 use function sys_get_temp_dir;
 
@@ -41,6 +47,8 @@ class Configuration
 
     /** @var string */
     private $theme = self::THEME_DEFAULT;
+
+    private string $indexName = 'index';
 
     /** @var string */
     private $baseUrl = '';
@@ -92,6 +100,9 @@ class Configuration
 
     private ErrorManagerFactory $errorManagerFactory;
 
+    /** @var DirectiveFactory[] */
+    private array $directiveFactories = [];
+
     public function __construct()
     {
         $this->cacheDir = sys_get_temp_dir() . '/doctrine-rst-parser';
@@ -102,10 +113,11 @@ class Configuration
         $this->templateRenderer      = new TwigTemplateRenderer($this);
         $this->errorManagerFactory   = new DefaultErrorManagerFactory($this);
 
-        $this->formats = [
+        $this->formats              = [
             Format::HTML => new InternalFormat(new HTMLFormat($this->templateRenderer)),
             Format::LATEX => new InternalFormat(new LaTeXFormat($this->templateRenderer)),
         ];
+        $this->directiveFactories[] = new BasicDirectiveFactory();
     }
 
     public function getCacheDir(): string
@@ -280,6 +292,56 @@ class Configuration
         $this->fileExtension = $fileExtension;
     }
 
+    /** @return DirectiveFactory[] */
+    public function getDirectiveFactories(): array
+    {
+        return $this->directiveFactories;
+    }
+
+    /** @param DirectiveFactory[] $directiveFactories */
+    public function setDirectiveFactories(array $directiveFactories): void
+    {
+        $this->directiveFactories = $directiveFactories;
+    }
+
+    public function addDirectiveFactory(DirectiveFactory $factory): void
+    {
+        $this->directiveFactories[] = $factory;
+    }
+
+    /** @return Directive[] */
+    public function getDirectives(): array
+    {
+        $directives = [];
+        foreach ($this->directiveFactories as $factory) {
+            $directives = array_merge($directives, $factory->getDirectives());
+        }
+
+        return array_merge($directives, $this->getFormat()->getDirectiveFactory()->getDirectives());
+    }
+
+    /** @return TextRole[] */
+    public function getTextRoles(): array
+    {
+        $textRoles = [];
+        foreach ($this->directiveFactories as $factory) {
+            $textRoles = array_merge($textRoles, $factory->getTextRoles());
+        }
+
+        return array_merge($textRoles, $this->getFormat()->getDirectiveFactory()->getTextRoles());
+    }
+
+    /** @return Reference[] */
+    public function getReferences(): array
+    {
+        $reference = [];
+        foreach ($this->directiveFactories as $factory) {
+            $reference = array_merge($reference, $factory->getReferences());
+        }
+
+        return array_merge($reference, $this->getFormat()->getDirectiveFactory()->getReferences());
+    }
+
     public function getNodeFactory(Environment $environment): NodeFactory
     {
         if ($this->nodeFactory !== null) {
@@ -385,5 +447,27 @@ class Configuration
     public function getErrorManager(): ErrorManager
     {
         return $this->errorManagerFactory->getErrorManager();
+    }
+
+    public function getIndexName(): string
+    {
+        return $this->indexName;
+    }
+
+    public function setIndexName(string $indexName): void
+    {
+        $this->indexName = $indexName;
+    }
+
+    /**
+     * Returns the "master document" name (e.g. index).
+     *
+     * This is the first document whose toctree should be read
+     * when building the table of contents. It is usually "index.rst",
+     * which means index.rst is read first.
+     */
+    public function getIndexFileName(): string
+    {
+        return sprintf('%s.%s', $this->getIndexName(), $this->getSourceFileExtension());
     }
 }

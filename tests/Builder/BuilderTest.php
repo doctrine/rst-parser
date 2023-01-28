@@ -6,6 +6,7 @@ namespace Doctrine\Tests\RST\Builder;
 
 use Doctrine\RST\Builder;
 use Doctrine\RST\Configuration;
+use Doctrine\RST\Event\PostBuilderInitEvent;
 use Doctrine\Tests\RST\BaseBuilderTest;
 use Symfony\Component\DomCrawler\Crawler;
 
@@ -29,11 +30,19 @@ use function unserialize;
  */
 class BuilderTest extends BaseBuilderTest
 {
+    public function testPostBuilderInitEventIsDispatched(): void
+    {
+        $configuration = $this->createMock(Configuration::class);
+        $configuration->expects(self::once())
+            ->method('dispatchEvent')
+            ->with(PostBuilderInitEvent::POST_BUILDER_INIT);
+        new Builder($configuration);
+    }
+
     public function testRecreate(): void
     {
         $builder = $this->builder->recreate();
 
-        self::assertSame($this->builder->getKernel(), $builder->getKernel());
         self::assertSame($this->builder->getConfiguration(), $builder->getConfiguration());
     }
 

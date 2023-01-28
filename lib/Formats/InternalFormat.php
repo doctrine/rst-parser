@@ -4,23 +4,18 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\Formats;
 
-use Doctrine\RST\Directives\Directive;
+use Doctrine\RST\Directives\DirectiveFactory;
 use Doctrine\RST\Renderers\NodeRendererFactory;
-use Doctrine\RST\TextRoles\TextRole;
 
 final class InternalFormat implements Format
 {
     /** @var Format */
     private $format;
 
-    /** @var Directive[]|null */
-    private $directives;
+    private ?DirectiveFactory $directiveFactory = null;
 
     /** @var NodeRendererFactory[]|null */
     private $nodeRendererFactories;
-
-    /** @var TextRole[]|null */
-    private ?array $textRoles = null;
 
     public function __construct(Format $format)
     {
@@ -32,24 +27,13 @@ final class InternalFormat implements Format
         return $this->format->getFileExtension();
     }
 
-    /** @return Directive[] */
-    public function getDirectives(): array
+    public function getDirectiveFactory(): DirectiveFactory
     {
-        if ($this->directives === null) {
-            $this->directives = $this->format->getDirectives();
+        if ($this->directiveFactory === null) {
+            $this->directiveFactory = $this->format->getDirectiveFactory();
         }
 
-        return $this->directives;
-    }
-
-    /** @return TextRole[] */
-    public function getTextRoles(): array
-    {
-        if ($this->textRoles === null) {
-            $this->textRoles = $this->format->getTextRoles();
-        }
-
-        return $this->textRoles;
+        return $this->directiveFactory;
     }
 
     /** @return NodeRendererFactory[] */

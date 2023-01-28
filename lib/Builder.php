@@ -9,6 +9,7 @@ use Doctrine\RST\Builder\Documents;
 use Doctrine\RST\Builder\ParseQueue;
 use Doctrine\RST\Builder\ParseQueueProcessor;
 use Doctrine\RST\Builder\Scanner;
+use Doctrine\RST\Event\PostBuilderInitEvent;
 use Doctrine\RST\Event\PostBuildRenderEvent;
 use Doctrine\RST\Event\PreBuildParseEvent;
 use Doctrine\RST\Event\PreBuildRenderEvent;
@@ -23,11 +24,19 @@ use function file_exists;
 use function is_dir;
 use function sprintf;
 
+/**
+ * Builds a complete manual or book containing multiple `.rst` documents
+ * and additional sources.
+ *
+ * Usage:
+ *
+ * .. code-block:: php
+ *
+ *    $builder = new Builder($configuration);
+ *    $builder->build('Documentation', 'output');
+ */
 final class Builder
 {
-    /** @var Kernel */
-    private $kernel;
-
     private Configuration $configuration;
 
     /** @var Filesystem */
@@ -48,14 +57,9 @@ final class Builder
     /** @var Finder|null */
     private $scannerFinder;
 
-    /** @var string */
-    private $indexName = 'index';
-
-    public function __construct(Configuration $configuration, ?Kernel $kernel = null)
+    public function __construct(Configuration $configuration)
     {
         $this->configuration = $configuration;
-
-        $this->kernel = $kernel ?? new Kernel($this->configuration);
 
         $this->filesystem = new Filesystem();
 
@@ -70,53 +74,17 @@ final class Builder
 
         $this->copier = new Builder\Copier($this->filesystem);
 
-        $this->kernel->initBuilder($this);
-    }
-
-    public function recreate(): Builder
-    {
-        return new Builder($this->configuration, $this->kernel);
-    }
-
-    public function getKernel(): Kernel
-    {
-        return $this->kernel;
-    }
-
-    public function getConfiguration(): Configuration
-    {
-        return $this->configuration;
-    }
-
-    public function getDocuments(): Documents
-    {
-        return $this->documents;
-    }
-
-    public function setIndexName(string $name): self
-    {
-        $this->indexName = $name;
-
-        return $this;
+        $this->configuration->dispatchEvent(
+            PostBuilderInitEvent::POST_BUILDER_INIT,
+            new PostBuilderInitEvent($this->configuration, $this)
+        );
     }
 
     /**
-     * Returns the "master document" name (e.g. index).
-     *
-     * This is the first document whose toctree should be read
-     * when building the table of contents. It is usually "index",
-     * which means index.rst is read first.
+     * Main method to build `.rst` files from the $directory into the
+     * $targetDirectory. Output format and other settings are used from the
+     * Configuration passed to the Builders constructor.
      */
-    public function getIndexName(): string
-    {
-        return $this->indexName;
-    }
-
-    public function getMetas(): Metas
-    {
-        return $this->metas;
-    }
-
     public function build(
         string $directory,
         string $targetDirectory = 'output'
@@ -126,7 +94,7 @@ final class Builder
             $this->filesystem->mkdir($targetDirectory, 0755);
         }
 
-        $indexFilename = sprintf('%s.%s', $this->indexName, $this->configuration->getSourceFileExtension());
+        $indexFilename = $this->getConfiguration()->getIndexFileName();
         if (! file_exists($directory . '/' . $indexFilename)) {
             throw new InvalidArgumentException(sprintf('Could not find index file "%s" in "%s"', $indexFilename, $directory));
         }
@@ -142,6 +110,26 @@ final class Builder
         $this->render($directory, $targetDirectory);
 
         $this->cachedMetasLoader->cacheMetaEntries($targetDirectory, $this->metas);
+    }
+
+    public function recreate(): Builder
+    {
+        return new Builder($this->configuration);
+    }
+
+    public function getConfiguration(): Configuration
+    {
+        return $this->configuration;
+    }
+
+    public function getDocuments(): Documents
+    {
+        return $this->documents;
+    }
+
+    public function getMetas(): Metas
+    {
+        return $this->metas;
     }
 
     public function copy(string $source, ?string $destination = null): self
@@ -192,7 +180,6 @@ final class Builder
 
         $parseQueueProcessor = new ParseQueueProcessor(
             $this->configuration,
-            $this->kernel,
             $this->metas,
             $this->documents,
             $directory,

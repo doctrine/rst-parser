@@ -38,8 +38,6 @@ final class CodeBlock extends Directive
             return;
         }
 
-        $kernel = $parser->getKernel();
-
         if ($node instanceof CodeNode) {
             $node->setLanguage(trim($data));
             $node->setOptions($options);

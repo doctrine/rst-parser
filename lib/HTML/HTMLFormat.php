@@ -4,26 +4,27 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\HTML;
 
-use Doctrine\RST\Directives\Directive;
+use Doctrine\RST\Directives\DirectiveFactory;
 use Doctrine\RST\Formats\Format;
 use Doctrine\RST\HTML;
+use Doctrine\RST\HTML\Directives\FormatDirectiveFactory;
 use Doctrine\RST\Nodes;
 use Doctrine\RST\Renderers;
 use Doctrine\RST\Renderers\CallableNodeRendererFactory;
 use Doctrine\RST\Renderers\NodeRendererFactory;
 use Doctrine\RST\Templates\TemplateRenderer;
-use Doctrine\RST\TextRoles\DefinitionTextRole;
-use Doctrine\RST\TextRoles\TextRole;
-use Doctrine\RST\TextRoles\WrapperTextRole;
 
 final class HTMLFormat implements Format
 {
     /** @var TemplateRenderer */
     private $templateRenderer;
 
+    private DirectiveFactory $directiveFactory;
+
     public function __construct(TemplateRenderer $templateRenderer)
     {
         $this->templateRenderer = $templateRenderer;
+        $this->directiveFactory = new FormatDirectiveFactory();
     }
 
     public function getFileExtension(): string
@@ -31,42 +32,14 @@ final class HTMLFormat implements Format
         return Format::HTML;
     }
 
-    /** @return Directive[] */
-    public function getDirectives(): array
+    public function getDirectiveFactory(): DirectiveFactory
     {
-        return [
-            new HTML\Directives\Image(),
-            new HTML\Directives\Figure(),
-            new HTML\Directives\Meta(),
-            new HTML\Directives\Stylesheet(),
-            new HTML\Directives\Title(),
-            new HTML\Directives\Url(),
-            new HTML\Directives\Div(),
-            new HTML\Directives\Wrap('note'),
-            new HTML\Directives\ClassDirective(),
-        ];
+        return $this->directiveFactory;
     }
 
-    /** @return TextRole[] */
-    public function getTextRoles(): array
+    public function setDirectiveFactory(DirectiveFactory $directiveFactory): void
     {
-        return [
-            new WrapperTextRole('aspect', '<em class="aspect">%s</em>'),
-            new WrapperTextRole('command', '<strong class="command">%s</strong>'),
-            new WrapperTextRole('dfn', '<em class="dfn">%s</em>'),
-            new WrapperTextRole('file', '<span class="pre file">%s</span>'),
-            new WrapperTextRole('guilabel', '<span class="guilabel">%s</span>'),
-            new WrapperTextRole('kbd', '<kbd class="kbd docutils literal notranslate">%s</kbd>'),
-            new WrapperTextRole('mailheader', '<em class="mailheader">%s</em>'),
-            new WrapperTextRole('math', '<math>%s</math>'),
-            new WrapperTextRole('emphasis', '<em>%s</em>'),
-            new WrapperTextRole('literal', '<span class="pre">%s</span>'),
-            new WrapperTextRole('strong', '<strong>%s</strong>'),
-            new WrapperTextRole('subscript', '<sub>%s</sub>', ['sub']),
-            new WrapperTextRole('superscript', '<sup>%s</sup>', ['sup']),
-            new WrapperTextRole('title-reference', '<cite>%s</cite>', ['t', 'title']),
-            new DefinitionTextRole('abbreviation', '<abbr title="%2$s">%1$s</abbr>', ['abbr']),
-        ];
+        $this->directiveFactory = $directiveFactory;
     }
 
     /** @return NodeRendererFactory[] */

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Doctrine\Tests\RST;
 
 use Doctrine\RST\Configuration;
-use Doctrine\RST\Kernel;
 use Doctrine\RST\Parser;
 use PHPUnit\Framework\TestCase;
 
@@ -79,6 +78,6 @@ EOF;
     {
         $this->configuration = new Configuration();
 
-        $this->parser = new Parser($this->configuration, new Kernel($this->configuration));
+        $this->parser = new Parser($this->configuration);
     }
 }

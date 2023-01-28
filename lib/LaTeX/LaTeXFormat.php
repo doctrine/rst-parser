@@ -4,24 +4,27 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\LaTeX;
 
-use Doctrine\RST\Directives\Directive;
+use Doctrine\RST\Directives\DirectiveFactory;
 use Doctrine\RST\Formats\Format;
 use Doctrine\RST\LaTeX;
+use Doctrine\RST\LaTeX\Directives\FormatDirectiveFactory;
 use Doctrine\RST\Nodes;
 use Doctrine\RST\Renderers;
 use Doctrine\RST\Renderers\CallableNodeRendererFactory;
 use Doctrine\RST\Renderers\NodeRendererFactory;
 use Doctrine\RST\Templates\TemplateRenderer;
-use Doctrine\RST\TextRoles\TextRole;
 
 final class LaTeXFormat implements Format
 {
     /** @var TemplateRenderer */
     private $templateRenderer;
 
+    private DirectiveFactory $directiveFactory;
+
     public function __construct(TemplateRenderer $templateRenderer)
     {
         $this->templateRenderer = $templateRenderer;
+        $this->directiveFactory = new FormatDirectiveFactory();
     }
 
     public function getFileExtension(): string
@@ -29,24 +32,24 @@ final class LaTeXFormat implements Format
         return Format::LATEX;
     }
 
-    /** @return Directive[] */
-    public function getDirectives(): array
+    public function getTemplateRenderer(): TemplateRenderer
     {
-        return [
-            new LaTeX\Directives\LaTeXMain(),
-            new LaTeX\Directives\Image(),
-            new LaTeX\Directives\Meta(),
-            new LaTeX\Directives\Stylesheet(),
-            new LaTeX\Directives\Title(),
-            new LaTeX\Directives\Url(),
-            new LaTeX\Directives\Wrap('note'),
-        ];
+        return $this->templateRenderer;
     }
 
-    /** @return TextRole[] */
-    public function getTextRoles(): array
+    public function setTemplateRenderer(TemplateRenderer $templateRenderer): void
     {
-        return [];
+        $this->templateRenderer = $templateRenderer;
+    }
+
+    public function getDirectiveFactory(): DirectiveFactory
+    {
+        return $this->directiveFactory;
+    }
+
+    public function setDirectiveFactory(DirectiveFactory $directiveFactory): void
+    {
+        $this->directiveFactory = $directiveFactory;
     }
 
     /** @return NodeRendererFactory[] */
