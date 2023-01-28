@@ -6,6 +6,7 @@ namespace Doctrine\Tests\RST\HTML;
 
 use Doctrine\RST\Configuration;
 use Doctrine\RST\Environment;
+use Doctrine\RST\HTML\Renderers\LinkRenderer;
 use Doctrine\RST\HTML\Renderers\SpanNodeRenderer;
 use Doctrine\RST\Nodes\SpanNode;
 use Doctrine\RST\Parser;
@@ -22,6 +23,7 @@ class SpanTest extends TestCase
     {
         $parser      = $this->createMock(Parser::class);
         $environment = $this->createMock(Environment::class);
+        $linkRenderer = new LinkRenderer($environment);
 
         $configuration    = new Configuration();
         $templateRenderer = $configuration->getTemplateRenderer();
@@ -38,6 +40,10 @@ class SpanTest extends TestCase
         $environment->expects(self::once())
             ->method('getTemplateRenderer')
             ->willReturn($templateRenderer);
+
+        $environment->expects(self::once())
+            ->method('getLinkRenderer')
+            ->willReturn($linkRenderer);
 
         $span         = new SpanNode($parser, 'span');
         $spanRenderer = new SpanNodeRenderer($environment, $span, $templateRenderer);

@@ -23,8 +23,6 @@ abstract class SpanNodeRenderer implements NodeRenderer, SpanRenderer
     /** @var Environment */
     protected $environment;
 
-    protected LinkRenderer $linkRenderer;
-
     /** @var SpanNode */
     protected $span;
 
@@ -35,7 +33,6 @@ abstract class SpanNodeRenderer implements NodeRenderer, SpanRenderer
     ) {
         $this->environment  = $environment;
         $this->span         = $span;
-        $this->linkRenderer = $linkRenderer;
     }
 
     public function render(): string
@@ -228,12 +225,12 @@ abstract class SpanNodeRenderer implements NodeRenderer, SpanRenderer
     /** @param mixed[] $attributes */
     public function link(?string $url, string $title, array $attributes = []): string
     {
-        return $this->linkRenderer->renderUrl($url, $title, $attributes);
+        return $this->environment->getLinkRenderer()->renderUrl($url, $title, $attributes);
     }
 
     /** @param mixed[] $value */
     public function reference(ResolvedReference $reference, array $value): string
     {
-        return $this->linkRenderer->renderReference($reference, $value);
+        return $this->environment->getLinkRenderer()->renderReference($reference, $value);
     }
 }

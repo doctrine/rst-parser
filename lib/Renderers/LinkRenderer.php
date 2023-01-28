@@ -9,22 +9,15 @@ use Doctrine\RST\References\ResolvedReference;
 
 use function trim;
 
-abstract class LinkRenderer
+abstract class LinkRenderer extends Renderer
 {
-    protected Environment $environment;
-
-    public function __construct(Environment $environment)
-    {
-        $this->environment = $environment;
-    }
-
     /** @param mixed[] $attributes */
     abstract public function renderUrl(?string $url, string $title, array $attributes = []): string;
 
     /** @param mixed[] $value */
     public function renderReference(ResolvedReference $reference, array $value): string
     {
-        $text = (bool) $value['text'] ? $value['text'] : ($reference->getTitle() ?? '');
+        $text = $value['text'] ? $value['text'] : ($reference->getTitle() ?? '');
         $text = trim($text);
         // reference to another document
         if ($reference->getUrl() !== null) {
