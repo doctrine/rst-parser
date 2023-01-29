@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\Tests\RST\TextRoles;
 
 use Doctrine\RST\Environment;
+use Doctrine\RST\Span\SpanToken;
 use Doctrine\RST\TextRoles\TextRole;
 
 class ExampleRole extends TextRole
@@ -14,8 +15,8 @@ class ExampleRole extends TextRole
         return 'example';
     }
 
-    public function process(Environment $environment, string $text): string
+    public function process(Environment $environment, SpanToken $spanToken): string
     {
-        return '<samp>' . $text . '</samp>';
+        return '<samp>' . $spanToken->get('text') . '</samp>';
     }
 }

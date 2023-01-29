@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\RST\References;
 
 use Doctrine\RST\Environment;
+use Doctrine\RST\Span\SpanToken;
 use Doctrine\RST\TextRoles\TextRole;
 
 /**
@@ -28,9 +29,9 @@ abstract class Reference extends TextRole
      */
     abstract public function resolve(Environment $environment, string $data): ?ResolvedReference;
 
-    public function process(Environment $environment, string $text): string
+    public function process(Environment $environment, SpanToken $spanToken): string
     {
-        $resolvedReference = $this->resolve($environment, $text);
+        $resolvedReference = $this->resolve($environment, $spanToken->get('url'));
 
         return '';
     }

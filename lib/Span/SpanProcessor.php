@@ -136,15 +136,15 @@ final class SpanProcessor
         return (string) preg_replace_callback('/:([a-z0-9]+):`(.+)`/mUsi', function ($match): string {
             $section = $match[1];
 
-            $text    = $match[2];
+            $text   = $match[2];
             $id     = $this->generateId();
             $anchor = null;
 
-            $url = $text;
+            $url      = $text;
             $linktext = null;
             if (preg_match('/^(.+)<(.+)>$/mUsi', $text, $match) > 0) {
                 $linktext = $match[1];
-                $url  = $match[2];
+                $url      = $match[2];
             }
 
             if (preg_match('/^(.+)#(.+)$/mUsi', $url, $match) > 0) {

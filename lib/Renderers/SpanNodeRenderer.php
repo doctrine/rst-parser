@@ -166,7 +166,7 @@ abstract class SpanNodeRenderer implements NodeRenderer, SpanRenderer
             return $spanToken->get('text');
         }
 
-        $resolvedTextRole = $textRole->process($this->environment, $spanToken->get('text'));
+        $resolvedTextRole = $textRole->process($this->environment, $spanToken);
 
         return str_replace($spanToken->getId(), $resolvedTextRole, $span);
     }

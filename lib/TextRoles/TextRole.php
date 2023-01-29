@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\RST\TextRoles;
 
 use Doctrine\RST\Environment;
+use Doctrine\RST\Span\SpanToken;
 
 /**
  * A text role is a string that is styled in a certain way
@@ -37,5 +38,5 @@ abstract class TextRole
      */
     abstract public function getName(): string;
 
-    abstract public function process(Environment $environment, string $text): string;
+    abstract public function process(Environment $environment, SpanToken $spanToken): string;
 }

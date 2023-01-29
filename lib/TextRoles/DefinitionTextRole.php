@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\RST\TextRoles;
 
 use Doctrine\RST\Environment;
+use Doctrine\RST\Span\SpanToken;
 
 use function preg_match;
 use function sprintf;
@@ -37,10 +38,11 @@ class DefinitionTextRole extends TextRole
         return $this->name;
     }
 
-    public function process(Environment $environment, string $text): string
+    public function process(Environment $environment, SpanToken $spanToken): string
     {
+        $text       = '';
         $definition = '';
-        if (preg_match('/(.+)\(([^\)]+)\)$/', $text, $matches) !== 0) {
+        if (preg_match('/(.+)\(([^\)]+)\)$/', $spanToken->get('text'), $matches) !== 0) {
             $text       =  trim($matches[1]);
             $definition = trim($matches[2]);
         }
