@@ -6,6 +6,8 @@ namespace Doctrine\Tests\RST\Functional;
 
 use Doctrine\RST\Builder;
 use Doctrine\RST\Configuration;
+use Doctrine\RST\ErrorManager;
+use Doctrine\RST\ErrorManager\ErrorManagerFactory;
 use Doctrine\RST\Formats\Format;
 use Doctrine\RST\Parser;
 use DOMDocument;
@@ -40,6 +42,39 @@ class FunctionalTest extends TestCase
     protected function setUp(): void
     {
         setlocale(LC_ALL, 'en_US.utf8');
+    }
+
+    public function testBuildDocs(): void
+    {
+        $configuration = new Configuration();
+        $configuration->setFileExtension(Format::HTML);
+        $configuration->setUseCachedMetas(false);
+
+        $errorManager        = $this->createMock(ErrorManager::class);
+        $errorManagerFactory = $this->createMock(ErrorManagerFactory::class);
+        $configuration->setErrorManagerFactory($errorManagerFactory);
+        $errorManagerFactory->method('getErrorManager')->willReturn($errorManager);
+        $errorManager->expects(self::never())->method('warning');
+        $errorManager->expects(self::never())->method('error');
+        $builder = new Builder($configuration);
+        $builder->build(__DIR__ . '/../../docs/en/', __DIR__ . '/output/docs/');
+        self::assertFileExists(__DIR__ . '/output/docs/index.html');
+        self::assertFileExists(__DIR__ . '/output/docs/metas.php');
+        self::assertFileExists(__DIR__ . '/output/docs/attribution.html');
+        $contents = $this->getFileContents(__DIR__ . '/output/docs/attribution.html');
+        self::assertStringContainsString('This repository was forked from <a href="https://github.com/Gregwar/RST">Gregwar</a>', $contents);
+    }
+
+    /** @throws Exception */
+    protected function getFileContents(string $path): string
+    {
+        $contents = file_get_contents($path);
+
+        if ($contents === false) {
+            throw new Exception('Could not load file.');
+        }
+
+        return $contents;
     }
 
     /**
