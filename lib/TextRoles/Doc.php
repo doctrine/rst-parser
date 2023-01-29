@@ -2,11 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Doctrine\RST\References;
+namespace Doctrine\RST\TextRoles;
 
 use Doctrine\RST\Environment;
+use Doctrine\RST\References\ResolvedReference;
+use Doctrine\RST\References\Resolver;
 
-final class Doc extends Reference
+final class Doc extends ReferenceRole
 {
     /** @var string */
     private $name;

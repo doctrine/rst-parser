@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\Directives;
 
-use Doctrine\RST\References\Doc;
 use Doctrine\RST\TextRoles\CodeRole;
+use Doctrine\RST\TextRoles\Doc;
 use Doctrine\RST\TextRoles\TextRole;
 
 class BasicDirectiveFactory implements DirectiveFactory

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Doctrine\RST\References;
+namespace Doctrine\RST\TextRoles;
 
 use Doctrine\RST\Environment;
+use Doctrine\RST\References\ResolvedReference;
 use Doctrine\RST\Span\SpanToken;
-use Doctrine\RST\TextRoles\TextRole;
 
 /**
  * A reference is something that can be resolved in the document, for instance:
@@ -16,10 +16,10 @@ use Doctrine\RST\TextRoles\TextRole;
  * Will be resolved as a reference of type method and the given reference will
  * be called to resolve it
  */
-abstract class Reference extends TextRole
+abstract class ReferenceRole extends TextRole
 {
-    public const TYPE_REFEENCE = 'ref';
-    public const TYPE_DOCUMENT = 'doc';
+    public const TYPE_REFERENCE = 'ref';
+    public const TYPE_DOCUMENT  = 'doc';
 
     /**
      * Resolve the reference and returns an array

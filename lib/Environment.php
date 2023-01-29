@@ -8,11 +8,11 @@ use Doctrine\RST\Meta\LinkTarget;
 use Doctrine\RST\Meta\MetaEntry;
 use Doctrine\RST\Meta\Metas;
 use Doctrine\RST\NodeFactory\NodeFactory;
-use Doctrine\RST\References\Reference;
 use Doctrine\RST\References\ResolvedReference;
 use Doctrine\RST\Renderers\LinkRenderer;
 use Doctrine\RST\Renderers\LinkRendererFactory;
 use Doctrine\RST\Templates\TemplateRenderer;
+use Doctrine\RST\TextRoles\ReferenceRole;
 use Doctrine\RST\TextRoles\TextRole;
 use InvalidArgumentException;
 use RuntimeException;
@@ -140,7 +140,7 @@ class Environment
 
     public function isReference(string $section): bool
     {
-        return ($this->textRoles[$section] ?? null) instanceof Reference;
+        return ($this->textRoles[$section] ?? null) instanceof ReferenceRole;
     }
 
     public function getTextRole(string $section): ?TextRole
@@ -164,7 +164,7 @@ class Environment
 
         $reference = $this->textRoles[$section];
 
-        if (! $reference instanceof Reference) {
+        if (! $reference instanceof ReferenceRole) {
             throw new RuntimeException('No valid Reference role found. ');
         }
 
@@ -185,7 +185,7 @@ class Environment
     /** @return string[]|null */
     public function found(string $section, string $data): ?array
     {
-        if (($this->textRoles[$section] ?? null) instanceof Reference) {
+        if (($this->textRoles[$section] ?? null) instanceof ReferenceRole) {
             $reference = $this->textRoles[$section];
 
             $reference->found($this, $data);
