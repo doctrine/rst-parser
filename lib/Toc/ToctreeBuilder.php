@@ -67,7 +67,7 @@ final class ToctreeBuilder
             }
         }
 
-        if ((bool) ($options['reversed'] ?? false)) {
+        if (isset($options['reversed'])) {
             $toctreeFiles = array_reverse($toctreeFiles);
         }
 

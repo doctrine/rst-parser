@@ -4,9 +4,13 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\Parser;
 
+use Doctrine\RST\Nodes\Node;
+
+use function array_reduce;
 use function ltrim;
 use function str_replace;
 use function strlen;
+use function substr;
 use function trim;
 
 final class FieldOption
@@ -19,6 +23,15 @@ final class FieldOption
 
     /** @var string */
     private $body;
+
+    /**
+     * It depends on the context of whether the body of a field option should
+     * be interpreted as nodes or plain text. Therefore, we store both and
+     * delegate the decision on which to use to the rendering.
+     *
+     * @var Node[]
+     */
+    private $nodes = [];
 
     /** @var int */
     private $lineCount = 0;
@@ -33,15 +46,15 @@ final class FieldOption
     public function appendLine(string $line): void
     {
         $trimmedLine = ltrim($line);
-        if (strlen($trimmedLine) === 0) {
-            return;
+        if ($trimmedLine !== '') {
+            if (++$this->lineCount === 1) {
+                $this->offset = strlen($line) - strlen($trimmedLine);
+            }
+
+            $trimmedLine = substr($line, $this->offset);
         }
 
-        if (++$this->lineCount === 1) {
-            $this->offset = strlen($line) - strlen($trimmedLine);
-        }
-
-        $this->body .= ' ' . $trimmedLine;
+        $this->body .= "\n" . $trimmedLine;
     }
 
     public function getName(): string
@@ -54,9 +67,27 @@ final class FieldOption
         return $this->offset;
     }
 
-    /** @return true|string */
-    public function getBody()
+    public function getBody(): string
     {
-        return trim($this->body) === '' ? true : $this->body;
+        return trim($this->body);
+    }
+
+    /** @return Node[] */
+    public function getNodes(): array
+    {
+        return $this->nodes;
+    }
+
+    /** @param Node[] $nodes */
+    public function setNodes(array $nodes): void
+    {
+        $this->nodes = $nodes;
+    }
+
+    public function getNodesAsString(): string
+    {
+        return trim(array_reduce($this->nodes, static function (string $contents, Node $node): string {
+            return $contents . $node->render() . "\n";
+        }, ''));
     }
 }

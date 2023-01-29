@@ -362,6 +362,7 @@ class Configuration
             $this->createNodeInstantiator($environment, NodeTypes::ANCHOR, Nodes\AnchorNode::class),
             $this->createNodeInstantiator($environment, NodeTypes::LIST, Nodes\ListNode::class),
             $this->createNodeInstantiator($environment, NodeTypes::TABLE, Nodes\TableNode::class),
+            $this->createNodeInstantiator($environment, NodeTypes::FIELD_LIST, Nodes\FieldListNode::class),
             $this->createNodeInstantiator($environment, NodeTypes::DEFINITION_LIST, Nodes\DefinitionListNode::class),
             $this->createNodeInstantiator($environment, NodeTypes::WRAPPER, Nodes\WrapperNode::class),
             $this->createNodeInstantiator($environment, NodeTypes::FIGURE, Nodes\FigureNode::class),

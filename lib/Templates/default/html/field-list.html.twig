@@ -1,0 +1,6 @@
+<dl{% if listNode.classes %} class="{{ listNode.classesString }}"{% endif %}>
+    {% for item in listNode.items -%}
+        <dt>{{ item.name }}</dt>
+        <dd>{{ item.nodesAsString|raw }}</dd>
+    {%- endfor %}
+</dl>

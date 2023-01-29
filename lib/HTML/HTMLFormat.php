@@ -70,6 +70,14 @@ final class HTMLFormat implements Format
                     );
                 }
             ),
+            Nodes\FieldListNode::class => new CallableNodeRendererFactory(
+                function (Nodes\FieldListNode $node): HTML\Renderers\FieldListNodeRenderer {
+                    return new HTML\Renderers\FieldListNodeRenderer(
+                        $node,
+                        $this->templateRenderer
+                    );
+                }
+            ),
             Nodes\FigureNode::class => new CallableNodeRendererFactory(
                 function (Nodes\FigureNode $node): HTML\Renderers\FigureNodeRenderer {
                     return new HTML\Renderers\FigureNodeRenderer(

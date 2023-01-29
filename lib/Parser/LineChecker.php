@@ -109,7 +109,7 @@ class LineChecker
      */
     public function isBlockLine(string $line, int $minIndent = 1): bool
     {
-        return (trim($line) === '' || $this->isIndented($line, $minIndent)) && ! $this->isComment($line);
+        return ($this->isEmpty($line) || $this->isIndented($line, $minIndent)) && ! $this->isComment($line);
     }
 
     public function isComment(string $line): bool
@@ -150,7 +150,7 @@ class LineChecker
      */
     public function isDefinitionListEnded(string $line, string $nextLine): bool
     {
-        if (trim($line) === '') {
+        if ($this->isEmpty($line)) {
             return false;
         }
 
@@ -159,5 +159,22 @@ class LineChecker
         }
 
         return ! $this->isIndented($nextLine);
+    }
+
+    /**
+     * Checks if the current line can be considered part of the field list.
+     *
+     * Either the current line is indented or a new field list definition
+     *
+     * @see https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#field-lists
+     */
+    public function isFieldListEnded(string $line): bool
+    {
+        return ! ($this->isEmpty($line) || $this->isIndented($line) || $this->isFieldOption($line));
+    }
+
+    public function isEmpty(string $line): bool
+    {
+        return trim($line) === '';
     }
 }

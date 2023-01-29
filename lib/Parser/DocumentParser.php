@@ -325,6 +325,13 @@ final class DocumentParser
                         return true;
                     }
 
+                    if ($this->lineChecker->isFieldOption($line)) {
+                        $this->setState(State::FIELD_LIST);
+                        $this->buffer->push($line);
+
+                        return true;
+                    }
+
                     if ($this->lineChecker->isIndented($this->lines->getNextLine())) {
                         $this->setState(State::DEFINITION_LIST);
                         $this->buffer->push($line);
@@ -361,10 +368,7 @@ final class DocumentParser
                         );
                     }
 
-                    $this->flush();
-                    $this->setState(State::BEGIN);
-
-                    return false;
+                    return $this->flushAndResetParsing();
                 }
 
                 // the list item offset is determined by the offset of the first text.
@@ -379,10 +383,16 @@ final class DocumentParser
 
             case State::DEFINITION_LIST:
                 if ($this->lineChecker->isDefinitionListEnded($line, $this->lines->getNextLine())) {
-                    $this->flush();
-                    $this->setState(State::BEGIN);
+                    return $this->flushAndResetParsing();
+                }
 
-                    return false;
+                $this->buffer->push($line);
+
+                break;
+
+            case State::FIELD_LIST:
+                if ($this->lineChecker->isFieldListEnded($line)) {
+                    return $this->flushAndResetParsing();
                 }
 
                 $this->buffer->push($line);
@@ -432,10 +442,7 @@ final class DocumentParser
                         $this->flush();
                         $this->setState(State::BEGIN);
                     } elseif ($this->lineChecker->isDirective($line)) {
-                        $this->flush();
-                        $this->setState(State::BEGIN);
-
-                        return false;
+                        return $this->flushAndResetParsing();
                     } elseif ($this->lineChecker->isComment($line)) {
                         $this->flush();
                         $this->setState(State::COMMENT);
@@ -485,10 +492,7 @@ final class DocumentParser
                 if (! $this->lineChecker->isBlockLine($line)) {
                     // the previous line(s) was in a block (indented), but
                     // this line is no longer indented
-                    $this->flush();
-                    $this->setState(State::BEGIN);
-
-                    return false;
+                    return $this->flushAndResetParsing();
                 } else {
                     $this->buffer->push($line);
                 }
@@ -653,6 +657,15 @@ final class DocumentParser
 
                     break;
 
+                case State::FIELD_LIST:
+                    $fieldList = $this->lineDataParser->parseFieldList(
+                        $this->buffer->getLines()
+                    );
+
+                    $node = $this->nodeFactory->createFieldListNode($fieldList);
+
+                    break;
+
                 case State::TABLE:
                     $node = $this->nodeBuffer;
                     assert($node instanceof TableNode);
@@ -812,5 +825,14 @@ final class DocumentParser
         }
 
         unset($this->openTitleNodes[$key]);
+    }
+
+    /** @return false */
+    private function flushAndResetParsing(): bool
+    {
+        $this->flush();
+        $this->setState(State::BEGIN);
+
+        return false;
     }
 }

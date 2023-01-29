@@ -1,5 +1,9 @@
 # Upgrade to 0.6
 
+## Added methods to NodeFactory
+
+* Added `NodeFactory::createFieldListNode()`.
+
 ## Removed the class Kernel
 
 * Directives and TextRoles can now be registered by adding a DirectiveFactory to

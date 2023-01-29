@@ -6,9 +6,11 @@ namespace Doctrine\RST\Parser;
 
 use Doctrine\Common\EventManager;
 use Doctrine\RST\Event\OnLinkParsedEvent;
+use Doctrine\RST\Nodes\Node;
 use Doctrine\RST\Nodes\ParagraphNode;
 use Doctrine\RST\Nodes\SpanNode;
 use Doctrine\RST\Parser;
+use RuntimeException;
 
 use function array_map;
 use function array_shift;
@@ -154,16 +156,7 @@ final class LineDataParser
         $definitionList     = [];
 
         $createDefinitionTerm = function (array $definitionListTerm): DefinitionListTerm {
-            // parse any markup in the definition (e.g. lists, directives)
-            $definitionNodes = $this->parser->getSubParser()->parseLocal($definitionListTerm['definition'])->getNodes();
-            if (count($definitionNodes) === 1 && $definitionNodes[0] instanceof ParagraphNode) {
-                // if there is only one paragraph node, the value is put directly in the <dd> element
-                $definitionNodes = [$definitionNodes[0]->getValue()];
-            } else {
-                // otherwise, .first and .last are added to the first and last nodes of the definition
-                $definitionNodes[0]->setClasses($definitionNodes[0]->getClasses() + ['first']);
-                $definitionNodes[count($definitionNodes) - 1]->setClasses($definitionNodes[count($definitionNodes) - 1]->getClasses() + ['last']);
-            }
+            $definitionNodes = $this->getSubNodes($definitionListTerm['definition']);
 
             return new DefinitionListTerm(
                 $definitionListTerm['term'],
@@ -217,12 +210,67 @@ final class LineDataParser
         return new DefinitionList($definitionList);
     }
 
+    /**
+     * @param string[] $lines
+     *
+     * @return FieldOption[]
+     */
+    public function parseFieldList(array $lines): array
+    {
+        $listItems          = [];
+        $currentFieldOption = null;
+        foreach ($lines as $line) {
+            $newFieldOption = $this->parseFieldOption($line);
+            if ($newFieldOption === null) {
+                if ($currentFieldOption === null) {
+                    throw new RuntimeException('Expected to find field option at start of field list.');
+                }
+
+                $currentFieldOption->appendLine($line);
+            } else {
+                if ($currentFieldOption !== null) {
+                    $currentFieldOption->setNodes($this->getSubNodes($currentFieldOption->getBody()));
+                    $listItems[] = $currentFieldOption;
+                }
+
+                $currentFieldOption = $newFieldOption;
+            }
+        }
+
+        if ($currentFieldOption !== null) {
+            $currentFieldOption->setNodes($this->getSubNodes($currentFieldOption->getBody()));
+            $listItems[] = $currentFieldOption;
+        }
+
+        return $listItems;
+    }
+
     public function parseFieldOption(string $line): ?FieldOption
     {
         if (preg_match('/^(?P<offset>\s*):(?P<name>(?:\\\\:\s|[^:]|:\S)+):(?: +(?P<body>.+)|)$/', $line, $match) > 0) {
-            return new FieldOption($match['name'], strlen($match['offset']), $match['body'] ?? '');
+            $fieldOption = new FieldOption($match['name'], strlen($match['offset']), $match['body'] ?? '');
+            $fieldOption->setNodes($this->getSubNodes($fieldOption->getBody()));
+
+            return $fieldOption;
         }
 
         return null;
+    }
+
+    /** @return Node[] */
+    private function getSubNodes(string $content): array
+    {
+        // parse any markup in the definition (e.g. lists, directives)
+        $definitionNodes = $this->parser->getSubParser()->parseLocal($content)->getNodes();
+        if (count($definitionNodes) === 1 && $definitionNodes[0] instanceof ParagraphNode) {
+            // if there is only one paragraph node, the value is put directly in the surrounding element
+            $definitionNodes = [$definitionNodes[0]->getValue()];
+        } elseif (count($definitionNodes) > 1) {
+            // otherwise, .first and .last are added to the first and last nodes of the definition
+            $definitionNodes[0]->setClasses($definitionNodes[0]->getClasses() + ['first']);
+            $definitionNodes[count($definitionNodes) - 1]->setClasses($definitionNodes[count($definitionNodes) - 1]->getClasses() + ['last']);
+        }
+
+        return $definitionNodes;
     }
 }

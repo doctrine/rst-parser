@@ -314,7 +314,7 @@ class ParserTest extends TestCase
         self::assertTrue(isset($options['maxdepth']));
         self::assertTrue(isset($options['titlesonly']));
         self::assertTrue(isset($options['glob']));
-        self::assertTrue($options['titlesonly']);
+        self::assertEquals('', $options['titlesonly']);
         self::assertSame('123', $options['maxdepth']);
     }
 
