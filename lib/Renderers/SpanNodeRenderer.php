@@ -156,34 +156,15 @@ abstract class SpanNodeRenderer implements NodeRenderer, SpanRenderer
 
     private function renderTextNode(SpanToken $spanToken, string $span): string
     {
-        if ($this->environment->isReference($spanToken->get('section'))) {
-            return $this->renderReference($spanToken, $span);
-        }
-
         $textRole = $this->environment->getTextRole($spanToken->get('section'));
 
         if ($textRole === null) {
             return $spanToken->get('text');
         }
 
-        $resolvedTextRole = $textRole->process($this->environment, $spanToken);
+        $resolvedTextRole = $textRole->render($this->environment, $spanToken);
 
         return str_replace($spanToken->getId(), $resolvedTextRole, $span);
-    }
-
-    private function renderReference(SpanToken $spanToken, string $span): string
-    {
-        $reference = $this->environment->resolve($spanToken->get('section'), $spanToken->get('url'));
-
-        if ($reference === null) {
-            $this->environment->addInvalidLink(new InvalidLink($spanToken->get('url')));
-
-            return str_replace($spanToken->getId(), $spanToken->get('linktext'), $span);
-        }
-
-        $link = $this->reference($reference, $spanToken->getTokenData());
-
-        return str_replace($spanToken->getId(), $link, $span);
     }
 
     private function renderLink(SpanToken $spanToken, string $span): string

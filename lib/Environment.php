@@ -154,23 +154,6 @@ class Environment
         return $this->textRoles[$section];
     }
 
-    public function resolve(string $section, string $data): ?ResolvedReference
-    {
-        if (! isset($this->textRoles[$section])) {
-            $this->addMissingTextRoleSectionError($section, 'reference');
-
-            return null;
-        }
-
-        $reference = $this->textRoles[$section];
-
-        if (! $reference instanceof ReferenceRole) {
-            throw new RuntimeException('No valid Reference role found. ');
-        }
-
-        return $reference->resolve($this, $data);
-    }
-
     public function addInvalidLink(InvalidLink $invalidLink): void
     {
         $this->invalidLinks[] = $invalidLink;
@@ -180,22 +163,6 @@ class Environment
     public function getInvalidLinks(): array
     {
         return $this->invalidLinks;
-    }
-
-    /** @return string[]|null */
-    public function found(string $section, string $data): ?array
-    {
-        if (($this->textRoles[$section] ?? null) instanceof ReferenceRole) {
-            $reference = $this->textRoles[$section];
-
-            $reference->found($this, $data);
-
-            return null;
-        }
-
-        $this->addMissingTextRoleSectionError($section, 'reference');
-
-        return null;
     }
 
     /** @param mixed $value */

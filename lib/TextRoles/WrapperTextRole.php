@@ -10,7 +10,7 @@ use Doctrine\RST\Span\SpanToken;
 use function htmlspecialchars;
 use function sprintf;
 
-class WrapperTextRole extends TextRole
+class WrapperTextRole extends BaseTextRole
 {
     private string $name;
     private string $wrap;
@@ -31,7 +31,7 @@ class WrapperTextRole extends TextRole
         return $this->name;
     }
 
-    public function process(Environment $environment, SpanToken $spanToken): string
+    public function render(Environment $environment, SpanToken $spanToken): string
     {
         return sprintf($this->wrap, htmlspecialchars($spanToken->get('text')));
     }

@@ -51,8 +51,17 @@ final class Doc extends ReferenceRole
         return $resolvedReference;
     }
 
-    public function found(Environment $environment, string $data): void
+    /**
+     * Processes the text content of the role, that is the part between the backticks.
+     * Returns an array containing the data available to the rendering.
+     *
+     * @return array<string, string>
+     */
+    public function process(Environment $environment, string $text): array
     {
-        $environment->addDependency($data, $this->dependenciesMustBeResolved);
+        $data = parent::process($environment, $text);
+        $environment->addDependency($data['url'], $this->dependenciesMustBeResolved);
+
+        return $data;
     }
 }
