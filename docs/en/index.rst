@@ -16,6 +16,17 @@ You can install the Doctrine RST Parser with composer:
 Basic Usage
 -----------
 
+Then you can run the following script on the console:
+
+.. code-block:: console
+
+    $ vendor/bin/doctrine-rstparser render path/to/rst-source path/to/output
+
+With ``vendor/bin/doctrine-rstparser render -h`` you can see all possible options.
+
+Advanced Usage
+--------------
+
 Here is an example script that demonstrates how to use the RST Parser. Create a file named ``rst-test.php``
 in the root of your project and paste the following code:
 
