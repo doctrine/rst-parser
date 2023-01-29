@@ -16,7 +16,7 @@ abstract class LinkRenderer extends Renderer
     /** @param mixed[] $value */
     public function renderReference(ResolvedReference $reference, array $value): string
     {
-        $text = $value['text'] ?? ($reference->getTitle() ?? '');
+        $text = $value['linktext'] ?? ($reference->getTitle() ?? '');
         $text = trim($text);
         // reference to another document
         if ($reference->getUrl() !== null) {

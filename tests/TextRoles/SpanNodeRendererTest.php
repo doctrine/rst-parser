@@ -34,7 +34,7 @@ class SpanNodeRendererTest extends TestCase
     public function testExampleRoleWrapsContent(): void
     {
         $expected = '<samp>Example</samp>';
-        $this->spanNode->method('getTokens')->willReturn([new SpanToken(SpanToken::TYPE_TEXT_ROLE, 'id123', ['url' => 'Example'])]);
+        $this->spanNode->method('getTokens')->willReturn([new SpanToken(SpanToken::TYPE_TEXT_ROLE, 'id123', ['text' => 'Example'])]);
         $this->spanNode->method('getValue')->willReturn('id123');
         $this->environment->method('getTextRole')->willReturn(new ExampleRole());
         self::assertEquals($expected, $this->spanNodeRenderer->render());
@@ -43,7 +43,7 @@ class SpanNodeRendererTest extends TestCase
     public function testUnkownRole(): void
     {
         $expected = 'Example';
-        $this->spanNode->method('getTokens')->willReturn([new SpanToken(SpanToken::TYPE_TEXT_ROLE, 'id123', ['url' => 'Example'])]);
+        $this->spanNode->method('getTokens')->willReturn([new SpanToken(SpanToken::TYPE_TEXT_ROLE, 'id123', ['text' => 'Example'])]);
         $this->spanNode->method('getValue')->willReturn('id123');
         $this->environment->method('getTextRole')->willReturn(null);
         self::assertEquals($expected, $this->spanNodeRenderer->render());

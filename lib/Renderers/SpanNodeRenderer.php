@@ -163,10 +163,10 @@ abstract class SpanNodeRenderer implements NodeRenderer, SpanRenderer
         $textRole = $this->environment->getTextRole($spanToken->get('section'));
 
         if ($textRole === null) {
-            return $spanToken->get('url');
+            return $spanToken->get('text');
         }
 
-        $resolvedTextRole = $textRole->process($this->environment, $spanToken->get('url'));
+        $resolvedTextRole = $textRole->process($this->environment, $spanToken->get('text'));
 
         return str_replace($spanToken->getId(), $resolvedTextRole, $span);
     }
@@ -178,7 +178,7 @@ abstract class SpanNodeRenderer implements NodeRenderer, SpanRenderer
         if ($reference === null) {
             $this->environment->addInvalidLink(new InvalidLink($spanToken->get('url')));
 
-            return str_replace($spanToken->getId(), $spanToken->get('text'), $span);
+            return str_replace($spanToken->getId(), $spanToken->get('linktext'), $span);
         }
 
         $link = $this->reference($reference, $spanToken->getTokenData());
