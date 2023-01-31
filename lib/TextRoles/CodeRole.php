@@ -8,6 +8,6 @@ class CodeRole extends WrapperTextRole
 {
     public function __construct()
     {
-        parent::__construct('code', '<code>%s</code>');
+        parent::__construct('code');
     }
 }
