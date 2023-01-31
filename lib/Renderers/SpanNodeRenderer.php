@@ -114,12 +114,6 @@ abstract class SpanNodeRenderer implements NodeRenderer, SpanRenderer
     private function renderToken(SpanToken $spanToken, string $span): string
     {
         switch ($spanToken->getType()) {
-            case SpanToken::TYPE_LITERAL:
-                return $this->renderLiteral($spanToken, $span);
-
-            case SpanToken::TYPE_INTERPRETED:
-                return $this->renderInterpretedText($spanToken, $span);
-
             case SpanToken::TYPE_LINK:
                 return $this->renderLink($spanToken, $span);
         }
@@ -133,24 +127,6 @@ abstract class SpanNodeRenderer implements NodeRenderer, SpanRenderer
         $resolvedTextRole = $textRole->render($this->environment, $spanToken);
 
         return str_replace($spanToken->getId(), $resolvedTextRole, $span);
-    }
-
-    private function renderLiteral(SpanToken $spanToken, string $span): string
-    {
-        return str_replace(
-            $spanToken->getId(),
-            $this->literal($spanToken->get('text')),
-            $span
-        );
-    }
-
-    private function renderInterpretedText(SpanToken $spanToken, string $span): string
-    {
-        return str_replace(
-            $spanToken->getId(),
-            $this->interpretedText($spanToken->get('text')),
-            $span
-        );
     }
 
     private function renderLink(SpanToken $spanToken, string $span): string

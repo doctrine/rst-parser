@@ -50,7 +50,6 @@ class FormatDirectiveFactory implements DirectiveFactory
             new WrapperTextRole('mailheader'),
             new WrapperTextRole('math'),
             new WrapperTextRole('emphasis'),
-            new WrapperTextRole('literal'),
             new WrapperTextRole('strong'),
             new WrapperTextRole('subscript', null, ['sub']),
             new WrapperTextRole('superscript', null, ['sup']),

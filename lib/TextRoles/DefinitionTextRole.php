@@ -29,7 +29,7 @@ class DefinitionTextRole extends BaseTextRole
     public function __construct(string $name, ?string $templateName = null, array $aliases = [])
     {
         $this->name         = $name;
-        $this->templateName = $templateName ?? 'textroles/' . $this->name . '.html.twig';
+        $this->templateName = $templateName ?? 'textroles/' . $this->name;
         $this->setAliases($aliases);
     }
 
