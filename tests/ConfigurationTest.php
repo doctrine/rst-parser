@@ -29,9 +29,7 @@ class ConfigurationTest extends TestCase
 
         self::assertNull($callable);
 
-        $callable = static function (string $path): bool {
-            return strpos($path, 'use-base-url') !== false;
-        };
+        $callable = static fn (string $path): bool => strpos($path, 'use-base-url') !== false;
 
         $this->configuration->setBaseUrlEnabledCallable($callable);
 
@@ -42,9 +40,7 @@ class ConfigurationTest extends TestCase
     {
         self::assertFalse($this->configuration->isBaseUrlEnabled('/path'));
 
-        $callable = static function (string $path): bool {
-            return strpos($path, '/use-base-url') !== false;
-        };
+        $callable = static fn (string $path): bool => strpos($path, '/use-base-url') !== false;
 
         $this->configuration->setBaseUrl('https://www.domain.com/directory');
         $this->configuration->setBaseUrlEnabledCallable($callable);

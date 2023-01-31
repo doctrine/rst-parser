@@ -86,8 +86,6 @@ final class FieldOption
 
     public function getNodesAsString(): string
     {
-        return trim(array_reduce($this->nodes, static function (string $contents, Node $node): string {
-            return $contents . $node->render() . "\n";
-        }, ''));
+        return trim(array_reduce($this->nodes, static fn (string $contents, Node $node): string => $contents . $node->render() . "\n", ''));
     }
 }

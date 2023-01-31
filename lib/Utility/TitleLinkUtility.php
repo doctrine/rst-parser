@@ -9,6 +9,7 @@ use Doctrine\RST\References\Resolver;
 
 use function count;
 use function is_array;
+use function is_countable;
 
 final class TitleLinkUtility
 {
@@ -53,7 +54,7 @@ final class TitleLinkUtility
             ];
 
             // render children until we hit the configured maxdepth
-            if (count($children) > 0 && $level < $this->maxDepth) {
+            if ((is_countable($children) ? count($children) : 0) > 0 && $level < $this->maxDepth) {
                 $this->buildLevel($url, $children, $level + 1, $tocItem['children'], $file);
             }
 

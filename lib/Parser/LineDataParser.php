@@ -189,9 +189,7 @@ final class LineDataParser
 
                 $parts       = explode(' : ', trim($line));
                 $term        = array_shift($parts);
-                $classifiers = array_map(function (string $classifier): SpanNode {
-                    return $this->parser->createSpanNode($classifier);
-                }, array_map('trim', $parts));
+                $classifiers = array_map(fn (string $classifier): SpanNode => $this->parser->createSpanNode($classifier), array_map('trim', $parts));
 
                 $currentOffset      = 0;
                 $definitionListTerm = [

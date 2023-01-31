@@ -209,9 +209,7 @@ class ScannerTest extends TestCase
         $this->metas = $this->createMock(Metas::class);
         $this->metas->expects(self::any())
             ->method('get')
-            ->willReturnCallback(function ($filename) {
-                return $this->metaEntryMocks[$filename] ?? null;
-            });
+            ->willReturnCallback(fn ($filename) => $this->metaEntryMocks[$filename] ?? null);
 
         $this->scanner = new Scanner('rst', '/directory', $this->metas, $this->finder);
     }

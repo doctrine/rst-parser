@@ -64,16 +64,12 @@ abstract class SpanNodeRenderer implements NodeRenderer, SpanRenderer
 
     private function renderStrongEmphasis(string $span): string
     {
-        return (string) preg_replace_callback('/\*\*(.+)\*\*/mUsi', function (array $matches): string {
-            return $this->strongEmphasis($matches[1]);
-        }, $span);
+        return (string) preg_replace_callback('/\*\*(.+)\*\*/mUsi', fn (array $matches): string => $this->strongEmphasis($matches[1]), $span);
     }
 
     private function renderEmphasis(string $span): string
     {
-        return (string) preg_replace_callback('/\*(.+)\*/mUsi', function (array $matches): string {
-            return $this->emphasis($matches[1]);
-        }, $span);
+        return (string) preg_replace_callback('/\*(.+)\*/mUsi', fn (array $matches): string => $this->emphasis($matches[1]), $span);
     }
 
     private function renderNbsp(string $span): string

@@ -49,8 +49,6 @@ final class ListItem
 
     public function getContentsAsString(): string
     {
-        return trim(array_reduce($this->contents, static function (string $contents, Node $node): string {
-            return $contents . $node->render() . "\n";
-        }, ''));
+        return trim(array_reduce($this->contents, static fn (string $contents, Node $node): string => $contents . $node->render() . "\n", ''));
     }
 }
