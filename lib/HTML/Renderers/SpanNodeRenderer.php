@@ -23,7 +23,7 @@ final class SpanNodeRenderer extends BaseSpanNodeRenderer
         SpanNode $span,
         TemplateRenderer $templateRenderer
     ) {
-        parent::__construct($environment, $span, new LinkRenderer($environment));
+        parent::__construct($environment, $span);
 
         $this->templateRenderer = $templateRenderer;
     }

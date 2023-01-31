@@ -6,6 +6,7 @@ namespace Doctrine\RST\LaTeX\Renderers;
 
 use Doctrine\RST\Environment;
 use Doctrine\RST\Nodes\TocNode;
+use Doctrine\RST\References\Resolver;
 use Doctrine\RST\Renderers\NodeRenderer;
 use Doctrine\RST\Templates\TemplateRenderer;
 
@@ -30,9 +31,10 @@ final class TocNodeRenderer implements NodeRenderer
     public function render(): string
     {
         $tocItems = [];
+        $resolver = new Resolver();
 
         foreach ($this->tocNode->getFiles() as $file) {
-            $reference = $this->environment->resolve('doc', $file);
+            $reference = $resolver->resolve($this->environment, 'doc', $file);
 
             if ($reference === null) {
                 continue;

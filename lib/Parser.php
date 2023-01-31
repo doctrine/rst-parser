@@ -52,7 +52,6 @@ class Parser
 
         $this->initDirectives();
         $this->initTextRoles();
-        $this->initReferences();
     }
 
     public function getSubParser(): Parser
@@ -84,15 +83,6 @@ class Parser
     {
         foreach ($this->configuration->getTextRoles() as $textRole) {
             $this->environment->registerTextRole($textRole);
-        }
-    }
-
-    public function initReferences(): void
-    {
-        $references = $this->configuration->getReferences();
-
-        foreach ($references as $reference) {
-            $this->environment->registerReference($reference);
         }
     }
 

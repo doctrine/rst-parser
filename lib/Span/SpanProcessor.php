@@ -134,33 +134,15 @@ final class SpanProcessor
     private function replaceTextRoles(string $span): string
     {
         return (string) preg_replace_callback('/:([a-z0-9]+):`(.+)`/mUsi', function ($match): string {
-            $section = $match[1];
+            $textRoleName = $match[1];
 
-            $url    = $match[2];
-            $id     = $this->generateId();
-            $anchor = null;
+            $text = $match[2];
+            $id   = $this->generateId();
 
-            $text = null;
-            if (preg_match('/^(.+)<(.+)>$/mUsi', $url, $match) > 0) {
-                $text = $match[1];
-                $url  = $match[2];
-            }
+            $textRole =  $this->environment->getTextRole($textRoleName);
+            $data     = $textRole->process($this->environment, $text);
 
-            if (preg_match('/^(.+)#(.+)$/mUsi', $url, $match) > 0) {
-                $url    = $match[1];
-                $anchor = $match[2];
-            }
-
-            $this->addToken(SpanToken::TYPE_TEXT_ROLE, $id, [
-                'section' => $section,
-                'url' => $url,
-                'text' => $text,
-                'anchor' => $anchor,
-            ]);
-
-            if ($this->environment->isReference($section)) {
-                $this->environment->found($section, $url);
-            }
+            $this->addToken(SpanToken::TYPE_TEXT_ROLE, $id, $data);
 
             return $id;
         }, $span);

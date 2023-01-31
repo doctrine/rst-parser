@@ -8,11 +8,14 @@ use Doctrine\RST\Meta\LinkTarget;
 use Doctrine\RST\Meta\MetaEntry;
 use Doctrine\RST\Meta\Metas;
 use Doctrine\RST\NodeFactory\NodeFactory;
-use Doctrine\RST\References\Reference;
 use Doctrine\RST\References\ResolvedReference;
+use Doctrine\RST\Renderers\LinkRenderer;
+use Doctrine\RST\Renderers\LinkRendererFactory;
 use Doctrine\RST\Templates\TemplateRenderer;
+use Doctrine\RST\TextRoles\ReferenceRole;
 use Doctrine\RST\TextRoles\TextRole;
 use InvalidArgumentException;
+use RuntimeException;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 
 use function array_shift;
@@ -51,9 +54,6 @@ class Environment
 
     /** @var string|null */
     private $url = null;
-
-    /** @var Reference[] */
-    private $references = [];
 
     /** @var array<string, TextRole> */
     private $textRoles = [];
@@ -130,11 +130,6 @@ class Environment
         return $this->configuration->getTemplateRenderer();
     }
 
-    public function registerReference(Reference $reference): void
-    {
-        $this->references[$reference->getName()] = $reference;
-    }
-
     public function registerTextRole(TextRole $textRole): void
     {
         $this->textRoles[$textRole->getName()] = $textRole;
@@ -145,7 +140,7 @@ class Environment
 
     public function isReference(string $section): bool
     {
-        return isset($this->references[$section]);
+        return ($this->textRoles[$section] ?? null) instanceof ReferenceRole;
     }
 
     public function getTextRole(string $section): ?TextRole
@@ -159,42 +154,6 @@ class Environment
         return $this->textRoles[$section];
     }
 
-    public function resolve(string $section, string $data): ?ResolvedReference
-    {
-        if (! isset($this->references[$section])) {
-            $this->addMissingTextRoleSectionError($section, 'reference');
-
-            return null;
-        }
-
-        $reference = $this->references[$section];
-
-        $resolvedReference = $reference->resolve($this, $data);
-
-        if ($resolvedReference === null) {
-            $this->addInvalidLink(new InvalidLink($data));
-
-            if ($this->getMetaEntry() !== null) {
-                $this->getMetaEntry()->removeDependency(
-                    // use the original name
-                    $this->originalDependencyNames[$data] ?? $data
-                );
-            }
-
-            return null;
-        }
-
-        if (isset($this->unresolvedDependencies[$data]) && $this->getMetaEntry() !== null) {
-            $this->getMetaEntry()->resolveDependency(
-                // use the unique, unresolved name
-                $this->unresolvedDependencies[$data],
-                $resolvedReference->getFile()
-            );
-        }
-
-        return $resolvedReference;
-    }
-
     public function addInvalidLink(InvalidLink $invalidLink): void
     {
         $this->invalidLinks[] = $invalidLink;
@@ -204,22 +163,6 @@ class Environment
     public function getInvalidLinks(): array
     {
         return $this->invalidLinks;
-    }
-
-    /** @return string[]|null */
-    public function found(string $section, string $data): ?array
-    {
-        if (isset($this->references[$section])) {
-            $reference = $this->references[$section];
-
-            $reference->found($this, $data);
-
-            return null;
-        }
-
-        $this->addMissingTextRoleSectionError($section, 'reference');
-
-        return null;
     }
 
     /** @param mixed $value */
@@ -478,6 +421,43 @@ class Environment
         $this->errorManager->error(
             sprintf('Unknown ' . $type . ' section "%s"', $section),
             $this->getCurrentFileName()
+        );
+    }
+
+    public function getLinkRenderer(): LinkRenderer
+    {
+        $factories = $this->getConfiguration()->getFormat()->getRendererFactories();
+        if (! isset($factories[LinkRenderer::class]) || ! $factories[LinkRenderer::class] instanceof LinkRendererFactory) {
+            throw new RuntimeException('No LinkRendererFactory found for ' . LinkRenderer::class);
+        }
+
+        return $factories[LinkRenderer::class]->create($this);
+    }
+
+    public function addInvalidReference(string $data): void
+    {
+        $this->addInvalidLink(new InvalidLink($data));
+
+        if ($this->getMetaEntry() === null) {
+            return;
+        }
+
+        $this->getMetaEntry()->removeDependency(
+        // use the original name
+            $this->originalDependencyNames[$data] ?? $data
+        );
+    }
+
+    public function resolveDependency(string $data, ResolvedReference $resolvedReference): void
+    {
+        if (! isset($this->unresolvedDependencies[$data]) || $this->getMetaEntry() === null) {
+            return;
+        }
+
+        $this->getMetaEntry()->resolveDependency(
+            // use the unique, unresolved name
+            $this->unresolvedDependencies[$data],
+            $resolvedReference->getFile()
         );
     }
 }

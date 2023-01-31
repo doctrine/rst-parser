@@ -23,19 +23,15 @@ abstract class SpanNodeRenderer implements NodeRenderer, SpanRenderer
     /** @var Environment */
     protected $environment;
 
-    protected LinkRenderer $linkRenderer;
-
     /** @var SpanNode */
     protected $span;
 
     public function __construct(
         Environment $environment,
-        SpanNode $span,
-        LinkRenderer $linkRenderer
+        SpanNode $span
     ) {
-        $this->environment  = $environment;
-        $this->span         = $span;
-        $this->linkRenderer = $linkRenderer;
+        $this->environment = $environment;
+        $this->span        = $span;
     }
 
     public function render(): string
@@ -160,34 +156,15 @@ abstract class SpanNodeRenderer implements NodeRenderer, SpanRenderer
 
     private function renderTextNode(SpanToken $spanToken, string $span): string
     {
-        if ($this->environment->isReference($spanToken->get('section'))) {
-            return $this->renderReference($spanToken, $span);
-        }
-
         $textRole = $this->environment->getTextRole($spanToken->get('section'));
 
         if ($textRole === null) {
-            return $spanToken->get('url');
+            return $spanToken->get('text');
         }
 
-        $resolvedTextRole = $textRole->process($spanToken->get('url'));
+        $resolvedTextRole = $textRole->render($this->environment, $spanToken);
 
         return str_replace($spanToken->getId(), $resolvedTextRole, $span);
-    }
-
-    private function renderReference(SpanToken $spanToken, string $span): string
-    {
-        $reference = $this->environment->resolve($spanToken->get('section'), $spanToken->get('url'));
-
-        if ($reference === null) {
-            $this->environment->addInvalidLink(new InvalidLink($spanToken->get('url')));
-
-            return str_replace($spanToken->getId(), $spanToken->get('text'), $span);
-        }
-
-        $link = $this->reference($reference, $spanToken->getTokenData());
-
-        return str_replace($spanToken->getId(), $link, $span);
     }
 
     private function renderLink(SpanToken $spanToken, string $span): string
@@ -228,12 +205,12 @@ abstract class SpanNodeRenderer implements NodeRenderer, SpanRenderer
     /** @param mixed[] $attributes */
     public function link(?string $url, string $title, array $attributes = []): string
     {
-        return $this->linkRenderer->renderUrl($url, $title, $attributes);
+        return $this->environment->getLinkRenderer()->renderUrl($url, $title, $attributes);
     }
 
     /** @param mixed[] $value */
     public function reference(ResolvedReference $reference, array $value): string
     {
-        return $this->linkRenderer->renderReference($reference, $value);
+        return $this->environment->getLinkRenderer()->renderReference($reference, $value);
     }
 }

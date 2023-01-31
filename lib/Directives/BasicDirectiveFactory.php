@@ -4,16 +4,20 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\Directives;
 
-use Doctrine\RST\References\Doc;
-use Doctrine\RST\References\Reference;
 use Doctrine\RST\TextRoles\CodeRole;
+use Doctrine\RST\TextRoles\Doc;
+use Doctrine\RST\TextRoles\TextRole;
 
 class BasicDirectiveFactory implements DirectiveFactory
 {
-    /** @return Directive[] */
-    public function getDirectives(): array
+    /** @var Directive[]  */
+    private array $directives;
+    /** @var TextRole[] */
+    private array $textRoles;
+
+    public function __construct()
     {
-        return [
+        $this->directives =  [
             new Admonition('admonition', ''),
             new Admonition('attention', 'Attention'),
             new Admonition('caution', 'Caution'),
@@ -40,22 +44,22 @@ class BasicDirectiveFactory implements DirectiveFactory
             new Replace(),
             new Toctree(),
         ];
-    }
-
-    /** @return CodeRole[] */
-    public function getTextRoles(): array
-    {
-        return [
+        $this->textRoles  = [
             new CodeRole(),
-        ];
-    }
-
-    /** @return Reference[] */
-    public function getReferences(): array
-    {
-        return [
             new Doc(),
             new Doc('ref', true),
         ];
+    }
+
+    /** @return Directive[] */
+    public function getDirectives(): array
+    {
+        return $this->directives;
+    }
+
+    /** @return TextRole[] */
+    public function getTextRoles(): array
+    {
+        return $this->textRoles;
     }
 }

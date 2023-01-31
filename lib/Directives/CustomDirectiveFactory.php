@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\Directives;
 
-use Doctrine\RST\References\Reference;
 use Doctrine\RST\TextRoles\TextRole;
 
 class CustomDirectiveFactory implements DirectiveFactory
@@ -13,19 +12,15 @@ class CustomDirectiveFactory implements DirectiveFactory
     private array $directives;
     /** @var TextRole[] */
     private array $textRoles;
-    /** @var Reference[]  */
-    private array $references;
 
     /**
      * @param Directive[] $directives
      * @param TextRole[]  $textRoles
-     * @param Reference[] $references
      */
-    public function __construct(array $directives = [], array $textRoles = [], array $references = [])
+    public function __construct(array $directives = [], array $textRoles = [])
     {
         $this->directives = $directives;
         $this->textRoles  = $textRoles;
-        $this->references = $references;
     }
 
     /** @return Directive[] */
@@ -38,11 +33,5 @@ class CustomDirectiveFactory implements DirectiveFactory
     public function getTextRoles(): array
     {
         return $this->textRoles;
-    }
-
-    /** @return Reference[] */
-    public function getReferences(): array
-    {
-        return $this->references;
     }
 }

@@ -13,6 +13,7 @@ final class Resolver
     /** @param string[] $attributes */
     public function resolve(
         Environment $environment,
+        string $type,
         string $data,
         array $attributes = []
     ): ?ResolvedReference {

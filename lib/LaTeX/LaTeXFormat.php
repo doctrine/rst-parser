@@ -12,6 +12,7 @@ use Doctrine\RST\Nodes;
 use Doctrine\RST\Renderers;
 use Doctrine\RST\Renderers\CallableNodeRendererFactory;
 use Doctrine\RST\Renderers\NodeRendererFactory;
+use Doctrine\RST\Renderers\RendererFactory;
 use Doctrine\RST\Templates\TemplateRenderer;
 
 final class LaTeXFormat implements Format
@@ -19,12 +20,18 @@ final class LaTeXFormat implements Format
     /** @var TemplateRenderer */
     private $templateRenderer;
 
+    /** @var Renderers\LinkRendererFactory[]  */
+    private array $rendererFactories;
+
     private DirectiveFactory $directiveFactory;
 
     public function __construct(TemplateRenderer $templateRenderer)
     {
-        $this->templateRenderer = $templateRenderer;
-        $this->directiveFactory = new FormatDirectiveFactory();
+        $this->templateRenderer  = $templateRenderer;
+        $this->directiveFactory  = new FormatDirectiveFactory();
+        $this->rendererFactories = [
+            Renderers\LinkRenderer::class => new LaTeX\Renderers\LinkRendererFactory(),
+        ];
     }
 
     public function getFileExtension(): string
@@ -168,5 +175,11 @@ final class LaTeXFormat implements Format
                 }
             ),
         ];
+    }
+
+    /** @return RendererFactory[] */
+    public function getRendererFactories(): array
+    {
+        return $this->rendererFactories;
     }
 }

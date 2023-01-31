@@ -6,6 +6,7 @@ namespace Doctrine\RST\HTML\Renderers;
 
 use Doctrine\RST\Environment;
 use Doctrine\RST\Nodes\TocNode;
+use Doctrine\RST\References\Resolver;
 use Doctrine\RST\Renderers\NodeRenderer;
 use Doctrine\RST\Templates\TemplateRenderer;
 use Doctrine\RST\Utility\TitleLinkUtility;
@@ -30,7 +31,8 @@ final class TocNodeRenderer implements NodeRenderer
 
     public function render(): string
     {
-        $options = $this->tocNode->getOptions();
+        $options  = $this->tocNode->getOptions();
+        $resolver = new Resolver();
 
         if (isset($options['hidden'])) {
             return '';
@@ -41,7 +43,7 @@ final class TocNodeRenderer implements NodeRenderer
         $titleLinkUtility = new TitleLinkUtility($this->environment, $this->tocNode->isTitlesOnly() ? 1 : $this->tocNode->getDepth());
 
         foreach ($this->tocNode->getFiles() as $file) {
-            $reference = $this->environment->resolve('doc', $file);
+            $reference = $resolver->resolve($this->environment, 'doc', $file);
 
             if ($reference === null) {
                 continue;

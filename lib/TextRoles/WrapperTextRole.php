@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\TextRoles;
 
+use Doctrine\RST\Environment;
+use Doctrine\RST\Span\SpanToken;
+
 use function htmlspecialchars;
 use function sprintf;
 
-class WrapperTextRole extends TextRole
+class WrapperTextRole extends BaseTextRole
 {
     private string $name;
     private string $wrap;
@@ -28,8 +31,8 @@ class WrapperTextRole extends TextRole
         return $this->name;
     }
 
-    public function process(string $text): string
+    public function render(Environment $environment, SpanToken $spanToken): string
     {
-        return sprintf($this->wrap, htmlspecialchars($text));
+        return sprintf($this->wrap, htmlspecialchars($spanToken->get('text')));
     }
 }

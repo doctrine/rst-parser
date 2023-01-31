@@ -60,6 +60,19 @@ class ResolverTest extends TestCase
         $this->resolver = new Resolver();
     }
 
+    public function testResolveForMissingSection(): void
+    {
+        $configuration = $this->createMock(Configuration::class);
+        $eventManager  = $this->createMock(EventManager::class);
+        $configuration->expects(self::atLeastOnce())->method('getEventManager')
+            ->willReturn($eventManager);
+        $eventManager->expects(self::atLeastOnce())->method('dispatchEvent')
+            ->with(MissingReferenceResolverEvent::MISSING_REFERENCE_RESOLVER);
+        $environment = new Environment($configuration);
+
+        self::assertNull($this->resolver->resolve($environment, 'doc', '/path/to/unknown/doc'));
+    }
+
     public function testResolveFileReference(): void
     {
         $this->environment->expects(self::once())
@@ -76,7 +89,7 @@ class ResolverTest extends TestCase
 
         self::assertEquals(
             new ResolvedReference('file', 'title', '/url', [], ['attr' => 'value']),
-            $this->resolver->resolve($this->environment, 'url', ['attr' => 'value'])
+            $this->resolver->resolve($this->environment, 'url', 'doc', ['attr' => 'value'])
         );
     }
 
@@ -96,7 +109,7 @@ class ResolverTest extends TestCase
 
         self::assertEquals(
             new ResolvedReference('', 'title', '/url#anchor', [], ['attr' => 'value']),
-            $this->resolver->resolve($this->environment, 'anchor', ['attr' => 'value'])
+            $this->resolver->resolve($this->environment, 'doc', 'anchor', ['attr' => 'value'])
         );
     }
 
@@ -110,7 +123,7 @@ class ResolverTest extends TestCase
             ->method('findLinkTargetMetaEntry')
             ->willReturn(null);
 
-        self::assertNull($this->resolver->resolve($this->environment, 'invalid-reference'));
+        self::assertNull($this->resolver->resolve($this->environment, 'ref', 'invalid-reference'));
     }
 
     public function testUnResolvedReference2(): void
@@ -127,7 +140,7 @@ class ResolverTest extends TestCase
             ->method('findLinkTargetMetaEntry')
             ->willReturn(null);
 
-        self::assertNull($this->resolver->resolve($this->environment, 'invalid-reference'));
+        self::assertNull($this->resolver->resolve($this->environment, 'ref', 'invalid-reference'));
     }
 
     public function testMissingReferenceResolverEventDispatched(): void
@@ -145,7 +158,7 @@ class ResolverTest extends TestCase
             ->willReturn($eventManager);
         self::assertEquals(
             new ResolvedReference(null, 'example', 'https://example.com/', [], []),
-            $this->resolver->resolve($this->environment, 'unknown-reference')
+            $this->resolver->resolve($this->environment, 'ref', 'unknown-reference')
         );
     }
 }

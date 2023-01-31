@@ -19,7 +19,6 @@ use Doctrine\RST\NodeFactory\DefaultNodeFactory;
 use Doctrine\RST\NodeFactory\NodeFactory;
 use Doctrine\RST\NodeFactory\NodeInstantiator;
 use Doctrine\RST\Nodes\NodeTypes;
-use Doctrine\RST\References\Reference;
 use Doctrine\RST\Renderers\NodeRendererFactory;
 use Doctrine\RST\Templates\TemplateEngineAdapter;
 use Doctrine\RST\Templates\TemplateRenderer;
@@ -329,17 +328,6 @@ class Configuration
         }
 
         return array_merge($textRoles, $this->getFormat()->getDirectiveFactory()->getTextRoles());
-    }
-
-    /** @return Reference[] */
-    public function getReferences(): array
-    {
-        $reference = [];
-        foreach ($this->directiveFactories as $factory) {
-            $reference = array_merge($reference, $factory->getReferences());
-        }
-
-        return array_merge($reference, $this->getFormat()->getDirectiveFactory()->getReferences());
     }
 
     public function getNodeFactory(Environment $environment): NodeFactory

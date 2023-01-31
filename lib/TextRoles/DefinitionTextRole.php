@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\TextRoles;
 
+use Doctrine\RST\Environment;
+use Doctrine\RST\Span\SpanToken;
+
+use function array_merge;
 use function preg_match;
 use function sprintf;
 use function trim;
@@ -17,7 +21,7 @@ use function trim;
  * :abbreviation:`LIFO (last-in, first-out)`
  * ```
  */
-class DefinitionTextRole extends TextRole
+class DefinitionTextRole extends BaseTextRole
 {
     private string $name;
     private string $wrap;
@@ -35,14 +39,34 @@ class DefinitionTextRole extends TextRole
         return $this->name;
     }
 
-    public function process(string $text): string
+    /**
+     * Processes the text content of a definition role. The term and the definition are set.
+     *
+     * For example for `LIFO (last-in, first-out)` "LIFO" would be the term and "last-in, first-out"
+     * the definition.
+     *
+     * @return array<string, string>
+     */
+    public function process(Environment $environment, string $text): array
     {
+        $data       = parent::process($environment, $text);
+        $term       = '';
         $definition = '';
         if (preg_match('/(.+)\(([^\)]+)\)$/', $text, $matches) !== 0) {
-            $text       =  trim($matches[1]);
+            $term       =  trim($matches[1]);
             $definition = trim($matches[2]);
         }
 
-        return sprintf($this->wrap, $text, $definition);
+        $data = array_merge($data, [
+            'term' => $term,
+            'definition' => $definition,
+        ]);
+
+        return $data;
+    }
+
+    public function render(Environment $environment, SpanToken $spanToken): string
+    {
+        return sprintf($this->wrap, $spanToken->get('term'), $spanToken->get('definition'));
     }
 }

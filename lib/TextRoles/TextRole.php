@@ -4,36 +4,44 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\TextRoles;
 
+use Doctrine\RST\Environment;
+use Doctrine\RST\Span\SpanToken;
+
 /**
- * A text role is a string that is styled in a certain way
+ * A role or "custom interpreted text role" is an inline piece of explicit markup. It signifies
+ * that the enclosed text should be interpreted in a specific way.
  *
- * :php:`helloWorld()`
+ * The general syntax is :rolename:`content`. See also https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#roles
  *
- * Will be rendered as
- *
- * <code class="php">helloWorld()</code>
+ * Most text roles extend BaseTextRole. References that are rendered into local links should extend ReferenceRole.
  */
-abstract class TextRole
+interface TextRole
 {
-    /** @var String[] */
-    protected array $aliases = [];
-
-    /** @return String[] */
-    public function getAliases(): array
-    {
-        return $this->aliases;
-    }
-
-    /** @param String[] $aliases */
-    public function setAliases(array $aliases): void
-    {
-        $this->aliases = $aliases;
-    }
+    /**
+     * The name of the text-role, i.e the :something:
+     */
+    public function getName(): string;
 
     /**
-     * The name of the reference, i.e the :something:
+     * Some text roles have a short and a long name. The alternative names can be registered as alias.
+     * For example ``:bold:`bold text``` and ``:b:`bold text``` can have the same effect.
+     *
+     * @return String[]
      */
-    abstract public function getName(): string;
+    public function getAliases(): array;
 
-    abstract public function process(string $text): string;
+    /**
+     * Processes the text content of the role, that is the part between the backticks.
+     * Returns an array containing the data available to the rendering.
+     *
+     * @return array<string, string>
+     */
+    public function process(Environment $environment, string $text): array;
+
+    /**
+     * Renders the text role.
+     *
+     * If you want to support several formats (HTML and LaTEX) rendering needs to take care of this
+     */
+    public function render(Environment $environment, SpanToken $spanToken): string;
 }
