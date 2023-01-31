@@ -8,8 +8,7 @@ use Doctrine\RST\Parser\DefinitionList;
 
 final class DefinitionListNode extends Node
 {
-    /** @var DefinitionList */
-    private $definitionList;
+    private DefinitionList $definitionList;
 
     public function __construct(DefinitionList $definitionList)
     {

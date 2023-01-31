@@ -17,8 +17,7 @@ use function strpos;
 
 final class ToctreeBuilder
 {
-    /** @var GlobSearcher */
-    private $globSearcher;
+    private GlobSearcher $globSearcher;
 
     public function __construct(GlobSearcher $globSearcher)
     {

@@ -13,11 +13,9 @@ use function sprintf;
 
 final class TableNodeRenderer implements NodeRenderer
 {
-    /** @var TableNode */
-    private $tableNode;
+    private TableNode $tableNode;
 
-    /** @var TemplateRenderer */
-    private $templateRenderer;
+    private TemplateRenderer $templateRenderer;
 
     public function __construct(TableNode $tableNode, TemplateRenderer $templateRenderer)
     {

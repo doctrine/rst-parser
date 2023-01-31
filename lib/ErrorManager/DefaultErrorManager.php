@@ -14,11 +14,10 @@ use function sprintf;
 
 final class DefaultErrorManager implements ErrorManager
 {
-    /** @var Configuration */
-    private $configuration;
+    private Configuration $configuration;
 
     /** @var list<Error> */
-    private $errors = [];
+    private array $errors = [];
 
     public function __construct(Configuration $configuration)
     {

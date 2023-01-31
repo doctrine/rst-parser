@@ -15,13 +15,13 @@ use function trim;
 final class ListItem
 {
     /** @var string the list marker used for this item */
-    private $prefix;
+    private string $prefix;
 
     /** @var bool whether the list marker represents an enumerated list */
-    private $ordered;
+    private bool $ordered;
 
     /** @var Node[] */
-    private $contents;
+    private array $contents;
 
     /** @param Node[] $contents */
     public function __construct(string $prefix, bool $ordered, array $contents)

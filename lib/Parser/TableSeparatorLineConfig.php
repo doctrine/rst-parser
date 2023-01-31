@@ -12,20 +12,16 @@ use function sprintf;
 
 final class TableSeparatorLineConfig
 {
-    /** @var bool */
-    private $isHeader;
+    private bool $isHeader;
 
-    /** @var string */
-    private $tableType;
+    private string $tableType;
 
     /** @var int[][] */
-    private $partRanges;
+    private array $partRanges;
 
-    /** @var string */
-    private $lineCharacter;
+    private string $lineCharacter;
 
-    /** @var string */
-    private $rawContent;
+    private string $rawContent;
 
     /** @param int[][] $partRanges */
     public function __construct(bool $isHeader, string $tableType, array $partRanges, string $lineCharacter, string $rawContent)

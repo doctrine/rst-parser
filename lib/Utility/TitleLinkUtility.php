@@ -13,10 +13,8 @@ use function is_countable;
 
 final class TitleLinkUtility
 {
-    /** @var Environment */
-    private $environment;
-    /** @var int */
-    private $maxDepth;
+    private Environment $environment;
+    private int $maxDepth;
 
     public function __construct(Environment $environment, int $maxDepth)
     {

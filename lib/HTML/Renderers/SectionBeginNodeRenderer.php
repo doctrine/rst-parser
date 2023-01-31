@@ -10,11 +10,9 @@ use Doctrine\RST\Templates\TemplateRenderer;
 
 final class SectionBeginNodeRenderer implements NodeRenderer
 {
-    /** @var SectionBeginNode */
-    private $sectionBeginNode;
+    private SectionBeginNode $sectionBeginNode;
 
-    /** @var TemplateRenderer */
-    private $templateRenderer;
+    private TemplateRenderer $templateRenderer;
 
     public function __construct(SectionBeginNode $sectionBeginNode, TemplateRenderer $templateRenderer)
     {

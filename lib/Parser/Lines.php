@@ -10,10 +10,9 @@ use Iterator;
 final class Lines implements Iterator
 {
     /** @var string[] */
-    private $lines = [];
+    private array $lines = [];
 
-    /** @var int */
-    private $position = 0;
+    private int $position = 0;
 
     /** @param string[] $lines */
     public function __construct(array $lines)

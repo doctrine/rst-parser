@@ -46,11 +46,10 @@ use function sprintf;
 
 final class DefaultNodeFactory implements NodeFactory
 {
-    /** @var EventManager */
-    private $eventManager;
+    private EventManager $eventManager;
 
     /** @var NodeInstantiator[] */
-    private $nodeInstantiators = [];
+    private array $nodeInstantiators = [];
 
     public function __construct(EventManager $eventManager, NodeInstantiator ...$nodeInstantiators)
     {

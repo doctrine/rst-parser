@@ -22,20 +22,15 @@ final class ParseQueueProcessor
 {
     private Configuration $configuration;
 
-    /** @var Metas */
-    private $metas;
+    private Metas $metas;
 
-    /** @var Documents */
-    private $documents;
+    private Documents $documents;
 
-    /** @var string */
-    private $directory;
+    private string $directory;
 
-    /** @var string */
-    private $targetDirectory;
+    private string $targetDirectory;
 
-    /** @var string */
-    private $fileExtension;
+    private string $fileExtension;
 
     public function __construct(
         Configuration $configuration,

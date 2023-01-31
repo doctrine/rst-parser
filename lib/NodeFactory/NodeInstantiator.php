@@ -18,19 +18,14 @@ use function sprintf;
 
 class NodeInstantiator
 {
-    /** @var string */
-    private $type;
+    private string $type;
 
-    /** @var string */
-    private $className;
+    private string $className;
 
-    /** @var NodeRendererFactory|null */
-    private $nodeRendererFactory;
+    private ?NodeRendererFactory $nodeRendererFactory = null;
 
-    /** @var EventManager|null */
-    private $eventManager;
-    /** @var Environment */
-    private $environment;
+    private ?EventManager $eventManager = null;
+    private Environment $environment;
 
     public function __construct(
         string $type,

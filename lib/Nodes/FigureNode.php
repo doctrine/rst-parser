@@ -6,11 +6,9 @@ namespace Doctrine\RST\Nodes;
 
 final class FigureNode extends Node
 {
-    /** @var ImageNode */
-    private $image;
+    private ImageNode $image;
 
-    /** @var Node|null */
-    private $document;
+    private ?Node $document = null;
 
     public function __construct(ImageNode $image, ?Node $document = null)
     {

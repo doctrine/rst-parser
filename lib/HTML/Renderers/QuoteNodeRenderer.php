@@ -10,11 +10,9 @@ use Doctrine\RST\Templates\TemplateRenderer;
 
 final class QuoteNodeRenderer implements NodeRenderer
 {
-    /** @var QuoteNode */
-    private $quoteNode;
+    private QuoteNode $quoteNode;
 
-    /** @var TemplateRenderer */
-    private $templateRenderer;
+    private TemplateRenderer $templateRenderer;
 
     public function __construct(QuoteNode $quoteNode, TemplateRenderer $templateRenderer)
     {

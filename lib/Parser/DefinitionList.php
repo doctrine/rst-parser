@@ -7,7 +7,7 @@ namespace Doctrine\RST\Parser;
 final class DefinitionList
 {
     /** @var DefinitionListTerm[] */
-    private $terms = [];
+    private array $terms = [];
 
     /** @param DefinitionListTerm[] $terms */
     public function __construct(array $terms)

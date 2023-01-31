@@ -6,8 +6,7 @@ namespace Doctrine\RST\Nodes;
 
 class SeparatorNode extends Node
 {
-    /** @var int */
-    private $level;
+    private int $level;
 
     public function __construct(int $level)
     {

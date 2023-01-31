@@ -12,20 +12,17 @@ use function sprintf;
 
 final class ResolvedReference
 {
-    /** @var ?string */
-    private $file;
+    private ?string $file = null;
 
-    /** @var string|null */
-    private $title;
+    private ?string $title = null;
 
-    /** @var string|null */
-    private $url;
+    private ?string $url = null;
 
     /** @var string[][]|string[][][] */
-    private $titles;
+    private array $titles;
 
     /** @var string[] */
-    private $attributes;
+    private array $attributes;
 
     /**
      * @param string[][]|string[][][] $titles

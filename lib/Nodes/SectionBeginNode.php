@@ -6,8 +6,7 @@ namespace Doctrine\RST\Nodes;
 
 final class SectionBeginNode extends Node
 {
-    /** @var TitleNode */
-    private $titleNode;
+    private TitleNode $titleNode;
 
     public function __construct(TitleNode $titleNode)
     {

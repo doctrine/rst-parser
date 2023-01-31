@@ -38,49 +38,38 @@ class Configuration
     public const OUTPUT_FORMAT_CONSOLE = 'console';
     public const OUTPUT_FORMAT_GITHUB  = 'github';
 
-    /** @var string */
-    private $cacheDir;
+    private string $cacheDir;
 
     /** @var string[] */
-    private $customTemplateDirs = [];
+    private array $customTemplateDirs = [];
 
-    /** @var string */
-    private $theme = self::THEME_DEFAULT;
+    private string $theme = self::THEME_DEFAULT;
 
     private string $indexName = 'index';
 
-    /** @var string */
-    private $baseUrl = '';
+    private string $baseUrl = '';
 
     /** @var callable|null */
     private $baseUrlEnabledCallable;
 
-    /** @var bool */
-    private $abortOnError = true;
+    private bool $abortOnError = true;
 
-    /** @var bool */
-    private $silentOnError = false;
+    private bool $silentOnError = false;
 
-    /** @var bool */
-    private $warningsAsError = false;
+    private bool $warningsAsError = false;
 
     /** @psalm-var self::OUTPUT_FORMAT_* */
-    private $outputFormat = self::OUTPUT_FORMAT_CONSOLE;
+    private string $outputFormat = self::OUTPUT_FORMAT_CONSOLE;
 
-    /** @var bool */
-    private $ignoreInvalidReferences = false;
+    private bool $ignoreInvalidReferences = false;
 
-    /** @var int */
-    private $initialHeaderLevel = 1;
+    private int $initialHeaderLevel = 1;
 
-    /** @var bool */
-    private $useCachedMetas = true;
+    private bool $useCachedMetas = true;
 
-    /** @var string */
-    private $fileExtension = Format::HTML;
+    private string $fileExtension = Format::HTML;
 
-    /** @var string */
-    private $sourceFileExtension = 'rst';
+    private string $sourceFileExtension = 'rst';
 
     /** @var TemplateRenderer */
     private $templateRenderer;
@@ -88,14 +77,11 @@ class Configuration
     /** @var Format[] */
     private $formats;
 
-    /** @var NodeFactory|null */
-    private $nodeFactory;
+    private ?NodeFactory $nodeFactory = null;
 
-    /** @var EventManager */
-    private $eventManager;
+    private EventManager $eventManager;
 
-    /** @var TemplateEngineAdapter */
-    private $templateEngineAdapter;
+    private TemplateEngineAdapter $templateEngineAdapter;
 
     private ErrorManagerFactory $errorManagerFactory;
 

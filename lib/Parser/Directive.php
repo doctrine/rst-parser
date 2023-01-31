@@ -8,17 +8,14 @@ use function strtolower;
 
 final class Directive
 {
-    /** @var string */
-    private $variable;
+    private string $variable;
 
-    /** @var string */
-    private $name;
+    private string $name;
 
-    /** @var string */
-    private $data;
+    private string $data;
 
     /** @var mixed[] */
-    private $options = [];
+    private array $options = [];
 
     /** @param mixed[] $options */
     public function __construct(string $variable, string $name, string $data, array $options = [])

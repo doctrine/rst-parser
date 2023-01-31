@@ -6,11 +6,10 @@ namespace Doctrine\RST\Nodes;
 
 final class ImageNode extends Node
 {
-    /** @var string */
-    private $url;
+    private string $url;
 
     /** @var string[] */
-    private $options;
+    private array $options;
 
     /** @param string[] $options */
     public function __construct(string $url, array $options = [])

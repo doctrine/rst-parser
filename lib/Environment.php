@@ -28,50 +28,41 @@ use function trim;
 
 class Environment
 {
-    /** @var Configuration */
-    private $configuration;
+    private Configuration $configuration;
 
-    /** @var ErrorManager */
-    private $errorManager;
+    private ErrorManager $errorManager;
 
-    /** @var UrlGenerator */
-    private $urlGenerator;
+    private UrlGenerator $urlGenerator;
 
-    /** @var int */
-    private $currentTitleLevel = 0;
+    private int $currentTitleLevel = 0;
 
     /** @var string[] */
     private $titleLetters = [];
 
-    /** @var string */
-    private $currentFileName = '';
+    private string $currentFileName = '';
 
-    /** @var string */
-    private $currentDirectory = '.';
+    private string $currentDirectory = '.';
 
-    /** @var string */
-    private $targetDirectory = '.';
+    private string $targetDirectory = '.';
 
-    /** @var string|null */
-    private $url = null;
+    private ?string $url = null;
 
     /** @var array<string, TextRole> */
-    private $textRoles = [];
+    private array $textRoles = [];
 
-    /** @var Metas */
-    private $metas;
-
-    /** @var string[] */
-    private $dependencies = [];
+    private Metas $metas;
 
     /** @var string[] */
-    private $unresolvedDependencies = [];
+    private array $dependencies = [];
 
     /** @var string[] */
-    private $originalDependencyNames = [];
+    private array $unresolvedDependencies = [];
 
     /** @var string[] */
-    private $variables = [];
+    private array $originalDependencyNames = [];
+
+    /** @var string[] */
+    private array $variables = [];
 
     /** @var int[] */
     private $levels = [];
@@ -83,7 +74,7 @@ class Environment
     private $anonymous = [];
 
     /** @var InvalidLink[] */
-    private $invalidLinks = [];
+    private array $invalidLinks = [];
 
     public function __construct(Configuration $configuration, ?Metas $metas = null)
     {

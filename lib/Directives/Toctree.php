@@ -11,8 +11,7 @@ use Doctrine\RST\Toc\ToctreeBuilder;
 
 final class Toctree extends Directive
 {
-    /** @var ToctreeBuilder */
-    private $toctreeBuilder;
+    private ToctreeBuilder $toctreeBuilder;
 
     public function __construct()
     {

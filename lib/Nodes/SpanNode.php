@@ -17,14 +17,13 @@ class SpanNode extends Node
     /** @var string */
     protected $value;
 
-    /** @var string */
-    private $text;
+    private string $text;
 
     /** @var Environment */
     protected $environment;
 
     /** @var SpanToken[] */
-    private $tokens;
+    private array $tokens;
 
     /** @param string|string[]|SpanNode $span */
     public function __construct(Parser $parser, $span)

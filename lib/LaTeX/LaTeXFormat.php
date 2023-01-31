@@ -17,8 +17,7 @@ use Doctrine\RST\Templates\TemplateRenderer;
 
 final class LaTeXFormat implements Format
 {
-    /** @var TemplateRenderer */
-    private $templateRenderer;
+    private TemplateRenderer $templateRenderer;
 
     /** @var Renderers\LinkRendererFactory[]  */
     private array $rendererFactories;

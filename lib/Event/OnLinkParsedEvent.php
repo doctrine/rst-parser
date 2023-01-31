@@ -10,14 +10,11 @@ final class OnLinkParsedEvent extends EventArgs
 {
     public const ON_LINK_PARSED = 'onLinkParsed';
 
-    /** @var string */
-    private $url;
+    private string $url;
 
-    /** @var string */
-    private $linkType;
+    private string $linkType;
 
-    /** @var string */
-    private $currentFileName;
+    private string $currentFileName;
 
     public function __construct(string $url, string $linkType, string $currentFileName)
     {

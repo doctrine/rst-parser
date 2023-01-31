@@ -15,17 +15,13 @@ use function substr;
 
 final class Scanner
 {
-    /** @var string */
-    private $fileExtension;
+    private string $fileExtension;
 
-    /** @var string */
-    private $directory;
+    private string $directory;
 
-    /** @var Metas */
-    private $metas;
+    private Metas $metas;
 
-    /** @var Finder */
-    private $finder;
+    private Finder $finder;
 
     /** @var SplFileInfo[] */
     private $fileInfos = [];

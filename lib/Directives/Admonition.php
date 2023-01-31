@@ -13,14 +13,11 @@ use function explode;
 
 class Admonition extends SubDirective
 {
-    /** @var string */
-    private $name;
+    private string $name;
 
-    /** @var string */
-    private $text;
+    private string $text;
 
-    /** @var string */
-    private $template;
+    private string $template;
 
     public function __construct(string $name, string $text, string $template = 'directives/admonition.html.twig')
     {

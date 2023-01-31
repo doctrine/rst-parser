@@ -11,14 +11,12 @@ final class SpanToken
     public const TYPE_TEXT_ROLE   = 'textrole';
     public const TYPE_LINK        = 'link';
 
-    /** @var string */
-    private $type;
+    private string $type;
 
-    /** @var string */
-    private $id;
+    private string $id;
 
     /** @var string[] */
-    private $token;
+    private array $token;
 
     /** @param string[] $token */
     public function __construct(string $type, string $id, array $token)

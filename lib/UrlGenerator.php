@@ -17,8 +17,7 @@ use function substr;
 
 final class UrlGenerator
 {
-    /** @var Configuration */
-    private $configuration;
+    private Configuration $configuration;
 
     public function __construct(Configuration $configuration)
     {

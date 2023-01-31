@@ -16,14 +16,12 @@ class CodeNode extends Node
     /** @var string */
     protected $value;
 
-    /** @var bool */
-    private $raw = false;
+    private bool $raw = false;
 
-    /** @var string|null */
-    private $language = null;
+    private ?string $language = null;
 
     /** @var string[] */
-    private $options = [];
+    private array $options = [];
 
     /** @param string[] $lines */
     public function __construct(array $lines)

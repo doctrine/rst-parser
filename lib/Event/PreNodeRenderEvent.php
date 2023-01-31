@@ -11,8 +11,7 @@ final class PreNodeRenderEvent extends EventArgs
 {
     public const PRE_NODE_RENDER = 'preNodeRender';
 
-    /** @var Node */
-    private $node;
+    private Node $node;
 
     public function __construct(Node $node)
     {

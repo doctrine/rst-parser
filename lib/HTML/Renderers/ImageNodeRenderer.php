@@ -10,11 +10,9 @@ use Doctrine\RST\Templates\TemplateRenderer;
 
 final class ImageNodeRenderer implements NodeRenderer
 {
-    /** @var ImageNode */
-    private $imageNode;
+    private ImageNode $imageNode;
 
-    /** @var TemplateRenderer */
-    private $templateRenderer;
+    private TemplateRenderer $templateRenderer;
 
     public function __construct(ImageNode $imageNode, TemplateRenderer $templateRenderer)
     {

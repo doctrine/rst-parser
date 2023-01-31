@@ -15,14 +15,12 @@ use function sprintf;
 
 class Documents
 {
-    /** @var Filesystem */
-    private $filesystem;
+    private Filesystem $filesystem;
 
-    /** @var Metas */
-    private $metas;
+    private Metas $metas;
 
     /** @var DocumentNode[] */
-    private $documents = [];
+    private array $documents = [];
 
     public function __construct(
         Filesystem $filesystem,

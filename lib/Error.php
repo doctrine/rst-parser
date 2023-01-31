@@ -15,17 +15,13 @@ final class Error
 
     private string $level;
 
-    /** @var string */
-    private $message;
+    private string $message;
 
-    /** @var string|null */
-    private $file;
+    private ?string $file = null;
 
-    /** @var int|null */
-    private $line;
+    private ?int $line = null;
 
-    /** @var Throwable|null */
-    private $throwable;
+    private ?Throwable $throwable = null;
 
     public function __construct(string $level, string $message, ?string $file = null, ?int $line = null, ?Throwable $throwable = null)
     {

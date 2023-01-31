@@ -11,7 +11,7 @@ use function implode;
 final class Buffer
 {
     /** @var string[] */
-    private $lines = [];
+    private array $lines = [];
 
     /** @param string[] $lines */
     public function __construct(array $lines = [])

@@ -11,8 +11,7 @@ final class PostNodeCreateEvent extends EventArgs
 {
     public const POST_NODE_CREATE = 'postNodeCreate';
 
-    /** @var Node */
-    private $node;
+    private Node $node;
 
     public function __construct(Node $node)
     {

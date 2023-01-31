@@ -10,11 +10,9 @@ use Doctrine\RST\Templates\TemplateRenderer;
 
 final class TitleNodeRenderer implements NodeRenderer
 {
-    /** @var TitleNode */
-    private $titleNode;
+    private TitleNode $titleNode;
 
-    /** @var TemplateRenderer */
-    private $templateRenderer;
+    private TemplateRenderer $templateRenderer;
 
     public function __construct(TitleNode $titleNode, TemplateRenderer $templateRenderer)
     {
