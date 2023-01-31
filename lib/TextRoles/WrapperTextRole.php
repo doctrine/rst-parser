@@ -7,22 +7,16 @@ namespace Doctrine\RST\TextRoles;
 use Doctrine\RST\Environment;
 use Doctrine\RST\Span\SpanToken;
 
-use function htmlspecialchars;
-use function sprintf;
-
 class WrapperTextRole extends BaseTextRole
 {
     private string $name;
-    private string $wrap;
+    private string $templateName;
 
-    /**
-     * @param string   $wrap    A sprintf string containing one marker for the text
-     * @param string[] $aliases Aliases for the name
-     */
-    public function __construct(string $name, string $wrap, array $aliases = [])
+    /** @param string[] $aliases Aliases for the name */
+    public function __construct(string $name, ?string $templateName = null, array $aliases = [])
     {
-        $this->name = $name;
-        $this->wrap = $wrap;
+        $this->name         = $name;
+        $this->templateName = $templateName ?? 'textroles/' . $this->name . '.html.twig';
         $this->setAliases($aliases);
     }
 
@@ -33,6 +27,10 @@ class WrapperTextRole extends BaseTextRole
 
     public function render(Environment $environment, SpanToken $spanToken): string
     {
-        return sprintf($this->wrap, htmlspecialchars($spanToken->get('text')));
+        return $this->renderTemplate(
+            $environment,
+            $this->templateName,
+            ['text' => $spanToken->get('text')]
+        );
     }
 }
