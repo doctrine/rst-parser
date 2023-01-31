@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Doctrine\RST\Renderers;
 
 use Doctrine\RST\Environment;
-use Doctrine\RST\InvalidLink;
 use Doctrine\RST\Nodes\Node;
 use Doctrine\RST\Nodes\SpanNode;
 use Doctrine\RST\References\ResolvedReference;
@@ -113,9 +112,8 @@ abstract class SpanNodeRenderer implements NodeRenderer, SpanRenderer
 
     private function renderToken(SpanToken $spanToken, string $span): string
     {
-        switch ($spanToken->getType()) {
-            case SpanToken::TYPE_LINK:
-                return $this->renderLink($spanToken, $span);
+        if ($spanToken->getType() === SpanToken::TYPE_LINK) {
+            $spanToken->set('linktext', $this->renderSyntaxes($spanToken->get('link')));
         }
 
         $textRole = $spanToken->getTextRole();
@@ -127,41 +125,6 @@ abstract class SpanNodeRenderer implements NodeRenderer, SpanRenderer
         $resolvedTextRole = $textRole->render($this->environment, $spanToken);
 
         return str_replace($spanToken->getId(), $resolvedTextRole, $span);
-    }
-
-    private function renderLink(SpanToken $spanToken, string $span): string
-    {
-        $url  = $spanToken->get('url');
-        $link = $spanToken->get('link');
-
-        if ($url === '') {
-            $linkTarget = $this->environment->getLinkTarget($link);
-            if ($linkTarget !== null) {
-                $url = $linkTarget->getUrl();
-            }
-
-            if ($url === '') {
-                $metaEntry = $this->environment->getMetaEntry();
-
-                if ($metaEntry !== null && $metaEntry->hasTitle($link)) {
-                    // A strangely-complex way to simply get the current relative URL
-                    // For example, if the current page is "reference/page", then
-                    // this would return "page" so the final URL is href="page#some-anchor".
-                    $currentRelativeUrl = $this->environment->relativeUrl('/' . $metaEntry->getUrl());
-                    $url                = $currentRelativeUrl . '#' . Environment::slugify($link);
-                }
-            }
-
-            if ($url === '') {
-                $this->environment->addInvalidLink(new InvalidLink($link));
-
-                return str_replace($spanToken->getId(), $link, $span);
-            }
-        }
-
-        $link = $this->link($url, $this->renderSyntaxes($link));
-
-        return str_replace($spanToken->getId(), $link, $span);
     }
 
     /** @param mixed[] $attributes */

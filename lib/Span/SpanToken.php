@@ -51,6 +51,11 @@ final class SpanToken
         return $this->token[$key] ?? '';
     }
 
+    public function set(string $key, string $value): void
+    {
+        $this->token[$key] = $value;
+    }
+
     /** @return string[] */
     public function getTokenData(): array
     {
