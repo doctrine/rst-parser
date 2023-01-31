@@ -16,10 +16,6 @@ interface SpanRenderer
 
     public function br(): string;
 
-    public function literal(string $text): string;
-
-    public function interpretedText(string $text): string;
-
     /** @param mixed[] $attributes */
     public function link(?string $url, string $title, array $attributes = []): string;
 

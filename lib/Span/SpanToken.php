@@ -25,7 +25,7 @@ final class SpanToken
     public function __construct(?TextRole $textRole, string $id, array $token)
     {
         $this->textRole      = $textRole;
-        $this->type          = $textRole ? $textRole->getName() : self::TYPE_UNKOWN;
+        $this->type          = $textRole !== null ? $textRole->getName() : self::TYPE_UNKOWN;
         $this->id            = $id;
         $this->token         = $token;
         $this->token['type'] = $this->type;

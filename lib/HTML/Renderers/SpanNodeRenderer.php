@@ -47,16 +47,6 @@ final class SpanNodeRenderer extends BaseSpanNodeRenderer
         return $this->templateRenderer->render('br.html.twig');
     }
 
-    public function literal(string $text): string
-    {
-        return $this->templateRenderer->render('literal.html.twig', ['text' => $text]);
-    }
-
-    public function interpretedText(string $text): string
-    {
-        return $this->templateRenderer->render('interpreted-text.html.twig', ['text' => $text]);
-    }
-
     public function escape(string $span): string
     {
         return htmlspecialchars($span, ENT_COMPAT);
