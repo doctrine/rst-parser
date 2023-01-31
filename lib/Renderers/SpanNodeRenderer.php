@@ -10,12 +10,10 @@ use Doctrine\RST\Nodes\Node;
 use Doctrine\RST\Nodes\SpanNode;
 use Doctrine\RST\References\ResolvedReference;
 use Doctrine\RST\Span\SpanToken;
-use InvalidArgumentException;
 
 use function is_string;
 use function preg_replace;
 use function preg_replace_callback;
-use function sprintf;
 use function str_replace;
 
 abstract class SpanNodeRenderer implements NodeRenderer, SpanRenderer
@@ -122,14 +120,19 @@ abstract class SpanNodeRenderer implements NodeRenderer, SpanRenderer
             case SpanToken::TYPE_INTERPRETED:
                 return $this->renderInterpretedText($spanToken, $span);
 
-            case SpanToken::TYPE_TEXT_ROLE:
-                return $this->renderTextNode($spanToken, $span);
-
             case SpanToken::TYPE_LINK:
                 return $this->renderLink($spanToken, $span);
         }
 
-        throw new InvalidArgumentException(sprintf('Unknown token type %s', $spanToken->getType()));
+        $textRole = $spanToken->getTextRole();
+
+        if ($textRole === null) {
+            return $spanToken->get('text');
+        }
+
+        $resolvedTextRole = $textRole->render($this->environment, $spanToken);
+
+        return str_replace($spanToken->getId(), $resolvedTextRole, $span);
     }
 
     private function renderLiteral(SpanToken $spanToken, string $span): string
@@ -148,19 +151,6 @@ abstract class SpanNodeRenderer implements NodeRenderer, SpanRenderer
             $this->interpretedText($spanToken->get('text')),
             $span
         );
-    }
-
-    private function renderTextNode(SpanToken $spanToken, string $span): string
-    {
-        $textRole = $this->environment->getTextRole($spanToken->get('section'));
-
-        if ($textRole === null) {
-            return $spanToken->get('text');
-        }
-
-        $resolvedTextRole = $textRole->render($this->environment, $spanToken);
-
-        return str_replace($spanToken->getId(), $resolvedTextRole, $span);
     }
 
     private function renderLink(SpanToken $spanToken, string $span): string
