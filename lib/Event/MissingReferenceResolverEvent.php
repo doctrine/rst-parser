@@ -12,17 +12,14 @@ final class MissingReferenceResolverEvent extends EventArgs
 {
     public const MISSING_REFERENCE_RESOLVER = 'resolveMissingReference';
 
-    /** @var Environment */
-    private $environment;
+    private Environment $environment;
 
-    /** @var string */
-    private $data;
+    private string $data;
 
     /** @var string[] */
-    private $attributes;
+    private array $attributes;
 
-    /** @var ?ResolvedReference */
-    private $resolvedReference = null;
+    private ?ResolvedReference $resolvedReference = null;
 
     /** @param string[] $attributes */
     public function __construct(

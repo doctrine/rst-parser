@@ -39,23 +39,17 @@ final class Builder
 {
     private Configuration $configuration;
 
-    /** @var Filesystem */
-    private $filesystem;
+    private Filesystem $filesystem;
 
-    /** @var Metas */
-    private $metas;
+    private Metas $metas;
 
-    /** @var CachedMetasLoader */
-    private $cachedMetasLoader;
+    private CachedMetasLoader $cachedMetasLoader;
 
-    /** @var Documents */
-    private $documents;
+    private Documents $documents;
 
-    /** @var Copier */
-    private $copier;
+    private Copier $copier;
 
-    /** @var Finder|null */
-    private $scannerFinder;
+    private ?Finder $scannerFinder = null;
 
     public function __construct(Configuration $configuration)
     {

@@ -17,14 +17,11 @@ use function strpos;
 
 final class FileIncluder
 {
-    /** @var Environment */
-    private $environment;
+    private Environment $environment;
 
-    /** @var bool */
-    private $includeAllowed = true;
+    private bool $includeAllowed = true;
 
-    /** @var string */
-    private $includeRoot;
+    private string $includeRoot;
 
     public function __construct(
         Environment $environment,

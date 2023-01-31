@@ -10,11 +10,9 @@ use Doctrine\RST\Templates\TemplateRenderer;
 
 final class ParagraphNodeRenderer implements NodeRenderer
 {
-    /** @var ParagraphNode */
-    private $paragraphNode;
+    private ParagraphNode $paragraphNode;
 
-    /** @var TemplateRenderer */
-    private $templateRenderer;
+    private TemplateRenderer $templateRenderer;
 
     public function __construct(ParagraphNode $paragraphNode, TemplateRenderer $templateRenderer)
     {

@@ -9,8 +9,7 @@ use Doctrine\RST\Templates\TemplateRenderer;
 
 final class SeparatorNodeRenderer implements NodeRenderer
 {
-    /** @var TemplateRenderer */
-    private $templateRenderer;
+    private TemplateRenderer $templateRenderer;
 
     public function __construct(TemplateRenderer $templateRenderer)
     {

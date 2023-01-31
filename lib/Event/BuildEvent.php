@@ -9,14 +9,11 @@ use Doctrine\RST\Builder;
 
 abstract class BuildEvent extends EventArgs
 {
-    /** @var Builder */
-    private $builder;
+    private Builder $builder;
 
-    /** @var string */
-    private $directory;
+    private string $directory;
 
-    /** @var string */
-    private $targetDirectory;
+    private string $targetDirectory;
 
     public function __construct(
         Builder $builder,

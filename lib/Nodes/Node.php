@@ -22,11 +22,9 @@ use function trim;
 
 abstract class Node
 {
-    /** @var NodeRendererFactory|null */
-    private $nodeRendererFactory;
+    private ?NodeRendererFactory $nodeRendererFactory = null;
 
-    /** @var EventManager|null */
-    private $eventManager;
+    private ?EventManager $eventManager = null;
 
     /** @var Environment|null */
     protected $environment;
@@ -35,7 +33,7 @@ abstract class Node
     protected $value;
 
     /** @var string[] */
-    private $classes = [];
+    private array $classes = [];
 
     /** @param Node|string|null $value */
     public function __construct($value = null)

@@ -16,11 +16,9 @@ use function uniqid;
  */
 final class Wrap extends SubDirective
 {
-    /** @var string */
-    private $class;
+    private string $class;
 
-    /** @var bool */
-    private $uniqid;
+    private bool $uniqid;
 
     public function __construct(string $class, bool $uniqid = false)
     {

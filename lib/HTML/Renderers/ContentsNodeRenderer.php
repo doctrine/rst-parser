@@ -15,14 +15,11 @@ use function is_array;
 
 final class ContentsNodeRenderer implements NodeRenderer
 {
-    /** @var Environment */
-    private $environment;
+    private Environment $environment;
 
-    /** @var ContentsNode */
-    private $contentsNode;
+    private ContentsNode $contentsNode;
 
-    /** @var TemplateRenderer */
-    private $templateRenderer;
+    private TemplateRenderer $templateRenderer;
 
     public function __construct(Environment $environment, ContentsNode $contentsNode, TemplateRenderer $templateRenderer)
     {

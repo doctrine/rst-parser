@@ -10,11 +10,9 @@ use Doctrine\RST\Templates\TemplateRenderer;
 
 final class MetaNodeRenderer implements NodeRenderer
 {
-    /** @var MetaNode */
-    private $metaNode;
+    private MetaNode $metaNode;
 
-    /** @var TemplateRenderer */
-    private $templateRenderer;
+    private TemplateRenderer $templateRenderer;
 
     public function __construct(MetaNode $metaNode, TemplateRenderer $templateRenderer)
     {

@@ -44,80 +44,58 @@ final class DocumentParser
 {
     private Configuration $configuration;
 
-    /** @var Parser */
-    private $parser;
+    private Parser $parser;
 
-    /** @var Environment */
-    private $environment;
+    private Environment $environment;
 
-    /** @var NodeFactory */
-    private $nodeFactory;
+    private NodeFactory $nodeFactory;
 
-    /** @var EventManager */
-    private $eventManager;
+    private EventManager $eventManager;
 
     /** @var Directive[] */
-    private $directives = [];
+    private array $directives = [];
 
-    /** @var bool */
-    private $includeAllowed = true;
+    private bool $includeAllowed = true;
 
-    /** @var string */
-    private $includeRoot = '';
+    private string $includeRoot = '';
 
-    /** @var DocumentNode */
-    private $document;
+    private ?DocumentNode $document = null;
 
-    /** @var string */
-    private $specialLetter = '';
+    private string $specialLetter = '';
 
-    /** @var ParserDirective|null */
-    private $directive;
+    private ?ParserDirective $directive = null;
 
-    /** @var LineDataParser */
-    private $lineDataParser;
+    private LineDataParser $lineDataParser;
 
-    /** @var LineChecker */
-    private $lineChecker;
+    private LineChecker $lineChecker;
 
-    /** @var TableParser */
-    private $tableParser;
+    private TableParser $tableParser;
 
-    /** @var Buffer */
-    private $buffer;
+    private Buffer $buffer;
 
-    /** @var Buffer */
-    private $anchorBuffer;
+    private Buffer $anchorBuffer;
 
-    /** @var Node|null */
-    private $nodeBuffer;
+    private ?Node $nodeBuffer = null;
 
-    /** @var bool */
-    private $isCode = false;
+    private bool $isCode = false;
 
-    /** @var Lines */
-    private $lines;
+    private ?Lines $lines = null;
 
-    /** @var int|null */
-    private $currentLineNumber;
+    private ?int $currentLineNumber = null;
 
-    /** @var string */
-    private $state;
+    private ?string $state = null;
 
-    /** @var TitleNode */
-    private $lastTitleNode;
+    private ?TitleNode $lastTitleNode = null;
 
     /** @var TitleNode[] */
-    private $openTitleNodes = [];
+    private array $openTitleNodes = [];
 
-    /** @var int */
-    private $listOffset = 0;
+    private int $listOffset = 0;
 
     /** @var string|null */
     private $listMarker = null;
 
-    /** @var FieldOption|null */
-    private $fieldOption = null;
+    private ?FieldOption $fieldOption = null;
 
     /** @param Directive[] $directives */
     public function __construct(

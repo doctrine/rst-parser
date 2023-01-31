@@ -17,35 +17,30 @@ use function strtolower;
 
 class MetaEntry
 {
-    /** @var string */
-    private $file;
+    private string $file;
 
-    /** @var string */
-    private $url;
+    private string $url;
 
-    /** @var string */
-    private $title;
+    private string $title;
 
     /** @var string[][]|string[][][] */
-    private $titles;
+    private array $titles;
 
     /** @var mixed[][] */
-    private $tocs;
+    private array $tocs;
 
-    /** @var int */
-    private $mtime;
-
-    /** @var string[] */
-    private $depends;
+    private int $mtime;
 
     /** @var string[] */
-    private $resolvedDependencies = [];
+    private array $depends;
+
+    /** @var string[] */
+    private array $resolvedDependencies = [];
 
     /** @var array<string, LinkTarget> */
-    private $linkTargets;
+    private array $linkTargets;
 
-    /** @var string|null */
-    private $parent;
+    private ?string $parent = null;
 
     /**
      * @param string[][]|string[][][]   $titles

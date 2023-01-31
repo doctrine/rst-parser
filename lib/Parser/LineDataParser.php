@@ -25,11 +25,9 @@ use function trim;
 
 final class LineDataParser
 {
-    /** @var Parser */
-    private $parser;
+    private Parser $parser;
 
-    /** @var EventManager */
-    private $eventManager;
+    private EventManager $eventManager;
 
     public function __construct(Parser $parser, EventManager $eventManager)
     {

@@ -11,8 +11,7 @@ final class PostParseDocumentEvent extends EventArgs
 {
     public const POST_PARSE_DOCUMENT = 'postParseDocument';
 
-    /** @var DocumentNode */
-    private $documentNode;
+    private DocumentNode $documentNode;
 
     public function __construct(DocumentNode $documentNode)
     {

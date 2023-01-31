@@ -10,8 +10,7 @@ use function rtrim;
 
 final class TwigTemplateRenderer implements TemplateRenderer
 {
-    /** @var Configuration */
-    private $configuration;
+    private Configuration $configuration;
 
     public function __construct(Configuration $configuration)
     {

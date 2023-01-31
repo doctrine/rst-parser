@@ -11,17 +11,14 @@ class TitleNode extends Node
     /** @var SpanNode */
     protected $value;
 
-    /** @var int */
-    private $level;
+    private int $level;
 
     /** @var string */
     protected $token;
 
-    /** @var string */
-    private $id;
+    private string $id;
 
-    /** @var string */
-    private $target = '';
+    private string $target = '';
 
     public function __construct(Node $value, int $level, string $token, ?string $id = null)
     {

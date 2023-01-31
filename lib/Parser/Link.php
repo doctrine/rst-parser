@@ -14,14 +14,11 @@ final class Link
     public const TYPE_LINK   = 'link';
     public const TYPE_ANCHOR = 'anchor';
 
-    /** @var string */
-    private $name;
+    private string $name;
 
-    /** @var string */
-    private $url;
+    private string $url;
 
-    /** @var string */
-    private $type;
+    private string $type;
 
     public function __construct(string $name, string $url, string $type)
     {

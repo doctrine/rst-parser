@@ -9,7 +9,7 @@ use Doctrine\RST\Parser\FieldOption;
 class FieldListNode extends Node
 {
     /** @var FieldOption[] */
-    private $items;
+    private array $items;
 
     /** @param FieldOption[] $items */
     public function __construct(array $items)

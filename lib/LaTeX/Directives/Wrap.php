@@ -13,8 +13,7 @@ use Doctrine\RST\Parser;
  */
 final class Wrap extends SubDirective
 {
-    /** @var string */
-    private $class;
+    private string $class;
 
     public function __construct(string $class)
     {

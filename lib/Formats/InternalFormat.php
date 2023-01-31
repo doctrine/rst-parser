@@ -10,16 +10,15 @@ use Doctrine\RST\Renderers\RendererFactory;
 
 final class InternalFormat implements Format
 {
-    /** @var Format */
-    private $format;
+    private Format $format;
 
     private ?DirectiveFactory $directiveFactory = null;
 
     /** @var NodeRendererFactory[]|null */
-    private $nodeRendererFactories;
+    private ?array $nodeRendererFactories = null;
 
     /** @var RendererFactory[]|null */
-    private $rendererFactories;
+    private ?array $rendererFactories = null;
 
     public function __construct(Format $format)
     {

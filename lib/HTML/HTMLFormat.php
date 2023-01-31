@@ -17,8 +17,7 @@ use Doctrine\RST\Templates\TemplateRenderer;
 
 final class HTMLFormat implements Format
 {
-    /** @var TemplateRenderer */
-    private $templateRenderer;
+    private TemplateRenderer $templateRenderer;
 
     private DirectiveFactory $directiveFactory;
 

@@ -20,7 +20,11 @@ return static function (RectorConfig $rectorConfig): void {
         __DIR__ .'/tests',
     ]);
     $rectorConfig->skip([
+        // Shorthand Elvis rule is not allowed by strict phpstan
         TernaryToElvisRector::class,
-        TypedPropertyFromAssignsRector::class,
+        // We have to skip this rule as it messes up the Mock objects sometimes
+        TypedPropertyFromAssignsRector::class => [
+            __DIR__ . '/tests',
+        ],
     ]);
 };

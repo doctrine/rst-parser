@@ -8,11 +8,9 @@ use Doctrine\RST\Nodes\Node;
 
 final class RenderedNode
 {
-    /** @var Node */
-    private $node;
+    private Node $node;
 
-    /** @var string */
-    private $rendered;
+    private string $rendered;
 
     public function __construct(Node $node, string $rendered)
     {

@@ -10,11 +10,9 @@ use Doctrine\RST\Templates\TemplateRenderer;
 
 final class AnchorNodeRenderer implements NodeRenderer
 {
-    /** @var AnchorNode */
-    private $anchorNode;
+    private AnchorNode $anchorNode;
 
-    /** @var TemplateRenderer */
-    private $templateRenderer;
+    private TemplateRenderer $templateRenderer;
 
     public function __construct(AnchorNode $anchorNode, TemplateRenderer $templateRenderer)
     {

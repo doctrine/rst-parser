@@ -17,7 +17,7 @@ class ContentsNode extends Node
     protected $documentNode;
 
     /** @var string[] */
-    private $options;
+    private array $options;
 
     /** @param string[] $options */
     public function __construct(Environment $environment, DocumentNode $documentNode, array $options)

@@ -12,8 +12,7 @@ use function is_dir;
 
 final class Copier
 {
-    /** @var Filesystem */
-    private $filesystem;
+    private Filesystem $filesystem;
 
     /** @var string[][] */
     private $toCopy = [];

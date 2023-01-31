@@ -15,14 +15,11 @@ use function trim;
 
 final class FieldOption
 {
-    /** @var string */
-    private $name;
+    private string $name;
 
-    /** @var int */
-    private $offset;
+    private int $offset;
 
-    /** @var string */
-    private $body;
+    private string $body;
 
     /**
      * It depends on the context of whether the body of a field option should
@@ -31,10 +28,9 @@ final class FieldOption
      *
      * @var Node[]
      */
-    private $nodes = [];
+    private array $nodes = [];
 
-    /** @var int */
-    private $lineCount = 0;
+    private int $lineCount = 0;
 
     public function __construct(string $name, int $offset, string $body)
     {

@@ -13,8 +13,7 @@ use function max;
 
 final class TableNodeRenderer implements NodeRenderer
 {
-    /** @var TableNode */
-    private $tableNode;
+    private TableNode $tableNode;
 
     public function __construct(TableNode $tableNode)
     {

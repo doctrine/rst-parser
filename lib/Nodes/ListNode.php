@@ -8,11 +8,10 @@ use Doctrine\RST\Parser\ListItem;
 
 class ListNode extends Node
 {
-    /** @var bool */
-    private $ordered;
+    private bool $ordered;
 
     /** @var ListItem[] */
-    private $items;
+    private array $items;
 
     /** @param ListItem[] $items */
     public function __construct(array $items, bool $ordered)

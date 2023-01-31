@@ -11,11 +11,9 @@ final class PreParseDocumentEvent extends EventArgs
 {
     public const PRE_PARSE_DOCUMENT = 'preParseDocument';
 
-    /** @var Parser */
-    private $parser;
+    private Parser $parser;
 
-    /** @var string */
-    private $contents;
+    private string $contents;
 
     public function __construct(Parser $parser, string $contents)
     {

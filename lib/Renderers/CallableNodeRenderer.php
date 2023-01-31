@@ -8,8 +8,7 @@ use Doctrine\RST\Nodes\CallableNode;
 
 final class CallableNodeRenderer implements NodeRenderer
 {
-    /** @var CallableNode */
-    private $callableNode;
+    private CallableNode $callableNode;
 
     public function __construct(CallableNode $callableNode)
     {

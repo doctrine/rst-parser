@@ -15,8 +15,7 @@ use const ENT_COMPAT;
 
 final class SpanNodeRenderer extends BaseSpanNodeRenderer
 {
-    /** @var TemplateRenderer */
-    private $templateRenderer;
+    private TemplateRenderer $templateRenderer;
 
     public function __construct(
         Environment $environment,

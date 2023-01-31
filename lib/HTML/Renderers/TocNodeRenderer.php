@@ -13,14 +13,11 @@ use Doctrine\RST\Utility\TitleLinkUtility;
 
 final class TocNodeRenderer implements NodeRenderer
 {
-    /** @var Environment */
-    private $environment;
+    private Environment $environment;
 
-    /** @var TocNode */
-    private $tocNode;
+    private TocNode $tocNode;
 
-    /** @var TemplateRenderer */
-    private $templateRenderer;
+    private TemplateRenderer $templateRenderer;
 
     public function __construct(Environment $environment, TocNode $tocNode, TemplateRenderer $templateRenderer)
     {

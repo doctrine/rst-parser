@@ -19,7 +19,7 @@ final class ParseQueue
      *
      * @var bool[]
      */
-    private $fileStatuses = [];
+    private array $fileStatuses = [];
 
     public function addFile(string $filename, bool $parseNeeded): void
     {

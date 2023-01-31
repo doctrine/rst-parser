@@ -20,20 +20,16 @@ use function time;
 
 final class SpanProcessor
 {
-    /** @var Environment */
-    private $environment;
+    private Environment $environment;
 
-    /** @var string */
-    private $span;
+    private string $span;
 
-    /** @var int */
-    private $tokenId;
+    private int $tokenId;
 
-    /** @var string */
-    private $prefix;
+    private string $prefix;
 
     /** @var SpanToken[] */
-    private $tokens = [];
+    private array $tokens = [];
 
     public function __construct(Environment $environment, string $span)
     {

@@ -15,11 +15,9 @@ use function count;
 
 final class DocumentNodeRenderer implements NodeRenderer, FullDocumentNodeRenderer
 {
-    /** @var DocumentNode */
-    private $document;
+    private DocumentNode $document;
 
-    /** @var TemplateRenderer */
-    private $templateRenderer;
+    private TemplateRenderer $templateRenderer;
 
     public function __construct(DocumentNode $document, TemplateRenderer $templateRenderer)
     {

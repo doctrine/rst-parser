@@ -10,14 +10,13 @@ use RuntimeException;
 
 final class DefinitionListTerm
 {
-    /** @var SpanNode */
-    private $term;
+    private SpanNode $term;
 
     /** @var SpanNode[] */
-    private $classifiers = [];
+    private array $classifiers = [];
 
     /** @var Node[] */
-    private $definitions = [];
+    private array $definitions = [];
 
     /**
      * @param SpanNode[] $classifiers

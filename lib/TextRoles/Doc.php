@@ -10,20 +10,16 @@ use Doctrine\RST\References\Resolver;
 
 final class Doc extends ReferenceRole
 {
-    /** @var string */
-    private $name;
+    private string $name;
 
-    /** @var Resolver */
-    private $resolver;
+    private Resolver $resolver;
 
     /**
      * Used with "ref" - it means the dependencies added in found()
      * must be resolved to their final path later (they are not
      * already document names).
-     *
-     * @var bool
      */
-    private $dependenciesMustBeResolved;
+    private bool $dependenciesMustBeResolved;
 
     public function __construct(string $name = 'doc', bool $dependenciesMustBeResolved = false)
     {

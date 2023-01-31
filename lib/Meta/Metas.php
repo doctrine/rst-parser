@@ -22,7 +22,7 @@ class Metas
     private $entries = [];
 
     /** @var string[] */
-    private $parents = [];
+    private array $parents = [];
 
     /** @var array<string, LinkTarget> */
     private array $linkTargets = [];

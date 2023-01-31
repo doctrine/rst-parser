@@ -9,11 +9,9 @@ use Twig\Environment as TwigEnvironment;
 
 final class TwigAdapter implements TemplateEngineAdapter
 {
-    /** @var Configuration */
-    private $configuration;
+    private Configuration $configuration;
 
-    /** @var TwigEnvironment */
-    private $twigEnvironment;
+    private ?TwigEnvironment $twigEnvironment = null;
 
     public function __construct(Configuration $configuration)
     {

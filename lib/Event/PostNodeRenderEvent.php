@@ -11,8 +11,7 @@ final class PostNodeRenderEvent extends EventArgs
 {
     public const POST_NODE_RENDER = 'postNodeRender';
 
-    /** @var RenderedNode */
-    private $renderedNode;
+    private RenderedNode $renderedNode;
 
     public function __construct(RenderedNode $renderedNode)
     {

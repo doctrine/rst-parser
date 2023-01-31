@@ -15,7 +15,7 @@ use function sprintf;
 final class TableRow
 {
     /** @var TableColumn[] */
-    private $columns = [];
+    private array $columns = [];
 
     public function addColumn(string $content, int $colSpan): void
     {

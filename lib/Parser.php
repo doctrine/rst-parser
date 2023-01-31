@@ -25,23 +25,18 @@ class Parser
 {
     private Configuration $configuration;
 
-    /** @var Environment */
-    private $environment;
+    private Environment $environment;
 
     /** @var Directive[] */
-    private $directives = [];
+    private array $directives = [];
 
-    /** @var bool */
-    private $includeAllowed = true;
+    private bool $includeAllowed = true;
 
-    /** @var string */
-    private $includeRoot = '';
+    private string $includeRoot = '';
 
-    /** @var string|null */
-    private $filename = null;
+    private ?string $filename = null;
 
-    /** @var DocumentParser|null */
-    private $documentParser;
+    private ?DocumentParser $documentParser = null;
 
     public function __construct(
         Configuration $configuration,
