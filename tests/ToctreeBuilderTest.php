@@ -52,9 +52,7 @@ EOF;
         // 4 times for the globbed files (5 globbed files, but test1 is repeated & skipped)
         $environment->expects(self::exactly(7))
             ->method('absoluteUrl')
-            ->willReturnCallback(static function ($arg): string {
-                return '/' . ltrim($arg, '/');
-            });
+            ->willReturnCallback(static fn ($arg): string => '/' . ltrim($arg, '/'));
 
         $toctreeFiles = $this->toctreeBuilder
             ->buildToctreeFiles($environment, $node, $options);

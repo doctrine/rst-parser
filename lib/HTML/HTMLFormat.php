@@ -55,165 +55,125 @@ final class HTMLFormat implements Format
     {
         return [
             Nodes\AnchorNode::class => new CallableNodeRendererFactory(
-                function (Nodes\AnchorNode $node): HTML\Renderers\AnchorNodeRenderer {
-                    return new HTML\Renderers\AnchorNodeRenderer(
-                        $node,
-                        $this->templateRenderer
-                    );
-                }
+                fn (Nodes\AnchorNode $node): HTML\Renderers\AnchorNodeRenderer => new HTML\Renderers\AnchorNodeRenderer(
+                    $node,
+                    $this->templateRenderer
+                )
             ),
             Nodes\CodeNode::class => new CallableNodeRendererFactory(
-                function (Nodes\CodeNode $node): HTML\Renderers\CodeNodeRenderer {
-                    return new HTML\Renderers\CodeNodeRenderer(
-                        $node,
-                        $this->templateRenderer
-                    );
-                }
+                fn (Nodes\CodeNode $node): HTML\Renderers\CodeNodeRenderer => new HTML\Renderers\CodeNodeRenderer(
+                    $node,
+                    $this->templateRenderer
+                )
             ),
             Nodes\DefinitionListNode::class => new CallableNodeRendererFactory(
-                function (Nodes\DefinitionListNode $node): HTML\Renderers\DefinitionListNodeRenderer {
-                    return new HTML\Renderers\DefinitionListNodeRenderer(
-                        $node,
-                        $this->templateRenderer
-                    );
-                }
+                fn (Nodes\DefinitionListNode $node): HTML\Renderers\DefinitionListNodeRenderer => new HTML\Renderers\DefinitionListNodeRenderer(
+                    $node,
+                    $this->templateRenderer
+                )
             ),
             Nodes\FieldListNode::class => new CallableNodeRendererFactory(
-                function (Nodes\FieldListNode $node): HTML\Renderers\FieldListNodeRenderer {
-                    return new HTML\Renderers\FieldListNodeRenderer(
-                        $node,
-                        $this->templateRenderer
-                    );
-                }
+                fn (Nodes\FieldListNode $node): HTML\Renderers\FieldListNodeRenderer => new HTML\Renderers\FieldListNodeRenderer(
+                    $node,
+                    $this->templateRenderer
+                )
             ),
             Nodes\FigureNode::class => new CallableNodeRendererFactory(
-                function (Nodes\FigureNode $node): HTML\Renderers\FigureNodeRenderer {
-                    return new HTML\Renderers\FigureNodeRenderer(
-                        $node,
-                        $this->templateRenderer
-                    );
-                }
+                fn (Nodes\FigureNode $node): HTML\Renderers\FigureNodeRenderer => new HTML\Renderers\FigureNodeRenderer(
+                    $node,
+                    $this->templateRenderer
+                )
             ),
             Nodes\ImageNode::class => new CallableNodeRendererFactory(
-                function (Nodes\ImageNode $node): HTML\Renderers\ImageNodeRenderer {
-                    return new HTML\Renderers\ImageNodeRenderer(
-                        $node,
-                        $this->templateRenderer
-                    );
-                }
+                fn (Nodes\ImageNode $node): HTML\Renderers\ImageNodeRenderer => new HTML\Renderers\ImageNodeRenderer(
+                    $node,
+                    $this->templateRenderer
+                )
             ),
             Nodes\ListNode::class => new CallableNodeRendererFactory(
-                function (Nodes\ListNode $node): HTML\Renderers\ListNodeRenderer {
-                    return new HTML\Renderers\ListNodeRenderer(
-                        $node,
-                        $this->templateRenderer
-                    );
-                }
+                fn (Nodes\ListNode $node): HTML\Renderers\ListNodeRenderer => new HTML\Renderers\ListNodeRenderer(
+                    $node,
+                    $this->templateRenderer
+                )
             ),
             Nodes\MetaNode::class => new CallableNodeRendererFactory(
-                function (Nodes\MetaNode $node): HTML\Renderers\MetaNodeRenderer {
-                    return new HTML\Renderers\MetaNodeRenderer(
-                        $node,
-                        $this->templateRenderer
-                    );
-                }
+                fn (Nodes\MetaNode $node): HTML\Renderers\MetaNodeRenderer => new HTML\Renderers\MetaNodeRenderer(
+                    $node,
+                    $this->templateRenderer
+                )
             ),
             Nodes\ParagraphNode::class => new CallableNodeRendererFactory(
-                function (Nodes\ParagraphNode $node): HTML\Renderers\ParagraphNodeRenderer {
-                    return new HTML\Renderers\ParagraphNodeRenderer(
-                        $node,
-                        $this->templateRenderer
-                    );
-                }
+                fn (Nodes\ParagraphNode $node): HTML\Renderers\ParagraphNodeRenderer => new HTML\Renderers\ParagraphNodeRenderer(
+                    $node,
+                    $this->templateRenderer
+                )
             ),
             Nodes\QuoteNode::class => new CallableNodeRendererFactory(
-                function (Nodes\QuoteNode $node): HTML\Renderers\QuoteNodeRenderer {
-                    return new HTML\Renderers\QuoteNodeRenderer(
-                        $node,
-                        $this->templateRenderer
-                    );
-                }
+                fn (Nodes\QuoteNode $node): HTML\Renderers\QuoteNodeRenderer => new HTML\Renderers\QuoteNodeRenderer(
+                    $node,
+                    $this->templateRenderer
+                )
             ),
             Nodes\SeparatorNode::class => new CallableNodeRendererFactory(
-                function (Nodes\SeparatorNode $node): HTML\Renderers\SeparatorNodeRenderer {
-                    return new HTML\Renderers\SeparatorNodeRenderer(
-                        $this->templateRenderer
-                    );
-                }
+                fn (Nodes\SeparatorNode $node): HTML\Renderers\SeparatorNodeRenderer => new HTML\Renderers\SeparatorNodeRenderer(
+                    $this->templateRenderer
+                )
             ),
             Nodes\TableNode::class => new CallableNodeRendererFactory(
-                function (Nodes\TableNode $node): HTML\Renderers\TableNodeRenderer {
-                    return new HTML\Renderers\TableNodeRenderer(
-                        $node,
-                        $this->templateRenderer
-                    );
-                }
+                fn (Nodes\TableNode $node): HTML\Renderers\TableNodeRenderer => new HTML\Renderers\TableNodeRenderer(
+                    $node,
+                    $this->templateRenderer
+                )
             ),
             Nodes\TitleNode::class => new CallableNodeRendererFactory(
-                function (Nodes\TitleNode $node): HTML\Renderers\TitleNodeRenderer {
-                    return new HTML\Renderers\TitleNodeRenderer(
-                        $node,
-                        $this->templateRenderer
-                    );
-                }
+                fn (Nodes\TitleNode $node): HTML\Renderers\TitleNodeRenderer => new HTML\Renderers\TitleNodeRenderer(
+                    $node,
+                    $this->templateRenderer
+                )
             ),
             Nodes\TocNode::class => new CallableNodeRendererFactory(
-                function (Nodes\TocNode $node): HTML\Renderers\TocNodeRenderer {
-                    return new HTML\Renderers\TocNodeRenderer(
-                        $node->getEnvironment(),
-                        $node,
-                        $this->templateRenderer
-                    );
-                }
+                fn (Nodes\TocNode $node): HTML\Renderers\TocNodeRenderer => new HTML\Renderers\TocNodeRenderer(
+                    $node->getEnvironment(),
+                    $node,
+                    $this->templateRenderer
+                )
             ),
             Nodes\ContentsNode::class => new CallableNodeRendererFactory(
-                function (Nodes\ContentsNode $node): HTML\Renderers\ContentsNodeRenderer {
-                    return new HTML\Renderers\ContentsNodeRenderer(
-                        $node->getEnvironment(),
-                        $node,
-                        $this->templateRenderer
-                    );
-                }
+                fn (Nodes\ContentsNode $node): HTML\Renderers\ContentsNodeRenderer => new HTML\Renderers\ContentsNodeRenderer(
+                    $node->getEnvironment(),
+                    $node,
+                    $this->templateRenderer
+                )
             ),
             Nodes\DocumentNode::class => new CallableNodeRendererFactory(
-                function (Nodes\DocumentNode $node): HTML\Renderers\DocumentNodeRenderer {
-                    return new HTML\Renderers\DocumentNodeRenderer(
-                        $node,
-                        $this->templateRenderer
-                    );
-                }
+                fn (Nodes\DocumentNode $node): HTML\Renderers\DocumentNodeRenderer => new HTML\Renderers\DocumentNodeRenderer(
+                    $node,
+                    $this->templateRenderer
+                )
             ),
             Nodes\SpanNode::class => new CallableNodeRendererFactory(
-                function (Nodes\SpanNode $node): HTML\Renderers\SpanNodeRenderer {
-                    return new HTML\Renderers\SpanNodeRenderer(
-                        $node->getEnvironment(),
-                        $node,
-                        $this->templateRenderer
-                    );
-                }
+                fn (Nodes\SpanNode $node): HTML\Renderers\SpanNodeRenderer => new HTML\Renderers\SpanNodeRenderer(
+                    $node->getEnvironment(),
+                    $node,
+                    $this->templateRenderer
+                )
             ),
             Nodes\CallableNode::class => new CallableNodeRendererFactory(
-                static function (Nodes\CallableNode $node): Renderers\CallableNodeRenderer {
-                    return new Renderers\CallableNodeRenderer(
-                        $node
-                    );
-                }
+                static fn (Nodes\CallableNode $node): Renderers\CallableNodeRenderer => new Renderers\CallableNodeRenderer(
+                    $node
+                )
             ),
             Nodes\SectionBeginNode::class => new CallableNodeRendererFactory(
-                function (Nodes\SectionBeginNode $node): HTML\Renderers\SectionBeginNodeRenderer {
-                    return new HTML\Renderers\SectionBeginNodeRenderer(
-                        $node,
-                        $this->templateRenderer
-                    );
-                }
+                fn (Nodes\SectionBeginNode $node): HTML\Renderers\SectionBeginNodeRenderer => new HTML\Renderers\SectionBeginNodeRenderer(
+                    $node,
+                    $this->templateRenderer
+                )
             ),
             Nodes\SectionEndNode::class => new CallableNodeRendererFactory(
-                function (Nodes\SectionEndNode $node): HTML\Renderers\SectionEndNodeRenderer {
-                    return new HTML\Renderers\SectionEndNodeRenderer(
-                        $node,
-                        $this->templateRenderer
-                    );
-                }
+                fn (Nodes\SectionEndNode $node): HTML\Renderers\SectionEndNodeRenderer => new HTML\Renderers\SectionEndNodeRenderer(
+                    $node,
+                    $this->templateRenderer
+                )
             ),
         ];
     }

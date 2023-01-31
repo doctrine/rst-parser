@@ -68,9 +68,7 @@ final class TableRow
 
     public function toString(): string
     {
-        return implode(' | ', array_map(static function (TableColumn $column): string {
-            return $column->getContent();
-        }, $this->columns));
+        return implode(' | ', array_map(static fn (TableColumn $column): string => $column->getContent(), $this->columns));
     }
 
     public function removeColumn(int $columnIndex): void

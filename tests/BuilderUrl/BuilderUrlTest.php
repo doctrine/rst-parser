@@ -49,9 +49,7 @@ class BuilderUrlTest extends BaseBuilderTest
     public function testBaseUrlEnabledCallable(): void
     {
         $this->configuration->setBaseUrl('https://www.domain.com/directory');
-        $this->configuration->setBaseUrlEnabledCallable(static function (string $path): bool {
-            return strpos($path, 'subdir/') !== 0;
-        });
+        $this->configuration->setBaseUrlEnabledCallable(static fn (string $path): bool => strpos($path, 'subdir/') !== 0);
 
         $this->builder->build($this->sourceFile(), $this->targetFile());
 

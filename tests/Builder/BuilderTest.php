@@ -227,9 +227,7 @@ class BuilderTest extends BaseBuilderTest
             // this is manually included again
             'introduction.html',
         ];
-        $actualLinks   = array_map(static function ($linkElement): string {
-            return $linkElement->attributes->getNamedItem('href')->nodeValue;
-        }, iterator_to_array($crawler->filter('.toc > ul > li > a')));
+        $actualLinks   = array_map(static fn ($linkElement): string => $linkElement->attributes->getNamedItem('href')->nodeValue, iterator_to_array($crawler->filter('.toc > ul > li > a')));
         self::assertSame($expectedLinks, $actualLinks);
     }
 
@@ -253,9 +251,7 @@ class BuilderTest extends BaseBuilderTest
             // having the other h1 anchor AFTER index.html is what Sphinx does too
             'index.html#another-h1',
         ];
-        $actualLinks   = array_map(static function ($linkElement): string {
-            return $linkElement->attributes->getNamedItem('href')->nodeValue;
-        }, iterator_to_array($crawler->filter('.toc > ul > li > a')));
+        $actualLinks   = array_map(static fn ($linkElement): string => $linkElement->attributes->getNamedItem('href')->nodeValue, iterator_to_array($crawler->filter('.toc > ul > li > a')));
         self::assertSame($expectedLinks, $actualLinks);
     }
 

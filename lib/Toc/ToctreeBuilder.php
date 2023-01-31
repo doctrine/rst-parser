@@ -80,9 +80,7 @@ final class ToctreeBuilder
         return array_filter(array_map('trim', explode(
             "\n",
             $node->getValueString()
-        )), static function (string $file): bool {
-            return $file !== '';
-        });
+        )), static fn (string $file): bool => $file !== '');
     }
 
     /** @param mixed[] $options */

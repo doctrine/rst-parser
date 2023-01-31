@@ -103,9 +103,7 @@ class DocumentNode extends Node
     {
         $tocs = [];
 
-        $nodes = $this->getNodes(static function ($node): bool {
-            return $node instanceof TocNode;
-        });
+        $nodes = $this->getNodes(static fn ($node): bool => $node instanceof TocNode);
 
         foreach ($nodes as $toc) {
             assert($toc instanceof TocNode);

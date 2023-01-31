@@ -34,9 +34,7 @@ final class ClassDirective extends SubDirective
 
         $classes = explode(' ', $data);
 
-        $normalizedClasses = array_map(static function (string $class): string {
-            return Environment::slugify($class);
-        }, $classes);
+        $normalizedClasses = array_map(static fn (string $class): string => Environment::slugify($class), $classes);
 
         $document->setClasses($normalizedClasses);
 

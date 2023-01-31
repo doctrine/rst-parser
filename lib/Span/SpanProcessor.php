@@ -7,11 +7,12 @@ namespace Doctrine\RST\Span;
 use Doctrine\RST\Environment;
 use Doctrine\RST\Meta\LinkTarget;
 
-use function mt_rand;
+use function mt_getrandmax;
 use function preg_match;
 use function preg_match_all;
 use function preg_replace;
 use function preg_replace_callback;
+use function random_int;
 use function sha1;
 use function str_replace;
 use function substr;
@@ -39,7 +40,7 @@ final class SpanProcessor
         $this->environment = $environment;
         $this->span        = $span;
         $this->tokenId     = 0;
-        $this->prefix      = mt_rand() . '|' . time();
+        $this->prefix      = random_int(0, mt_getrandmax()) . '|' . time();
     }
 
     public function process(): string
@@ -123,9 +124,7 @@ final class SpanProcessor
     private function replaceTitleLetters(string $span): string
     {
         foreach ($this->environment->getTitleLetters() as $level => $letter) {
-            $span = (string) preg_replace_callback('/\#\\' . $letter . '/mUsi', function (array $match) use ($level): string {
-                return (string) $this->environment->getNumber($level);
-            }, $span);
+            $span = (string) preg_replace_callback('/\#\\' . $letter . '/mUsi', fn (array $match): string => (string) $this->environment->getNumber($level), $span);
         }
 
         return $span;
