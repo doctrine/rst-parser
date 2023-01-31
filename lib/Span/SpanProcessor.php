@@ -6,6 +6,7 @@ namespace Doctrine\RST\Span;
 
 use Doctrine\RST\Environment;
 use Doctrine\RST\Meta\LinkTarget;
+use Doctrine\RST\TextRoles\TextRole;
 
 use function mt_getrandmax;
 use function preg_match;
@@ -76,9 +77,9 @@ final class SpanProcessor
     }
 
     /** @param string[] $tokenData */
-    private function addToken(string $type, string $id, array $tokenData): void
+    private function addToken(?TextRole $textRole, string $id, array $tokenData): void
     {
-        $this->tokens[$id] = new SpanToken($type, $id, $tokenData);
+        $this->tokens[$id] = new SpanToken($textRole, $id, $tokenData);
     }
 
     private function replaceLiterals(string $span): string
@@ -88,7 +89,8 @@ final class SpanProcessor
             function (array $match): string {
                 $id = $this->generateId();
 
-                $this->addToken(SpanToken::TYPE_LITERAL, $id, [
+                $textRole =  $this->environment->getTextRole(SpanToken::TYPE_LITERAL);
+                $this->addToken($textRole, $id, [
                     'type' => 'literal',
                     'text' => $match[1],
                 ]);
@@ -106,7 +108,8 @@ final class SpanProcessor
             function (array $match): string {
                 $id = $this->generateId();
 
-                $this->addToken(SpanToken::TYPE_INTERPRETED, $id, [
+                $textRole =  $this->environment->getTextRole(SpanToken::TYPE_INTERPRETED);
+                $this->addToken($textRole, $id, [
                     'type' => SpanToken::TYPE_INTERPRETED,
                     'text' => $match[1],
                 ]);
@@ -137,7 +140,7 @@ final class SpanProcessor
             $textRole =  $this->environment->getTextRole($textRoleName);
             $data     = $textRole->process($this->environment, $text);
 
-            $this->addToken(SpanToken::TYPE_TEXT_ROLE, $id, $data);
+            $this->addToken($textRole, $id, $data);
 
             return $id;
         }, $span);
@@ -225,7 +228,8 @@ final class SpanProcessor
 
         $id = $this->generateId();
 
-        $this->addToken(SpanToken::TYPE_LINK, $id, [
+        $textRole =  $this->environment->getTextRole(SpanToken::TYPE_LINK);
+        $this->addToken($textRole, $id, [
             'link' => $link,
             'url' => $url,
         ]);
@@ -268,7 +272,8 @@ REGEX;
             $id  = $this->generateId();
             $url = $match[1];
 
-            $this->addToken(SpanToken::TYPE_LINK, $id, [
+            $textRole =  $this->environment->getTextRole(SpanToken::TYPE_LINK);
+            $this->addToken($textRole, $id, [
                 'link' => $url,
                 'url' => $scheme . $url,
             ]);
@@ -327,7 +332,8 @@ REGEX;
             $id  = $this->generateId();
             $url = $match[1];
 
-            $this->addToken(SpanToken::TYPE_LINK, $id, [
+            $textRole =  $this->environment->getTextRole(SpanToken::TYPE_LINK);
+            $this->addToken($textRole, $id, [
                 'link' => $url,
                 'url' => 'mailto:' . $url,
             ]);

@@ -6,6 +6,9 @@ namespace Doctrine\RST\Directives;
 
 use Doctrine\RST\TextRoles\CodeRole;
 use Doctrine\RST\TextRoles\Doc;
+use Doctrine\RST\TextRoles\InterpretedTextRole;
+use Doctrine\RST\TextRoles\LinkTextRole;
+use Doctrine\RST\TextRoles\LiteralTextRole;
 use Doctrine\RST\TextRoles\TextRole;
 
 class BasicDirectiveFactory implements DirectiveFactory
@@ -45,6 +48,9 @@ class BasicDirectiveFactory implements DirectiveFactory
             new Toctree(),
         ];
         $this->textRoles  = [
+            new LiteralTextRole(),
+            new InterpretedTextRole(),
+            new LinkTextRole(),
             new CodeRole(),
             new Doc(),
             new Doc('ref', true),
