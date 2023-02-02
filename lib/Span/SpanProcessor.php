@@ -5,18 +5,13 @@ declare(strict_types=1);
 namespace Doctrine\RST\Span;
 
 use Doctrine\RST\Environment;
-use Doctrine\RST\Meta\LinkTarget;
-use Doctrine\RST\TextRoles\TextRole;
 
 use function mt_getrandmax;
-use function preg_match;
-use function preg_match_all;
 use function preg_replace;
 use function preg_replace_callback;
 use function random_int;
 use function sha1;
 use function str_replace;
-use function substr;
 use function time;
 
 final class SpanProcessor
@@ -61,6 +56,16 @@ final class SpanProcessor
         return $span;
     }
 
+    public function getEnvironment(): Environment
+    {
+        return $this->environment;
+    }
+
+    public function setEnvironment(Environment $environment): void
+    {
+        $this->environment = $environment;
+    }
+
     /** @return SpanToken[] */
     public function getTokens(): array
     {
@@ -76,48 +81,29 @@ final class SpanProcessor
         return $value;
     }
 
-    /** @param string[] $tokenData */
-    private function addToken(?TextRole $textRole, string $id, array $tokenData): void
+    public function addToken(SpanToken $token): void
     {
-        $this->tokens[$id] = new SpanToken($textRole, $id, $tokenData);
+        $this->tokens[$token->getId()] = $token;
     }
 
     private function replaceLiterals(string $span): string
     {
-        return (string) preg_replace_callback(
-            '/``(.+)``(?!`)/mUsi',
-            function (array $match): string {
-                $id = $this->generateId();
+        $textRole =  $this->environment->getTextRole(SpanToken::TYPE_LITERAL);
+        if ($textRole === null) {
+            return $span;
+        }
 
-                $textRole =  $this->environment->getTextRole(SpanToken::TYPE_LITERAL);
-                $this->addToken($textRole, $id, [
-                    'type' => 'literal',
-                    'text' => $match[1],
-                ]);
-
-                return $id;
-            },
-            $span
-        );
+        return $textRole->getTokens($this, $span);
     }
 
     private function replaceInterpretedText(string $span): string
     {
-        return (string) preg_replace_callback(
-            '/(?<=^|\s)`(\S|\S\S|\S[^`]+\S)`(?!(:.+:|[_]))/mUsi',
-            function (array $match): string {
-                $id = $this->generateId();
+        $textRole =  $this->environment->getTextRole(SpanToken::TYPE_INTERPRETED);
+        if ($textRole === null) {
+            return $span;
+        }
 
-                $textRole =  $this->environment->getTextRole(SpanToken::TYPE_INTERPRETED);
-                $this->addToken($textRole, $id, [
-                    'type' => SpanToken::TYPE_INTERPRETED,
-                    'text' => $match[1],
-                ]);
-
-                return $id;
-            },
-            $span
-        );
+        return $textRole->getTokens($this, $span);
     }
 
     private function replaceTitleLetters(string $span): string
@@ -140,7 +126,7 @@ final class SpanProcessor
             $textRole =  $this->environment->getTextRole($textRoleName);
             $data     = $textRole->process($this->environment, $text);
 
-            $this->addToken($textRole, $id, $data);
+            $this->addToken(new SpanToken($textRole, $id, $data));
 
             return $id;
         }, $span);
@@ -148,93 +134,12 @@ final class SpanProcessor
 
     private function replaceLinks(string $span): string
     {
-        // Signaling anonymous names
-        $this->environment->resetAnonymousStack();
-
-        if (preg_match_all('/(_*)(([a-z0-9]+)|(`(.+)`))__/mUsi', $span, $matches) > 0) {
-            foreach ($matches[3] as $k => $y) {
-                $name = $matches[3][$k] ? $matches[3][$k] : $matches[5][$k];
-
-                // string prefixed with _ is not an anonymous link
-                if ($matches[1][$k]) {
-                    continue;
-                }
-
-                $this->environment->pushAnonymous($name);
-            }
-        }
-
-        // Replacing anonymous links  `here <http://google.com>`__
-        $span = (string) preg_replace_callback(
-            '/(^|[ \(])(([a-z0-9_-]+)|(`(.+)`))__([^a-z0-9]{1}|$)/mUsi',
-            [$this, 'registerAnonymousLinkFromMatches'],
-            $span
-        );
-
-        // Replacing other links  `Google <http://google.com>`_
-        $span = (string) preg_replace_callback(
-            '/(^|[ \(])(([a-z0-9_-]+)|(`(.+)`))_([^a-z0-9_]{1}|$)/mUsi',
-            [$this, 'registerLinkFromMatches'],
-            $span
-        );
-
-        return $span;
-    }
-
-    /** @param string[] $match */
-    private function registerAnonymousLinkFromMatches(array $match): string
-    {
-        return $this->registerLinkFromMatches($match, true);
-    }
-
-    /** @param string[] $match */
-    private function registerLinkFromMatches(array $match, bool $anonymous = false): string
-    {
-        $link = $match[3] !== '' ? $match[3] : $match[5];
-
-        // a link starting with _ is not a link - return original string
-        if (substr($link, 0, 1) === '_') {
-            return $match[0];
-        }
-
-        // the link may have a new line in it so we need to strip it
-        // before setting the link and adding a token to be replaced
-        $link = str_replace("\n", ' ', $link);
-        $link = (string) preg_replace('/\s+/', ' ', $link);
-
-        // we need to maintain the characters before and after the link
-        $prev = $match[1]; // previous character before the link
-        $next = $match[6]; // next character after the link
-
-        $url = '';
-
-        // extract the url if the link was in this format: `test link <https://www.google.com>`_
-        if (preg_match('/^(.+)[ \n]<(.+)>$/mUsi', $link, $m) > 0) {
-            $link = $m[1];
-            $url  = $m[2];
-            if (! $anonymous) {
-                $this->environment->setLinkTarget(new LinkTarget($link, $url));
-            }
-        }
-
-        // extract the url if the link was in this format: `<https://www.google.com>`_
-        if (preg_match('/^<(.+)>$/mUsi', $link, $m) > 0) {
-            $link = $m[1];
-            $url  = $m[1];
-            if (! $anonymous) {
-                $this->environment->setLinkTarget(new LinkTarget($link, $url));
-            }
-        }
-
-        $id = $this->generateId();
-
         $textRole =  $this->environment->getTextRole(SpanToken::TYPE_LINK);
-        $this->addToken($textRole, $id, [
-            'link' => $link,
-            'url' => $url,
-        ]);
+        if ($textRole === null) {
+            return $span;
+        }
 
-        return $prev . $id . $next;
+        return $textRole->getTokens($this, $span);
     }
 
     private function replaceStandaloneHyperlinks(string $span): string
@@ -251,10 +156,11 @@ final class SpanProcessor
             $url = $match[1];
 
             $textRole =  $this->environment->getTextRole(SpanToken::TYPE_LINK);
-            $this->addToken($textRole, $id, [
+
+            $this->addToken(new SpanToken($textRole, $id, [
                 'link' => $url,
                 'url' => $scheme . $url,
-            ]);
+            ]));
 
             return $id;
         };
@@ -283,10 +189,11 @@ final class SpanProcessor
             $url = $match[1];
 
             $textRole =  $this->environment->getTextRole(SpanToken::TYPE_LINK);
-            $this->addToken($textRole, $id, [
+
+            $this->addToken(new SpanToken($textRole, $id, [
                 'link' => $url,
-                'url' => 'mailto:' . $url,
-            ]);
+                'url' =>  'mailto:' . $url,
+            ]));
 
             return $id;
         };
@@ -306,7 +213,7 @@ final class SpanProcessor
         return preg_replace('/(?<!\\\\)\\\\/', '', $span);
     }
 
-    private function generateId(): string
+    public function generateId(): string
     {
         $this->tokenId++;
 

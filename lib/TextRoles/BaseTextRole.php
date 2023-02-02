@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\RST\TextRoles;
 
 use Doctrine\RST\Environment;
+use Doctrine\RST\Span\SpanProcessor;
 
 /**
  * This class offers a convenient way to implement a text role.
@@ -46,5 +47,18 @@ abstract class BaseTextRole implements TextRole
     public function setAliases(array $aliases): void
     {
         $this->aliases = $aliases;
+    }
+
+    /**
+     * Does this text role have a special syntax like ``*cursive*``?
+     */
+    public function hasSpecialSyntax(): bool
+    {
+        return false;
+    }
+
+    public function getTokens(SpanProcessor $spanProcessor, string $span): string
+    {
+        return $span;
     }
 }
