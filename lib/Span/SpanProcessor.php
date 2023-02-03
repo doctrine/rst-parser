@@ -37,19 +37,17 @@ final class SpanProcessor
 
     public function process(): string
     {
-        $span = $this->replaceLiterals($this->span);
-
-        $span = $this->replaceInterpretedText($span);
-
-        $span = $this->replaceTitleLetters($span);
-
-        $span = $this->replaceTextRoles($span);
-
-        $span = $this->replaceLinks($span);
+        $specialTextRoles = $this->environment->getSpecialTextRoles();
+        $span             = $this->span;
+        foreach ($specialTextRoles as $textRole) {
+            $span = $textRole->replaceAndRegisterTokens($this, $span);
+        }
 
         $span = $this->replaceStandaloneHyperlinks($span);
 
         $span = $this->replaceStandaloneEmailAddresses($span);
+
+        $span = $this->replaceTextRoles($span);
 
         $span = $this->replaceEscapes($span);
 
@@ -59,11 +57,6 @@ final class SpanProcessor
     public function getEnvironment(): Environment
     {
         return $this->environment;
-    }
-
-    public function setEnvironment(Environment $environment): void
-    {
-        $this->environment = $environment;
     }
 
     /** @return SpanToken[] */
@@ -86,35 +79,6 @@ final class SpanProcessor
         $this->tokens[$token->getId()] = $token;
     }
 
-    private function replaceLiterals(string $span): string
-    {
-        $textRole =  $this->environment->getTextRole(SpanToken::TYPE_LITERAL);
-        if ($textRole === null) {
-            return $span;
-        }
-
-        return $textRole->replaceAndRegisterTokens($this, $span);
-    }
-
-    private function replaceInterpretedText(string $span): string
-    {
-        $textRole =  $this->environment->getTextRole(SpanToken::TYPE_INTERPRETED);
-        if ($textRole === null) {
-            return $span;
-        }
-
-        return $textRole->replaceAndRegisterTokens($this, $span);
-    }
-
-    private function replaceTitleLetters(string $span): string
-    {
-        foreach ($this->environment->getTitleLetters() as $level => $letter) {
-            $span = (string) preg_replace_callback('/\#\\' . $letter . '/mUsi', fn (array $match): string => (string) $this->environment->getNumber($level), $span);
-        }
-
-        return $span;
-    }
-
     private function replaceTextRoles(string $span): string
     {
         return (string) preg_replace_callback('/:([a-z0-9]+):`(.+)`/mUsi', function ($match): string {
@@ -130,16 +94,6 @@ final class SpanProcessor
 
             return $id;
         }, $span);
-    }
-
-    private function replaceLinks(string $span): string
-    {
-        $textRole =  $this->environment->getTextRole(SpanToken::TYPE_LINK);
-        if ($textRole === null) {
-            return $span;
-        }
-
-        return $textRole->replaceAndRegisterTokens($this, $span);
     }
 
     private function replaceStandaloneHyperlinks(string $span): string
