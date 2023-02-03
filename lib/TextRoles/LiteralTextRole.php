@@ -14,7 +14,7 @@ class LiteralTextRole extends SpecialTextRole
         parent::__construct(SpanToken::TYPE_LITERAL);
     }
 
-    public function getTokens(SpanProcessor $spanProcessor, string $span): string
+    public function replaceAndRegisterTokens(SpanProcessor $spanProcessor, string $span): string
     {
         return $this->replaceTokens($spanProcessor, $span, '/``(.+)``(?!`)/mUsi');
     }

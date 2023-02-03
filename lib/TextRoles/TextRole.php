@@ -51,5 +51,10 @@ interface TextRole
      */
     public function hasSpecialSyntax(): bool;
 
-    public function getTokens(SpanProcessor $spanProcessor, string $span): string;
+    /**
+     * Replaces all occurrences of the special syntax of this text role with a unique string and registers the according
+     * tokens to the calling SpanProcessor. These Tokens will then be rendered in the render method of this text role
+     * later on.
+     */
+    public function replaceAndRegisterTokens(SpanProcessor $spanProcessor, string $span): string;
 }

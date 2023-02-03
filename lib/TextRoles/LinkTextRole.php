@@ -67,7 +67,7 @@ class LinkTextRole extends SpecialTextRole
         return $environment->getLinkRenderer()->renderUrl($url, $title, $attributes);
     }
 
-    public function getTokens(SpanProcessor $spanProcessor, string $span): string
+    public function replaceAndRegisterTokens(SpanProcessor $spanProcessor, string $span): string
     {
         $this->spanProcessor = $spanProcessor;
         // Signaling anonymous names

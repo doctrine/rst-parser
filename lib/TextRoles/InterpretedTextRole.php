@@ -14,7 +14,7 @@ class InterpretedTextRole extends SpecialTextRole
         parent::__construct(SpanToken::TYPE_INTERPRETED);
     }
 
-    public function getTokens(SpanProcessor $spanProcessor, string $span): string
+    public function replaceAndRegisterTokens(SpanProcessor $spanProcessor, string $span): string
     {
         return $this->replaceTokens($spanProcessor, $span, '/(?<=^|\s)`(\S|\S\S|\S[^`]+\S)`(?!(:.+:|[_]))/mUsi');
     }
