@@ -23,7 +23,7 @@ class SpanProcessorTest extends TestCase
 
     public function testProcessingLinkSpanSetsLinkTarget(): void
     {
-        $this->environment->method('getTextRole')->willReturn(new LinkTextRole());
+        $this->environment->method('getSpecialTextRoles')->willReturn([new LinkTextRole()]);
         $this->environment->expects(self::exactly(1))
             ->method('setLinkTarget')
             ->with(new LinkTarget('example', 'http://example.org/'));

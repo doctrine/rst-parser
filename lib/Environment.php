@@ -18,6 +18,7 @@ use InvalidArgumentException;
 use RuntimeException;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 
+use function array_filter;
 use function array_shift;
 use function dirname;
 use function implode;
@@ -143,6 +144,14 @@ class Environment
         }
 
         return $this->textRoles[$section];
+    }
+
+    /** @return TextRole[] */
+    public function getSpecialTextRoles(): array
+    {
+        return array_filter($this->textRoles, static function (TextRole $value) {
+            return $value->hasSpecialSyntax();
+        });
     }
 
     public function addInvalidLink(InvalidLink $invalidLink): void
