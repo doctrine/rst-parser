@@ -93,7 +93,7 @@ final class SpanProcessor
             return $span;
         }
 
-        return $textRole->getTokens($this, $span);
+        return $textRole->replaceAndRegisterTokens($this, $span);
     }
 
     private function replaceInterpretedText(string $span): string
@@ -103,7 +103,7 @@ final class SpanProcessor
             return $span;
         }
 
-        return $textRole->getTokens($this, $span);
+        return $textRole->replaceAndRegisterTokens($this, $span);
     }
 
     private function replaceTitleLetters(string $span): string
@@ -139,7 +139,7 @@ final class SpanProcessor
             return $span;
         }
 
-        return $textRole->getTokens($this, $span);
+        return $textRole->replaceAndRegisterTokens($this, $span);
     }
 
     private function replaceStandaloneHyperlinks(string $span): string

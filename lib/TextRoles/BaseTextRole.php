@@ -57,7 +57,7 @@ abstract class BaseTextRole implements TextRole
         return false;
     }
 
-    public function getTokens(SpanProcessor $spanProcessor, string $span): string
+    public function replaceAndRegisterTokens(SpanProcessor $spanProcessor, string $span): string
     {
         return $span;
     }
