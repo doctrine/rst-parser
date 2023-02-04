@@ -14,6 +14,7 @@ use Doctrine\RST\TextRoles\LiteralTextRole;
 use Doctrine\RST\TextRoles\NbspTextRole;
 use Doctrine\RST\TextRoles\StrongTextRole;
 use Doctrine\RST\TextRoles\TextRole;
+use Doctrine\RST\TextRoles\VariableTextRole;
 
 class BasicDirectiveFactory implements DirectiveFactory
 {
@@ -55,6 +56,7 @@ class BasicDirectiveFactory implements DirectiveFactory
             // Literal and Interpreted textroles must come first as their content may not be replaced.
             new LiteralTextRole(),
             new InterpretedTextRole(),
+            new VariableTextRole(),
             new BrTextRole(),
             new NbspTextRole(),
             new StrongTextRole(),
