@@ -60,6 +60,16 @@ final class SpanProcessor
             $span = $textRole->replaceAndRegisterTokens($this, $span);
         }
 
+        $textRole = $this->environment->getTextRole('strong');
+        if ($textRole !== null) {
+            $span = $textRole->replaceAndRegisterTokens($this, $span);
+        }
+
+        $textRole = $this->environment->getTextRole('emphasis');
+        if ($textRole !== null) {
+            $span = $textRole->replaceAndRegisterTokens($this, $span);
+        }
+
         return $span;
     }
 

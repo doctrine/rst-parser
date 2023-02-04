@@ -8,10 +8,6 @@ use Doctrine\RST\References\ResolvedReference;
 
 interface SpanRenderer
 {
-    public function emphasis(string $text): string;
-
-    public function strongEmphasis(string $text): string;
-
     public function nbsp(): string;
 
     /** @param mixed[] $attributes */
