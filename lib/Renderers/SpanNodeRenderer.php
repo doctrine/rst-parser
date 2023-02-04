@@ -8,6 +8,7 @@ use Doctrine\RST\Environment;
 use Doctrine\RST\Nodes\Node;
 use Doctrine\RST\Nodes\SpanNode;
 use Doctrine\RST\References\ResolvedReference;
+use Doctrine\RST\Span\SpanProcessor;
 use Doctrine\RST\Span\SpanToken;
 
 use function is_string;
@@ -21,29 +22,34 @@ abstract class SpanNodeRenderer implements NodeRenderer, SpanRenderer
     protected $environment;
 
     /** @var SpanNode */
-    protected $span;
+    protected $spanNode;
 
     public function __construct(
         Environment $environment,
-        SpanNode $span
+        SpanNode $spanNode
     ) {
         $this->environment = $environment;
-        $this->span        = $span;
+        $this->spanNode    = $spanNode;
     }
 
     public function render(): string
     {
-        $value = $this->span->getValue();
+        $value = $this->spanNode->getValue();
 
-        $span = $this->renderSyntaxes($value);
+        $span = $this->processSyntax($value);
 
         $span = $this->renderTokens($span);
 
         return $span;
     }
 
-    private function renderSyntaxes(string $span): string
+    private function processSyntax(string $span): string
     {
+        $spanProcessor = new SpanProcessor($this->environment, $span, $this->spanNode->getTokens());
+        $span          = $spanProcessor->processRecursiveRoles();
+        $this->spanNode->setTokens($spanProcessor->getTokens());
+        $this->spanNode->setValue($span);
+
         $span = $this->escape($span);
 
         $span = $this->renderStrongEmphasis($span);
@@ -54,7 +60,7 @@ abstract class SpanNodeRenderer implements NodeRenderer, SpanRenderer
 
         $span = $this->renderVariables($span);
 
-        $span = $this->renderBrs($span);
+     //   $span = $this->renderBrs($span);
 
         return $span;
     }
@@ -95,15 +101,9 @@ abstract class SpanNodeRenderer implements NodeRenderer, SpanRenderer
         }, $span);
     }
 
-    private function renderBrs(string $span): string
-    {
-        // Adding brs when a space is at the end of a line
-        return (string) preg_replace('/ \n/', $this->br(), $span);
-    }
-
     private function renderTokens(string $span): string
     {
-        foreach ($this->span->getTokens() as $token) {
+        foreach ($this->spanNode->getTokens() as $token) {
             $span = $this->renderToken($token, $span);
         }
 
@@ -113,7 +113,7 @@ abstract class SpanNodeRenderer implements NodeRenderer, SpanRenderer
     private function renderToken(SpanToken $spanToken, string $span): string
     {
         if ($spanToken->getType() === SpanToken::TYPE_LINK) {
-            $spanToken->set('linktext', $this->renderSyntaxes($spanToken->get('link')));
+            $spanToken->set('linktext', $this->processSyntax($spanToken->get('link')));
         }
 
         $textRole = $spanToken->getTextRole();

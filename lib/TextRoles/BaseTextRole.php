@@ -57,6 +57,11 @@ abstract class BaseTextRole implements TextRole
         return false;
     }
 
+    public function hasRecursiveSyntax(): bool
+    {
+        return false;
+    }
+
     public function replaceAndRegisterTokens(SpanProcessor $spanProcessor, string $span): string
     {
         return $span;

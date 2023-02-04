@@ -19,10 +19,10 @@ final class SpanNodeRenderer extends BaseSpanNodeRenderer
 
     public function __construct(
         Environment $environment,
-        SpanNode $span,
+        SpanNode $spanNode,
         TemplateRenderer $templateRenderer
     ) {
-        parent::__construct($environment, $span);
+        parent::__construct($environment, $spanNode);
 
         $this->templateRenderer = $templateRenderer;
     }
@@ -40,11 +40,6 @@ final class SpanNodeRenderer extends BaseSpanNodeRenderer
     public function nbsp(): string
     {
         return $this->templateRenderer->render('nbsp.html.twig');
-    }
-
-    public function br(): string
-    {
-        return $this->templateRenderer->render('br.html.twig');
     }
 
     public function escape(string $span): string
