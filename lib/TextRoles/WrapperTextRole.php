@@ -17,7 +17,7 @@ class WrapperTextRole extends BaseTextRole
 
     /**
      * @param string   $wrap    A sprintf string containing one marker for the text
-     * @param String[] $aliases Aliases for the name
+     * @param string[] $aliases Aliases for the name
      */
     public function __construct(string $name, string $wrap, array $aliases = [])
     {

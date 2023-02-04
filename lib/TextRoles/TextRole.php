@@ -26,7 +26,7 @@ interface TextRole
      * Some text roles have a short and a long name. The alternative names can be registered as alias.
      * For example ``:bold:`bold text``` and ``:b:`bold text``` can have the same effect.
      *
-     * @return String[]
+     * @return string[]
      */
     public function getAliases(): array;
 

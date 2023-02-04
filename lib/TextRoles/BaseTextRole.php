@@ -11,7 +11,7 @@ use Doctrine\RST\Environment;
  */
 abstract class BaseTextRole implements TextRole
 {
-    /** @var String[] */
+    /** @var string[] */
     protected array $aliases = [];
 
     /**
@@ -28,13 +28,13 @@ abstract class BaseTextRole implements TextRole
         ];
     }
 
-    /** @return String[] */
+    /** @return string[] */
     public function getAliases(): array
     {
         return $this->aliases;
     }
 
-    /** @param String[] $aliases */
+    /** @param string[] $aliases */
     public function setAliases(array $aliases): void
     {
         $this->aliases = $aliases;
