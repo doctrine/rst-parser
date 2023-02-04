@@ -27,16 +27,6 @@ final class SpanNodeRenderer extends BaseSpanNodeRenderer
         $this->templateRenderer = $templateRenderer;
     }
 
-    public function emphasis(string $text): string
-    {
-        return $this->templateRenderer->render('emphasis.html.twig', ['text' => $text]);
-    }
-
-    public function strongEmphasis(string $text): string
-    {
-        return $this->templateRenderer->render('strong-emphasis.html.twig', ['text' => $text]);
-    }
-
     public function nbsp(): string
     {
         return $this->templateRenderer->render('nbsp.html.twig');

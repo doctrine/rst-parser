@@ -49,8 +49,6 @@ class FormatDirectiveFactory implements DirectiveFactory
             new WrapperTextRole('kbd'),
             new WrapperTextRole('mailheader'),
             new WrapperTextRole('math'),
-            new WrapperTextRole('emphasis'),
-            new WrapperTextRole('strong'),
             new WrapperTextRole('subscript', null, ['sub']),
             new WrapperTextRole('superscript', null, ['sup']),
             new WrapperTextRole('title-reference', null, ['t', 'title']),

@@ -18,6 +18,7 @@ use function str_replace;
 
 abstract class SpanNodeRenderer implements NodeRenderer, SpanRenderer
 {
+    public const MAX_TOKEN_ITERATION = 10;
     /** @var Environment */
     protected $environment;
 
@@ -52,27 +53,11 @@ abstract class SpanNodeRenderer implements NodeRenderer, SpanRenderer
 
         $span = $this->escape($span);
 
-        $span = $this->renderStrongEmphasis($span);
-
-        $span = $this->renderEmphasis($span);
-
         $span = $this->renderNbsp($span);
 
         $span = $this->renderVariables($span);
 
-     //   $span = $this->renderBrs($span);
-
         return $span;
-    }
-
-    private function renderStrongEmphasis(string $span): string
-    {
-        return (string) preg_replace_callback('/\*\*(.+)\*\*/mUsi', fn (array $matches): string => $this->strongEmphasis($matches[1]), $span);
-    }
-
-    private function renderEmphasis(string $span): string
-    {
-        return (string) preg_replace_callback('/\*(.+)\*/mUsi', fn (array $matches): string => $this->emphasis($matches[1]), $span);
     }
 
     private function renderNbsp(string $span): string
@@ -103,8 +88,15 @@ abstract class SpanNodeRenderer implements NodeRenderer, SpanRenderer
 
     private function renderTokens(string $span): string
     {
-        foreach ($this->spanNode->getTokens() as $token) {
-            $span = $this->renderToken($token, $span);
+        $previousSpan = '';
+        $i            = 0;
+        while ($previousSpan !== $span && $i < self::MAX_TOKEN_ITERATION) {
+            $previousSpan = $span;
+            foreach ($this->spanNode->getTokens() as $token) {
+                $span = $this->renderToken($token, $span);
+            }
+
+            $i++;
         }
 
         return $span;
