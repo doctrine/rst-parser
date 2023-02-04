@@ -5,14 +5,11 @@ declare(strict_types=1);
 namespace Doctrine\RST\Renderers;
 
 use Doctrine\RST\Environment;
-use Doctrine\RST\Nodes\Node;
 use Doctrine\RST\Nodes\SpanNode;
 use Doctrine\RST\References\ResolvedReference;
 use Doctrine\RST\Span\SpanProcessor;
 use Doctrine\RST\Span\SpanToken;
 
-use function is_string;
-use function preg_replace_callback;
 use function str_replace;
 
 abstract class SpanNodeRenderer implements NodeRenderer, SpanRenderer
@@ -52,30 +49,7 @@ abstract class SpanNodeRenderer implements NodeRenderer, SpanRenderer
 
         $span = $this->escape($span);
 
-        $span = $this->renderVariables($span);
-
         return $span;
-    }
-
-    private function renderVariables(string $span): string
-    {
-        return (string) preg_replace_callback('/\|(.+)\|/mUsi', function (array $match): string {
-            $variable = $this->environment->getVariable($match[1]);
-
-            if ($variable === null) {
-                return '';
-            }
-
-            if ($variable instanceof Node) {
-                return $variable->render();
-            }
-
-            if (is_string($variable)) {
-                return $variable;
-            }
-
-            return (string) $variable;
-        }, $span);
     }
 
     private function renderTokens(string $span): string
