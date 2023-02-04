@@ -65,8 +65,6 @@ Available Events
 
 The events you can listen for and their respective handlers:
 
-The events you can listen for are as follows:
-
 - ``PreBuildScanEvent::PRE_BUILD_SCAN`` - Dispatches a method named ``preBuildScan()`` before files are scanned when using the builder.
 - ``PreBuildParseEvent::PRE_BUILD_PARSE`` - Dispatches a method named ``preBuildParse()`` before files are parsed and after they are scanned when using the builder.
 - ``PreBuildRenderEvent::PRE_BUILD_RENDER`` - Dispatches a method named ``preBuildRender()`` before files are rendered and after they are parsed when using the builder.
