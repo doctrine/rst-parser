@@ -8,7 +8,6 @@ use Doctrine\RST\Environment;
 use Doctrine\RST\HTML\Renderers\SpanNodeRenderer;
 use Doctrine\RST\Nodes\SpanNode;
 use Doctrine\RST\Span\SpanToken;
-use Doctrine\RST\Templates\TemplateRenderer;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -18,8 +17,6 @@ class SpanNodeRendererTest extends TestCase
     private $environment;
     /** @var SpanNode|MockObject */
     private $spanNode;
-    /** @var TemplateRenderer|MockObject */
-    private $templateRenderer;
 
     private SpanNodeRenderer $spanNodeRenderer;
 
@@ -27,8 +24,7 @@ class SpanNodeRendererTest extends TestCase
     {
         $this->environment      = $this->createMock(Environment::class);
         $this->spanNode         = $this->createMock(SpanNode::class);
-        $this->templateRenderer = $this->createMock(TemplateRenderer::class);
-        $this->spanNodeRenderer = new SpanNodeRenderer($this->environment, $this->spanNode, $this->templateRenderer);
+        $this->spanNodeRenderer = new SpanNodeRenderer($this->environment, $this->spanNode);
     }
 
     public function testExampleRoleWrapsContent(): void

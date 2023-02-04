@@ -46,7 +46,7 @@ class SpanTest extends TestCase
             ->willReturn($linkRenderer);
 
         $span         = new SpanNode($parser, 'span');
-        $spanRenderer = new SpanNodeRenderer($environment, $span, $templateRenderer);
+        $spanRenderer = new SpanNodeRenderer($environment, $span);
 
         self::assertSame(
             $expectedLink,
