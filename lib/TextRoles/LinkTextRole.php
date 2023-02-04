@@ -101,6 +101,9 @@ class LinkTextRole extends SpecialTextRole
             $span
         );
 
+        $span = $this->replaceStandaloneHyperlinks($span);
+        $span = $this->replaceStandaloneEmailAddresses($span);
+
         return $span;
     }
 
@@ -157,5 +160,118 @@ class LinkTextRole extends SpecialTextRole
         ]));
 
         return $prev . $id . $next;
+    }
+
+    private function replaceStandaloneHyperlinks(string $span): string
+    {
+        // Replace standalone hyperlinks using a modified version of @gruber's
+        // "Liberal Regex Pattern for all URLs", https://gist.github.com/gruber/249502
+        $absoluteUriPattern = <<<'REGEX'
+#(?i)\b
+        (
+            (?:
+                [a-z][\w\-+.]+:
+                (?:
+                /{1,3}
+                |
+                [a-z0-9%]
+            )
+        )
+        (?:
+             [^\s()<>]+
+             |
+             \(([^\s()<>]+
+             |
+             (\([^\s()<>]+\)))*\)
+        )+
+        (?:
+            \(([^\s()<>]+|(\([^\s()<>]+\)))*\)
+            |
+            [^\s\`!()\[\]{};:\'".,<>?«»“”‘’]
+        )
+    )#x
+REGEX;
+
+        // Standalone hyperlink callback
+        $standaloneHyperlinkCallback = function ($match, $scheme = ''): string {
+            $id  = $this->spanProcessor->generateId();
+            $url = $match[1];
+
+            $textRole =  $this->environment->getTextRole(SpanToken::TYPE_LINK);
+
+            $this->spanProcessor->addToken(new SpanToken($textRole, $id, [
+                'link' => $url,
+                'url' => $scheme . $url,
+            ]));
+
+            return $id;
+        };
+
+        return (string) preg_replace_callback(
+            $absoluteUriPattern,
+            $standaloneHyperlinkCallback,
+            $span
+        );
+    }
+
+    private function replaceStandaloneEmailAddresses(string $span): string
+    {
+        // Replace standalone email addresses using a regex based on RFC 5322.
+        $emailAddressPattern = <<<'REGEX'
+/(
+    (?:
+    [a-z0-9!#$%&\'*+\/=?^_`{|}~-]+
+    (?:
+        \.[a-z0-9
+        !#$%&\'*+\/=?^_`{|}~-]+
+    )*
+    |
+    "(?:
+        [\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]
+        |
+        \\[\x01-\x09\x0b\x0c\x0e-\x7f]
+    )*")
+    @
+    (?:
+        (?:
+            [a-z0-9](?:
+                [a-z0-9-]*[a-z0-9]
+            )?\.
+        )+[a-z0-9]
+        (?:
+            [a-z0-9-]*[a-z0-9]
+        )?
+        |
+        \[(?:
+            (?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.
+        ){3}
+        (?:
+            25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:
+                [\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f]
+            )+
+        )\]
+    )
+)/msix
+REGEX;
+
+        $standaloneEmailAddressCallback = function (array $match): string {
+            $id  = $this->spanProcessor->generateId();
+            $url = $match[1];
+
+            $textRole =  $this->environment->getTextRole(SpanToken::TYPE_LINK);
+
+            $this->spanProcessor->addToken(new SpanToken($textRole, $id, [
+                'link' => $url,
+                'url' =>  'mailto:' . $url,
+            ]));
+
+            return $id;
+        };
+
+        return (string) preg_replace_callback(
+            $emailAddressPattern,
+            $standaloneEmailAddressCallback,
+            $span
+        );
     }
 }
