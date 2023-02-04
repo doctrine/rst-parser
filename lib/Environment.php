@@ -9,13 +9,10 @@ use Doctrine\RST\Meta\MetaEntry;
 use Doctrine\RST\Meta\Metas;
 use Doctrine\RST\NodeFactory\NodeFactory;
 use Doctrine\RST\References\ResolvedReference;
-use Doctrine\RST\Renderers\LinkRenderer;
-use Doctrine\RST\Renderers\LinkRendererFactory;
 use Doctrine\RST\Templates\TemplateRenderer;
 use Doctrine\RST\TextRoles\ReferenceRole;
 use Doctrine\RST\TextRoles\TextRole;
 use InvalidArgumentException;
-use RuntimeException;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 
 use function array_filter;
@@ -430,16 +427,6 @@ class Environment
             sprintf('Unknown ' . $type . ' section "%s"', $section),
             $this->getCurrentFileName()
         );
-    }
-
-    public function getLinkRenderer(): LinkRenderer
-    {
-        $factories = $this->getConfiguration()->getFormat()->getRendererFactories();
-        if (! isset($factories[LinkRenderer::class]) || ! $factories[LinkRenderer::class] instanceof LinkRendererFactory) {
-            throw new RuntimeException('No LinkRendererFactory found for ' . LinkRenderer::class);
-        }
-
-        return $factories[LinkRenderer::class]->create($this);
     }
 
     public function addInvalidReference(string $data): void

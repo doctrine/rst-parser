@@ -6,7 +6,6 @@ namespace Doctrine\RST\Formats;
 
 use Doctrine\RST\Directives\DirectiveFactory;
 use Doctrine\RST\Renderers\NodeRendererFactory;
-use Doctrine\RST\Renderers\RendererFactory;
 
 final class InternalFormat implements Format
 {
@@ -16,9 +15,6 @@ final class InternalFormat implements Format
 
     /** @var NodeRendererFactory[]|null */
     private ?array $nodeRendererFactories = null;
-
-    /** @var RendererFactory[]|null */
-    private ?array $rendererFactories = null;
 
     public function __construct(Format $format)
     {
@@ -47,15 +43,5 @@ final class InternalFormat implements Format
         }
 
         return $this->nodeRendererFactories;
-    }
-
-    /** @return RendererFactory[] */
-    public function getRendererFactories(): array
-    {
-        if ($this->rendererFactories === null) {
-            $this->rendererFactories = $this->format->getRendererFactories();
-        }
-
-        return $this->rendererFactories;
     }
 }

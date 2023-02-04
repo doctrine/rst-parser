@@ -17,7 +17,7 @@ use function preg_replace_callback;
 use function str_replace;
 use function substr;
 
-class LinkTextRole extends SpecialTextRole
+abstract class LinkTextRole extends SpecialTextRole
 {
     private ?SpanProcessor $spanProcessor = null;
     private ?Environment $environment     = null;
@@ -58,14 +58,11 @@ class LinkTextRole extends SpecialTextRole
             }
         }
 
-        return $this->link($environment, $url, $linktext);
+        return $this->renderLink($environment, $url, $linktext);
     }
 
     /** @param mixed[] $attributes */
-    public function link(Environment $environment, ?string $url, string $title, array $attributes = []): string
-    {
-        return $environment->getLinkRenderer()->renderUrl($url, $title, $attributes);
-    }
+    abstract public function renderLink(Environment $environment, ?string $url, string $title, array $attributes = []): string;
 
     public function replaceAndRegisterTokens(SpanProcessor $spanProcessor, string $span): string
     {
