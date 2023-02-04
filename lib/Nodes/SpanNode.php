@@ -58,6 +58,12 @@ class SpanNode extends Node
         return $this->tokens;
     }
 
+    /** @param SpanToken[] $tokens */
+    public function setTokens(array $tokens): void
+    {
+        $this->tokens = $tokens;
+    }
+
     public function getEnvironment(): Environment
     {
         return $this->environment;

@@ -14,8 +14,6 @@ interface SpanRenderer
 
     public function nbsp(): string;
 
-    public function br(): string;
-
     /** @param mixed[] $attributes */
     public function link(?string $url, string $title, array $attributes = []): string;
 

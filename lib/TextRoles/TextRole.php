@@ -52,6 +52,12 @@ interface TextRole
     public function hasSpecialSyntax(): bool;
 
     /**
+     * Can the syntax also be applied to the text of some special text roles?
+     * For example within link texts or table cells.
+     */
+    public function hasRecursiveSyntax(): bool;
+
+    /**
      * Replaces all occurrences of the special syntax of this text role with a unique string and registers the according
      * tokens to the calling SpanProcessor. These Tokens will then be rendered in the render method of this text role
      * later on.

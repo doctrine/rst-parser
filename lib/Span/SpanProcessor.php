@@ -27,10 +27,12 @@ final class SpanProcessor
     /** @var SpanToken[] */
     private array $tokens = [];
 
-    public function __construct(Environment $environment, string $span)
+    /** @param  SpanToken[] $tokens */
+    public function __construct(Environment $environment, string $span, array $tokens = [])
     {
         $this->environment = $environment;
         $this->span        = $span;
+        $this->tokens      = $tokens;
         $this->tokenId     = 0;
         $this->prefix      = random_int(0, mt_getrandmax()) . '|' . time();
     }
@@ -46,6 +48,17 @@ final class SpanProcessor
         $span = $this->replaceTextRoles($span);
 
         $span = $this->replaceEscapes($span);
+
+        return $span;
+    }
+
+    public function processRecursiveRoles(): string
+    {
+        $span     = $this->span;
+        $textRole = $this->environment->getTextRole('br');
+        if ($textRole !== null) {
+            $span = $textRole->replaceAndRegisterTokens($this, $span);
+        }
 
         return $span;
     }
