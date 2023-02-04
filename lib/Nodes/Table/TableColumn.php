@@ -9,7 +9,6 @@ use LogicException;
 
 use function strlen;
 use function trim;
-use function utf8_encode;
 
 final class TableColumn
 {
@@ -23,7 +22,7 @@ final class TableColumn
 
     public function __construct(string $content, int $colSpan)
     {
-        $this->content = utf8_encode(trim($content));
+        $this->content = trim($content);
         $this->colSpan = $colSpan;
     }
 
