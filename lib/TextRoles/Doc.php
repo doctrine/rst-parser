@@ -8,7 +8,7 @@ use Doctrine\RST\Environment;
 use Doctrine\RST\References\ResolvedReference;
 use Doctrine\RST\References\Resolver;
 
-final class Doc extends ReferenceRole
+abstract class Doc extends ReferenceRole
 {
     private string $name;
 

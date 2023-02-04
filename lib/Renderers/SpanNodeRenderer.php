@@ -6,7 +6,6 @@ namespace Doctrine\RST\Renderers;
 
 use Doctrine\RST\Environment;
 use Doctrine\RST\Nodes\SpanNode;
-use Doctrine\RST\References\ResolvedReference;
 use Doctrine\RST\Span\SpanProcessor;
 use Doctrine\RST\Span\SpanToken;
 
@@ -83,17 +82,5 @@ abstract class SpanNodeRenderer implements NodeRenderer, SpanRenderer
         $resolvedTextRole = $textRole->render($this->environment, $spanToken);
 
         return str_replace($spanToken->getId(), $resolvedTextRole, $span);
-    }
-
-    /** @param mixed[] $attributes */
-    public function link(?string $url, string $title, array $attributes = []): string
-    {
-        return $this->environment->getLinkRenderer()->renderUrl($url, $title, $attributes);
-    }
-
-    /** @param mixed[] $value */
-    public function reference(ResolvedReference $reference, array $value): string
-    {
-        return $this->environment->getLinkRenderer()->renderReference($reference, $value);
     }
 }

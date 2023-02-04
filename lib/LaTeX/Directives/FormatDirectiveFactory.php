@@ -6,6 +6,8 @@ namespace Doctrine\RST\LaTeX\Directives;
 
 use Doctrine\RST\Directives\Directive;
 use Doctrine\RST\Directives\DirectiveFactory;
+use Doctrine\RST\LaTeX\TextRoles\DocTextRole;
+use Doctrine\RST\LaTeX\TextRoles\LinkTextRole;
 use Doctrine\RST\TextRoles\TextRole;
 
 class FormatDirectiveFactory implements DirectiveFactory
@@ -27,6 +29,10 @@ class FormatDirectiveFactory implements DirectiveFactory
     /** @return TextRole[] */
     public function getTextRoles(): array
     {
-        return [];
+        return [
+            new LinkTextRole(),
+            new DocTextRole(),
+            new DocTextRole('ref', true),
+        ];
     }
 }

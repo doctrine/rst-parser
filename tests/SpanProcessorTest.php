@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Doctrine\Tests\RST;
 
 use Doctrine\RST\Environment;
+use Doctrine\RST\HTML\TextRoles\LinkTextRole;
 use Doctrine\RST\Meta\LinkTarget;
 use Doctrine\RST\Span\SpanProcessor;
-use Doctrine\RST\TextRoles\LinkTextRole;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
