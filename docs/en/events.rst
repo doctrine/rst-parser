@@ -65,38 +65,14 @@ Available Events
 
 The events you can listen for and their respective handlers:
 
-.. list-table:: 
-   :widths: 2 1 4
-   :header-rows: 1
-   :stub-columns: 1
+The events you can listen for are as follows:
 
-   *  - Event name 
-      - Invoked handler method
-      - Timing of event
-   *  - ``PreBuildScanEvent::PRE_BUILD_SCAN`` 
-      - ``preBuildScan()`` 
-      - before files are scanned, when using the builder.
-   *  - ``PreBuildParseEvent::PRE_BUILD_PARSE``
-      - ``preBuildParse()``
-      - after files are scanned and before they are parsed, when using the builder
-   *  - ``PreBuildRenderEvent::PRE_BUILD_RENDER``
-      - ``preBuildRender()``
-      - after files are parsed and before they are rendered, when using the builder
-   *  - ``PostBuildRenderEvent::POST_BUILD_RENDER``
-      - ``postBuildRender()`` 
-      - after files are rendered, when using the builder
-   *  - ``PostNodeCreateEvent::POST_NODE_CREATE``
-      - ``postNodeCreate()`` 
-      - after a node is created
-   *  - ``PreParseDocumentEvent::PRE_PARSE_DOCUMENT``
-      - ``preParseDocument()``
-      - before a node is parsed
-   *  - ``PostParseDocumentEvent::POST_PARSE_DOCUMENT``
-      - ``postParseDocument()`` 
-      - after a node is parsed
-   *  - ``PreNodeRenderEvent::PRE_NODE_RENDER``
-      - ``preNodeRender()``
-      - before a node is rendered
-   *  - ``PostNodeRenderEvent::POST_NODE_RENDER``
-      - ``postNodeRender()``
-      - after a node is rendered
+- ``PreBuildScanEvent::PRE_BUILD_SCAN`` - Dispatches a method named ``preBuildScan()`` before files are scanned when using the builder.
+- ``PreBuildParseEvent::PRE_BUILD_PARSE`` - Dispatches a method named ``preBuildParse()`` before files are parsed and after they are scanned when using the builder.
+- ``PreBuildRenderEvent::PRE_BUILD_RENDER`` - Dispatches a method named ``preBuildRender()`` before files are rendered and after they are parsed when using the builder.
+- ``PostBuildRenderEvent::POST_BUILD_RENDER`` - Dispatches a method named ``postBuildRender()`` after files are rendered when using the builder.
+- ``PostNodeCreateEvent::POST_NODE_CREATE`` - Dispatches a method named ``postNodeCreate()`` after a node is created.
+- ``PreParseDocumentEvent::PRE_PARSE_DOCUMENT`` - Dispatches a method named ``preParseDocument()`` before a node is parsed.
+- ``PostParseDocumentEvent::POST_PARSE_DOCUMENT`` - Dispatches a method named ``postParseDocument()`` after a node is parsed.
+- ``PreNodeRenderEvent::PRE_NODE_RENDER`` - Dispatches a method named ``preNodeRender()`` before a node is rendered.
+- ``PostNodeRenderEvent::POST_NODE_RENDER`` - Dispatches a method named ``postNodeRender()`` after a node is rendered.
