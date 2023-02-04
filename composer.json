@@ -34,7 +34,7 @@
         "twig/twig": "^2.9 || ^3.3"
     },
     "require-dev": {
-        "doctrine/coding-standard": "^10.0",
+        "doctrine/coding-standard": "^11.0",
         "gajus/dindent": "^2.0.2",
         "phpstan/phpstan": "^1.9",
         "phpstan/phpstan-deprecation-rules": "^1.0",
