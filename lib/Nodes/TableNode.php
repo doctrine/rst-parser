@@ -21,6 +21,7 @@ use function explode;
 use function implode;
 use function ksort;
 use function max;
+use function mb_substr;
 use function preg_match;
 use function sprintf;
 use function str_repeat;
@@ -28,7 +29,6 @@ use function strlen;
 use function strpos;
 use function substr;
 use function trim;
-use function utf8_decode;
 
 class TableNode extends Node
 {
@@ -133,7 +133,7 @@ class TableNode extends Node
             throw new LogicException('Cannot push data after TableNode is compiled');
         }
 
-        $this->rawDataLines[$this->currentLineNumber] = utf8_decode($line);
+        $this->rawDataLines[$this->currentLineNumber] = $line;
         $this->currentLineNumber++;
     }
 
@@ -360,7 +360,7 @@ class TableNode extends Node
                 }
 
                 if ($currentColumnStart !== null) {
-                    $gapText = substr($line, $previousColumnEnd, $start - $previousColumnEnd);
+                    $gapText = mb_substr($line, $previousColumnEnd, $start - $previousColumnEnd);
                     if (strpos($gapText, '|') === false && strpos($gapText, '+') === false) {
                         // text continued through the "gap". This is a colspan
                         // "+" is an odd character - it's usually "|", but "+" can
@@ -394,7 +394,7 @@ class TableNode extends Node
                 }
 
                 $row->addColumn(
-                    substr($line, $currentColumnStart, $previousColumnEnd - $currentColumnStart),
+                    mb_substr($line, $currentColumnStart, $previousColumnEnd - $currentColumnStart),
                     $currentSpan
                 );
             }
