@@ -11,6 +11,7 @@ use Doctrine\RST\TextRoles\EmphasisTextRole;
 use Doctrine\RST\TextRoles\InterpretedTextRole;
 use Doctrine\RST\TextRoles\LinkTextRole;
 use Doctrine\RST\TextRoles\LiteralTextRole;
+use Doctrine\RST\TextRoles\NbspTextRole;
 use Doctrine\RST\TextRoles\StrongTextRole;
 use Doctrine\RST\TextRoles\TextRole;
 
@@ -55,6 +56,7 @@ class BasicDirectiveFactory implements DirectiveFactory
             new LiteralTextRole(),
             new InterpretedTextRole(),
             new BrTextRole(),
+            new NbspTextRole(),
             new StrongTextRole(),
             new EmphasisTextRole(),
             new LinkTextRole(),
