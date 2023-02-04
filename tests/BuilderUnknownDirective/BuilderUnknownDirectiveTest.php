@@ -11,6 +11,7 @@ class BuilderUnknownDirectiveTest extends BaseBuilderTest
     protected function setUp(): void
     {
         parent::setUp();
+
         $this->configuration->abortOnError(false);
     }
 

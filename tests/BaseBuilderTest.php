@@ -19,6 +19,7 @@ abstract class BaseBuilderTest extends BaseTest
     protected function setUp(): void
     {
         parent::setUp();
+
         shell_exec('rm -rf ' . $this->targetFile());
         $this->builder = new Builder($this->configuration);
         $this->configureBuilder($this->builder);

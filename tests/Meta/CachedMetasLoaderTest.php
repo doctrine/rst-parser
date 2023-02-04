@@ -17,6 +17,7 @@ class CachedMetasLoaderTest extends BaseTest
     protected function setUp(): void
     {
         parent::setUp();
+
         $this->configuration->setUseCachedMetas(false);
     }
 

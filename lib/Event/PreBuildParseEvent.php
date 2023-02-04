@@ -16,6 +16,7 @@ final class PreBuildParseEvent extends BuildEvent
     public function __construct(Builder $builder, string $directory, string $targetDirectory, Builder\ParseQueue $parseQueue)
     {
         parent::__construct($builder, $directory, $targetDirectory);
+
         $this->parseQueue = $parseQueue;
     }
 

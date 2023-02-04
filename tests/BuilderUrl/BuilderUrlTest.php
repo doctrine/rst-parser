@@ -130,6 +130,7 @@ class BuilderUrlTest extends BaseBuilderTest
     protected function setUp(): void
     {
         parent::setUp();
+
         $this->configuration->setUseCachedMetas(false);
     }
 

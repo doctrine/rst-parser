@@ -21,7 +21,6 @@ final class HTMLFormat implements Format
 
     private DirectiveFactory $directiveFactory;
 
-
     /** @var Renderers\LinkRendererFactory[]  */
     private array $rendererFactories;
 
