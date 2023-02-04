@@ -2,18 +2,18 @@ Events
 ======
 
 The Doctrine RST parser dispatches several different events internally which enable you
-to hook in to the core of the parser to add custom functionality.
+to hook into the core of the parser to add custom functionality.
 
 Event Manager
 -------------
 
-You can access the ``Doctrine\Common\EventManager`` instance with the ``getEventManager()`` method:
+You can access the ``Doctrine\Common\EventManager`` instance with the ``Doctrine\RST\Configuration::getEventManager()`` method:
 
 .. code-block:: php
 
     $eventManager = $configuration->getEventManager();
 
-If you want to set your own you can do so with the ``setEventManager(EventManager $eventManager)`` method:
+If you want to set your own event manager, you can do so with the ``setEventManager(EventManager $eventManager)`` method:
 
 .. code-block:: php
 
@@ -30,25 +30,24 @@ Add a new listener with the event manager:
 
 .. code-block:: php
 
-    use App\Listeners\PostParseDocumentListener;
+    use App\Listeners\DocumentListener;
     use Doctrine\RST\Event\PostParseDocumentEvent;
 
     $eventManager->addEventListener(
-        [PostParseDocumentEvent::POST_PARSE_DOCUMENT],
-        new PostParseDocumentListener()
+        [PostParseDocumentEvent::POST_PARSE_DOCUMENT /*, other events, if any*/],
+        new DocumentListener()
     );
 
-Now define your listener in ``App\Listeners\PostParseDocumentListener``. The ``postParseDocument()``
-method will be notified every time a document is parsed:
+Now, define your listener in ``App\Listeners\DocumentListener``. The ``postParseDocument()``
+method will be invoked every time a document is parsed:
 
 .. code-block:: php
 
     namespace App\Listeners;
 
     use Doctrine\RST\Event\PostParseDocumentEvent;
-    use Doctrine\RST\Event\PostParseDocumentEvent;
 
-    class PostParseDocumentListener
+    class DocumentListener
     {
         public function postParseDocument(PostParseDocumentEvent $event)
         {
@@ -56,12 +55,15 @@ method will be notified every time a document is parsed:
 
             // do something with $documentNode
         }
+        
+        // Other event handlers, if any
+        // ...
     }
 
 Available Events
 ----------------
 
-The events you can listen for are as follows:
+The events you can listen for and their respective handlers:
 
 - ``PreBuildScanEvent::PRE_BUILD_SCAN`` - Dispatches a method named ``preBuildScan()`` before files are scanned when using the builder.
 - ``PreBuildParseEvent::PRE_BUILD_PARSE`` - Dispatches a method named ``preBuildParse()`` before files are parsed and after they are scanned when using the builder.
