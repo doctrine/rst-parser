@@ -70,6 +70,11 @@ final class SpanProcessor
             $span = $textRole->replaceAndRegisterTokens($this, $span);
         }
 
+        $textRole = $this->environment->getTextRole('nbsp');
+        if ($textRole !== null) {
+            $span = $textRole->replaceAndRegisterTokens($this, $span);
+        }
+
         return $span;
     }
 

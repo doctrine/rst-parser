@@ -23,11 +23,6 @@ final class SpanNodeRenderer extends BaseSpanNodeRenderer
         $this->templateRenderer = $templateRenderer;
     }
 
-    public function nbsp(): string
-    {
-        return $this->templateRenderer->render('nbsp.tex.twig');
-    }
-
     public function escape(string $span): string
     {
         return $span;

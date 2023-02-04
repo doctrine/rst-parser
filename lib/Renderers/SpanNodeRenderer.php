@@ -12,7 +12,6 @@ use Doctrine\RST\Span\SpanProcessor;
 use Doctrine\RST\Span\SpanToken;
 
 use function is_string;
-use function preg_replace;
 use function preg_replace_callback;
 use function str_replace;
 
@@ -53,16 +52,9 @@ abstract class SpanNodeRenderer implements NodeRenderer, SpanRenderer
 
         $span = $this->escape($span);
 
-        $span = $this->renderNbsp($span);
-
         $span = $this->renderVariables($span);
 
         return $span;
-    }
-
-    private function renderNbsp(string $span): string
-    {
-        return (string) preg_replace('/~/', $this->nbsp(), $span);
     }
 
     private function renderVariables(string $span): string
