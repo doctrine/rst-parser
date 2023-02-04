@@ -54,24 +54,9 @@ final class SpanProcessor
 
     public function processRecursiveRoles(): string
     {
-        $span     = $this->span;
-        $textRole = $this->environment->getTextRole('br');
-        if ($textRole !== null) {
-            $span = $textRole->replaceAndRegisterTokens($this, $span);
-        }
-
-        $textRole = $this->environment->getTextRole('strong');
-        if ($textRole !== null) {
-            $span = $textRole->replaceAndRegisterTokens($this, $span);
-        }
-
-        $textRole = $this->environment->getTextRole('emphasis');
-        if ($textRole !== null) {
-            $span = $textRole->replaceAndRegisterTokens($this, $span);
-        }
-
-        $textRole = $this->environment->getTextRole('nbsp');
-        if ($textRole !== null) {
+        $recursiveTextRoles = $this->environment->getRecursiveTextRoles();
+        $span               = $this->span;
+        foreach ($recursiveTextRoles as $textRole) {
             $span = $textRole->replaceAndRegisterTokens($this, $span);
         }
 

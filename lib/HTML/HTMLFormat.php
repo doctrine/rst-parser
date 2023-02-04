@@ -150,10 +150,9 @@ final class HTMLFormat implements Format
                 )
             ),
             Nodes\SpanNode::class => new CallableNodeRendererFactory(
-                fn (Nodes\SpanNode $node): HTML\Renderers\SpanNodeRenderer => new HTML\Renderers\SpanNodeRenderer(
+                static fn (Nodes\SpanNode $node): HTML\Renderers\SpanNodeRenderer => new HTML\Renderers\SpanNodeRenderer(
                     $node->getEnvironment(),
                     $node,
-                    $this->templateRenderer
                 )
             ),
             Nodes\CallableNode::class => new CallableNodeRendererFactory(

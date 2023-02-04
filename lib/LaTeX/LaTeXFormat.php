@@ -134,10 +134,9 @@ final class LaTeXFormat implements Format
                 )
             ),
             Nodes\SpanNode::class => new CallableNodeRendererFactory(
-                fn (Nodes\SpanNode $node): LaTeX\Renderers\SpanNodeRenderer => new LaTeX\Renderers\SpanNodeRenderer(
+                static fn (Nodes\SpanNode $node): LaTeX\Renderers\SpanNodeRenderer => new LaTeX\Renderers\SpanNodeRenderer(
                     $node->getEnvironment(),
-                    $node,
-                    $this->templateRenderer
+                    $node
                 )
             ),
             Nodes\CallableNode::class => new CallableNodeRendererFactory(

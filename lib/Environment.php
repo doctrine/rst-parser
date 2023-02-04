@@ -154,6 +154,14 @@ class Environment
         });
     }
 
+    /** @return TextRole[] */
+    public function getRecursiveTextRoles(): array
+    {
+        return array_filter($this->textRoles, static function ($value) {
+            return $value->hasRecursiveSyntax();
+        });
+    }
+
     public function addInvalidLink(InvalidLink $invalidLink): void
     {
         $this->invalidLinks[] = $invalidLink;
