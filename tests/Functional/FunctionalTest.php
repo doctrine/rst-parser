@@ -89,7 +89,7 @@ class FunctionalTest extends TestCase
         string $expected
     ): void {
         $configuration = new Configuration();
-        $configuration->setFileExtension(Format::HTML);
+        $configuration->setFileExtension($format);
         $configuration->setUseCachedMetas(false);
         $builder = new Builder($configuration);
 
@@ -99,11 +99,15 @@ class FunctionalTest extends TestCase
         $outputFileFinder
             ->files()
             ->in(__DIR__ . '/output/build/' . $file)
-            ->name('index.html');
+            ->name('index.' . $format);
 
         foreach ($outputFileFinder as $outputFile) {
             $rendered = $outputFile->getContents();
-            $this->compareHtml($expected, $rendered);
+            if ($format === Format::HTML) {
+                $this->compareHtml($expected, $rendered);
+            } else {
+                self::assertEquals(trim($expected), trim($rendered));
+            }
         }
     }
 
