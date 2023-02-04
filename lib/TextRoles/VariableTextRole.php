@@ -18,6 +18,15 @@ class VariableTextRole extends SpecialTextRole
         parent::__construct('variable');
     }
 
+    /** @return array<string, string> */
+    public function process(Environment $environment, string $text): array
+    {
+        return [
+            'section' => $this->getName(),
+            'variable' => $text,
+        ];
+    }
+
     public function replaceAndRegisterTokens(SpanProcessor $spanProcessor, string $span): string
     {
         return (string) preg_replace_callback(
