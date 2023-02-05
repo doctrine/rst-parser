@@ -15,7 +15,7 @@ use function is_string;
 use function sprintf;
 use function strtolower;
 
-class MetaEntry
+class DocumentMetaData
 {
     private string $file;
 

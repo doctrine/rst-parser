@@ -6,7 +6,7 @@ namespace Doctrine\RST\References;
 
 use Doctrine\RST\Environment;
 use Doctrine\RST\Event\MissingReferenceResolverEvent;
-use Doctrine\RST\Meta\MetaEntry;
+use Doctrine\RST\Meta\DocumentMetaData;
 
 final class Resolver
 {
@@ -90,7 +90,7 @@ final class Resolver
     private function createResolvedReference(
         ?string $file,
         Environment $environment,
-        MetaEntry $entry,
+        DocumentMetaData $entry,
         ?string $title = null,
         array $attributes = [],
         ?string $anchor = null

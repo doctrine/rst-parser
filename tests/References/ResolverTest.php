@@ -8,7 +8,7 @@ use Doctrine\Common\EventManager;
 use Doctrine\RST\Configuration;
 use Doctrine\RST\Environment;
 use Doctrine\RST\Event\MissingReferenceResolverEvent;
-use Doctrine\RST\Meta\MetaEntry;
+use Doctrine\RST\Meta\DocumentMetaData;
 use Doctrine\RST\Meta\Metas;
 use Doctrine\RST\References\ResolvedReference;
 use Doctrine\RST\References\Resolver;
@@ -24,7 +24,7 @@ class ResolverTest extends TestCase
     /** @var Metas|MockObject */
     private $metas;
 
-    /** @var MetaEntry|MockObject */
+    /** @var DocumentMetaData|MockObject */
     private $metaEntry;
 
     /** @var Configuration|MockObject */
@@ -42,7 +42,7 @@ class ResolverTest extends TestCase
             ->method('getMetas')
             ->willReturn($this->metas);
 
-        $this->metaEntry = $this->createMock(MetaEntry::class);
+        $this->metaEntry = $this->createMock(DocumentMetaData::class);
         $this->metaEntry->expects(self::any())
             ->method('getUrl')
             ->willReturn('url');

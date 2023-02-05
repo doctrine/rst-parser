@@ -6,7 +6,7 @@ namespace Doctrine\Tests\RST\Meta;
 
 use Doctrine\RST\Meta\CachedMetasLoader;
 use Doctrine\RST\Meta\LinkTarget;
-use Doctrine\RST\Meta\MetaEntry;
+use Doctrine\RST\Meta\DocumentMetaData;
 use Doctrine\RST\Meta\Metas;
 use Doctrine\Tests\RST\BaseTest;
 
@@ -24,8 +24,8 @@ class CachedMetasLoaderTest extends BaseTest
     public function testSaveAndLoadCachedMetaEntries(): void
     {
         $targetDir = sys_get_temp_dir();
-        $meta1     = new MetaEntry('file1', 'url1', 'title1', [], [], [], [], 0);
-        $meta2     = new MetaEntry('file2', 'url2', 'title2', [], [], [], [], 0);
+        $meta1     = new DocumentMetaData('file1', 'url1', 'title1', [], [], [], [], 0);
+        $meta2     = new DocumentMetaData('file2', 'url2', 'title2', [], [], [], [], 0);
 
         $metasBefore = new Metas($this->configuration, [$meta1, $meta2]);
         $metasAfter  = new Metas($this->configuration);
