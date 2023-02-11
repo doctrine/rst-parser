@@ -6,6 +6,7 @@ namespace Doctrine\RST\Builder;
 
 use Doctrine\RST\Configuration;
 use Doctrine\RST\Event\PostProcessFileEvent;
+use Doctrine\RST\Meta\DocumentMetaData;
 use Doctrine\RST\Meta\Metas;
 use Doctrine\RST\Nodes\DocumentNode;
 use Doctrine\RST\Parser;
@@ -67,25 +68,27 @@ final class ParseQueueProcessor
 
         $environment = $parser->getEnvironment();
 
-        $document = $parser->parseFile($fileAbsolutePath);
+        $documentNode = $parser->parseFile($fileAbsolutePath);
 
-        $this->documents->addDocument($file, $document);
+        $this->documents->addDocument($file, $documentNode);
+
+        $documentMetaData = new DocumentMetaData(
+            $file,
+            $this->buildDocumentUrl($documentNode),
+            (string) $documentNode->getTitle(),
+            $documentNode->getTitles(),
+            $documentNode->getTocs(),
+            $environment->getDependencies(),
+            $environment->getLinkTargets(),
+            (int) filemtime($fileAbsolutePath)
+        );
 
         $this->configuration->getEventManager()->dispatchEvent(
             PostProcessFileEvent::POST_PROCESS_FILE,
-            new PostProcessFileEvent($this->configuration, $document)
+            new PostProcessFileEvent($this->configuration, $documentNode)
         );
 
-        $this->metas->set(
-            $file,
-            $this->buildDocumentUrl($document),
-            (string) $document->getTitle(),
-            $document->getTitles(),
-            $document->getTocs(),
-            (int) filemtime($fileAbsolutePath),
-            $environment->getDependencies(),
-            $environment->getLinkTargets()
-        );
+        $this->metas->set($documentMetaData);
     }
 
     private function createFileParser(string $file): Parser

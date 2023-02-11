@@ -18,7 +18,7 @@ use function unserialize;
 
 class Metas
 {
-    /** @var MetaEntry[] */
+    /** @var DocumentMetaData[] */
     private $entries = [];
 
     /** @var string[] */
@@ -31,7 +31,7 @@ class Metas
     private ErrorManager $errorManager;
 
     /**
-     * @param MetaEntry[]               $entries
+     * @param DocumentMetaData[]               $entries
      * @param array<string, LinkTarget> $linkTargets
      */
     public function __construct(Configuration $configuration, array $entries = [], array $linkTargets = [])
@@ -42,7 +42,7 @@ class Metas
         $this->linkTargets   = $linkTargets;
     }
 
-    public function findLinkTargetMetaEntry(string $linkTarget): ?MetaEntry
+    public function findLinkTargetMetaEntry(string $linkTarget): ?DocumentMetaData
     {
         foreach ($this->entries as $entry) {
             if ($this->doesLinkTargetExist($entry->getLinkTargets(), $linkTarget)) {
@@ -53,61 +53,38 @@ class Metas
         return $this->findByTitle($linkTarget);
     }
 
-    /** @return MetaEntry[] */
+    /** @return DocumentMetaData[] */
     public function getAll(): array
     {
         return $this->entries;
     }
 
-    /**
-     * @param string[][]                $titles
-     * @param mixed[][]                 $tocs
-     * @param string[]                  $depends
-     * @param array<string, LinkTarget> $linkTargets
-     */
-    public function set(
-        string $file,
-        string $url,
-        string $title,
-        array $titles,
-        array $tocs,
-        int $mtime,
-        array $depends,
-        array $linkTargets
-    ): void {
-        foreach ($tocs as $toc) {
+    public function set(DocumentMetaData $documentMetaData): void
+    {
+        foreach ($documentMetaData->getTocs() as $toc) {
             foreach ($toc as $child) {
-                $this->parents[$child] = $file;
+                $this->parents[$child] = $documentMetaData->getFile();
 
                 if (! isset($this->entries[$child])) {
                     continue;
                 }
 
-                $this->entries[$child]->setParent($file);
+                $this->entries[$child]->setParent($documentMetaData->getFile());
             }
         }
 
-        $this->entries[$file] = new MetaEntry(
-            $file,
-            $url,
-            $title,
-            $titles,
-            $tocs,
-            $depends,
-            $linkTargets,
-            $mtime
-        );
+        $this->entries[$documentMetaData->getFile()] = $documentMetaData;
 
-        if (! isset($this->parents[$file])) {
+        if (! isset($this->parents[$documentMetaData->getFile()])) {
             return;
         }
 
-        $this->entries[$file]->setParent($this->parents[$file]);
+        $this->entries[$documentMetaData->getFile()]->setParent($this->parents[$documentMetaData->getFile()]);
 
-        $this->linkTargets = array_merge($this->linkTargets, $linkTargets);
+        $this->linkTargets = array_merge($this->linkTargets, $documentMetaData->getLinkTargets());
     }
 
-    public function get(string $url): ?MetaEntry
+    public function get(string $url): ?DocumentMetaData
     {
         if (isset($this->entries[$url])) {
             return $this->entries[$url];
@@ -116,7 +93,7 @@ class Metas
         return null;
     }
 
-    /** @param MetaEntry[] $metaEntries */
+    /** @param DocumentMetaData[] $metaEntries */
     public function setMetaEntries(array $metaEntries): void
     {
         $this->entries = $metaEntries;
@@ -134,7 +111,7 @@ class Metas
         return false;
     }
 
-    private function findByTitle(string $text): ?MetaEntry
+    private function findByTitle(string $text): ?DocumentMetaData
     {
         $text = Environment::slugify($text);
 

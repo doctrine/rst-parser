@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\Tests\RST\Builder;
 
 use Doctrine\RST\Builder\Documents;
-use Doctrine\RST\Meta\MetaEntry;
+use Doctrine\RST\Meta\DocumentMetaData;
 use Doctrine\RST\Meta\Metas;
 use Doctrine\RST\Nodes\DocumentNode;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -56,7 +56,7 @@ class DocumentsTest extends TestCase
 
         $this->documents->addDocument('document', $document);
 
-        $metaEntry = $this->createMock(MetaEntry::class);
+        $metaEntry = $this->createMock(DocumentMetaData::class);
 
         $this->metas->expects(self::once())
             ->method('get')
