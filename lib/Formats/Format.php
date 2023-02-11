@@ -6,7 +6,6 @@ namespace Doctrine\RST\Formats;
 
 use Doctrine\RST\Directives\DirectiveFactory;
 use Doctrine\RST\Renderers\NodeRendererFactory;
-use Doctrine\RST\Renderers\RendererFactory;
 
 interface Format
 {
@@ -19,7 +18,4 @@ interface Format
 
     /** @return NodeRendererFactory[] */
     public function getNodeRendererFactories(): array;
-
-    /** @return RendererFactory[] */
-    public function getRendererFactories(): array;
 }

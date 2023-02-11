@@ -12,25 +12,18 @@ use Doctrine\RST\Nodes;
 use Doctrine\RST\Renderers;
 use Doctrine\RST\Renderers\CallableNodeRendererFactory;
 use Doctrine\RST\Renderers\NodeRendererFactory;
-use Doctrine\RST\Renderers\RendererFactory;
 use Doctrine\RST\Templates\TemplateRenderer;
 
 final class LaTeXFormat implements Format
 {
     private TemplateRenderer $templateRenderer;
 
-    /** @var Renderers\LinkRendererFactory[]  */
-    private array $rendererFactories;
-
     private DirectiveFactory $directiveFactory;
 
     public function __construct(TemplateRenderer $templateRenderer)
     {
-        $this->templateRenderer  = $templateRenderer;
-        $this->directiveFactory  = new FormatDirectiveFactory();
-        $this->rendererFactories = [
-            Renderers\LinkRenderer::class => new LaTeX\Renderers\LinkRendererFactory(),
-        ];
+        $this->templateRenderer = $templateRenderer;
+        $this->directiveFactory = new FormatDirectiveFactory();
     }
 
     public function getFileExtension(): string
@@ -134,10 +127,9 @@ final class LaTeXFormat implements Format
                 )
             ),
             Nodes\SpanNode::class => new CallableNodeRendererFactory(
-                fn (Nodes\SpanNode $node): LaTeX\Renderers\SpanNodeRenderer => new LaTeX\Renderers\SpanNodeRenderer(
+                static fn (Nodes\SpanNode $node): LaTeX\Renderers\SpanNodeRenderer => new LaTeX\Renderers\SpanNodeRenderer(
                     $node->getEnvironment(),
-                    $node,
-                    $this->templateRenderer
+                    $node
                 )
             ),
             Nodes\CallableNode::class => new CallableNodeRendererFactory(
@@ -146,11 +138,5 @@ final class LaTeXFormat implements Format
                 )
             ),
         ];
-    }
-
-    /** @return RendererFactory[] */
-    public function getRendererFactories(): array
-    {
-        return $this->rendererFactories;
     }
 }

@@ -12,7 +12,6 @@ use Doctrine\RST\Nodes;
 use Doctrine\RST\Renderers;
 use Doctrine\RST\Renderers\CallableNodeRendererFactory;
 use Doctrine\RST\Renderers\NodeRendererFactory;
-use Doctrine\RST\Renderers\RendererFactory;
 use Doctrine\RST\Templates\TemplateRenderer;
 
 final class HTMLFormat implements Format
@@ -21,16 +20,10 @@ final class HTMLFormat implements Format
 
     private DirectiveFactory $directiveFactory;
 
-    /** @var Renderers\LinkRendererFactory[]  */
-    private array $rendererFactories;
-
     public function __construct(TemplateRenderer $templateRenderer)
     {
-        $this->templateRenderer  = $templateRenderer;
-        $this->directiveFactory  = new FormatDirectiveFactory();
-        $this->rendererFactories = [
-            Renderers\LinkRenderer::class => new HTML\Renderers\LinkRendererFactory(),
-        ];
+        $this->templateRenderer = $templateRenderer;
+        $this->directiveFactory = new FormatDirectiveFactory();
     }
 
     public function getFileExtension(): string
@@ -150,10 +143,9 @@ final class HTMLFormat implements Format
                 )
             ),
             Nodes\SpanNode::class => new CallableNodeRendererFactory(
-                fn (Nodes\SpanNode $node): HTML\Renderers\SpanNodeRenderer => new HTML\Renderers\SpanNodeRenderer(
+                static fn (Nodes\SpanNode $node): HTML\Renderers\SpanNodeRenderer => new HTML\Renderers\SpanNodeRenderer(
                     $node->getEnvironment(),
                     $node,
-                    $this->templateRenderer
                 )
             ),
             Nodes\CallableNode::class => new CallableNodeRendererFactory(
@@ -174,11 +166,5 @@ final class HTMLFormat implements Format
                 )
             ),
         ];
-    }
-
-    /** @return RendererFactory[] */
-    public function getRendererFactories(): array
-    {
-        return $this->rendererFactories;
     }
 }

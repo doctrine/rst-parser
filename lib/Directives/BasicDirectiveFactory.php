@@ -4,9 +4,15 @@ declare(strict_types=1);
 
 namespace Doctrine\RST\Directives;
 
+use Doctrine\RST\TextRoles\BrTextRole;
 use Doctrine\RST\TextRoles\CodeRole;
-use Doctrine\RST\TextRoles\Doc;
+use Doctrine\RST\TextRoles\EmphasisTextRole;
+use Doctrine\RST\TextRoles\InterpretedTextRole;
+use Doctrine\RST\TextRoles\LiteralTextRole;
+use Doctrine\RST\TextRoles\NbspTextRole;
+use Doctrine\RST\TextRoles\StrongTextRole;
 use Doctrine\RST\TextRoles\TextRole;
+use Doctrine\RST\TextRoles\VariableTextRole;
 
 class BasicDirectiveFactory implements DirectiveFactory
 {
@@ -45,9 +51,15 @@ class BasicDirectiveFactory implements DirectiveFactory
             new Toctree(),
         ];
         $this->textRoles  = [
+            // Literal and Interpreted textroles must come first as their content may not be replaced.
+            new LiteralTextRole(),
+            new InterpretedTextRole(),
+            new VariableTextRole(),
+            new BrTextRole(),
+            new NbspTextRole(),
+            new StrongTextRole(),
+            new EmphasisTextRole(),
             new CodeRole(),
-            new Doc(),
-            new Doc('ref', true),
         ];
     }
 

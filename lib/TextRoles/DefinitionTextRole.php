@@ -9,7 +9,6 @@ use Doctrine\RST\Span\SpanToken;
 
 use function array_merge;
 use function preg_match;
-use function sprintf;
 use function trim;
 
 /**
@@ -24,13 +23,13 @@ use function trim;
 class DefinitionTextRole extends BaseTextRole
 {
     private string $name;
-    private string $wrap;
+    private string $templateName;
 
     /** @param string[] $aliases */
-    public function __construct(string $name, string $wrap, array $aliases = [])
+    public function __construct(string $name, ?string $templateName = null, array $aliases = [])
     {
-        $this->name = $name;
-        $this->wrap = $wrap;
+        $this->name         = $name;
+        $this->templateName = $templateName ?? 'textroles/' . $this->name;
         $this->setAliases($aliases);
     }
 
@@ -67,6 +66,10 @@ class DefinitionTextRole extends BaseTextRole
 
     public function render(Environment $environment, SpanToken $spanToken): string
     {
-        return sprintf($this->wrap, $spanToken->get('term'), $spanToken->get('definition'));
+        return $this->renderTemplate(
+            $environment,
+            $this->templateName,
+            $spanToken->getTokenData()
+        );
     }
 }

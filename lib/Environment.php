@@ -9,15 +9,13 @@ use Doctrine\RST\Meta\MetaEntry;
 use Doctrine\RST\Meta\Metas;
 use Doctrine\RST\NodeFactory\NodeFactory;
 use Doctrine\RST\References\ResolvedReference;
-use Doctrine\RST\Renderers\LinkRenderer;
-use Doctrine\RST\Renderers\LinkRendererFactory;
 use Doctrine\RST\Templates\TemplateRenderer;
 use Doctrine\RST\TextRoles\ReferenceRole;
 use Doctrine\RST\TextRoles\TextRole;
 use InvalidArgumentException;
-use RuntimeException;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 
+use function array_filter;
 use function array_shift;
 use function dirname;
 use function implode;
@@ -143,6 +141,22 @@ class Environment
         }
 
         return $this->textRoles[$section];
+    }
+
+    /** @return TextRole[] */
+    public function getSpecialTextRoles(): array
+    {
+        return array_filter($this->textRoles, static function (TextRole $value) {
+            return $value->hasSpecialSyntax();
+        });
+    }
+
+    /** @return TextRole[] */
+    public function getRecursiveTextRoles(): array
+    {
+        return array_filter($this->textRoles, static function ($value) {
+            return $value->hasRecursiveSyntax();
+        });
     }
 
     public function addInvalidLink(InvalidLink $invalidLink): void
@@ -413,16 +427,6 @@ class Environment
             sprintf('Unknown ' . $type . ' section "%s"', $section),
             $this->getCurrentFileName()
         );
-    }
-
-    public function getLinkRenderer(): LinkRenderer
-    {
-        $factories = $this->getConfiguration()->getFormat()->getRendererFactories();
-        if (! isset($factories[LinkRenderer::class]) || ! $factories[LinkRenderer::class] instanceof LinkRendererFactory) {
-            throw new RuntimeException('No LinkRendererFactory found for ' . LinkRenderer::class);
-        }
-
-        return $factories[LinkRenderer::class]->create($this);
     }
 
     public function addInvalidReference(string $data): void

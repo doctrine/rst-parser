@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\RST\TextRoles;
 
 use Doctrine\RST\Environment;
+use Doctrine\RST\Span\SpanProcessor;
 use Doctrine\RST\Span\SpanToken;
 
 /**
@@ -44,4 +45,22 @@ interface TextRole
      * If you want to support several formats (HTML and LaTEX) rendering needs to take care of this
      */
     public function render(Environment $environment, SpanToken $spanToken): string;
+
+    /**
+     * Does this text role have a special syntax like ``*cursive*``?
+     */
+    public function hasSpecialSyntax(): bool;
+
+    /**
+     * Can the syntax also be applied to the text of some special text roles?
+     * For example within link texts or table cells.
+     */
+    public function hasRecursiveSyntax(): bool;
+
+    /**
+     * Replaces all occurrences of the special syntax of this text role with a unique string and registers the according
+     * tokens to the calling SpanProcessor. These Tokens will then be rendered in the render method of this text role
+     * later on.
+     */
+    public function replaceAndRegisterTokens(SpanProcessor $spanProcessor, string $span): string;
 }

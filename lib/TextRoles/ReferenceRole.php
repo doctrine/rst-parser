@@ -38,8 +38,38 @@ abstract class ReferenceRole extends BaseTextRole
             return $spanToken->get('linktext');
         }
 
-        return $environment->getLinkRenderer()->renderReference($resolvedReference, $spanToken->getTokenData());
+        return $this->renderReference($environment, $resolvedReference, $spanToken->getTokenData());
     }
+
+    /** @param mixed[] $value */
+    public function renderReference(Environment $environment, ResolvedReference $reference, array $value): string
+    {
+        $text = $value['linktext'] ?? ($reference->getTitle() ?? '');
+        $text = trim($text);
+        // reference to another document
+        if ($reference->getUrl() !== null) {
+            $url = $reference->getUrl();
+
+            if ($value['anchor'] !== null) {
+                $url .= '#' . $value['anchor'];
+            }
+
+            $link = $this->renderLink($environment, $url, $text, $reference->getAttributes());
+
+            // reference to anchor in existing document
+        } elseif ($value['url'] !== null) {
+            $linkTarget = $environment->getLinkTarget($value['url']);
+
+            $link = $this->renderLink($environment, $linkTarget->getUrl(), $text, $reference->getAttributes());
+        } else {
+            $link = $this->renderLink($environment, '#', $text . ' (unresolved reference)', $reference->getAttributes());
+        }
+
+        return $link;
+    }
+
+    /** @param mixed[] $attributes */
+    abstract public function renderLink(Environment $environment, ?string $url, string $title, array $attributes = []): string;
 
     /**
      * Processes the text content of a reference role. The url and the linktext, if found, are set.

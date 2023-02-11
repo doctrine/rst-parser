@@ -6,13 +6,10 @@ namespace Doctrine\Tests\RST\HTML;
 
 use Doctrine\RST\Configuration;
 use Doctrine\RST\Environment;
-use Doctrine\RST\HTML\Renderers\LinkRenderer;
-use Doctrine\RST\HTML\Renderers\SpanNodeRenderer;
-use Doctrine\RST\Nodes\SpanNode;
-use Doctrine\RST\Parser;
+use Doctrine\RST\HTML\TextRoles\LinkTextRole;
 use PHPUnit\Framework\TestCase;
 
-class SpanTest extends TestCase
+class LinkTextRoleTest extends TestCase
 {
     /**
      * @param string[] $attributes
@@ -21,16 +18,11 @@ class SpanTest extends TestCase
      */
     public function testLink(string $url, string $title, array $attributes, string $expectedLink): void
     {
-        $parser       = $this->createMock(Parser::class);
         $environment  = $this->createMock(Environment::class);
-        $linkRenderer = new LinkRenderer($environment);
+        $linkTextRole = new LinkTextRole();
 
         $configuration    = new Configuration();
         $templateRenderer = $configuration->getTemplateRenderer();
-
-        $parser->expects(self::once())
-            ->method('getEnvironment')
-            ->willReturn($environment);
 
         $environment->expects(self::once())
             ->method('generateUrl')
@@ -41,16 +33,9 @@ class SpanTest extends TestCase
             ->method('getTemplateRenderer')
             ->willReturn($templateRenderer);
 
-        $environment->expects(self::once())
-            ->method('getLinkRenderer')
-            ->willReturn($linkRenderer);
-
-        $span         = new SpanNode($parser, 'span');
-        $spanRenderer = new SpanNodeRenderer($environment, $span, $templateRenderer);
-
         self::assertSame(
             $expectedLink,
-            $spanRenderer->link($url, $title, $attributes)
+            $linkTextRole->renderLink($environment, $url, $title, $attributes)
         );
     }
 
