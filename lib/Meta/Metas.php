@@ -200,6 +200,11 @@ class Metas
                     continue;
                 }
 
+                if ($this->entries[$tocEntry] === $document) {
+                    // Do not add document as its own child
+                    continue;
+                }
+
                 if ($this->entries[$tocEntry]->getParentDocument() !== null) {
                     if ($document->getFile() !== $this->entries[$tocEntry]->getParentDocument()->getFile()) {
                         $this->errorManager->warning(
@@ -221,6 +226,7 @@ class Metas
                 }
 
                 $document->addChildDocument($this->entries[$tocEntry]);
+                $this->buildSubTree($this->entries[$tocEntry]);
             }
         }
     }
