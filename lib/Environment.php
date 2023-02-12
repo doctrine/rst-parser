@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Doctrine\RST;
 
-use Doctrine\RST\Meta\LinkTarget;
 use Doctrine\RST\Meta\DocumentMetaData;
+use Doctrine\RST\Meta\LinkTarget;
 use Doctrine\RST\Meta\Metas;
 use Doctrine\RST\NodeFactory\NodeFactory;
 use Doctrine\RST\References\ResolvedReference;

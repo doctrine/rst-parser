@@ -415,6 +415,15 @@ class BuilderTest extends BaseBuilderTest
         );
     }
 
+    public function testDocumentRoot(): void
+    {
+        $root = $this->builder->getMetas()->getDocumentRoot();
+        self::assertNotNull($root);
+        self::assertEquals('index', $root->getFile());
+        self::assertTrue($root->isDocumentRoot());
+        self::assertNull($root->getParentDocument());
+    }
+
     protected function getFixturesDirectory(): string
     {
         return 'Builder';

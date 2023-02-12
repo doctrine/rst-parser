@@ -30,8 +30,10 @@ class Metas
     private Configuration $configuration;
     private ErrorManager $errorManager;
 
+    private ?DocumentMetaData $documentRoot = null;
+
     /**
-     * @param DocumentMetaData[]               $entries
+     * @param DocumentMetaData[]        $entries
      * @param array<string, LinkTarget> $linkTargets
      */
     public function __construct(Configuration $configuration, array $entries = [], array $linkTargets = [])
@@ -171,6 +173,21 @@ class Metas
         $linkTarget->setUrl($url);
 
         return $linkTarget;
+    }
+
+    public function buildTocTree(string $indexFilename): void
+    {
+        if (! isset($this->entries[$indexFilename])) {
+            return;
+        }
+
+        $this->documentRoot = $this->entries[$indexFilename];
+        $this->documentRoot->setDocumentRoot(true);
+    }
+
+    public function getDocumentRoot(): ?DocumentMetaData
+    {
+        return $this->documentRoot;
     }
 
     public function hasLinkTarget(string $name): bool

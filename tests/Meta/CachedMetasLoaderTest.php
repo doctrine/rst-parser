@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Doctrine\Tests\RST\Meta;
 
 use Doctrine\RST\Meta\CachedMetasLoader;
-use Doctrine\RST\Meta\LinkTarget;
 use Doctrine\RST\Meta\DocumentMetaData;
+use Doctrine\RST\Meta\LinkTarget;
 use Doctrine\RST\Meta\Metas;
 use Doctrine\Tests\RST\BaseTest;
 

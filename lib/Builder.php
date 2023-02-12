@@ -101,6 +101,8 @@ final class Builder
 
         $this->parse($directory, $targetDirectory, $parseQueue);
 
+        $this->metas->buildTocTree($this->getConfiguration()->getIndexName());
+
         $this->render($directory, $targetDirectory);
 
         $this->cachedMetasLoader->cacheMetaEntries($targetDirectory, $this->metas);

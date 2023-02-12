@@ -42,6 +42,10 @@ class DocumentMetaData
 
     private ?string $parent = null;
 
+    private bool $documentRoot = false;
+
+    private ?DocumentMetaData $parentDocument = null;
+
     /**
      * @param string[][]|string[][][]   $titles
      * @param mixed[][]                 $tocs
@@ -205,5 +209,25 @@ class DocumentMetaData
         }
 
         return $titles;
+    }
+
+    public function isDocumentRoot(): bool
+    {
+        return $this->documentRoot;
+    }
+
+    public function setDocumentRoot(bool $documentRoot): void
+    {
+        $this->documentRoot = $documentRoot;
+    }
+
+    public function getParentDocument(): ?DocumentMetaData
+    {
+        return $this->parentDocument;
+    }
+
+    public function setParentDocument(?DocumentMetaData $parentDocument): void
+    {
+        $this->parentDocument = $parentDocument;
     }
 }
