@@ -46,6 +46,9 @@ class DocumentMetaData
 
     private ?DocumentMetaData $parentDocument = null;
 
+    /** @var DocumentMetaData[] */
+    private array $childDocuments = [];
+
     /**
      * @param string[][]|string[][][]   $titles
      * @param mixed[][]                 $tocs
@@ -137,7 +140,11 @@ class DocumentMetaData
         $key = array_search($originalDependency, $this->depends, true);
 
         if ($key === false) {
-            throw new LogicException(sprintf('Could not find dependency "%s" in MetaEntry for "%s"', $originalDependency, $this->file));
+            throw new LogicException(sprintf(
+                'Could not find dependency "%s" in MetaEntry for "%s"',
+                $originalDependency,
+                $this->file
+            ));
         }
 
         $this->depends[$key]          = $newDependency;
@@ -229,5 +236,16 @@ class DocumentMetaData
     public function setParentDocument(?DocumentMetaData $parentDocument): void
     {
         $this->parentDocument = $parentDocument;
+    }
+
+    /** @return DocumentMetaData[] */
+    public function getChildDocuments(): array
+    {
+        return $this->childDocuments;
+    }
+
+    public function addChildDocument(DocumentMetaData $childDocument): void
+    {
+        $this->childDocuments[] = $childDocument;
     }
 }

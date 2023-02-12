@@ -424,6 +424,13 @@ class BuilderTest extends BaseBuilderTest
         self::assertNull($root->getParentDocument());
     }
 
+    public function testDocumentRootChildren(): void
+    {
+        $root     = $this->builder->getMetas()->getDocumentRoot();
+        $children = $root->getChildDocuments();
+        self::assertCount(5, $children);
+    }
+
     protected function getFixturesDirectory(): string
     {
         return 'Builder';

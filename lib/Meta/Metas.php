@@ -11,7 +11,9 @@ use Doctrine\RST\UrlGenerator;
 
 use function array_key_exists;
 use function array_merge;
+use function in_array;
 use function serialize;
+use function sprintf;
 use function strtolower;
 use function trim;
 use function unserialize;
@@ -178,11 +180,49 @@ class Metas
     public function buildTocTree(string $indexFilename): void
     {
         if (! isset($this->entries[$indexFilename])) {
+            $this->errorManager->error('No document root was found, expected: ' . $indexFilename);
+
             return;
         }
 
         $this->documentRoot = $this->entries[$indexFilename];
         $this->documentRoot->setDocumentRoot(true);
+        $this->buildSubTree($this->documentRoot);
+    }
+
+    private function buildSubTree(?DocumentMetaData $document): void
+    {
+        $tocList = $document->getTocs();
+        foreach ($tocList as $toc) {
+            foreach ($toc as $tocEntry) {
+                if (! isset($this->entries[$tocEntry])) {
+                    $this->errorManager->warning(sprintf('File %s not found in document meta data.', $tocEntry));
+                    continue;
+                }
+
+                if ($this->entries[$tocEntry]->getParentDocument() !== null) {
+                    if ($document->getFile() !== $this->entries[$tocEntry]->getParentDocument()->getFile()) {
+                        $this->errorManager->warning(
+                            sprintf(
+                                'Document "%s" was added to document tree several times. Parents found: "%s" and "%s".',
+                                $tocEntry,
+                                $document->getFile(),
+                                $this->entries[$tocEntry]->getParentDocument()->getFile()
+                            )
+                        );
+                    }
+
+                    continue;
+                }
+
+                $this->entries[$tocEntry]->setParentDocument($document);
+                if (in_array($this->entries[$tocEntry], $document->getChildDocuments(), true)) {
+                    continue;
+                }
+
+                $document->addChildDocument($this->entries[$tocEntry]);
+            }
+        }
     }
 
     public function getDocumentRoot(): ?DocumentMetaData
