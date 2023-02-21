@@ -14,7 +14,9 @@ use function array_merge;
 use function in_array;
 use function serialize;
 use function sprintf;
+use function str_starts_with;
 use function strtolower;
+use function substr;
 use function trim;
 use function unserialize;
 
@@ -90,6 +92,10 @@ class Metas
 
     public function get(string $url): ?DocumentMetaData
     {
+        if (str_starts_with($url, '/')) {
+            $url = substr($url, 1);
+        }
+
         if (isset($this->entries[$url])) {
             return $this->entries[$url];
         }

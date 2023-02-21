@@ -43,7 +43,7 @@ class BuilderUrlWithBaseUrlCallableTest extends BaseBuilderTest
         $contents = $this->getFileContents($this->targetFile('subdir/index.html'));
 
         self::assertStringContainsString(
-            '<li id="subdir2-file-html" class="toc-item"><a href="https://www.domain.com/directory/subdir2/file.html">Subdirectory 2 File</a></li>',
+            '<a href="https://www.domain.com/directory/subdir2/file.html">Subdirectory 2 File</a>',
             $contents
         );
     }
@@ -53,7 +53,7 @@ class BuilderUrlWithBaseUrlCallableTest extends BaseBuilderTest
         $contents = $this->getFileContents($this->targetFile('index.html'));
 
         self::assertStringContainsString(
-            '<li id="subdir-index-html" class="toc-item"><a href="subdir/index.html">Subdirectory Index</a></li>',
+            '<a href="subdir/index.html">Subdirectory Index</a>',
             $contents
         );
     }

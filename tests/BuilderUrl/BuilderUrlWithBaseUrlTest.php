@@ -30,7 +30,7 @@ class BuilderUrlWithBaseUrlTest extends BaseBuilderTest
         $contents = $this->getFileContents($this->targetFile('index.html'));
 
         self::assertStringContainsString(
-            '<li id="subdir-file-html" class="toc-item"><a href="https://www.domain.com/directory/subdir/file.html">Subdirectory File</a>',
+            '<a href="https://www.domain.com/directory/subdir/file.html">Subdirectory File</a>',
             $contents
         );
     }

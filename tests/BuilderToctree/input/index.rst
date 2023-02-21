@@ -1,56 +1,58 @@
 Title
 =====
 
-
-
 .. toctree::
+    :titlesonly:
 
     subdir/toctree
 
+Max Depth Level 1
+-----------------
+
+.. toctree::
+    :maxdepth: 1
+    :titlesonly:
+
+    level1-1/index
+    level1-2/index
+
 Max Depth Level 2
----------
+-----------------
+
+.. toctree::
+    :maxdepth: 2
+    :titlesonly:
+
+    level1-1/index
+    level1-2/index
 
 Max Depth Level 3
-~~~~~~~
+~~~~~~~~~~~~~~~~~
+
+.. toctree::
+    :maxdepth: 3
+    :titlesonly:
+
+    level1-1/index
+    level1-2/index
 
 Max Depth Level 4
 +++++++++++++++++
 
-maxdepth 1 TOC:
-
-.. toctree::
-    :depth: 1
-
-    level1-1/index
-    level1-2/index
-
-maxdepth 2 TOC:
-
-.. toctree::
-    :maxdepth: 2
-
-    level1-1/index
-    level1-2/index
-
-maxdepth 3 TOC:
-
-.. toctree::
-    :maxdepth: 3
-
-    level1-1/index
-    level1-2/index
-
-maxdepth 4 TOC:
-
 .. toctree::
     :maxdepth: 4
+    :titlesonly:
 
     level1-1/index
     level1-2/index
 
-no maxdepth TOC:
+
+
+No Max Depth
+------------
 
 .. toctree::
+    :titlesonly:
 
     level1-1/index
     level1-2/index
