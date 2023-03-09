@@ -10,6 +10,8 @@ final class FigureNode extends Node
 
     private ?Node $document = null;
 
+    private ?string $width = null;
+
     public function __construct(ImageNode $image, ?Node $document = null)
     {
         parent::__construct();
@@ -26,5 +28,15 @@ final class FigureNode extends Node
     public function getDocument(): ?Node
     {
         return $this->document;
+    }
+
+    public function setWidth(string $width): void
+    {
+        $this->width = $width;
+    }
+
+    public function getWidth(): ?string
+    {
+        return $this->width;
     }
 }

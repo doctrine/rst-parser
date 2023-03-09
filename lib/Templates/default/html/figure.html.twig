@@ -1,5 +1,8 @@
 {% apply spaceless %}
-<figure>
+<figure
+    {%- if figureNode.width is not empty %} width="{{ figureNode.width }}"{% endif -%}
+    {%- if figureNode.classes is not empty %} class="{{ figureNode.classesString }}"{% endif -%}
+>
     {{ figureNode.image.render()|raw }}
 
     {% if figureNode.document %}
