@@ -6,7 +6,6 @@ namespace Doctrine\RST\TextRoles;
 
 use Doctrine\RST\Environment;
 use Doctrine\RST\InvalidLink;
-use Doctrine\RST\Meta\LinkTarget;
 use Doctrine\RST\Span\SpanProcessor;
 use Doctrine\RST\Span\SpanToken;
 
@@ -135,18 +134,12 @@ abstract class LinkTextRole extends SpecialTextRole
         if (preg_match('/^(.+)[ \n]<(.+)>$/mUsi', $link, $m) > 0) {
             $link = $m[1];
             $url  = $m[2];
-            if (! $anonymous) {
-                $this->environment->setLinkTarget(new LinkTarget($link, $url));
-            }
         }
 
         // extract the url if the link was in this format: `<https://www.google.com>`_
         if (preg_match('/^<(.+)>$/mUsi', $link, $m) > 0) {
             $link = $m[1];
             $url  = $m[1];
-            if (! $anonymous) {
-                $this->environment->setLinkTarget(new LinkTarget($link, $url));
-            }
         }
 
         $id = $this->spanProcessor->generateId();

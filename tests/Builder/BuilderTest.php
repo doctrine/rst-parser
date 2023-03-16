@@ -373,7 +373,7 @@ class BuilderTest extends BaseBuilderTest
         );
 
         self::assertStringContainsString(
-            '<p>see <a href="http://absolute/">test</a></p>',
+            '<p>see <a href="magic-link.html#test">test</a></p>',
             $contents
         );
 
