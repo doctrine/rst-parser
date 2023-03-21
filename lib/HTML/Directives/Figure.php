@@ -9,7 +9,9 @@ use Doctrine\RST\Nodes\Node;
 use Doctrine\RST\Parser;
 use Exception;
 
+use function explode;
 use function sprintf;
+use function strpos;
 
 /**
  * Renders an image, example :
@@ -43,11 +45,30 @@ final class Figure extends SubDirective
             throw new Exception(sprintf('Could not get relative url for %s', $data));
         }
 
-        $nodeFactory = $parser->getNodeFactory();
+        $figureOptions = [];
+        foreach ($options as $name => $value) {
+            if (strpos($name, 'fig') !== 0) {
+                continue;
+            }
 
-        return $parser->getNodeFactory()->createFigureNode(
+            $figureOptions[$name] = $value;
+            unset($options[$name]);
+        }
+
+        $nodeFactory = $parser->getNodeFactory();
+        $figureNode  = $nodeFactory->createFigureNode(
             $nodeFactory->createImageNode($url, $options),
             $document
         );
+
+        if (isset($figureOptions['figclass'])) {
+            $figureNode->setClasses(explode(' ', $figureOptions['figclass']));
+        }
+
+        if (isset($figureOptions['figwidth'])) {
+            $figureNode->setWidth($figureOptions['figwidth']);
+        }
+
+        return $figureNode;
     }
 }
