@@ -1,7 +1,7 @@
 <div class="alert {% include "directives/admonition-class.html.twig" %} border {{ class }}">
     <table width="100%">
         <tr>
-            <td width="10" class="align-top" title="{{ text }}">{% include "directives/admonition-icon.html.twig" %}</td>
+            <td width="10" class="align-top" title="{{ text|striptags }}">{% include "directives/admonition-icon.html.twig" %}</td>
             <td>
                 |||
             </td>

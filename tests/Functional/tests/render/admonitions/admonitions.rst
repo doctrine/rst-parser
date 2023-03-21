@@ -1,4 +1,4 @@
-.. admonition:: Custom title
+.. admonition:: Custom title with *markup*
     Lorem Ipsum Dolor
 
 .. attention::

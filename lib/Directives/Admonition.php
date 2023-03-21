@@ -43,11 +43,16 @@ class Admonition extends SubDirective
             throw new RuntimeException('Content expected, none found.');
         }
 
+        $text = $this->text;
+        if ($data !== '') {
+            $text = $parser->createSpanNode($data)->render();
+        }
+
         $wrapperDiv = $parser->renderTemplate(
             $this->template,
             [
                 'name' => $this->name,
-                'text' => $data !== '' ? $data : $this->text,
+                'text' => $text,
                 'class' => $options['class'] ?? null,
             ]
         );
