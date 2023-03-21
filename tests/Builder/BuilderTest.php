@@ -88,6 +88,8 @@ class BuilderTest extends BaseBuilderTest
             'subdir/index',
             'index',
             'subdir/file',
+            'subdir/file2',
+            'subdir/file3',
         ], array_values(array_unique($metaEntries['subdir/index']->getDepends())));
 
         // update meta cache to see that it was used
@@ -218,6 +220,8 @@ class BuilderTest extends BaseBuilderTest
             // the subdir handling is actually different than Sphinx, which
             // does not look into subdirs with a normal * glob
             'subdir/file.html',
+            'subdir/file2.html',
+            'subdir/file3.html',
             'subdir/test.html',
             'subdir/toc.html',
             'subdirective.html',
@@ -243,6 +247,8 @@ class BuilderTest extends BaseBuilderTest
             'subdirective.html',
             'subdir/toc.html',
             'subdir/test.html',
+            'subdir/file3.html',
+            'subdir/file2.html',
             'subdir/file.html',
             'link-to-index.html',
             'introduction.html',
@@ -413,6 +419,45 @@ class BuilderTest extends BaseBuilderTest
             '<a href="test.html#em">em</a>',
             $contents
         );
+    }
+
+    public function testDocumentRoot(): void
+    {
+        $root = $this->builder->getMetas()->getDocumentRoot();
+        self::assertNotNull($root);
+        self::assertEquals('index', $root->getFile());
+        self::assertTrue($root->isDocumentRoot());
+        self::assertNull($root->getParentDocument());
+    }
+
+    public function testDocumentRootChildren(): void
+    {
+        $root     = $this->builder->getMetas()->getDocumentRoot();
+        $children = $root->getChildDocuments();
+        self::assertCount(5, $children);
+        foreach ($children as $child) {
+            self::assertEquals($root, $child->getParentDocument());
+        }
+
+        self::assertEquals('introduction', $children[0]->getFile());
+        self::assertEquals('subdirective', $children[1]->getFile());
+        self::assertEquals('another', $children[2]->getFile());
+        self::assertEquals('subdir/index', $children[3]->getFile());
+        self::assertEquals('subdir/file', $children[4]->getFile());
+    }
+
+    public function testSubdirChildren(): void
+    {
+        $subdirIndex = $this->builder->getMetas()->getAll()['subdir/index'] ?? null;
+        self::assertNotNull($subdirIndex);
+        $children = $subdirIndex->getChildDocuments();
+        self::assertCount(2, $children);
+        foreach ($children as $child) {
+            self::assertEquals($subdirIndex, $child->getParentDocument());
+        }
+
+        self::assertEquals('subdir/file2', $children[0]->getFile());
+        self::assertEquals('subdir/file3', $children[1]->getFile());
     }
 
     protected function getFixturesDirectory(): string

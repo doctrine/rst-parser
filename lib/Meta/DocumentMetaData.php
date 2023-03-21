@@ -15,7 +15,7 @@ use function is_string;
 use function sprintf;
 use function strtolower;
 
-class MetaEntry
+class DocumentMetaData
 {
     private string $file;
 
@@ -41,6 +41,13 @@ class MetaEntry
     private array $linkTargets;
 
     private ?string $parent = null;
+
+    private bool $documentRoot = false;
+
+    private ?DocumentMetaData $parentDocument = null;
+
+    /** @var DocumentMetaData[] */
+    private array $childDocuments = [];
 
     /**
      * @param string[][]|string[][][]   $titles
@@ -133,7 +140,11 @@ class MetaEntry
         $key = array_search($originalDependency, $this->depends, true);
 
         if ($key === false) {
-            throw new LogicException(sprintf('Could not find dependency "%s" in MetaEntry for "%s"', $originalDependency, $this->file));
+            throw new LogicException(sprintf(
+                'Could not find dependency "%s" in MetaEntry for "%s"',
+                $originalDependency,
+                $this->file
+            ));
         }
 
         $this->depends[$key]          = $newDependency;
@@ -205,5 +216,36 @@ class MetaEntry
         }
 
         return $titles;
+    }
+
+    public function isDocumentRoot(): bool
+    {
+        return $this->documentRoot;
+    }
+
+    public function setDocumentRoot(bool $documentRoot): void
+    {
+        $this->documentRoot = $documentRoot;
+    }
+
+    public function getParentDocument(): ?DocumentMetaData
+    {
+        return $this->parentDocument;
+    }
+
+    public function setParentDocument(?DocumentMetaData $parentDocument): void
+    {
+        $this->parentDocument = $parentDocument;
+    }
+
+    /** @return DocumentMetaData[] */
+    public function getChildDocuments(): array
+    {
+        return $this->childDocuments;
+    }
+
+    public function addChildDocument(DocumentMetaData $childDocument): void
+    {
+        $this->childDocuments[] = $childDocument;
     }
 }

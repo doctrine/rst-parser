@@ -49,6 +49,7 @@ final class TitleLinkUtility
                 'title' => $title,
                 'level' => $level,
                 'children' => [],
+                'subpages' => [],
             ];
 
             // render children until we hit the configured maxdepth

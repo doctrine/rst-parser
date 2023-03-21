@@ -6,7 +6,7 @@ namespace Doctrine\Tests\RST\Builder;
 
 use ArrayIterator;
 use Doctrine\RST\Builder\Scanner;
-use Doctrine\RST\Meta\MetaEntry;
+use Doctrine\RST\Meta\DocumentMetaData;
 use Doctrine\RST\Meta\Metas;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -29,7 +29,7 @@ class ScannerTest extends TestCase
     /** @var SplFileInfo[]|MockObject[]|ArrayIterator<string, SplFileInfo> */
     private $fileMocks;
 
-    /** @var MetaEntry[]|MockObject[] */
+    /** @var DocumentMetaData[]|MockObject[] */
     private $metaEntryMocks = [];
 
     public function testScanWithNoMetas(): void
@@ -227,10 +227,10 @@ class ScannerTest extends TestCase
         return $fileInfo;
     }
 
-    /** @return MockObject|MetaEntry */
+    /** @return MockObject|DocumentMetaData */
     private function createMetaEntryMock(string $filename)
     {
-        $meta = $this->createMock(MetaEntry::class);
+        $meta = $this->createMock(DocumentMetaData::class);
 
         $this->metaEntryMocks[$filename] = $meta;
 

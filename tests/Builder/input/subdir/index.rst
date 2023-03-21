@@ -61,3 +61,8 @@ Reference absolute to the :doc:`/index`
 
 em
 --
+
+.. toctree::
+
+    file2
+    file3

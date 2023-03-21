@@ -12,6 +12,14 @@ class BuilderTocTreeTest extends BaseBuilderTest
 {
     public function testTocTreeGlob(): void
     {
+        self::assertTrue(file_exists($this->targetFile('level1-1/index.html')));
+        self::assertTrue(file_exists($this->targetFile('level1-2/index.html')));
+        self::assertTrue(file_exists($this->targetFile('level1-1/level2-1/index.html')));
+        self::assertTrue(file_exists($this->targetFile('level1-1/level2-2/index.html')));
+        self::assertTrue(file_exists($this->targetFile('level1-1/level2-1/level3-1/index.html')));
+        self::assertTrue(file_exists($this->targetFile('level1-1/level2-1/level3-2/index.html')));
+        self::assertTrue(file_exists($this->targetFile('level1-1/level2-1/level3-1/level4-1/index.html')));
+        self::assertTrue(file_exists($this->targetFile('level1-1/level2-1/level3-1/level4-2/index.html')));
         self::assertTrue(file_exists($this->targetFile('subdir/toctree.html')));
         self::assertTrue(file_exists($this->targetFile('orphaned/file.html')));
         self::assertTrue(file_exists($this->targetFile('wildcards/bugfix1.html')));
@@ -20,21 +28,60 @@ class BuilderTocTreeTest extends BaseBuilderTest
         self::assertTrue(file_exists($this->targetFile('wildcards/index.html')));
     }
 
-    public function testMaxDepth(): void
+    public function testMaxDepth1(): void
     {
-        $contents = $this->getFileContents($this->targetFile('index.html'));
+        $contents = $this->getFileContents($this->targetFile('testMaxDepth1.html'));
 
-        // :maxdepth: 1
-        self::assertStringContainsString('<div class="toc"><ul><li id="index-html-title" class="toc-item"><a href="index.html#title">Title</a></li></ul></div>', $contents);
+        self::assertStringContainsString('Level1 - 1', $contents);
+        self::assertStringNotContainsString('Level2 - 1', $contents);
+        self::assertStringNotContainsString('Level3 - 1', $contents);
+        self::assertStringNotContainsString('Level4 - 1', $contents);
+        self::assertStringNotContainsString('Level4 - 2', $contents);
+        self::assertStringNotContainsString('Level3 - 2', $contents);
+        self::assertStringNotContainsString('Level2 - 2', $contents);
+        self::assertStringContainsString('Level1 - 2', $contents);
+    }
 
-        // :maxdepth: 2
-        self::assertStringContainsString('<div class="toc"><ul><li id="index-html-title" class="toc-item"><a href="index.html#title">Title</a><ul><li id="index-html-max-depth-level-2" class="toc-item"><a href="index.html#max-depth-level-2">Max Depth Level 2</a></li></ul></li></ul></div>', $contents);
+    public function testMaxDepth2(): void
+    {
+        $contents = $this->getFileContents($this->targetFile('testMaxDepth2.html'));
 
-        // :maxdepth: 3
-        self::assertStringContainsString('<div class="toc"><ul><li id="index-html-title" class="toc-item"><a href="index.html#title">Title</a><ul><li id="index-html-max-depth-level-2" class="toc-item"><a href="index.html#max-depth-level-2">Max Depth Level 2</a><ul><li id="index-html-max-depth-level-3" class="toc-item"><a href="index.html#max-depth-level-3">Max Depth Level 3</a></li></ul></li></ul></li></ul></div>', $contents);
+        self::assertStringContainsString('Level1 - 1', $contents);
+        self::assertStringContainsString('Level2 - 1', $contents);
+        self::assertStringNotContainsString('Level3 - 1', $contents);
+        self::assertStringNotContainsString('Level4 - 1', $contents);
+        self::assertStringNotContainsString('Level4 - 2', $contents);
+        self::assertStringNotContainsString('Level3 - 2', $contents);
+        self::assertStringContainsString('Level2 - 2', $contents);
+        self::assertStringContainsString('Level1 - 2', $contents);
+    }
 
-        // :maxdepth: 4
-        self::assertStringContainsString('<div class="toc"><ul><li id="index-html-title" class="toc-item"><a href="index.html#title">Title</a><ul><li id="index-html-max-depth-level-2" class="toc-item"><a href="index.html#max-depth-level-2">Max Depth Level 2</a><ul><li id="index-html-max-depth-level-3" class="toc-item"><a href="index.html#max-depth-level-3">Max Depth Level 3</a><ul><li id="index-html-max-depth-level-4" class="toc-item"><a href="index.html#max-depth-level-4">Max Depth Level 4</a></li></ul></li></ul></li></ul></li></ul></div>', $contents);
+    public function testMaxDepth3(): void
+    {
+        $contents = $this->getFileContents($this->targetFile('testMaxDepth3.html'));
+
+        self::assertStringContainsString('Level1 - 1', $contents);
+        self::assertStringContainsString('Level2 - 1', $contents);
+        self::assertStringContainsString('Level3 - 1', $contents);
+        self::assertStringNotContainsString('Level4 - 1', $contents);
+        self::assertStringNotContainsString('Level4 - 2', $contents);
+        self::assertStringContainsString('Level3 - 2', $contents);
+        self::assertStringContainsString('Level2 - 2', $contents);
+        self::assertStringContainsString('Level1 - 2', $contents);
+    }
+
+    public function testNoMaxDepth(): void
+    {
+        $contents = $this->getFileContents($this->targetFile('testNoMaxDepth.html'));
+
+        self::assertStringContainsString('Level1 - 1', $contents);
+        self::assertStringContainsString('Level2 - 1', $contents);
+        self::assertStringContainsString('Level3 - 1', $contents);
+        self::assertStringContainsString('Level4 - 1', $contents);
+        self::assertStringContainsString('Level4 - 2', $contents);
+        self::assertStringContainsString('Level3 - 2', $contents);
+        self::assertStringContainsString('Level2 - 2', $contents);
+        self::assertStringContainsString('Level1 - 2', $contents);
     }
 
     protected function getFixturesDirectory(): string

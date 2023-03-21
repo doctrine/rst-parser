@@ -11,14 +11,18 @@ use Doctrine\RST\UrlGenerator;
 
 use function array_key_exists;
 use function array_merge;
+use function in_array;
 use function serialize;
+use function sprintf;
+use function str_starts_with;
 use function strtolower;
+use function substr;
 use function trim;
 use function unserialize;
 
 class Metas
 {
-    /** @var MetaEntry[] */
+    /** @var DocumentMetaData[] */
     private $entries = [];
 
     /** @var string[] */
@@ -30,8 +34,10 @@ class Metas
     private Configuration $configuration;
     private ErrorManager $errorManager;
 
+    private ?DocumentMetaData $documentRoot = null;
+
     /**
-     * @param MetaEntry[]               $entries
+     * @param DocumentMetaData[]        $entries
      * @param array<string, LinkTarget> $linkTargets
      */
     public function __construct(Configuration $configuration, array $entries = [], array $linkTargets = [])
@@ -42,7 +48,7 @@ class Metas
         $this->linkTargets   = $linkTargets;
     }
 
-    public function findLinkTargetMetaEntry(string $linkTarget): ?MetaEntry
+    public function findLinkTargetMetaEntry(string $linkTarget): ?DocumentMetaData
     {
         foreach ($this->entries as $entry) {
             if ($this->doesLinkTargetExist($entry->getLinkTargets(), $linkTarget)) {
@@ -53,62 +59,43 @@ class Metas
         return $this->findByTitle($linkTarget);
     }
 
-    /** @return MetaEntry[] */
+    /** @return DocumentMetaData[] */
     public function getAll(): array
     {
         return $this->entries;
     }
 
-    /**
-     * @param string[][]                $titles
-     * @param mixed[][]                 $tocs
-     * @param string[]                  $depends
-     * @param array<string, LinkTarget> $linkTargets
-     */
-    public function set(
-        string $file,
-        string $url,
-        string $title,
-        array $titles,
-        array $tocs,
-        int $mtime,
-        array $depends,
-        array $linkTargets
-    ): void {
-        foreach ($tocs as $toc) {
+    public function set(DocumentMetaData $documentMetaData): void
+    {
+        foreach ($documentMetaData->getTocs() as $toc) {
             foreach ($toc as $child) {
-                $this->parents[$child] = $file;
+                $this->parents[$child] = $documentMetaData->getFile();
 
                 if (! isset($this->entries[$child])) {
                     continue;
                 }
 
-                $this->entries[$child]->setParent($file);
+                $this->entries[$child]->setParent($documentMetaData->getFile());
             }
         }
 
-        $this->entries[$file] = new MetaEntry(
-            $file,
-            $url,
-            $title,
-            $titles,
-            $tocs,
-            $depends,
-            $linkTargets,
-            $mtime
-        );
+        $this->entries[$documentMetaData->getFile()] = $documentMetaData;
 
-        if (! isset($this->parents[$file])) {
+        if (! isset($this->parents[$documentMetaData->getFile()])) {
             return;
         }
 
-        $this->entries[$file]->setParent($this->parents[$file]);
+        $this->entries[$documentMetaData->getFile()]->setParent($this->parents[$documentMetaData->getFile()]);
 
-        $this->linkTargets = array_merge($this->linkTargets, $linkTargets);
+        $this->linkTargets = array_merge($this->linkTargets, $documentMetaData->getLinkTargets());
     }
 
-    public function get(string $url): ?MetaEntry
+    public function get(string $url): ?DocumentMetaData
     {
+        if (str_starts_with($url, '/')) {
+            $url = substr($url, 1);
+        }
+
         if (isset($this->entries[$url])) {
             return $this->entries[$url];
         }
@@ -116,7 +103,7 @@ class Metas
         return null;
     }
 
-    /** @param MetaEntry[] $metaEntries */
+    /** @param DocumentMetaData[] $metaEntries */
     public function setMetaEntries(array $metaEntries): void
     {
         $this->entries = $metaEntries;
@@ -134,7 +121,7 @@ class Metas
         return false;
     }
 
-    private function findByTitle(string $text): ?MetaEntry
+    private function findByTitle(string $text): ?DocumentMetaData
     {
         $text = Environment::slugify($text);
 
@@ -194,6 +181,65 @@ class Metas
         $linkTarget->setUrl($url);
 
         return $linkTarget;
+    }
+
+    public function buildTocTree(string $indexFilename): void
+    {
+        if (! isset($this->entries[$indexFilename])) {
+            $this->errorManager->error('No document root was found, expected: ' . $indexFilename);
+
+            return;
+        }
+
+        $this->documentRoot = $this->entries[$indexFilename];
+        $this->documentRoot->setDocumentRoot(true);
+        $this->buildSubTree($this->documentRoot);
+    }
+
+    private function buildSubTree(?DocumentMetaData $document): void
+    {
+        $tocList = $document->getTocs();
+        foreach ($tocList as $toc) {
+            foreach ($toc as $tocEntry) {
+                if (! isset($this->entries[$tocEntry])) {
+                    $this->errorManager->warning(sprintf('File %s not found in document meta data.', $tocEntry));
+                    continue;
+                }
+
+                if ($this->entries[$tocEntry] === $document) {
+                    // Do not add document as its own child
+                    continue;
+                }
+
+                if ($this->entries[$tocEntry]->getParentDocument() !== null) {
+                    if ($document->getFile() !== $this->entries[$tocEntry]->getParentDocument()->getFile()) {
+                        $this->errorManager->warning(
+                            sprintf(
+                                'Document "%s" was added to document tree several times. Parents found: "%s" and "%s".',
+                                $tocEntry,
+                                $document->getFile(),
+                                $this->entries[$tocEntry]->getParentDocument()->getFile()
+                            )
+                        );
+                    }
+
+                    continue;
+                }
+
+                $this->entries[$tocEntry]->setParentDocument($document);
+                if (in_array($this->entries[$tocEntry], $document->getChildDocuments(), true)) {
+                    continue;
+                }
+
+                $document->addChildDocument($this->entries[$tocEntry]);
+                $this->buildSubTree($this->entries[$tocEntry]);
+            }
+        }
+    }
+
+    public function getDocumentRoot(): ?DocumentMetaData
+    {
+        return $this->documentRoot;
     }
 
     public function hasLinkTarget(string $name): bool

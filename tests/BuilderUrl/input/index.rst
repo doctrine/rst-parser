@@ -8,5 +8,4 @@ Base URL
 .. toctree::
     :glob:
 
-    index
-    *
+    subdir/*

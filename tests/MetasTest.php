@@ -7,8 +7,8 @@ namespace Doctrine\Tests\RST;
 use Doctrine\RST\Configuration;
 use Doctrine\RST\ErrorManager;
 use Doctrine\RST\ErrorManager\ErrorManagerFactory;
+use Doctrine\RST\Meta\DocumentMetaData;
 use Doctrine\RST\Meta\LinkTarget;
-use Doctrine\RST\Meta\MetaEntry;
 use Doctrine\RST\Meta\Metas;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -33,7 +33,7 @@ class MetasTest extends TestCase
 
     public function testFindLinkMetaEntry(): void
     {
-        $entry1 = new MetaEntry(
+        $entry1 = new DocumentMetaData(
             'test.rst',
             'test.html',
             'Test',
@@ -47,7 +47,7 @@ class MetasTest extends TestCase
             0
         );
 
-        $entry2 = new MetaEntry(
+        $entry2 = new DocumentMetaData(
             'test.rst',
             'test.html',
             'Test',

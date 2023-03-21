@@ -7,4 +7,4 @@ Subdirectory Index
 .. toctree::
     :glob:
 
-    /*
+    /subdir2/*

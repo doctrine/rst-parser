@@ -32,16 +32,28 @@ class GlobSearcherTest extends TestCase
 
         $files = $this->globSearcher->globSearch($environment, '*');
 
-        self::assertCount(7, $files);
+        self::assertCount(19, $files);
 
         $expected = [
             '/orphaned/file',
             '/index',
             '/subdir/toctree',
+            '/testMaxDepth1',
+            '/testMaxDepth2',
+            '/testMaxDepth3',
+            '/testNoMaxDepth',
             '/wildcards/bugfix1',
             '/wildcards/feature1',
             '/wildcards/feature2',
             '/wildcards/index',
+            '/level1-1/index',
+            '/level1-2/index',
+            '/level1-1/level2-1/index',
+            '/level1-1/level2-2/index',
+            '/level1-1/level2-1/level3-1/index',
+            '/level1-1/level2-1/level3-2/index',
+            '/level1-1/level2-1/level3-1/level4-1/index',
+            '/level1-1/level2-1/level3-1/level4-2/index',
         ];
 
         sort($expected);

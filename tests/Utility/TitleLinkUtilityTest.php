@@ -44,6 +44,7 @@ class TitleLinkUtilityTest extends TestCase
                 'title' => 'My Title',
                 'level' => 1,
                 'children' => [],
+                'subpages' => [],
             ],
         ];
         $this->titleLinkUtility->buildLevel('', $titles, 1, $tocItems, 'index');
@@ -82,6 +83,7 @@ class TitleLinkUtilityTest extends TestCase
                         'title' => 'Subtitle 1',
                         'level' => 2,
                         'children' => [],
+                        'subpages' => [],
                     ],
                     1 => [
                         'targetId' => 'subtitle-2',
@@ -89,8 +91,10 @@ class TitleLinkUtilityTest extends TestCase
                         'title' => 'Subtitle 2',
                         'level' => 2,
                         'children' => [],
+                        'subpages' => [],
                     ],
                 ],
+                'subpages' => [],
             ],
         ];
         $this->titleLinkUtility->buildLevel('', $titles, 1, $tocItems, 'index');
@@ -144,6 +148,7 @@ class TitleLinkUtilityTest extends TestCase
                                 'title' => 'Subtitle 1 1',
                                 'level' => 3,
                                 'children' => [],
+                                'subpages' => [],
                             ],
                             1 => [
                                 'targetId' => 'subtitle-1-2',
@@ -151,8 +156,10 @@ class TitleLinkUtilityTest extends TestCase
                                 'title' => 'Subtitle 1 2',
                                 'level' => 3,
                                 'children' => [],
+                                'subpages' => [],
                             ],
                         ],
+                        'subpages' => [],
                     ],
                     1 => [
                         'targetId' => 'subtitle-2',
@@ -160,8 +167,10 @@ class TitleLinkUtilityTest extends TestCase
                         'title' => 'Subtitle 2',
                         'level' => 2,
                         'children' => [],
+                        'subpages' => [],
                     ],
                 ],
+                'subpages' => [],
             ],
         ];
         $this->titleLinkUtility->buildLevel('', $titles, 1, $tocItems, 'index');
@@ -210,6 +219,7 @@ class TitleLinkUtilityTest extends TestCase
                         'title' => 'Subtitle 1',
                         'level' => 2,
                         'children' => [],
+                        'subpages' => [],
                     ],
                     1 => [
                         'targetId' => 'subtitle-2',
@@ -217,8 +227,10 @@ class TitleLinkUtilityTest extends TestCase
                         'title' => 'Subtitle 2',
                         'level' => 2,
                         'children' => [],
+                        'subpages' => [],
                     ],
                 ],
+                'subpages' => [],
             ],
         ];
         $titleLinkUtilityMaxDepth2->buildLevel('', $titles, 1, $tocItems, 'index');
@@ -260,6 +272,7 @@ class TitleLinkUtilityTest extends TestCase
                         'title' => 'Subtitle 1',
                         'level' => 2,
                         'children' => [],
+                        'subpages' => [],
                     ],
                     1 => [
                         'targetId' => 'index-subtitle-2',
@@ -267,8 +280,10 @@ class TitleLinkUtilityTest extends TestCase
                         'title' => 'Subtitle 2',
                         'level' => 2,
                         'children' => [],
+                        'subpages' => [],
                     ],
                 ],
+                'subpages' => [],
             ],
         ];
         $this->titleLinkUtility->buildLevel('index', $titles, 1, $tocItems, 'index');

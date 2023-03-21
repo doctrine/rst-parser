@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Doctrine\RST;
 
+use Doctrine\RST\Meta\DocumentMetaData;
 use Doctrine\RST\Meta\LinkTarget;
-use Doctrine\RST\Meta\MetaEntry;
 use Doctrine\RST\Meta\Metas;
 use Doctrine\RST\NodeFactory\NodeFactory;
 use Doctrine\RST\References\ResolvedReference;
@@ -391,7 +391,7 @@ class Environment
         return $this->metas;
     }
 
-    public function getMetaEntry(): ?MetaEntry
+    public function getMetaEntry(): ?DocumentMetaData
     {
         return $this->metas->get($this->currentFileName);
     }
