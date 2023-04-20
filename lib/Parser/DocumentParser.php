@@ -471,9 +471,9 @@ final class DocumentParser
                     // the previous line(s) was in a block (indented), but
                     // this line is no longer indented
                     return $this->flushAndResetParsing();
-                } else {
-                    $this->buffer->push($line);
                 }
+
+                $this->buffer->push($line);
 
                 break;
 
