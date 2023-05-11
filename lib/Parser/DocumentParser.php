@@ -450,9 +450,9 @@ final class DocumentParser
                     $this->setState(State::BEGIN);
 
                     return false;
-                } else {
-                    $this->buffer->push($line);
                 }
+
+                $this->buffer->push($line);
 
                 break;
 
