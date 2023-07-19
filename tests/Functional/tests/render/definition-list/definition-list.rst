@@ -84,3 +84,11 @@ term 1
     .. note::
 
         directive in definition list
+
+Not a definition list
+=====================
+
+Single line followed by a blank line
+  
+    This line is indented, but because of the blank line, it should
+    not be considered a term. It is a blockquote.

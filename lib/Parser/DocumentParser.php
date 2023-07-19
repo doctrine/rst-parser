@@ -309,7 +309,7 @@ final class DocumentParser
                         return true;
                     }
 
-                    if ($this->lineChecker->isIndented($this->lines->getNextLine())) {
+                    if (trim($this->lines->getNextLine()) !== '' && $this->lineChecker->isIndented($this->lines->getNextLine())) {
                         $this->setState(State::DEFINITION_LIST);
                         $this->buffer->push($line);
 
