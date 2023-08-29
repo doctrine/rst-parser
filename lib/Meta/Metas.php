@@ -22,8 +22,16 @@ class Metas
         $this->entries = $entries;
     }
 
-    public function findLinkMetaEntry(string $link): ?MetaEntry
+    public function findLinkMetaEntry(string $link, string $currentUrl = null): ?MetaEntry
     {
+        if ($currentUrl !== null) {
+            $bestEntry = $this->get($currentUrl);
+
+            if ($bestEntry !== null && $this->doesLinkExist($bestEntry->getLinks(), $link)) {
+                return $bestEntry;
+            }
+        }
+
         foreach ($this->entries as $entry) {
             if ($this->doesLinkExist($entry->getLinks(), $link)) {
                 return $entry;
