@@ -7,9 +7,9 @@ namespace Doctrine\RST\Nodes\Table;
 use Doctrine\RST\Nodes\Node;
 use LogicException;
 
+use function mb_convert_encoding;
 use function strlen;
 use function trim;
-use function utf8_encode;
 
 final class TableColumn
 {
@@ -27,7 +27,7 @@ final class TableColumn
 
     public function __construct(string $content, int $colSpan)
     {
-        $this->content = utf8_encode(trim($content));
+        $this->content =  mb_convert_encoding(trim($content), 'UTF-8', 'ISO-8859-1');
         $this->colSpan = $colSpan;
     }
 
