@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Doctrine\Tests\RST\MultipleIncludeReference;
 
 use Doctrine\RST\Builder;
-use Doctrine\RST\Configuration;
-use Doctrine\RST\Directives\CustomDirectiveFactory;
 use Doctrine\RST\Kernel;
 use PHPUnit\Framework\TestCase;
 
