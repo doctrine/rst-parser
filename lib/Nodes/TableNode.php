@@ -21,6 +21,7 @@ use function explode;
 use function implode;
 use function ksort;
 use function max;
+use function mb_convert_encoding;
 use function preg_match;
 use function sprintf;
 use function str_repeat;
@@ -28,7 +29,6 @@ use function strlen;
 use function strpos;
 use function substr;
 use function trim;
-use function utf8_decode;
 
 class TableNode extends Node
 {
@@ -136,7 +136,7 @@ class TableNode extends Node
             throw new LogicException('Cannot push data after TableNode is compiled');
         }
 
-        $this->rawDataLines[$this->currentLineNumber] = utf8_decode($line);
+        $this->rawDataLines[$this->currentLineNumber] = mb_convert_encoding($line, 'ISO-8859-1', 'UTF-8');
         $this->currentLineNumber++;
     }
 
