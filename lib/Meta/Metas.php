@@ -22,7 +22,7 @@ class Metas
         $this->entries = $entries;
     }
 
-    public function findLinkMetaEntry(string $link, string $currentUrl = null): ?MetaEntry
+    public function findLinkMetaEntry(string $link, ?string $currentUrl = null): ?MetaEntry
     {
         if ($currentUrl !== null) {
             $bestEntry = $this->get($currentUrl);

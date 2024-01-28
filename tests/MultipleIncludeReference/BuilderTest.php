@@ -24,7 +24,6 @@ class BuilderTest extends TestCase
             __DIR__ . '/output'
         );
 
-
         $expected = '<p>Reference is <a href="page1.html#reference-one">here</a></p>';
         $contents = file_get_contents(__DIR__ . '/output/page1.html');
         assert($contents !== false);
