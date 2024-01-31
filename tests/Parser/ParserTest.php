@@ -18,6 +18,7 @@ use Exception;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
+use Symfony\Component\Filesystem\Path;
 
 use function assert;
 use function count;
@@ -383,7 +384,7 @@ class ParserTest extends TestCase
 
     public function testIncludesPolicy(): void
     {
-        $directory   = __DIR__ . '/files/';
+        $directory   = Path::normalize(__DIR__) . '/files/';
         $parser      = new Parser();
         $environment = $parser->getEnvironment();
         $environment->setCurrentDirectory($directory);
@@ -397,7 +398,7 @@ class ParserTest extends TestCase
         self::assertStringContainsString('SUBDIRECTORY OK', $document);
         self::assertStringContainsString('EXTERNAL FILE INCLUDED!', $document);
 
-        // Disbaled policy:
+        // Disabled policy:
         $parser->setIncludePolicy(false);
         $nodes = $parser->parseFile($directory . 'inclusion-policy.rst')->getNodes();
         self::assertCount(1, $nodes);

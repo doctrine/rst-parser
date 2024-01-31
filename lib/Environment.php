@@ -11,6 +11,7 @@ use Doctrine\RST\References\Reference;
 use Doctrine\RST\References\ResolvedReference;
 use Doctrine\RST\Templates\TemplateRenderer;
 use InvalidArgumentException;
+use Symfony\Component\Filesystem\Path;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 
 use function array_shift;
@@ -372,7 +373,7 @@ class Environment
 
     public function setCurrentFileName(string $filename): void
     {
-        $this->currentFileName = $filename;
+        $this->currentFileName = Path::normalize($filename);
     }
 
     /**
@@ -388,7 +389,7 @@ class Environment
 
     public function setCurrentDirectory(string $directory): void
     {
-        $this->currentDirectory = $directory;
+        $this->currentDirectory = Path::normalize($directory);
     }
 
     public function getCurrentDirectory(): string
@@ -403,7 +404,7 @@ class Environment
 
     public function setTargetDirectory(string $directory): void
     {
-        $this->targetDirectory = $directory;
+        $this->targetDirectory = Path::normalize($directory);
     }
 
     public function getTargetDirectory(): string

@@ -6,6 +6,7 @@ namespace Doctrine\RST\Builder;
 
 use Doctrine\RST\Meta\Metas;
 use InvalidArgumentException;
+use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
@@ -54,7 +55,7 @@ final class Scanner
         // completely populate the splFileInfos property
         $this->fileInfos = [];
         foreach ($this->finder as $fileInfo) {
-            $relativeFilename = $fileInfo->getRelativePathname();
+            $relativeFilename = Path::normalize($fileInfo->getRelativePathname());
             // strip off the extension
             $documentPath = substr($relativeFilename, 0, -(strlen($this->fileExtension) + 1));
 
@@ -142,6 +143,6 @@ final class Scanner
      */
     private function getFilenameFromFile(SplFileInfo $file): string
     {
-        return substr($file->getRelativePathname(), 0, -(strlen($this->fileExtension) + 1));
+        return substr(Path::normalize($file->getRelativePathname()), 0, -(strlen($this->fileExtension) + 1));
     }
 }

@@ -47,7 +47,10 @@
     "autoload": {
         "psr-4": {
             "Doctrine\\RST\\": "lib/"
-        }
+        },
+        "files": [
+            "polyfill.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

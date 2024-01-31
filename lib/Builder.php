@@ -17,6 +17,7 @@ use Doctrine\RST\Meta\CachedMetasLoader;
 use Doctrine\RST\Meta\Metas;
 use InvalidArgumentException;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Finder\Finder;
 
 use function file_exists;
@@ -132,6 +133,8 @@ final class Builder
         string $directory,
         string $targetDirectory = 'output'
     ): void {
+        $directory       = Path::normalize($directory);
+        $targetDirectory = Path::normalize($targetDirectory);
         // Creating output directory if doesn't exists
         if (! is_dir($targetDirectory)) {
             $this->filesystem->mkdir($targetDirectory, 0755);
