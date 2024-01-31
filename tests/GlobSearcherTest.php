@@ -7,6 +7,7 @@ namespace Doctrine\Tests\RST;
 use Doctrine\RST\Environment;
 use Doctrine\RST\Toc\GlobSearcher;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Filesystem\Path;
 
 use function sort;
 
@@ -17,7 +18,7 @@ class GlobSearcherTest extends TestCase
 
     public function testGlobSearch(): void
     {
-        $dir = __DIR__ . '/BuilderToctree/input';
+        $dir = Path::normalize(__DIR__) . '/BuilderToctree/input';
 
         $environment = $this->createMock(Environment::class);
 
