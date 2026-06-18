@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\RST\Templates;
 
 use Doctrine\RST\Configuration;
+use Symfony\Component\Filesystem\Path;
 use Twig\Environment as TwigEnvironment;
 use Twig\Loader\FilesystemLoader;
 
@@ -32,7 +33,7 @@ final class TwigEnvironmentFactory
 
         $templateDirectories = $configuration->getCustomTemplateDirs();
         // add the fallback directory
-        $templateDirectories[] = __DIR__;
+        $templateDirectories[] = Path::normalize(__DIR__);
 
         foreach ($templateDirectories as $templateDir) {
             $themePath = $templateDir . '/' . $configuration->getTheme() . '/' . $fileExtension;

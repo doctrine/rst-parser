@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\RST\Toc;
 
 use Doctrine\RST\Environment;
+use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Finder\Finder;
 
 use function array_merge;
@@ -27,7 +28,7 @@ class GlobSearcher
      */
     public function globSearch(Environment $environment, string $globPattern): array
     {
-        $currentFilePath = (string) realpath(rtrim($environment->absoluteRelativePath(''), '/'));
+        $currentFilePath = Path::normalize((string) realpath(rtrim($environment->absoluteRelativePath(''), '/')));
 
         $rootDocPath = rtrim(str_replace($environment->getDirName(), '', $currentFilePath), '/');
 
@@ -51,7 +52,7 @@ class GlobSearcher
         foreach ($finder as $file) {
             if ($file->isDir()) {
                 // remove the root directory so it is a relative path from the root
-                $relativePath = str_replace($rootDocPath, '', (string) $file->getRealPath());
+                $relativePath = str_replace($rootDocPath, '', Path::normalize((string) $file->getRealPath()));
 
                 // recursively search in this directory
                 $dirFiles = $this->globSearch($environment, $relativePath . '/*');
@@ -60,7 +61,7 @@ class GlobSearcher
             } else {
                 // Trim the root path and the .rst extension. This is what the
                 // RST parser requires to add a dependency.
-                $file = str_replace([$rootDocPath, '.rst'], '', (string) $file->getRealPath());
+                $file = str_replace([$rootDocPath, '.rst'], '', Path::normalize((string) $file->getRealPath()));
 
                 $allFiles[] = $file;
             }

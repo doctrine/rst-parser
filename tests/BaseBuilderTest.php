@@ -7,6 +7,7 @@ namespace Doctrine\Tests\RST;
 use Doctrine\RST\Builder;
 use Exception;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Filesystem\Path;
 
 use function file_get_contents;
 use function shell_exec;
@@ -34,12 +35,12 @@ abstract class BaseBuilderTest extends TestCase
 
     protected function sourceFile(string $file = ''): string
     {
-        return __DIR__ . '/' . $this->getFixturesDirectory() . '/input/' . $file;
+        return Path::normalize(__DIR__) . '/' . $this->getFixturesDirectory() . '/input/' . $file;
     }
 
     protected function targetFile(string $file = ''): string
     {
-        return __DIR__ . '/' . $this->getFixturesDirectory() . '/output/' . $file;
+        return Path::normalize(__DIR__) . '/' . $this->getFixturesDirectory() . '/output/' . $file;
     }
 
     /** @throws Exception */

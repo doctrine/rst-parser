@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace Doctrine\RST\Nodes;
 
 use Doctrine\RST\Environment;
+use Symfony\Component\Filesystem\Path;
+
+use function array_map;
 
 class TocNode extends Node
 {
@@ -27,7 +30,7 @@ class TocNode extends Node
     {
         parent::__construct();
 
-        $this->files       = $files;
+        $this->files       = array_map([Path::class, 'normalize'], $files);
         $this->environment = $environment;
         $this->options     = $options;
     }

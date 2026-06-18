@@ -20,8 +20,10 @@ use Doctrine\RST\Templates\TemplateRenderer;
 use Doctrine\RST\Templates\TwigAdapter;
 use Doctrine\RST\Templates\TwigTemplateRenderer;
 use RuntimeException;
+use Symfony\Component\Filesystem\Path;
 use Twig\Environment as TwigEnvironment;
 
+use function array_map;
 use function sprintf;
 use function sys_get_temp_dir;
 
@@ -93,7 +95,7 @@ class Configuration
 
     public function __construct()
     {
-        $this->cacheDir = sys_get_temp_dir() . '/doctrine-rst-parser';
+        $this->cacheDir = Path::normalize(sys_get_temp_dir()) . '/doctrine-rst-parser';
 
         $this->eventManager = new EventManager();
 
@@ -113,7 +115,7 @@ class Configuration
 
     public function setCacheDir(string $cacheDir): void
     {
-        $this->cacheDir = $cacheDir;
+        $this->cacheDir = Path::normalize($cacheDir);
     }
 
     public function getTemplateRenderer(): TemplateRenderer
@@ -141,7 +143,7 @@ class Configuration
     /** @param string[] $customTemplateDirs */
     public function setCustomTemplateDirs(array $customTemplateDirs): void
     {
-        $this->customTemplateDirs = $customTemplateDirs;
+        $this->customTemplateDirs = array_map([Path::class, 'normalize'], $customTemplateDirs);
     }
 
     public function addCustomTemplateDir(string $customTemplateDir): void

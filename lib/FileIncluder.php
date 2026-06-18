@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\RST;
 
 use RuntimeException;
+use Symfony\Component\Filesystem\Path;
 
 use function explode;
 use function file_exists;
@@ -26,6 +27,7 @@ final class FileIncluder
     /** @var string */
     private $includeRoot;
 
+    /** @param string $includeRoot Many roots can be provided by separating them with | */
     public function __construct(
         Environment $environment,
         bool $includeAllowed,
@@ -83,7 +85,9 @@ final class FileIncluder
             return false;
         }
 
-        foreach (explode(':', $this->includeRoot) as $root) {
+        $real = Path::normalize($real);
+
+        foreach (explode('|', $this->includeRoot) as $root) {
             if (strpos($real, $root) === 0) {
                 return true;
             }

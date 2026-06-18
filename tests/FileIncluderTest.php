@@ -9,6 +9,7 @@ use Doctrine\RST\FileIncluder;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
+use Symfony\Component\Filesystem\Path;
 
 use function trim;
 
@@ -22,9 +23,9 @@ class FileIncluderTest extends TestCase
         $this->environment->expects(self::once())
             ->method('absoluteRelativePath')
             ->with('include.rst')
-            ->willReturn(__DIR__ . '/Parser/files/include.rst');
+            ->willReturn(Path::normalize(__DIR__) . '/Parser/files/include.rst');
 
-        $fileIncluder = new FileIncluder($this->environment, true, __DIR__ . '/Parser/files');
+        $fileIncluder = new FileIncluder($this->environment, true, Path::normalize(__DIR__) . '/Parser/files');
 
         $contents = $fileIncluder->includeFiles('.. include:: include.rst');
 
@@ -36,7 +37,7 @@ class FileIncluderTest extends TestCase
         $this->environment->expects(self::once())
             ->method('absoluteRelativePath')
             ->with('include.rst')
-            ->willReturn(__DIR__ . '/Parser/files/include.rst');
+            ->willReturn(Path::normalize(__DIR__) . '/Parser/files/include.rst');
 
         $fileIncluder = new FileIncluder($this->environment, true, '');
 

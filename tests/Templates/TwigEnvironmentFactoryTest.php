@@ -9,6 +9,7 @@ use Doctrine\RST\Templates\TwigEnvironmentFactory;
 use Exception;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Path;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 
@@ -29,7 +30,7 @@ class TwigEnvironmentFactoryTest extends TestCase
 
         // no theme, no custom dirs
         self::assertLoaderPaths(
-            [(string) realpath(__DIR__ . '/../../lib/Templates/default/html')],
+            [Path::normalize((string) realpath(__DIR__ . '/../../lib/Templates/default/html'))],
             TwigEnvironmentFactory::createTwigEnvironment($configuration)
         );
     }
@@ -61,7 +62,7 @@ class TwigEnvironmentFactoryTest extends TestCase
                 $dir1 . '/cool_theme/html',
                 $dir2 . '/cool_theme/html',
                 $dir1 . '/default/html',
-                (string) realpath(__DIR__ . '/../../lib/Templates/default/html'),
+                Path::normalize((string) realpath(__DIR__ . '/../../lib/Templates/default/html')),
             ],
             TwigEnvironmentFactory::createTwigEnvironment($configuration)
         );
@@ -80,7 +81,7 @@ class TwigEnvironmentFactoryTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->tmpPath    = sys_get_temp_dir() . '/_rst_twig_tests';
+        $this->tmpPath    = Path::normalize(sys_get_temp_dir()) . '/_rst_twig_tests';
         $this->filesystem = new Filesystem();
     }
 
