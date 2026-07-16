@@ -179,7 +179,9 @@ abstract class SpanNodeRenderer implements NodeRenderer, SpanRenderer
             if ($url === '') {
                 $this->environment->addInvalidLink(new InvalidLink($link));
 
-                return str_replace($spanToken->getId(), $link, $span);
+                // render the link text the same way a resolved link would,
+                // so that characters like < and > are properly escaped
+                return str_replace($spanToken->getId(), $this->renderSyntaxes($link), $span);
             }
         }
 

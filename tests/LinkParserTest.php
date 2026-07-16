@@ -39,6 +39,18 @@ EOF;
         self::assertSame('<p><a href="https://www.google.com">has_underscore</a></p>', trim($result));
     }
 
+    public function testInvalidLinkTextIsEscaped(): void
+    {
+        $this->configuration->setIgnoreInvalidReferences(true);
+        $this->configuration->abortOnError(false);
+
+        $rst = 'See the `related packages on Packagist.org<https://packagist.org/packages/scheb/2fa-bundle/dependents>`_.';
+
+        $result = $this->parser->parse($rst)->render();
+
+        self::assertSame('<p>See the related packages on Packagist.org&lt;https://packagist.org/packages/scheb/2fa-bundle/dependents&gt;.</p>', trim($result));
+    }
+
     public function testInvalidLinks(): void
     {
         $this->configuration->setIgnoreInvalidReferences(true);
