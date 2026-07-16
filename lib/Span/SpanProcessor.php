@@ -168,8 +168,10 @@ final class SpanProcessor
             $link = $match[3] ? $match[3] : $match[5];
             assert(is_string($link));
 
-            // a link starting with _ is not a link - return original string
-            if (substr($link, 0, 1) === '_') {
+            // a plain-text word starting with _ (e.g. PHP's __CLASS__) is not
+            // a link - return original string. Backtick-quoted text is always
+            // an explicit link, whatever its first character.
+            if ($match[3] !== '' && substr($link, 0, 1) === '_') {
                 return $match[0];
             }
 
