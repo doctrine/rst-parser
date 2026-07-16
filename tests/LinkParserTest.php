@@ -39,6 +39,39 @@ EOF;
         self::assertSame('<p><a href="https://www.google.com">has_underscore</a></p>', trim($result));
     }
 
+    public function testLinkWithTextStartingWithUnderscore(): void
+    {
+        $rst = <<<'EOF'
+the `__invoke() PHP magic method`_
+
+.. _`__invoke() PHP magic method`: https://www.php.net/manual/en/language.oop5.magic.php#object.invoke
+EOF;
+
+        $result = $this->parser->parse($rst)->render();
+
+        self::assertSame('<p>the <a href="https://www.php.net/manual/en/language.oop5.magic.php#object.invoke">__invoke() PHP magic method</a></p>', trim($result));
+    }
+
+    public function testAnonymousLinkWithTextStartingWithUnderscore(): void
+    {
+        $rst = <<<'EOF'
+the `__toString() PHP magic method`__
+
+__ https://www.php.net/manual/en/language.oop5.magic.php#object.tostring
+EOF;
+
+        $result = $this->parser->parse($rst)->render();
+
+        self::assertSame('<p>the <a href="https://www.php.net/manual/en/language.oop5.magic.php#object.tostring">__toString() PHP magic method</a></p>', trim($result));
+    }
+
+    public function testPlainTextStartingWithUnderscoreIsNotALink(): void
+    {
+        $result = $this->parser->parse('text with __CLASS__ and __invoke_ is not a link')->render();
+
+        self::assertSame('<p>text with __CLASS__ and __invoke_ is not a link</p>', trim($result));
+    }
+
     public function testInvalidLinks(): void
     {
         $this->configuration->setIgnoreInvalidReferences(true);
