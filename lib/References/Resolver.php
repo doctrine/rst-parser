@@ -57,7 +57,7 @@ final class Resolver
         string $data,
         array $attributes = []
     ): ?ResolvedReference {
-        $entry = $environment->getMetas()->findLinkMetaEntry($data);
+        $entry = $environment->getMetas()->findLinkMetaEntry($data, $environment->getUrl());
 
         if ($entry !== null) {
             return $this->createResolvedReference($entry->getFile(), $environment, $entry, $attributes, $data);
