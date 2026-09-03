@@ -29,6 +29,51 @@ jobs:
     name: "PHPUnit"
     uses: "doctrine/.github/.github/workflows/continuous-integration.yml@15.1.0"
     with:
-      php-versions: '["7.2", "7.3", "7.4", "8.0", "8.1", "8.2", "8.3", "8.4", "8.5"]'
+      php-versions: '["8.1", "8.2", "8.3", "8.4", "8.5"]'
     secrets:
       CODECOV_TOKEN: "${{ secrets.CODECOV_TOKEN }}"
+
+  # Every twig/twig release below 3.27 is flagged by a security advisory, and 3.27 requires
+  # PHP >= 8.1, so the PHP versions that are themselves end of life have nothing left to install
+  # while Composer blocks affected packages. The reusable workflow has no hook to run a command
+  # before the install, so they get their own job rather than turning the blocking off for
+  # everyone. See #293.
+  phpunit-eol-php:
+    name: "PHPUnit (end of life PHP)"
+    runs-on: "ubuntu-22.04"
+
+    strategy:
+      matrix:
+        php-version:
+          - "7.2"
+          - "7.3"
+          - "7.4"
+          - "8.0"
+        dependencies:
+          - "highest"
+        include:
+          - php-version: "7.2"
+            dependencies: "lowest"
+
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v6"
+
+      - name: "Install PHP"
+        uses: "shivammathur/setup-php@v2"
+        with:
+          php-version: "${{ matrix.php-version }}"
+          coverage: "none"
+          ini-file: development
+
+      - name: "Accept the advisory-affected Twig releases these PHP versions are left with"
+        run: "composer config audit.block-insecure false"
+
+      - name: "Install dependencies with Composer"
+        uses: "ramsey/composer-install@v4"
+        with:
+          dependency-versions: "${{ matrix.dependencies }}"
+          composer-options: "--prefer-dist"
+
+      - name: "Run PHPUnit"
+        run: "vendor/bin/phpunit"
