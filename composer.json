@@ -40,7 +40,7 @@
         "phpstan/phpstan-deprecation-rules": "^1.0",
         "phpstan/phpstan-phpunit": "^1.2",
         "phpstan/phpstan-strict-rules": "^1.4",
-        "phpunit/phpunit": "^7.5 || ^8.0 || ^9.0",
+        "phpunit/phpunit": "^7.5 || ^9.5",
         "symfony/css-selector": "4.4 || ^5.2 || ^6.0 || ^7.0 || ^8.0",
         "symfony/dom-crawler": "4.4 || ^5.2 || ^6.0 || ^7.0 || ^8.0"
     },
